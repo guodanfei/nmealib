@@ -108,8 +108,9 @@ void nmea_trace(const char *s, ...) {
  */
 void nmea_trace_buff(const char *s, size_t sz) {
   nmeaTraceFunc func = property.traceCallback;
-  if (func && sz)
+  if (func && s && sz) {
     (*func)(s, sz);
+  }
 }
 
 /**
