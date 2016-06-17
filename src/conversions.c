@@ -29,14 +29,16 @@
  * @param sats the number of sats
  * @return the number of GSV sentences needed
  */
-int nmea_gsv_npack(int sats) {
-  int pack_count = sats / NMEA_SATINPACK;
+unsigned int nmea_gsv_npack(unsigned int sats) {
+  unsigned int pack_count = sats / NMEA_SATINPACK;
 
-  if ((sats % NMEA_SATINPACK) > 0)
+  if ((sats % NMEA_SATINPACK) > 0) {
     pack_count++;
+  }
 
-  if (!pack_count)
+  if (!pack_count) {
     pack_count++;
+  }
 
   return pack_count;
 }
@@ -264,7 +266,7 @@ void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
  * @param pack a pointer to the nmeaGPGSV structure
  * @param pack_idx pack index (zero based)
  */
-void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, int pack_idx) {
+void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
   assert(pack);
   assert(info);
 
@@ -282,7 +284,7 @@ void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, int pack_idx) {
         NMEA_MAXSAT;
     pack->pack_count = nmea_gsv_npack(pack->sat_count);
 
-    if (pack_idx >= pack->pack_count)
+    if ((int)pack_idx >= pack->pack_count)
       pack->pack_index = pack->pack_count;
     else
       pack->pack_index = pack_idx + 1;
