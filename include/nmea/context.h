@@ -18,15 +18,15 @@
 #ifndef __NMEA_CONTEXT_H__
 #define __NMEA_CONTEXT_H__
 
+#ifdef  __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /** the default size for the temporary buffers */
 #define NMEA_DEF_PARSEBUFF  1024
 
 /** the minimum size for the temporary buffers */
 #define NMEA_MIN_PARSEBUFF  256
-
-#ifdef  __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 /**
  * Function type definition for tracing
