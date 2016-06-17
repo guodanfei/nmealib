@@ -20,6 +20,10 @@
 
 #include <nmea/info.h>
 
+#ifdef  __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #define NMEA_TUD_YARDS              (1.0936133)                     /**< Yards, meter * NMEA_TUD_YARDS = yard */
 #define NMEA_TUD_KNOTS              (1.852)                         /**< Knots, kilometer / NMEA_TUD_KNOTS = knot */
 #define NMEA_TUD_MILES              (1.609344)                      /**< Miles, kilometer / NMEA_TUD_MILES = mile */
@@ -32,10 +36,6 @@
 #define NMEA_EARTH_SEMIMAJORAXIS_KM (NMEA_EARTHMAJORAXIS_KM / 1000) /**< Earth's semi-major axis in km according WGS 84 */
 #define NMEA_EARTH_FLATTENING       (1 / 298.257223563)             /**< Earth's flattening according WGS 84 */
 #define NMEA_DOP_FACTOR             (5)                             /**< Factor for translating DOP to meters */
-
-#ifdef  __cplusplus
-extern "C" {
-#endif /* __cplusplus */
 
 /*
  * degree VS radian
