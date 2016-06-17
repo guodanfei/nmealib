@@ -24,16 +24,17 @@
  * The structure with nmealib context.
  */
 typedef struct _nmeaPROPERTY {
-  nmeaTraceFunc trace_func; /**< the tracing function, defaults to NULL (disabled) */
-  nmeaErrorFunc error_func; /**< the error function, defaults to NULL (disabled) */
-  size_t parse_buff_size; /**< the size to use for temporary buffers, minimum is NMEA_MIN_PARSEBUFF */
+  nmeaTraceFunc traceCallback; /**< the tracing callback, defaults to NULL (disabled)     */
+  nmeaErrorFunc errorCallback; /**< the error callback, defaults to NULL (disabled)       */
+  size_t parseBufferSize;      /**< the size to use for temporary trace and error buffers */
 } nmeaPROPERTY;
 
 /** the nmealib context */
 static nmeaPROPERTY property = {
-    .trace_func = NULL,
-    .error_func = NULL,
-    .parse_buff_size = NMEA_TRACE_ERROR_BUFF_DEF };
+    .traceCallback = NULL,
+    .errorCallback = NULL,
+    .parseBufferSize = NMEA_TRACE_ERROR_BUFF_DEF
+};
 
 /**
  * Set the trace function
@@ -41,7 +42,7 @@ static nmeaPROPERTY property = {
  * @param func the trace function
  */
 void nmea_context_set_trace_func(nmeaTraceFunc func) {
-  property.trace_func = func;
+  property.traceCallback = func;
 }
 
 /**
@@ -50,7 +51,7 @@ void nmea_context_set_trace_func(nmeaTraceFunc func) {
  * @param func the error function
  */
 void nmea_context_set_error_func(nmeaErrorFunc func) {
-  property.error_func = func;
+  property.errorCallback = func;
 }
 
 /**
@@ -62,16 +63,16 @@ void nmea_context_set_error_func(nmeaErrorFunc func) {
  */
 void nmea_context_set_buffer_size(size_t sz) {
   if (sz < NMEA_TRACE_ERROR_BUFF_MIN)
-    property.parse_buff_size = NMEA_TRACE_ERROR_BUFF_MIN;
+    property.parseBufferSize = NMEA_TRACE_ERROR_BUFF_MIN;
   else
-    property.parse_buff_size = sz;
+    property.parseBufferSize = sz;
 }
 
 /**
  * @return the buffer size for temporary buffers
  */
 size_t nmea_context_get_buffer_size(void) {
-  return property.parse_buff_size;
+  return property.parseBufferSize;
 }
 
 /**
@@ -80,15 +81,15 @@ size_t nmea_context_get_buffer_size(void) {
  * @param s a formatted string
  */
 void nmea_trace(const char *s, ...) {
-  nmeaTraceFunc func = property.trace_func;
+  nmeaTraceFunc func = property.traceCallback;
 
   if (func) {
     int size;
     va_list arg_list;
-    char buff[property.parse_buff_size];
+    char buff[property.parseBufferSize];
 
     va_start(arg_list, s);
-    size = vsnprintf(&buff[0], property.parse_buff_size - 1, s, arg_list);
+    size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0)
@@ -103,7 +104,7 @@ void nmea_trace(const char *s, ...) {
  * @param sz the size of the buffer
  */
 void nmea_trace_buff(const char *s, size_t sz) {
-  nmeaTraceFunc func = property.trace_func;
+  nmeaTraceFunc func = property.traceCallback;
   if (func && sz)
     (*func)(s, sz);
 }
@@ -114,15 +115,15 @@ void nmea_trace_buff(const char *s, size_t sz) {
  * @param s a formatted error string
  */
 void nmea_error(const char *s, ...) {
-  nmeaErrorFunc func = property.error_func;
+  nmeaErrorFunc func = property.errorCallback;
 
   if (func) {
     int size;
     va_list arg_list;
-    char buff[property.parse_buff_size];
+    char buff[property.parseBufferSize];
 
     va_start(arg_list, s);
-    size = vsnprintf(&buff[0], property.parse_buff_size - 1, s, arg_list);
+    size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0)
