@@ -21,64 +21,39 @@
 #include <stdio.h>
 
 /**
- * The structure with nmealib context.
+ * The structure with the nmealib context.
  */
 typedef struct _nmeaPROPERTY {
-  nmeaTraceFunc traceCallback; /**< the tracing callback, defaults to NULL (disabled)     */
-  nmeaErrorFunc errorCallback; /**< the error callback, defaults to NULL (disabled)       */
-  size_t parseBufferSize;      /**< the size to use for temporary trace and error buffers */
+  nmeaTraceFunc traceCallback; /**< The trace callback, defaults to NULL (disabled)               */
+  nmeaErrorFunc errorCallback; /**< The error logging callback, defaults to NULL (disabled)       */
+  size_t parseBufferSize;      /**< The size to use for temporary trace and error logging buffers */
 } nmeaPROPERTY;
 
-/** the nmealib context */
+/** The nmealib context */
 static nmeaPROPERTY property = {
     .traceCallback = NULL,
     .errorCallback = NULL,
     .parseBufferSize = NMEA_TRACE_ERROR_BUFF_DEF
 };
 
-/**
- * Set the trace function
- *
- * @param func the trace function
- */
 void nmea_context_set_trace_func(nmeaTraceFunc func) {
   property.traceCallback = func;
 }
 
-/**
- * Set the error function
- *
- * @param func the error function
- */
 void nmea_context_set_error_func(nmeaErrorFunc func) {
   property.errorCallback = func;
 }
 
-/**
- * Set the buffer size for temporary buffers.
- * If the size is less than NMEA_MIN_PARSEBUFF, then the size that is
- * configured will be NMEA_MIN_PARSEBUFF.
- *
- * @param sz the buffer size for temporary buffers
- */
 void nmea_context_set_buffer_size(size_t sz) {
   property.parseBufferSize = (sz < NMEA_TRACE_ERROR_BUFF_MIN) ?
       NMEA_TRACE_ERROR_BUFF_MIN :
       sz;
 }
 
-/**
- * @return the buffer size for temporary buffers
- */
 size_t nmea_context_get_buffer_size(void) {
   return property.parseBufferSize;
 }
 
-/**
- * Trace a formatted string
- *
- * @param s a formatted string
- */
 void nmea_trace(const char *s, ...) {
   nmeaTraceFunc func = property.traceCallback;
   if (func) {
@@ -100,12 +75,6 @@ void nmea_trace(const char *s, ...) {
   }
 }
 
-/**
- * Trace a buffer
- *
- * @param s a pointer to the buffer
- * @param sz the size of the buffer
- */
 void nmea_trace_buff(const char *s, size_t sz) {
   nmeaTraceFunc func = property.traceCallback;
   if (func && s && sz) {
@@ -113,11 +82,6 @@ void nmea_trace_buff(const char *s, size_t sz) {
   }
 }
 
-/**
- * Log a formatted error string
- *
- * @param s a formatted error string
- */
 void nmea_error(const char *s, ...) {
   nmeaErrorFunc func = property.errorCallback;
   if (func) {
