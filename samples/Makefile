@@ -9,7 +9,7 @@ SMPLS = $(SAMPLES:%=../build/samples/%)
 SMPLOBJ = $(SAMPLES:%=%/main.o)
 
 ifdef SAMPLESDYNAMICLINK
-  LIBRARIES = -lnmea -lm
+  LIBRARIES = -L ../lib -lnmea -lm
 else
   LIBRARIES = ../lib/libnmea.a -lm
 endif
