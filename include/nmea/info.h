@@ -61,15 +61,15 @@ extern "C" {
  */
 
 #define NMEA_SIG_FIRST (NMEA_SIG_BAD)
-#define NMEA_SIG_BAD   (0)
-#define NMEA_SIG_LOW   (1)
-#define NMEA_SIG_MID   (2)
-#define NMEA_SIG_HIGH  (3)
-#define NMEA_SIG_RTKIN (4)
-#define NMEA_SIG_FLRTK (5)
-#define NMEA_SIG_ESTIM (6)
-#define NMEA_SIG_MAN   (7)
-#define NMEA_SIG_SIM   (8)
+#define NMEA_SIG_BAD   (0)            /* 0 = Invalid                           */
+#define NMEA_SIG_LOW   (1)            /* 1 = Fix                               */
+#define NMEA_SIG_MID   (2)            /* 2 = Differential                      */
+#define NMEA_SIG_HIGH  (3)            /* 3 = Sensitive                         */
+#define NMEA_SIG_RTKIN (4)            /* 4 = Real Time Kinematic               */
+#define NMEA_SIG_FLRTK (5)            /* 5 = Float RTK,                        */
+#define NMEA_SIG_ESTIM (6)            /* 6 = estimated (dead reckoning) (v2.3) */
+#define NMEA_SIG_MAN   (7)            /* 7 = Manual input mode                 */
+#define NMEA_SIG_SIM   (8)            /* 8 = Simulation mode)                  */
 #define NMEA_SIG_LAST  (NMEA_SIG_SIM)
 
 static INLINE const char * nmea_INFO_sig_to_string(int sig) {
@@ -137,7 +137,7 @@ typedef struct _nmeaTIME {
 	int day;						/**< Day of the month - [1,31] */
 	int hour;						/**< Hours since midnight - [0,23] */
 	int min;						/**< Minutes after the hour - [0,59] */
-	int sec;						/**< Seconds after the minute - [0,59] */
+	int sec;						/**< Seconds after the minute - [0,60] (1 leap second) */
 	int hsec;						/**< Hundredth part of second - [0,99] */
 } nmeaTIME;
 
@@ -187,18 +187,18 @@ typedef struct _nmeaINFO {
 	nmeaTIME utc;					/**< UTC of position */
 
 	int sig;						/**< GPS quality indicator: 0 = Invalid
-	                                                            1 = Fix;
-											                    2 = Differential
-											                    3 = Sensitive
-											                    4 = Real Time Kinematic
-											                    5 = Float RTK,
-											                    6 = estimated (dead reckoning) (v2.3)
-											                    7 = Manual input mode
-											                    8 = Simulation mode) */
+											                            1 = Fix
+											                            2 = Differential
+											                            3 = Sensitive
+											                            4 = Real Time Kinematic
+											                            5 = Float RTK,
+											                            6 = estimated (dead reckoning) (v2.3)
+											                            7 = Manual input mode
+											                            8 = Simulation mode) */
 
 	int fix;						/**< Operating mode, used for navigation: 1 = Fix not available
-	                                                                          2 = 2D
-	                                                                          3 = 3D) */
+	                                                              2 = 2D
+	                                                              3 = 3D) */
 
 	double PDOP;					/**< Position Dilution Of Precision */
 	double HDOP;					/**< Horizontal Dilution Of Precision */
