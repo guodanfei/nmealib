@@ -25,21 +25,94 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/**
+ * Determine the number of GSV sentences needed for the specified number of
+ * satellites
+ *
+ * @param sat_count The number of satellites
+ * @return The number of GSV sentences needed (at least 1)
+ */
 unsigned int nmea_gsv_npack(unsigned int sat_count);
 
+/**
+ * Update an unsanitised nmeaINFO structure from a GGA packet structure
+ *
+ * @param pack The GGA packet structure
+ * @param info The nmeaINFO structure
+ */
 void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGGA structure
+ */
 void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack);
 
+/**
+ * Update an unsanitised nmeaINFO structure from a GSA packet structure
+ *
+ * @param pack The GSA packet structure
+ * @param info The nmeaINFO structure
+ */
 void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGSA structure
+ */
 void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack);
 
+/**
+ * Update an unsanitised nmeaINFO structure from a GSV packet structure
+ *
+ * @param pack The GSV packet structure
+ * @param info The nmeaINFO structure
+ */
 void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGSV structure
+ * @param pack_idx The index of the nmeaGPGSV structure (zero based)
+ */
 void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
 
+/**
+ * Update an unsanitised nmeaINFO structure from a RMC packet structure
+ *
+ * @param pack The RMC packet structure
+ * @param info The nmeaINFO structure
+ */
 void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPRMC structure
+ */
 void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack);
 
+/**
+ * Update an unsanitised nmeaINFO structure from a VTG packet structure
+ *
+ * @param pack The VTG packet structure
+ * @param info The nmeaINFO structure
+ */
 void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPVTG structure
+ */
 void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack);
 
 #ifdef  __cplusplus

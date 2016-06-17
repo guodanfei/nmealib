@@ -23,12 +23,6 @@
 #include <string.h>
 #include <math.h>
 
-/**
- * Determine the number of GSV sentences needed for a number of sats
- *
- * @param sats the number of sats
- * @return the number of GSV sentences needed
- */
 unsigned int nmea_gsv_npack(unsigned int sats) {
   unsigned int pack_count = sats / NMEA_SATINPACK;
 
@@ -43,12 +37,6 @@ unsigned int nmea_gsv_npack(unsigned int sats) {
   return pack_count;
 }
 
-/**
- * Fill nmeaINFO structure from GGA packet structure
- *
- * @param pack a pointer to the packet structure
- * @param info a pointer to the nmeaINFO structure
- */
 void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
   assert(pack);
   assert(info);
@@ -88,12 +76,6 @@ void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
   /* ignore dgps_age and dgps_sid */
 }
 
-/**
- * Convert an nmeaINFO structure into an nmeaGPGGA structure
- *
- * @param info a pointer to the nmeaINFO structure
- * @param pack a pointer to the nmeaGPGGA structure
- */
 void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
   assert(pack);
   assert(info);
@@ -141,12 +123,6 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
   pack->dgps_sid = 0;
 }
 
-/**
- * Fill nmeaINFO structure from GSA packet structure
- *
- * @param pack a pointer to the packet structure
- * @param info a pointer to the nmeaINFO structure
- */
 void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info) {
   int i = 0;
 
@@ -181,12 +157,6 @@ void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info) {
   }
 }
 
-/**
- * Convert an nmeaINFO structure into an nmeaGPGSA structure
- *
- * @param info a pointer to the nmeaINFO structure
- * @param pack a pointer to the nmeaGPGSA structure
- */
 void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack) {
   assert(pack);
   assert(info);
@@ -213,12 +183,6 @@ void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 }
 
-/**
- * Fill nmeaINFO structure from GSV packet structure
- *
- * @param pack a pointer to the packet structure
- * @param info a pointer to the nmeaINFO structure
- */
 void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
   int pack_index;
 
@@ -259,13 +223,6 @@ void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
   }
 }
 
-/**
- * Convert an nmeaINFO structure into an nmeaGPGSV structure
- *
- * @param info a pointer to the nmeaINFO structure
- * @param pack a pointer to the nmeaGPGSV structure
- * @param pack_idx pack index (zero based)
- */
 void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
   assert(pack);
   assert(info);
@@ -284,7 +241,7 @@ void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_id
         NMEA_MAXSAT;
     pack->pack_count = nmea_gsv_npack(pack->sat_count);
 
-    if ((int)pack_idx >= pack->pack_count)
+    if ((int) pack_idx >= pack->pack_count)
       pack->pack_index = pack->pack_count;
     else
       pack->pack_index = pack_idx + 1;
@@ -313,12 +270,6 @@ void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_id
   }
 }
 
-/**
- * Fill nmeaINFO structure from RMC packet structure
- *
- * @param pack a pointer to the packet structure
- * @param info a pointer to the nmeaINFO structure
- */
 void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
   assert(pack);
   assert(info);
@@ -374,12 +325,6 @@ void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
   /* mode is ignored */
 }
 
-/**
- * Convert an nmeaINFO structure into an nmeaGPRMC structure
- *
- * @param info a pointer to the nmeaINFO structure
- * @param pack a pointer to the nmeaGPRMC structure
- */
 void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
   assert(pack);
   assert(info);
@@ -439,12 +384,6 @@ void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 }
 
-/**
- * Fill nmeaINFO structure from VTG packet structure
- *
- * @param pack a pointer to the packet structure
- * @param info a pointer to the nmeaINFO structure
- */
 void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info) {
   assert(pack);
   assert(info);
@@ -463,12 +402,6 @@ void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info) {
   }
 }
 
-/**
- * Convert an nmeaINFO structure into an nmeaGPVTG structure
- *
- * @param info a pointer to the nmeaINFO structure
- * @param pack a pointer to the nmeaGPRMC structure
- */
 void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack) {
   assert(pack);
   assert(info);
