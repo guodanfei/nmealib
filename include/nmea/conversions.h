@@ -29,10 +29,10 @@ extern "C" {
  * Determine the number of GSV sentences needed for the specified number of
  * satellites
  *
- * @param sat_count The number of satellites
+ * @param satellites The number of satellites
  * @return The number of GSV sentences needed (at least 1)
  */
-unsigned int nmea_gsv_npack(unsigned int sat_count);
+unsigned int nmea_gsv_npack(unsigned int satellites);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GGA packet structure

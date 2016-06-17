@@ -23,10 +23,10 @@
 #include <string.h>
 #include <math.h>
 
-unsigned int nmea_gsv_npack(unsigned int sats) {
-  unsigned int pack_count = sats / NMEA_SATINPACK;
+unsigned int nmea_gsv_npack(unsigned int satellites) {
+  unsigned int pack_count = satellites / NMEA_SATINPACK;
 
-  if ((sats % NMEA_SATINPACK) > 0) {
+  if ((satellites % NMEA_SATINPACK) > 0) {
     pack_count++;
   }
 
