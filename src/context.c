@@ -24,9 +24,9 @@
  * The structure with the nmealib context.
  */
 typedef struct _nmeaPROPERTY {
-  nmeaTraceFunc traceCallback; /**< The trace callback, defaults to NULL (disabled)               */
-  nmeaErrorFunc errorCallback; /**< The error logging callback, defaults to NULL (disabled)       */
-  size_t parseBufferSize;      /**< The size to use for temporary trace and error logging buffers */
+  volatile nmeaTraceFunc traceCallback; /**< The trace callback, defaults to NULL (disabled)               */
+  volatile nmeaErrorFunc errorCallback; /**< The error logging callback, defaults to NULL (disabled)       */
+  volatile size_t parseBufferSize;      /**< The size to use for temporary trace and error logging buffers */
 } nmeaPROPERTY;
 
 /** The nmealib context */
@@ -60,11 +60,12 @@ void nmea_trace(const char *s, ...) {
     int size;
     va_list arg_list;
     char *buff;
+    size_t buffSize = property.parseBufferSize;
 
-    buff = malloc(property.parseBufferSize);
+    buff = malloc(buffSize);
 
     va_start(arg_list, s);
-    size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
+    size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0) {
@@ -88,11 +89,12 @@ void nmea_error(const char *s, ...) {
     int size;
     va_list arg_list;
     char *buff;
+    size_t buffSize = property.parseBufferSize;
 
-    buff = malloc(property.parseBufferSize);
+    buff = malloc(buffSize);
 
     va_start(arg_list, s);
-    size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
+    size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0) {
