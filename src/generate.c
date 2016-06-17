@@ -162,51 +162,31 @@ int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
  * @return the length of the generated sentence
  */
 int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
-	char sCount[2];
-	char sIndex[2];
-	char sSatCount[4];
-	char sSatInfo[(NMEA_SATINPACK * 4) + 1];
-	char * psSatInfo = &sSatInfo[0];
-	int ssSatInfo = sizeof(sSatInfo) - 1;
-	bool satinview = nmea_INFO_is_present(pack->present, SATINVIEW);
-	int i;
+  char sentence[256];
+  int sentencesInPack = pack->sat_count - ((pack->pack_index - 1) * NMEA_SATINPACK);
+  char * pSentence = sentence;
+  int sentenceLength = sizeof(sentence);
+  int writeCount;
+  int i;
 
-	sCount[0] = 0;
-	sIndex[0] = 0;
-	sSatCount[0] = 0;
-	sSatInfo[0] = 0;
+  sentence[0] = '\0';
 
-	if (satinview) {
-		snprintf(&sCount[0], sizeof(sCount), "%1d", pack->pack_count);
-		snprintf(&sIndex[0], sizeof(sIndex), "%1d", pack->pack_index);
-		snprintf(&sSatCount[0], sizeof(sSatCount), "%02d", pack->sat_count);
-	}
-	for (i = 0; i < NMEA_SATINPACK; i++) {
-		int cnt = 0;
-		if (satinview && pack->sat_data[i].id) {
-			cnt = snprintf(psSatInfo, ssSatInfo, "%02d,%02d,%03d,%02d", pack->sat_data[i].id, pack->sat_data[i].elv,
-					pack->sat_data[i].azimuth, pack->sat_data[i].sig);
-		} else {
-			cnt = snprintf(psSatInfo, ssSatInfo, ",,,");
-		}
-		if (cnt >= ssSatInfo) {
-			ssSatInfo = 0;
-			psSatInfo = &sSatInfo[sizeof(sSatInfo) - 1];
-			*psSatInfo = '\0';
-			break;
-		} else {
-			ssSatInfo -= cnt;
-			psSatInfo += cnt;
-		}
-		if (i < (NMEA_SATINPACK - 1)) {
-			*psSatInfo = ',';
-			psSatInfo++;
-			ssSatInfo--;
-			*psSatInfo = '\0';
-		}
-	}
+  writeCount = snprintf(pSentence, sentenceLength, "$GPGSV,%d,%d,%d", pack->pack_count, pack->pack_index, pack->sat_count);
+  pSentence += writeCount;
+  sentenceLength -= writeCount;
 
-	return nmea_printf(s, len, "$GPGSV,%s,%s,%s,%s", &sCount[0], &sIndex[0], &sSatCount[0], &sSatInfo[0]);
+  for (i = 0; i < NMEA_SATINPACK; i++) {
+    if (i < sentencesInPack) {
+      writeCount = snprintf(pSentence, sentenceLength, ",%02d,%02d,%03d,%02d", pack->sat_data[i].id, pack->sat_data[i].elv, pack->sat_data[i].azimuth,
+          pack->sat_data[i].sig);
+    } else {
+      writeCount = snprintf(pSentence, sentenceLength, ",,,,");
+    }
+    pSentence += writeCount;
+    sentenceLength -= writeCount;
+  }
+
+  return nmea_printf(s, len, "%s", sentence);
 }
 
 /**
