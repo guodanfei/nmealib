@@ -16,7 +16,7 @@
  */
 
 #include <nmea/context.h>
-
+#include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -62,10 +62,9 @@ void nmea_context_set_error_func(nmeaErrorFunc func) {
  * @param sz the buffer size for temporary buffers
  */
 void nmea_context_set_buffer_size(size_t sz) {
-  if (sz < NMEA_TRACE_ERROR_BUFF_MIN)
-    property.parseBufferSize = NMEA_TRACE_ERROR_BUFF_MIN;
-  else
-    property.parseBufferSize = sz;
+  property.parseBufferSize = (sz < NMEA_TRACE_ERROR_BUFF_MIN) ?
+      NMEA_TRACE_ERROR_BUFF_MIN :
+      sz;
 }
 
 /**
@@ -82,18 +81,22 @@ size_t nmea_context_get_buffer_size(void) {
  */
 void nmea_trace(const char *s, ...) {
   nmeaTraceFunc func = property.traceCallback;
-
   if (func) {
     int size;
     va_list arg_list;
-    char buff[property.parseBufferSize];
+    char *buff;
+
+    buff = malloc(property.parseBufferSize);
 
     va_start(arg_list, s);
     size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
     va_end(arg_list);
 
-    if (size > 0)
+    if (size > 0) {
       (*func)(&buff[0], size);
+    }
+
+    free(buff);
   }
 }
 
@@ -116,17 +119,21 @@ void nmea_trace_buff(const char *s, size_t sz) {
  */
 void nmea_error(const char *s, ...) {
   nmeaErrorFunc func = property.errorCallback;
-
   if (func) {
     int size;
     va_list arg_list;
-    char buff[property.parseBufferSize];
+    char *buff;
+
+    buff = malloc(property.parseBufferSize);
 
     va_start(arg_list, s);
     size = vsnprintf(&buff[0], property.parseBufferSize - 1, s, arg_list);
     va_end(arg_list);
 
-    if (size > 0)
+    if (size > 0) {
       (*func)(&buff[0], size);
+    }
+
+    free(buff);
   }
 }
