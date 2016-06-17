@@ -63,6 +63,7 @@ void nmea_trace(const char *s, ...) {
     size_t buffSize = property.parseBufferSize;
 
     buff = malloc(buffSize);
+    buff[buffSize -1] = '\0';
 
     va_start(arg_list, s);
     size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
@@ -92,6 +93,7 @@ void nmea_error(const char *s, ...) {
     size_t buffSize = property.parseBufferSize;
 
     buff = malloc(buffSize);
+    buff[buffSize -1] = '\0';
 
     va_start(arg_list, s);
     size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
