@@ -29,12 +29,12 @@ static const char * traceStr = "Trace: ";
 static const char * errorStr = "Error: ";
 static const char * eol = "\n";
 
-static void trace(const char *str, int str_size) {
+static void trace(const char *str, size_t str_size) {
 	write(1, traceStr, strlen(traceStr));
 	write(1, str, str_size);
 	write(1, eol, strlen(eol));
 }
-static void error(const char *str, int str_size) {
+static void error(const char *str, size_t str_size) {
 	write(1, errorStr, strlen(errorStr));
 	write(1, str, str_size);
 	write(1, eol, strlen(eol));
