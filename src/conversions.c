@@ -16,12 +16,10 @@
  */
 
 #include <nmea/conversions.h>
-
 #include <nmea/gmath.h>
-
-#include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 unsigned int nmea_gsv_npack(unsigned int satellites) {
   unsigned int pack_count = satellites / NMEA_SATINPACK;
@@ -41,38 +39,47 @@ void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
   assert(pack);
   assert(info);
 
-  info->present |= pack->present;
   nmea_INFO_set_present(&info->present, SMASK);
   info->smask |= GPGGA;
+
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
     info->utc.hour = pack->utc.hour;
     info->utc.min = pack->utc.min;
     info->utc.sec = pack->utc.sec;
     info->utc.hsec = pack->utc.hsec;
+    nmea_INFO_set_present(&info->present, UTCTIME);
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
     info->lat = ((pack->ns == 'N') ?
-        pack->lat :
-        -pack->lat);
+        fabs(pack->lat) :
+        -fabs(pack->lat));
+    nmea_INFO_set_present(&info->present, LAT);
   }
   if (nmea_INFO_is_present(pack->present, LON)) {
     info->lon = ((pack->ew == 'E') ?
-        pack->lon :
-        -pack->lon);
+        fabs(pack->lon) :
+        -fabs(pack->lon));
+    nmea_INFO_set_present(&info->present, LON);
   }
   if (nmea_INFO_is_present(pack->present, SIG)) {
     info->sig = pack->sig;
+    nmea_INFO_set_present(&info->present, SIG);
   }
   if (nmea_INFO_is_present(pack->present, SATINUSECOUNT)) {
     info->satinfo.inuse = pack->satinuse;
+    nmea_INFO_set_present(&info->present, SATINUSECOUNT);
   }
   if (nmea_INFO_is_present(pack->present, HDOP)) {
     info->HDOP = pack->HDOP;
+    nmea_INFO_set_present(&info->present, HDOP);
   }
   if (nmea_INFO_is_present(pack->present, ELV)) {
     info->elv = pack->elv;
+    nmea_INFO_set_present(&info->present, ELV);
   }
+
   /* ignore diff and diff_units */
+
   /* ignore dgps_age and dgps_sid */
 }
 
@@ -82,42 +89,51 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
 
   nmea_zero_GPGGA(pack);
 
-  pack->present = info->present;
   nmea_INFO_unset_present(&pack->present, SMASK);
+
   if (nmea_INFO_is_present(info->present, UTCTIME)) {
     pack->utc.hour = info->utc.hour;
     pack->utc.min = info->utc.min;
     pack->utc.sec = info->utc.sec;
     pack->utc.hsec = info->utc.hsec;
+    nmea_INFO_set_present(&pack->present, UTCTIME);
   }
   if (nmea_INFO_is_present(info->present, LAT)) {
     pack->lat = fabs(info->lat);
-    pack->ns = ((info->lat > 0) ?
+    pack->ns = ((info->lat >= 0.0) ?
         'N' :
         'S');
+    nmea_INFO_set_present(&pack->present, LAT);
   }
   if (nmea_INFO_is_present(info->present, LON)) {
     pack->lon = fabs(info->lon);
-    pack->ew = ((info->lon > 0) ?
+    pack->ew = ((info->lon >= 0.0) ?
         'E' :
         'W');
+    nmea_INFO_set_present(&pack->present, LON);
   }
   if (nmea_INFO_is_present(info->present, SIG)) {
     pack->sig = info->sig;
+    nmea_INFO_set_present(&pack->present, SIG);
   }
   if (nmea_INFO_is_present(info->present, SATINUSECOUNT)) {
     pack->satinuse = info->satinfo.inuse;
+    nmea_INFO_set_present(&pack->present, SATINUSECOUNT);
   }
   if (nmea_INFO_is_present(info->present, HDOP)) {
     pack->HDOP = info->HDOP;
+    nmea_INFO_set_present(&pack->present, HDOP);
   }
   if (nmea_INFO_is_present(info->present, ELV)) {
     pack->elv = info->elv;
     pack->elv_units = 'M';
+    nmea_INFO_set_present(&pack->present, ELV);
   }
+
   /* defaults for (ignored) diff and diff_units */
   pack->diff = 0;
   pack->diff_units = 'M';
+
   /* defaults for (ignored) dgps_age and dgps_sid */
   pack->dgps_age = 0;
   pack->dgps_sid = 0;
