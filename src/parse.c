@@ -244,16 +244,14 @@ const char * isInvalidNMEACharacter(const char * c) {
       '!',
       '\\',
       '^',
-      '~'
-  };
+      '~' };
   static const char * invalidCharsNames[] = {
       "sentence delimiter ($)",
       "checksum field delimiter (*)",
       "exclamation mark (!)",
       "backslash (\\)",
       "power (^)",
-      "tilde (~)"
-  };
+      "tilde (~)" };
 
   size_t charIndex;
 
@@ -309,8 +307,18 @@ const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t 
  * @return The packet type (or GPNON when it could not be determined)
  */
 enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const int len) {
-  static const char *pheads[] = { "GPGGA", "GPGSA", "GPGSV", "GPRMC", "GPVTG" };
-  static const enum nmeaPACKTYPE types[] = { GPGGA, GPGSA, GPGSV, GPRMC, GPVTG };
+  static const char *pheads[] = {
+      "GPGGA",
+      "GPGSA",
+      "GPGSV",
+      "GPRMC",
+      "GPVTG" };
+  static const enum nmeaPACKTYPE types[] = {
+      GPGGA,
+      GPGSA,
+      GPGSV,
+      GPRMC,
+      GPVTG };
   unsigned int i;
 
   assert(s);
@@ -369,10 +377,10 @@ int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA 
   pack->HDOP = NAN;
   pack->elv = NAN;
   pack->elv_units = 0;
-  pack->diff = 0;     /* ignored */
+  pack->diff = 0; /* ignored */
   pack->diff_units = 0; /* ignored */
-  pack->dgps_age = 0;   /* ignored */
-  pack->dgps_sid = 0;   /* ignored */
+  pack->dgps_age = 0; /* ignored */
+  pack->dgps_sid = 0; /* ignored */
 
   /* parse */
   token_count = nmea_scanf(s, len, "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", &time_buff[0], &pack->lat,
@@ -480,9 +488,9 @@ int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA 
 
   /* parse */
   token_count = nmea_scanf(s, len, "$GPGSA,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", &pack->fix_mode,
-      &pack->fix_type, &pack->sat_prn[0], &pack->sat_prn[1], &pack->sat_prn[2], &pack->sat_prn[3],
-      &pack->sat_prn[4], &pack->sat_prn[5], &pack->sat_prn[6], &pack->sat_prn[7], &pack->sat_prn[8],
-      &pack->sat_prn[9], &pack->sat_prn[10], &pack->sat_prn[11], &pack->PDOP, &pack->HDOP, &pack->VDOP);
+      &pack->fix_type, &pack->sat_prn[0], &pack->sat_prn[1], &pack->sat_prn[2], &pack->sat_prn[3], &pack->sat_prn[4],
+      &pack->sat_prn[5], &pack->sat_prn[6], &pack->sat_prn[7], &pack->sat_prn[8], &pack->sat_prn[9], &pack->sat_prn[10],
+      &pack->sat_prn[11], &pack->PDOP, &pack->HDOP, &pack->VDOP);
 
   /* see that we have enough tokens */
   if (token_count != 17) {
@@ -499,7 +507,8 @@ int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA 
   }
   if (pack->fix_type != -1) {
     if (!((pack->fix_type >= NMEA_FIX_FIRST) && (pack->fix_type <= NMEA_FIX_LAST))) {
-      nmea_error("GPGSA parse error: invalid fix type %d, expected [%d, %d]", pack->fix_type, NMEA_FIX_FIRST, NMEA_FIX_LAST);
+      nmea_error("GPGSA parse error: invalid fix type %d, expected [%d, %d]", pack->fix_type, NMEA_FIX_FIRST,
+      NMEA_FIX_LAST);
       return 0;
     }
 
@@ -661,8 +670,8 @@ int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC 
 
   /* parse */
   token_count = nmea_scanf(s, len, "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", &time_buff[0], &pack->status,
-      &pack->lat, &pack->ns, &pack->lon, &pack->ew, &pack->speed, &pack->track, &date,
-      &pack->magvar, &pack->magvar_ew, &pack->mode);
+      &pack->lat, &pack->ns, &pack->lon, &pack->ew, &pack->speed, &pack->track, &date, &pack->magvar, &pack->magvar_ew,
+      &pack->mode);
 
   /* see that we have enough tokens */
   if ((token_count != 11) && (token_count != 12)) {

@@ -31,13 +31,13 @@ struct _nmeaGENERATOR;
  * Generator type enum
  */
 enum nmeaGENTYPE {
-	NMEA_GEN_NOISE = 0,
-	NMEA_GEN_STATIC,
-	NMEA_GEN_ROTATE,
-	NMEA_GEN_SAT_STATIC,
-	NMEA_GEN_SAT_ROTATE,
-	NMEA_GEN_POS_RANDMOVE,
-	NMEA_GEN_LAST
+  NMEA_GEN_NOISE = 0,
+  NMEA_GEN_STATIC,
+  NMEA_GEN_ROTATE,
+  NMEA_GEN_SAT_STATIC,
+  NMEA_GEN_SAT_ROTATE,
+  NMEA_GEN_POS_RANDMOVE,
+  NMEA_GEN_LAST
 };
 
 struct _nmeaGENERATOR * nmea_create_generator(const int type, nmeaINFO *info);
@@ -81,12 +81,12 @@ typedef int (*nmeaNMEA_GEN_RESET)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
  * Generator structure
  */
 typedef struct _nmeaGENERATOR {
-	void *gen_data;                    /**< generator data */
-	nmeaNMEA_GEN_INIT init_call;       /**< initialiser function */
-	nmeaNMEA_GEN_LOOP loop_call;       /**< loop function */
-	nmeaNMEA_GEN_RESET reset_call;     /**< reset function */
-	nmeaNMEA_GEN_DESTROY destroy_call; /**< destroy function */
-	struct _nmeaGENERATOR *next;       /**< the next generator */
+    void *gen_data; /**< generator data */
+    nmeaNMEA_GEN_INIT init_call; /**< initialiser function */
+    nmeaNMEA_GEN_LOOP loop_call; /**< loop function */
+    nmeaNMEA_GEN_RESET reset_call; /**< reset function */
+    nmeaNMEA_GEN_DESTROY destroy_call; /**< destroy function */
+    struct _nmeaGENERATOR *next; /**< the next generator */
 } nmeaGENERATOR;
 
 int nmea_gen_init(nmeaGENERATOR *gen, nmeaINFO *info);

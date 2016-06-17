@@ -55,7 +55,8 @@ int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
   sElvUnit[0] = sElvUnit[1] = 0;
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec, pack->utc.hsec);
+    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec,
+        pack->utc.hsec);
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
     snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
@@ -79,8 +80,8 @@ int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
     sElvUnit[0] = pack->elv_units;
   }
 
-  return nmea_printf(s, len, "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", &sTime[0], &sLat[0], &sNs[0], &sLon[0], &sEw[0], &sSig[0], &sSatInUse[0], &sHdop[0],
-      &sElv[0], &sElvUnit[0]);
+  return nmea_printf(s, len, "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", &sTime[0], &sLat[0], &sNs[0], &sLon[0],
+      &sEw[0], &sSig[0], &sSatInUse[0], &sHdop[0], &sElv[0], &sElvUnit[0]);
 }
 
 /**
@@ -148,7 +149,8 @@ int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
     snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
   }
 
-  return nmea_printf(s, len, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0], &sVdop[0]);
+  return nmea_printf(s, len, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
+      &sVdop[0]);
 }
 
 /**
@@ -169,14 +171,15 @@ int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
 
   sentence[0] = '\0';
 
-  writeCount = snprintf(pSentence, sentenceLength, "$GPGSV,%d,%d,%d", pack->pack_count, pack->pack_index, pack->sat_count);
+  writeCount = snprintf(pSentence, sentenceLength, "$GPGSV,%d,%d,%d", pack->pack_count, pack->pack_index,
+      pack->sat_count);
   pSentence += writeCount;
   sentenceLength -= writeCount;
 
   for (i = 0; i < NMEA_SATINPACK; i++) {
     if (i < sentencesInPack) {
-      writeCount = snprintf(pSentence, sentenceLength, ",%02d,%02d,%03d,%02d", pack->sat_data[i].id, pack->sat_data[i].elv, pack->sat_data[i].azimuth,
-          pack->sat_data[i].sig);
+      writeCount = snprintf(pSentence, sentenceLength, ",%02d,%02d,%03d,%02d", pack->sat_data[i].id,
+          pack->sat_data[i].elv, pack->sat_data[i].azimuth, pack->sat_data[i].sig);
     } else {
       writeCount = snprintf(pSentence, sentenceLength, ",,,,");
     }
@@ -222,7 +225,8 @@ int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack) {
     snprintf(&sDate[0], sizeof(sDate), "%02d%02d%02d", pack->utc.day, pack->utc.mon + 1, pack->utc.year - 100);
   }
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec, pack->utc.hsec);
+    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec,
+        pack->utc.hsec);
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
     snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
@@ -243,8 +247,8 @@ int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack) {
     sMagvar_ew[0] = pack->magvar_ew;
   }
 
-  return nmea_printf(s, len, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->status, &sLat[0], &sNs[0], &sLon[0], &sEw[0], &sSpeed[0],
-      &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->mode);
+  return nmea_printf(s, len, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->status, &sLat[0], &sNs[0],
+      &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->mode);
 }
 
 /**
@@ -289,8 +293,8 @@ int nmea_gen_GPVTG(char *s, const int len, const nmeaGPVTG *pack) {
     sUnitK[0] = 'K';
   }
 
-  return nmea_printf(s, len, "$GPVTG,%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0], &sSpeedN[0], &sUnitN[0], &sSpeedK[0],
-      &sUnitK[0]);
+  return nmea_printf(s, len, "$GPVTG,%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
+      &sSpeedN[0], &sUnitN[0], &sSpeedK[0], &sUnitK[0]);
 }
 
 /**

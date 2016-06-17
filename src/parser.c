@@ -135,7 +135,8 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
           case 1:
             parser->sentence_parser.sentence_checksum_chars[1] = *c;
             parser->sentence_parser.sentence_checksum_chars_count = 2;
-            parser->sentence_parser.sentence_checksum = nmea_atoi(parser->sentence_parser.sentence_checksum_chars, 2, 16);
+            parser->sentence_parser.sentence_checksum = nmea_atoi(parser->sentence_parser.sentence_checksum_chars, 2,
+                16);
             parser->sentence_parser.has_checksum = true;
             parser->sentence_parser.state = READ_EOL;
             break;
@@ -143,10 +144,9 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
           default:
             reset_sentence_parser(parser, SKIP_UNTIL_START);
             break;
-          }
+        }
       }
       break;
-
 
     case READ_EOL:
       switch (parser->sentence_parser.sentence_eol_chars_count) {
@@ -176,9 +176,9 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
       break;
 
       /* can't occur, but keep compiler happy */
-      case SKIP_UNTIL_START:
-      default:
-        break;
+    case SKIP_UNTIL_START:
+    default:
+      break;
 
   }
 
@@ -205,38 +205,44 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
   for (charIndex = 0; charIndex < len; charIndex++) {
     bool sentence_read_successfully = nmea_parse_sentence_character(parser, &s[charIndex]);
     if (sentence_read_successfully) {
-      enum nmeaPACKTYPE sentence_type = nmea_parse_get_sentence_type(&parser->buffer.buffer[1], parser->buffer.length - 1);
+      enum nmeaPACKTYPE sentence_type = nmea_parse_get_sentence_type(&parser->buffer.buffer[1],
+          parser->buffer.length - 1);
       switch (sentence_type) {
         case GPGGA:
-          if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum, &parser->sentence.gpgga)) {
+          if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
+              &parser->sentence.gpgga)) {
             sentences_count++;
             nmea_GPGGA2info(&parser->sentence.gpgga, info);
           }
           break;
 
         case GPGSA:
-          if (nmea_parse_GPGSA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum, &parser->sentence.gpgsa)) {
+          if (nmea_parse_GPGSA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
+              &parser->sentence.gpgsa)) {
             sentences_count++;
             nmea_GPGSA2info(&parser->sentence.gpgsa, info);
           }
           break;
 
         case GPGSV:
-          if (nmea_parse_GPGSV(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum, &parser->sentence.gpgsv)) {
+          if (nmea_parse_GPGSV(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
+              &parser->sentence.gpgsv)) {
             sentences_count++;
             nmea_GPGSV2info(&parser->sentence.gpgsv, info);
           }
           break;
 
         case GPRMC:
-          if (nmea_parse_GPRMC(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum, &parser->sentence.gprmc)) {
+          if (nmea_parse_GPRMC(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
+              &parser->sentence.gprmc)) {
             sentences_count++;
             nmea_GPRMC2info(&parser->sentence.gprmc, info);
           }
           break;
 
         case GPVTG:
-          if (nmea_parse_GPVTG(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum, &parser->sentence.gpvtg)) {
+          if (nmea_parse_GPVTG(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
+              &parser->sentence.gpvtg)) {
             sentences_count++;
             nmea_GPVTG2info(&parser->sentence.gpvtg, info);
           }

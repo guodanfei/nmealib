@@ -27,10 +27,10 @@ extern "C" {
 
 #ifdef NMEA_MAX_SENTENCE_LENGTH
   /* override the default maximum sentence length */
-  #define SENTENCE_SIZE (NMEA_MAX_SENTENCE_LENGTH)
+#define SENTENCE_SIZE (NMEA_MAX_SENTENCE_LENGTH)
 #else
   /* we need to be able to parse much longer sentences than specified in the (original) specification */
-  #define SENTENCE_SIZE (4096 * 1)
+#define SENTENCE_SIZE (4096 * 1)
 #endif
 
 typedef enum _sentence_parser_state {

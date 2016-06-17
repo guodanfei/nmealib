@@ -132,21 +132,21 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
  * @see nmea_time_now
  */
 typedef struct _nmeaTIME {
-	int year;						/**< Years since 1900 */
-	int mon;						/**< Months since January - [0,11] */
-	int day;						/**< Day of the month - [1,31] */
-	int hour;						/**< Hours since midnight - [0,23] */
-	int min;						/**< Minutes after the hour - [0,59] */
-	int sec;						/**< Seconds after the minute - [0,60] (1 leap second) */
-	int hsec;						/**< Hundredth part of second - [0,99] */
+    int year; /**< Years since 1900 */
+    int mon; /**< Months since January - [0,11] */
+    int day; /**< Day of the month - [1,31] */
+    int hour; /**< Hours since midnight - [0,23] */
+    int min; /**< Minutes after the hour - [0,59] */
+    int sec; /**< Seconds after the minute - [0,60] (1 leap second) */
+    int hsec; /**< Hundredth part of second - [0,99] */
 } nmeaTIME;
 
 /**
  * Position data in fractional degrees or radians
  */
 typedef struct _nmeaPOS {
-	double lat;						/**< Latitude */
-	double lon;						/**< Longitude */
+    double lat; /**< Latitude */
+    double lon; /**< Longitude */
 } nmeaPOS;
 
 /**
@@ -155,10 +155,10 @@ typedef struct _nmeaPOS {
  * @see nmeaGPGSV
  */
 typedef struct _nmeaSATELLITE {
-	int id;							/**< Satellite PRN number */
-	int elv;						/**< Elevation in degrees, 90 maximum */
-	int azimuth;					/**< Azimuth, degrees from true north, 000 to 359 */
-	int sig;						/**< Signal, 00-99 dB */
+    int id; /**< Satellite PRN number */
+    int elv; /**< Elevation in degrees, 90 maximum */
+    int azimuth; /**< Azimuth, degrees from true north, 000 to 359 */
+    int sig; /**< Signal, 00-99 dB */
 } nmeaSATELLITE;
 
 /**
@@ -167,10 +167,10 @@ typedef struct _nmeaSATELLITE {
  * @see nmeaGPGSV
  */
 typedef struct _nmeaSATINFO {
-	int inuse;						/**< Number of satellites in use (not those in view) */
-	int in_use[NMEA_MAXSAT];		/**< IDs of satellites in use (not those in view) */
-	int inview;						/**< Total number of satellites in view */
-	nmeaSATELLITE sat[NMEA_MAXSAT]; /**< Satellites information (in view) */
+    int inuse; /**< Number of satellites in use (not those in view) */
+    int in_use[NMEA_MAXSAT]; /**< IDs of satellites in use (not those in view) */
+    int inview; /**< Total number of satellites in view */
+    nmeaSATELLITE sat[NMEA_MAXSAT]; /**< Satellites information (in view) */
 } nmeaSATINFO;
 
 /**
@@ -180,39 +180,39 @@ typedef struct _nmeaSATINFO {
  * @see nmea_GPGGA2info,  nmea_...2info
  */
 typedef struct _nmeaINFO {
-	uint32_t present;				/**< Mask specifying which fields are present */
+    uint32_t present; /**< Mask specifying which fields are present */
 
-	int smask;						/**< Mask specifying from which sentences data has been obtained */
+    int smask; /**< Mask specifying from which sentences data has been obtained */
 
-	nmeaTIME utc;					/**< UTC of position */
+    nmeaTIME utc; /**< UTC of position */
 
-	int sig;						/**< GPS quality indicator: 0 = Invalid
-											                            1 = Fix
-											                            2 = Differential
-											                            3 = Sensitive
-											                            4 = Real Time Kinematic
-											                            5 = Float RTK,
-											                            6 = estimated (dead reckoning) (v2.3)
-											                            7 = Manual input mode
-											                            8 = Simulation mode) */
+    int sig; /**< GPS quality indicator: 0 = Invalid
+     1 = Fix
+     2 = Differential
+     3 = Sensitive
+     4 = Real Time Kinematic
+     5 = Float RTK,
+     6 = estimated (dead reckoning) (v2.3)
+     7 = Manual input mode
+     8 = Simulation mode) */
 
-	int fix;						/**< Operating mode, used for navigation: 1 = Fix not available
-	                                                              2 = 2D
-	                                                              3 = 3D) */
+    int fix; /**< Operating mode, used for navigation: 1 = Fix not available
+     2 = 2D
+     3 = 3D) */
 
-	double PDOP;					/**< Position Dilution Of Precision */
-	double HDOP;					/**< Horizontal Dilution Of Precision */
-	double VDOP;					/**< Vertical Dilution Of Precision */
+    double PDOP; /**< Position Dilution Of Precision */
+    double HDOP; /**< Horizontal Dilution Of Precision */
+    double VDOP; /**< Vertical Dilution Of Precision */
 
-	double lat;						/**< Latitude in NDEG:  +/-[degree][min].[sec/60] */
-	double lon;						/**< Longitude in NDEG: +/-[degree][min].[sec/60] */
-	double elv;						/**< Antenna altitude above/below mean sea level (geoid) in meters */
-	double speed;					/**< Speed over the ground in kph */
-	double track;					/**< Track angle in degrees True */
-	double mtrack;					/**< Magnetic Track angle in degrees True */
-	double magvar;					/**< Magnetic variation degrees */
+    double lat; /**< Latitude in NDEG:  +/-[degree][min].[sec/60] */
+    double lon; /**< Longitude in NDEG: +/-[degree][min].[sec/60] */
+    double elv; /**< Antenna altitude above/below mean sea level (geoid) in meters */
+    double speed; /**< Speed over the ground in kph */
+    double track; /**< Track angle in degrees True */
+    double mtrack; /**< Magnetic Track angle in degrees True */
+    double magvar; /**< Magnetic variation degrees */
 
-	nmeaSATINFO satinfo;			/**< Satellites information */
+    nmeaSATINFO satinfo; /**< Satellites information */
 } nmeaINFO;
 
 /**
@@ -220,24 +220,24 @@ typedef struct _nmeaINFO {
  * The values are used in the 'present' mask.
  */
 typedef enum _nmeaINFO_FIELD {
-  SMASK         = (1u << 0),  /* 0x00001 */
-  UTCDATE       = (1u << 1),  /* 0x00002 */
-  UTCTIME       = (1u << 2),  /* 0x00004 */
-  SIG           = (1u << 3),  /* 0x00008 */
-  FIX           = (1u << 4),  /* 0x00010 */
-  PDOP          = (1u << 5),  /* 0x00020 */
-  HDOP          = (1u << 6),  /* 0x00040 */
-  VDOP          = (1u << 7),  /* 0x00080 */
-  LAT           = (1u << 8),  /* 0x00100 */
-  LON           = (1u << 9),  /* 0x00200 */
-  ELV           = (1u << 10), /* 0x00400 */
-  SPEED         = (1u << 11), /* 0x00800 */
-  TRACK         = (1u << 12), /* 0x01000 */
-  MTRACK        = (1u << 13), /* 0x02000 */
-  MAGVAR        = (1u << 14), /* 0x04000 */
+  SMASK = (1u << 0), /* 0x00001 */
+  UTCDATE = (1u << 1), /* 0x00002 */
+  UTCTIME = (1u << 2), /* 0x00004 */
+  SIG = (1u << 3), /* 0x00008 */
+  FIX = (1u << 4), /* 0x00010 */
+  PDOP = (1u << 5), /* 0x00020 */
+  HDOP = (1u << 6), /* 0x00040 */
+  VDOP = (1u << 7), /* 0x00080 */
+  LAT = (1u << 8), /* 0x00100 */
+  LON = (1u << 9), /* 0x00200 */
+  ELV = (1u << 10), /* 0x00400 */
+  SPEED = (1u << 11), /* 0x00800 */
+  TRACK = (1u << 12), /* 0x01000 */
+  MTRACK = (1u << 13), /* 0x02000 */
+  MAGVAR = (1u << 14), /* 0x04000 */
   SATINUSECOUNT = (1u << 15), /* 0x08000 */
-  SATINUSE      = (1u << 16), /* 0x10000 */
-  SATINVIEW     = (1u << 17), /* 0x20000 */
+  SATINUSE = (1u << 16), /* 0x10000 */
+  SATINVIEW = (1u << 17), /* 0x20000 */
   _nmeaINFO_FIELD_LAST = SATINVIEW
 } nmeaINFO_FIELD;
 
