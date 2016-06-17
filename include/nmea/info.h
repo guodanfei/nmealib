@@ -69,38 +69,38 @@ extern "C" {
 #define MIN(x,y) (((x) <= (y)) ? (x) : (y))
 #endif
 
-#define NMEA_SIG_FIRST (NMEA_SIG_BAD)
-#define NMEA_SIG_BAD   (0)            /* 0 = Invalid                           */
-#define NMEA_SIG_LOW   (1)            /* 1 = Fix                               */
-#define NMEA_SIG_MID   (2)            /* 2 = Differential                      */
-#define NMEA_SIG_HIGH  (3)            /* 3 = Sensitive                         */
-#define NMEA_SIG_RTKIN (4)            /* 4 = Real Time Kinematic               */
-#define NMEA_SIG_FLRTK (5)            /* 5 = Float RTK,                        */
-#define NMEA_SIG_ESTIM (6)            /* 6 = estimated (dead reckoning) (v2.3) */
-#define NMEA_SIG_MAN   (7)            /* 7 = Manual input mode                 */
-#define NMEA_SIG_SIM   (8)            /* 8 = Simulation mode)                  */
-#define NMEA_SIG_LAST  (NMEA_SIG_SIM)
+#define NMEA_SIG_FIRST        (NMEA_SIG_INVALID)
+#define NMEA_SIG_INVALID      (0)
+#define NMEA_SIG_FIX          (1)
+#define NMEA_SIG_DIFFERENTIAL (2)
+#define NMEA_SIG_SENSITIVE    (3)
+#define NMEA_SIG_RTKIN        (4)
+#define NMEA_SIG_FLOAT_RTK    (5)
+#define NMEA_SIG_ESTIMATED    (6)
+#define NMEA_SIG_MANUAL       (7)
+#define NMEA_SIG_SIMULATION   (8)
+#define NMEA_SIG_LAST         (NMEA_SIG_SIMULATION)
 
 static INLINE const char * nmea_INFO_sig_to_string(int sig) {
   switch (sig) {
-    case NMEA_SIG_BAD:
+    case NMEA_SIG_INVALID:
       return "INVALID";
-    case NMEA_SIG_LOW:
+    case NMEA_SIG_FIX:
       return "FIX";
-    case NMEA_SIG_MID:
+    case NMEA_SIG_DIFFERENTIAL:
       return "DIFFERENTIAL";
-    case NMEA_SIG_HIGH:
+    case NMEA_SIG_SENSITIVE:
       return "SENSITIVE";
     case NMEA_SIG_RTKIN:
       return "REAL TIME KINEMATIC";
-    case NMEA_SIG_FLRTK:
+    case NMEA_SIG_FLOAT_RTK:
       return "FLOAT RTK";
-    case NMEA_SIG_ESTIM:
+    case NMEA_SIG_ESTIMATED:
       return "ESTIMATED (DEAD RECKONING)";
-    case NMEA_SIG_MAN:
-      return "MANUAL INPUT MODE";
-    case NMEA_SIG_SIM:
-      return "SIMULATION MODE";
+    case NMEA_SIG_MANUAL:
+      return "MANUAL INPUT";
+    case NMEA_SIG_SIMULATION:
+      return "SIMULATION";
     default:
       return NULL;
   }

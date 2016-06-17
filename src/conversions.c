@@ -291,14 +291,14 @@ void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
   nmea_INFO_set_present(&info->present, SIG);
   nmea_INFO_set_present(&info->present, FIX);
   if (pack->status == 'A') {
-    if (info->sig == NMEA_SIG_BAD) {
-      info->sig = NMEA_SIG_MID;
+    if (info->sig == NMEA_SIG_INVALID) {
+      info->sig = NMEA_SIG_DIFFERENTIAL;
     }
     if (info->fix == NMEA_FIX_BAD) {
       info->fix = NMEA_FIX_2D;
     }
   } else {
-    info->sig = NMEA_SIG_BAD;
+    info->sig = NMEA_SIG_INVALID;
     info->fix = NMEA_FIX_BAD;
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
@@ -345,7 +345,7 @@ void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
     pack->utc.hsec = info->utc.hsec;
   }
   if (nmea_INFO_is_present(info->present, SIG)) {
-    pack->status = ((info->sig != NMEA_SIG_BAD) ?
+    pack->status = ((info->sig != NMEA_SIG_INVALID) ?
         'A' :
         'V');
   } else {
@@ -376,7 +376,7 @@ void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
         'W');
   }
   if (nmea_INFO_is_present(info->present, SIG)) {
-    pack->mode = ((info->sig != NMEA_SIG_BAD) ?
+    pack->mode = ((info->sig != NMEA_SIG_INVALID) ?
         'A' :
         'N');
   } else {

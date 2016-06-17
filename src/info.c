@@ -71,7 +71,7 @@ void nmea_zero_INFO(nmeaINFO *info) {
   memset(info, 0, sizeof(nmeaINFO));
   nmea_time_now(&info->utc, &info->present);
 
-  info->sig = NMEA_SIG_BAD;
+  info->sig = NMEA_SIG_INVALID;
   nmea_INFO_set_present(&info->present, SIG);
 
   info->fix = NMEA_FIX_BAD;
@@ -225,10 +225,10 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   }
 
   if (!nmea_INFO_is_present(nmeaInfo->present, SIG)) {
-    nmeaInfo->sig = NMEA_SIG_BAD;
+    nmeaInfo->sig = NMEA_SIG_INVALID;
   } else {
-    if ((nmeaInfo->sig < NMEA_SIG_BAD) || (nmeaInfo->sig > NMEA_SIG_SIM)) {
-      nmeaInfo->sig = NMEA_SIG_BAD;
+    if ((nmeaInfo->sig < NMEA_SIG_INVALID) || (nmeaInfo->sig > NMEA_SIG_SIMULATION)) {
+      nmeaInfo->sig = NMEA_SIG_INVALID;
     }
   }
 
