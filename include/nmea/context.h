@@ -23,10 +23,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 /** the default size for the temporary buffers */
-#define NMEA_DEF_PARSEBUFF  1024
+#define NMEA_TRACE_ERROR_BUFF_DEF  4096
 
 /** the minimum size for the temporary buffers */
-#define NMEA_MIN_PARSEBUFF  256
+#define NMEA_TRACE_ERROR_BUFF_MIN   256
 
 /**
  * Function type definition for tracing

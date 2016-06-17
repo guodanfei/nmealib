@@ -33,7 +33,7 @@ typedef struct _nmeaPROPERTY {
 static nmeaPROPERTY property = {
     .trace_func = NULL,
     .error_func = NULL,
-    .parse_buff_size = NMEA_DEF_PARSEBUFF };
+    .parse_buff_size = NMEA_TRACE_ERROR_BUFF_DEF };
 
 /**
  * Set the trace function
@@ -61,8 +61,8 @@ void nmea_context_set_error_func(nmeaErrorFunc func) {
  * @param buff_size the buffer size for temporary buffers
  */
 void nmea_context_set_buffer_size(int buff_size) {
-  if (buff_size < NMEA_MIN_PARSEBUFF)
-    property.parse_buff_size = NMEA_MIN_PARSEBUFF;
+  if (buff_size < NMEA_TRACE_ERROR_BUFF_MIN)
+    property.parse_buff_size = NMEA_TRACE_ERROR_BUFF_MIN;
   else
     property.parse_buff_size = buff_size;
 }
