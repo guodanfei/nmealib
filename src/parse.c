@@ -62,7 +62,7 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
 
   if (sz == 10) { // hhmmss.sss
     if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
-      t->hsec = (t->hsec + 9) / 10;
+      t->hsec = (t->hsec + 5) / 10;
       return true;
     }
     return false;
