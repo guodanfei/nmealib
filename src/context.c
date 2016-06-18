@@ -58,13 +58,13 @@ void nmea_context_set_error_func(nmeaErrorFunc func) {
  * If the size is less than NMEA_MIN_PARSEBUFF, then the size that is
  * configured will be NMEA_MIN_PARSEBUFF.
  *
- * @param buff_size the buffer size for temporary buffers
+ * @param sz the buffer size for temporary buffers
  */
-void nmea_context_set_buffer_size(int buff_size) {
-  if (buff_size < NMEA_TRACE_ERROR_BUFF_MIN)
+void nmea_context_set_buffer_size(int sz) {
+  if (sz < NMEA_TRACE_ERROR_BUFF_MIN)
     property.parse_buff_size = NMEA_TRACE_ERROR_BUFF_MIN;
   else
-    property.parse_buff_size = buff_size;
+    property.parse_buff_size = sz;
 }
 
 /**
@@ -77,9 +77,9 @@ int nmea_context_get_buffer_size(void) {
 /**
  * Trace a formatted string
  *
- * @param str a formatted string
+ * @param s a formatted string
  */
-void nmea_trace(const char *str, ...) {
+void nmea_trace(const char *s, ...) {
   nmeaTraceFunc func = property.trace_func;
 
   if (func) {
@@ -87,8 +87,8 @@ void nmea_trace(const char *str, ...) {
     va_list arg_list;
     char buff[property.parse_buff_size];
 
-    va_start(arg_list, str);
-    size = vsnprintf(&buff[0], property.parse_buff_size - 1, str, arg_list);
+    va_start(arg_list, s);
+    size = vsnprintf(&buff[0], property.parse_buff_size - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0)
@@ -99,21 +99,21 @@ void nmea_trace(const char *str, ...) {
 /**
  * Trace a buffer
  *
- * @param buff a pointer to the buffer
- * @param buff_size the size of the buffer
+ * @param s a pointer to the buffer
+ * @param sz the size of the buffer
  */
-void nmea_trace_buff(const char *buff, int buff_size) {
+void nmea_trace_buff(const char *s, int sz) {
   nmeaTraceFunc func = property.trace_func;
-  if (func && buff_size)
-    (*func)(buff, buff_size);
+  if (func && sz)
+    (*func)(s, sz);
 }
 
 /**
  * Log a formatted error string
  *
- * @param str a formatted error string
+ * @param s a formatted error string
  */
-void nmea_error(const char *str, ...) {
+void nmea_error(const char *s, ...) {
   nmeaErrorFunc func = property.error_func;
 
   if (func) {
@@ -121,8 +121,8 @@ void nmea_error(const char *str, ...) {
     va_list arg_list;
     char buff[property.parse_buff_size];
 
-    va_start(arg_list, str);
-    size = vsnprintf(&buff[0], property.parse_buff_size - 1, str, arg_list);
+    va_start(arg_list, s);
+    size = vsnprintf(&buff[0], property.parse_buff_size - 1, s, arg_list);
     va_end(arg_list);
 
     if (size > 0)
