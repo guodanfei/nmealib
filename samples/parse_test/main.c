@@ -17,23 +17,32 @@ static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, siz
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "\n%s\n", inputLine);
   lineCount += 3;
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig, info->fix);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %04d%02d%02d %02d:%02d:%02d.%02d\n", "utc", info->utc.year, info->utc.mon, info->utc.day, info->utc.hour, info->utc.min, info->utc.sec, info->utc.hsec);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig,
+      info->fix);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %04d%02d%02d %02d:%02d:%02d.%02d\n",
+      "utc", info->utc.year, info->utc.mon, info->utc.day, info->utc.hour, info->utc.min, info->utc.sec,
+      info->utc.hsec);
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %08x\n", "smask", info->smask);
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %08x\n", "present", info->present);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "lat/lon", info->lat, info->lon);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "speed/elv", info->speed, info->elv);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "track/mtrack/magvar", info->track, info->mtrack, info->magvar);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "hdop/pdop/vdop", info->HDOP, info->VDOP, info->PDOP);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "lat/lon", info->lat,
+      info->lon);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "speed/elv", info->speed,
+      info->elv);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "track/mtrack/magvar",
+      info->track, info->mtrack, info->magvar);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "hdop/pdop/vdop",
+      info->HDOP, info->VDOP, info->PDOP);
   lineCount += 8;
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s\n", "satinfo");
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %s = %d/%d\n", "inuse/inview", info->satinfo.inuse, info->satinfo.inview);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %s = %d/%d\n", "inuse/inview",
+      info->satinfo.inuse, info->satinfo.inview);
   lineCount += 2;
 
   for (i = 0; i < 64; i++) {
-    index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02d %s = %d/%d/%d/%d/%d\n", i, "in_use/id/sig/elv/azimuth", info->satinfo.in_use[i],
-        info->satinfo.sat[i].id, info->satinfo.sat[i].sig, info->satinfo.sat[i].elv, info->satinfo.sat[i].azimuth);
+    index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02d %s = %d/%d/%d/%d/%d\n", i,
+        "in_use/id/sig/elv/azimuth", info->satinfo.in_use[i], info->satinfo.sat[i].id, info->satinfo.sat[i].sig,
+        info->satinfo.sat[i].elv, info->satinfo.sat[i].azimuth);
     lineCount += 1;
   }
 
@@ -60,6 +69,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   char outputbuffer[65536];
   int expectedLineIndex = 0;
   bool dooutput = false;
+  long inputLineNr = 0;
+  long expectedLineNr = 1;
 
   directoryName = dirname(argv[0]);
   defaultFileName = "/../../samples/parse_test/nmea.txt";
@@ -89,8 +100,13 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   nmea_parser_init(&parser);
   nmea_zero_INFO(&info);
 
+  inputLineNr = 0;
+  expectedLineNr = 1;
+
   while ((inputLineCount = getline(&inputLine, &inputLineLength, inputFile)) != -1) {
     int lineCount;
+
+    inputLineNr++;
 
     memset(&info, 0, sizeof(info));
     nmea_parse(&parser, inputLine, inputLineCount, &info);
@@ -99,11 +115,13 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     if (dooutput) {
       printf("%s", outputbuffer);
     } else {
+      long linesInExpected = 0;
       // read expected
       expectedbuffer[0] = '\0';
       expectedbufferlength = 0;
       for (expectedLineIndex = 0; expectedLineIndex < lineCount; expectedLineIndex++) {
         if ((expectedLineCount = getline(&expectedLine, &expectedLineLength, expectedFile)) != -1) {
+          linesInExpected++;
           strncpy(&expectedbuffer[expectedbufferlength], expectedLine, expectedLineCount);
           expectedbufferlength += expectedLineCount;
         }
@@ -112,12 +130,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
       if (strcmp(outputbuffer, expectedbuffer)) {
         printf("FAILED\n");
-        printf("  ACTUAL:");
+        printf("\n  ACTUAL on line %ld:\n", inputLineNr);
         printf("%s", outputbuffer);
-        printf("  EXPECTED:");
+        printf("\n  EXPECTED on line %ld:\n", expectedLineNr);
         printf("%s", expectedbuffer);
         exit(EXIT_FAILURE);
       }
+
+      expectedLineNr += linesInExpected;
     }
   }
 
