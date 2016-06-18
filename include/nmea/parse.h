@@ -27,6 +27,14 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
+ * The type definition for an invalid NMEA character/description
+ */
+typedef struct {
+    const char character;
+    const char * description;
+} InvalidNMEACharacter;
+
+/**
  * Determine whether the given character is not allowed in an NMEA string
  *
  * @param c The character to check
@@ -34,7 +42,7 @@ extern "C" {
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const char * isInvalidNMEACharacter(const char * c);
+const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c);
 
 /**
  * Determine whether the specified string contains characters that are not
@@ -46,7 +54,7 @@ const char * isInvalidNMEACharacter(const char * c);
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
+const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
 
 /**
  * Determine the sentence type (see nmeaPACKTYPE) from the start of the

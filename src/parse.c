@@ -28,6 +28,37 @@
 /** The size of the buffer to put a time string (that is to be parsed) into */
 #define NMEA_TIMEPARSE_BUF  256
 
+/** Invalid NMEA character: non-ASCII */
+static const InvalidNMEACharacter invalidNonAsciiCharsName = {
+  .character = '*',
+  .description = "non-ascii character"
+};
+
+/** Invalid NMEA characters */
+static const InvalidNMEACharacter invalidCharacters[] = {
+    {
+      .character = '$',
+      .description = "sentence delimiter" },
+    {
+      .character = '*',
+      .description = "checksum field delimiter" },
+    {
+      .character = '!',
+      .description = "exclamation mark" },
+    {
+      .character = '\\',
+      .description = "backslash" },
+    {
+      .character = '^',
+      .description = "power" },
+    {
+      .character = '~',
+      .description = "tilde" },
+    {
+      .character = '\0',
+      .description = NULL }
+};
+
 /**
  * Parse nmeaTIME (time only, no date) from a string.
  *
@@ -248,49 +279,42 @@ static bool validateMode(char * c) {
   return true;
 }
 
-const char * isInvalidNMEACharacter(const char * c) {
-  static const char * invalidNonAsciiCharsName = "non-ascii character";
-  static const char invalidChars[] = {
-      '$',
-      '*',
-      '!',
-      '\\',
-      '^',
-      '~' };
-  static const char * invalidCharsNames[] = {
-      "sentence delimiter ($)",
-      "checksum field delimiter (*)",
-      "exclamation mark (!)",
-      "backslash (\\)",
-      "power (^)",
-      "tilde (~)" };
+const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c) {
+  size_t i = 0;
+  char ch;
 
-  size_t charIndex;
-
-  if (!((*c >= 32) && (*c <= 126))) {
-    return invalidNonAsciiCharsName;
+  if (!c) {
+    return NULL;
   }
 
-  for (charIndex = 0; charIndex < sizeof(invalidChars); charIndex++) {
-    if (*c == invalidChars[charIndex]) {
-      return invalidCharsNames[charIndex];
+  ch = *c;
+
+  if ((ch < 32) || (ch > 126)) {
+    return &invalidNonAsciiCharsName;
+  }
+
+  while (invalidCharacters[i].description) {
+    if (ch == invalidCharacters[i].character) {
+      return &invalidCharacters[i];
     }
+
+    i++;
   }
 
   return NULL;
 }
 
-const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz) {
-  size_t i;
+const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz) {
+  size_t i = 0;
 
   if (!s || !sz) {
     return NULL;
   }
 
   for (i = 0; i < sz; i++) {
-    const char * invalidCharName = isInvalidNMEACharacter(&s[i]);
-    if (invalidCharName) {
-      return invalidCharName;
+    const InvalidNMEACharacter * invalid = isInvalidNMEACharacter(&s[i]);
+    if (invalid) {
+      return invalid;
     }
   }
 
