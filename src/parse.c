@@ -16,29 +16,28 @@
  */
 
 #include <nmea/parse.h>
-
 #include <nmea/gmath.h>
 #include <nmea/tok.h>
 #include <nmea/context.h>
-
 #include <string.h>
 #include <assert.h>
 #include <math.h>
 #include <ctype.h>
 #include <stdio.h>
 
-/** the size of the buffer to put time string (that is to be parsed) into */
+/** The size of the buffer to put a time string (that is to be parsed) into */
 #define NMEA_TIMEPARSE_BUF  256
 
 /**
  * Parse nmeaTIME (time only, no date) from a string.
+ *
  * The format that is used (hhmmss, hhmmss.s, hhmmss.ss or hhmmss.sss) is
  * determined by the length of the string.
  *
- * @param s the string
- * @param sz the length of the string
- * @param t a pointer to the nmeaTIME structure in which to store the parsed time
- * @return true on success, false otherwise
+ * @param s The string
+ * @param sz The length of the string
+ * @param t The structure in which to store the parsed time
+ * @return True on success, false otherwise
  */
 static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
   assert(s);
@@ -75,13 +74,14 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
 
 /**
  * Parse nmeaTIME (date only, no time) from a string.
- * The month is adjusted -1 to comply with the nmeaTIME month range of [0, 11].
- * The year is adjusted +100 for years before 90 to comply with the nmeaTIME
- * year range of [90, 189].
  *
- * @param date the date
- * @param t a pointer to the nmeaTIME structure in which to store the parsed date
- * @return true on success, false otherwise
+ * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
+ * range of [0, 11]. The year is adjusted (incremented by 100) for years
+ * before 90 to comply with the nmeaTIME year range of [90, 189].
+ *
+ * @param date The date (DDMMYY)
+ * @param t The structure in which to store the parsed date
+ * @return True on success, false otherwise
  */
 static bool _nmea_parse_date(const int date, nmeaTIME *t) {
   assert(t);
@@ -104,16 +104,17 @@ static bool _nmea_parse_date(const int date, nmeaTIME *t) {
 
 /**
  * Validate the time fields in an nmeaTIME structure.
+ *
  * Expects:
  * <pre>
- *   0 <= hour <   24
- *   0 <= min  <   60
- *   0 <= sec  <=  60
- *   0 <= hsec <  100
+ *   hour [0, 23]
+ *   min  [0, 59]
+ *   sec  [0, 60] (1 leap second)
+ *   hsec [0, 99]
  * </pre>
  *
- * @param t a pointer to the structure
- * @return true when valid, false otherwise
+ * @param t The structure
+ * @return True when valid, false otherwise
  */
 static bool validateTime(const nmeaTIME * t) {
   if (!t) {
@@ -131,6 +132,7 @@ static bool validateTime(const nmeaTIME * t) {
 
 /**
  * Validate the date fields in an nmeaTIME structure.
+ *
  * Expects:
  * <pre>
  *   year  [90, 189]
@@ -155,16 +157,17 @@ static bool validateDate(const nmeaTIME * t) {
 }
 
 /**
- * Validate north/south or east/west and uppercase it.
+ * Validate north/south or east/west and upper-case it.
+ *
  * Expects:
  * <pre>
  *   c in { n, N, s, S } (for north/south)
  *   c in { e, E, w, W } (for east/west)
  * </pre>
  *
- * @param c a pointer to the character. The character will be converted to uppercase.
- * @param ns true: evaluate north/south, false: evaluate east/west
- * @return true when valid, false otherwise
+ * @param c The character, will also be converted to upper-case.
+ * @param ns Evaluate north/south when true, evaluate east/west otherwise
+ * @return True when valid, false otherwise
  */
 static bool validateNSEW(char * c, const bool ns) {
   if (!c) {
@@ -189,26 +192,25 @@ static bool validateNSEW(char * c, const bool ns) {
 }
 
 /**
- * Uppercase mode and validate it.
+ * Validate and upper-case the mode.
+ *
  * Expects:
  * <pre>
  *   c in { A, D, E, F, M, N, P, R, S }
  *
- *   A = Autonomous. Satellite system used in non-differential mode in position fix
- *   D = Differential. Satellite system used in differential mode in position fix
- *   E = Estimated (dead reckoning) mode
- *   F = Float RTK. Satellite system used in real time kinematic mode with floating integers
- *   M = Manual input mode
- *   N = No fix. Satellite system not used in position fix, or fix not valid
- *   P = Precise. Satellite system used in precision mode. Precision mode is defined
- *       as no deliberate degradation (such as Selective Availability) and higher
- *       resolution code (P-code) is used to compute position fix.
- *   R = Real Time Kinematic. Satellite system used in RTK mode with fixed integers
- *   S = Simulator mode
+ *   A = Autonomous
+ *   D = Differential
+ *   E = Estimated (dead reckoning)
+ *   F = Float RTK (using floating integers)
+ *   M = Manual input
+ *   N = No fix
+ *   P = Precise
+ *   R = Real Time Kinematic (using fixed integers)
+ *   S = Simulation mode
  * </pre>
  *
- * @param c a pointer to the character. The character will be converted to uppercase.
- * @return true when valid, false otherwise
+ * @param c The character, will also be converted to upper-case.
+ * @return True when valid, false otherwise
  */
 static bool validateMode(char * c) {
   if (!c) {
@@ -319,9 +321,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
 
   nmea_trace_buff(s, sz);
 
-  /*
-   * Clear before parsing, to be able to detect absent fields
-   */
+  /* Clear before parsing, to be able to detect absent fields */
   time_buff[0] = '\0';
   pack->present = 0;
   pack->utc.hour = -1;
@@ -347,7 +347,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
       &pack->ns, &pack->lon, &pack->ew, &pack->sig, &pack->satinuse, &pack->HDOP, &pack->elv, &pack->elv_units,
       &pack->diff, &pack->diff_units, &pack->dgps_age, &pack->dgps_sid);
 
-  /* see that we have enough tokens */
+  /* see that there are enough tokens */
   if (token_count != 14) {
     nmea_error("GPGGA parse error: need 14 tokens, got %d in %s", token_count, s);
     return 0;
@@ -405,7 +405,9 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
 
     nmea_INFO_set_present(&pack->present, ELV);
   }
+
   /* ignore diff and diff_units */
+
   /* ignore dgps_age and dgps_sid */
 
   return 1;
@@ -424,9 +426,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
 
   nmea_trace_buff(s, sz);
 
-  /*
-   * Clear before parsing, to be able to detect absent fields
-   */
+  /* Clear before parsing, to be able to detect absent fields */
   pack->present = 0;
   pack->fix_mode = 0;
   pack->fix_type = -1;
@@ -443,7 +443,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
       &pack->sat_prn[5], &pack->sat_prn[6], &pack->sat_prn[7], &pack->sat_prn[8], &pack->sat_prn[9], &pack->sat_prn[10],
       &pack->sat_prn[11], &pack->PDOP, &pack->HDOP, &pack->VDOP);
 
-  /* see that we have enough tokens */
+  /* see that there are enough tokens */
   if (token_count != 17) {
     nmea_error("GPGSA parse error: need 17 tokens, got %d in %s", token_count, s);
     return 0;
@@ -499,9 +499,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
 
   nmea_trace_buff(s, sz);
 
-  /*
-   * Clear before parsing, to be able to detect absent fields
-   */
+  /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(nmeaGPGSV));
 
   /* parse */
@@ -515,7 +513,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
       &pack->sat_data[2].elv, &pack->sat_data[2].azimuth, &pack->sat_data[2].sig, &pack->sat_data[3].id,
       &pack->sat_data[3].elv, &pack->sat_data[3].azimuth, &pack->sat_data[3].sig);
 
-  /* return if we have no sentences or sats */
+  /* return if we have no sentences or satellites */
   if ((pack->pack_count < 1) || (pack->pack_count > NMEA_NSATPACKS) || (pack->pack_index < 1)
       || (pack->pack_index > pack->pack_count) || (pack->sat_count < 0) || (pack->sat_count > NMEA_MAXSAT)) {
     nmea_error("GPGSV parse error: inconsistent pack (count/index/satcount = %d/%d/%d)", pack->pack_count,
@@ -523,7 +521,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
     return 0;
   }
 
-  /* validate all sat settings and count the number of sats in the sentence */
+  /* validate all satellite settings and count the number of satellites in the sentence */
   for (sat_count = 0; sat_count < NMEA_SATINPACK; sat_count++) {
     if (pack->sat_data[sat_count].id != 0) {
       if ((pack->sat_data[sat_count].id < 0)) {
@@ -546,7 +544,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
     }
   }
 
-  /* see that we have enough tokens */
+  /* see that there are enough tokens */
   token_count_expected = (sat_counted * 4) + 3;
   if ((token_count < token_count_expected) || (token_count > (NMEA_SATINPACK * 4 + 3))) {
     nmea_error("GPGSV parse error: need %d tokens, got %d", token_count_expected, token_count);
@@ -577,9 +575,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRM
 
   nmea_trace_buff(s, sz);
 
-  /*
-   * Clear before parsing, to be able to detect absent fields
-   */
+  /* Clear before parsing, to be able to detect absent fields */
   time_buff[0] = '\0';
   date = -1;
   pack->present = 0;
@@ -606,7 +602,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRM
       &pack->lat, &pack->ns, &pack->lon, &pack->ew, &pack->speed, &pack->track, &date, &pack->magvar, &pack->magvar_ew,
       &pack->mode);
 
-  /* see that we have enough tokens */
+  /* see that there are enough tokens */
   if ((token_count != 11) && (token_count != 12)) {
     nmea_error("GPRMC parse error: need 11 or 12 tokens, got %d in %s", token_count, s);
     return 0;
@@ -703,9 +699,7 @@ bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVT
 
   nmea_trace_buff(s, sz);
 
-  /*
-   * Clear before parsing, to be able to detect absent fields
-   */
+  /* Clear before parsing, to be able to detect absent fields */
   pack->present = 0;
   pack->track = NAN;
   pack->track_t = 0;
@@ -720,7 +714,7 @@ bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVT
   token_count = nmea_scanf(s, sz, "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c*", &pack->track, &pack->track_t, &pack->mtrack,
       &pack->mtrack_m, &pack->spn, &pack->spn_n, &pack->spk, &pack->spk_k);
 
-  /* see that we have enough tokens */
+  /* see that there are enough tokens */
   if (token_count != 8) {
     nmea_error("GPVTG parse error: need 8 tokens, got %d in %s", token_count, s);
     return 0;
