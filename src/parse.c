@@ -86,7 +86,9 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
  * @return True on success, false otherwise
  */
 static bool _nmea_parse_date(const int date, nmeaTIME *t) {
-  assert(t);
+  if (!t) {
+    return false;
+  }
 
   if ((date < 0) || (date > 999999)) {
     nmea_error("Parse error: invalid time format in '%d'", date);
@@ -155,8 +157,11 @@ static bool validateDate(const nmeaTIME * t) {
     return false;
   }
 
-  if (!((t->year >= 90) && (t->year <= 189) && (t->mon >= 0) && (t->mon <= 11) && (t->day >= 1) && (t->day <= 31))) {
-    nmea_error("Parse error: invalid date (%d-%d-%d - D-M-Y)", t->day, t->mon, t->year);
+  if (!( //
+      (t->year >= 90) && (t->year <= 189) //
+      && (t->mon >= 0) && (t->mon <= 11) //
+      && (t->day >= 1) && (t->day <= 31))) {
+    nmea_error("Parse error: invalid date '%02d-%02d-%02d' (dd-mm-yyyy)", t->day, t->mon, t->year + 1900);
     return false;
   }
 
