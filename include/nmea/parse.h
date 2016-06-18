@@ -41,12 +41,12 @@ const char * isInvalidNMEACharacter(const char * c);
  * allowed in an NMEA string
  *
  * @param s The string to check
- * @param len The length of the string to check
+ * @param sz The length of the string to check
  *
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t len);
+const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
 
 /**
  * Determine the sentence type (see nmeaPACKTYPE) from the start of the
@@ -55,65 +55,65 @@ const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t 
  *
  * @param s The string. Must be the NMEA string right after the initial '$'
  * character
- * @param len The length of the string
+ * @param sz The length of the string
  * @return The packet type, or GPNON when it could not be determined
  */
-enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t len);
+enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz);
 
 /**
  * Parse a GPGGA sentence from a string
  *
  * @param s The string
- * @param len The length of the string
- * @param has_checksum True when the string contains a checksum
+ * @param sz The length of the string
+ * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGGA(const char *s, const size_t len, bool has_checksum, nmeaGPGGA *pack);
+bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack);
 
 /**
  * Parse a GPGSA sentence from a string
  *
  * @param s The string
- * @param len The length of the string
- * @param has_checksum True when the string contains a checksum
+ * @param sz The length of the string
+ * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGSA(const char *s, const size_t len, bool has_checksum, nmeaGPGSA *pack);
+bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack);
 
 /**
  * Parse a GPGSV sentence from a string
  *
  * @param s The string
- * @param len The length of the string
- * @param has_checksum True when the string contains a checksum
+ * @param sz The length of the string
+ * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGSV(const char *s, const size_t len, bool has_checksum, nmeaGPGSV *pack);
+bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSV *pack);
 
 /**
  * Parse a GPRMC sentence from a string
  *
  * @param s The string
- * @param len The length of the string
- * @param has_checksum True when the string contains a checksum
+ * @param sz The length of the string
+ * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPRMC(const char *s, const size_t len, bool has_checksum, nmeaGPRMC *pack);
+bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRMC *pack);
 
 /**
  * Parse a GPVTG sentence from a string
  *
  * @param s The string
- * @param len The length of the string
- * @param has_checksum True when the string contains a checksum
+ * @param sz The length of the string
+ * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPVTG(const char *s, const size_t len, bool has_checksum, nmeaGPVTG *pack);
+bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

@@ -36,33 +36,33 @@
  * determined by the length of the string.
  *
  * @param s the string
- * @param len the length of the string
+ * @param sz the length of the string
  * @param t a pointer to the nmeaTIME structure in which to store the parsed time
  * @return true on success, false otherwise
  */
-static bool _nmea_parse_time(const char *s, const size_t len, nmeaTIME *t) {
+static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
   assert(s);
   assert(t);
 
-  if (len == (sizeof("hhmmss") - 1)) {
+  if (sz == (sizeof("hhmmss") - 1)) {
     t->hsec = 0;
-    return (3 == nmea_scanf(s, len, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
+    return (3 == nmea_scanf(s, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
   }
 
-  if (len == (sizeof("hhmmss.s") - 1)) {
-    if (4 == nmea_scanf(s, len, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+  if (sz == (sizeof("hhmmss.s") - 1)) {
+    if (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
     }
     return false;
   }
 
-  if (len == (sizeof("hhmmss.ss") - 1)) {
-    return (4 == nmea_scanf(s, len, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
+  if (sz == (sizeof("hhmmss.ss") - 1)) {
+    return (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
-  if (len == (sizeof("hhmmss.sss") - 1)) {
-    if ((4 == nmea_scanf(s, len, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+  if (sz == (sizeof("hhmmss.sss") - 1)) {
+    if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 9) / 10;
       return true;
     }
@@ -258,14 +258,14 @@ const char * isInvalidNMEACharacter(const char * c) {
   return NULL;
 }
 
-const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t len) {
+const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz) {
   size_t i;
 
-  if (!s || !len) {
+  if (!s || !sz) {
     return NULL;
   }
 
-  for (i = 0; i < len; i++) {
+  for (i = 0; i < sz; i++) {
     const char * invalidCharName = isInvalidNMEACharacter(&s[i]);
     if (invalidCharName) {
       return invalidCharName;
@@ -275,7 +275,7 @@ const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t 
   return NULL;
 }
 
-enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t len) {
+enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
   static const char *pheads[] = {
       "GPGGA",
       "GPGSA",
@@ -292,7 +292,7 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t len) 
 
   assert(s);
 
-  if (len < 5) {
+  if (sz < 5) {
     return GPNON;
   }
 
@@ -305,19 +305,19 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t len) 
   return GPNON;
 }
 
-bool nmea_parse_GPGGA(const char *s, const size_t len, bool has_checksum, nmeaGPGGA *pack) {
+bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
   size_t time_buff_len = 0;
 
-  if (!has_checksum) {
+  if (!hasChecksum) {
     return 0;
   }
 
   assert(s);
   assert(pack);
 
-  nmea_trace_buff(s, len);
+  nmea_trace_buff(s, sz);
 
   /*
    * Clear before parsing, to be able to detect absent fields
@@ -343,7 +343,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t len, bool has_checksum, nmeaGP
   pack->dgps_sid = 0; /* ignored */
 
   /* parse */
-  token_count = nmea_scanf(s, len, "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", &time_buff[0], &pack->lat,
+  token_count = nmea_scanf(s, sz, "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", &time_buff[0], &pack->lat,
       &pack->ns, &pack->lon, &pack->ew, &pack->sig, &pack->satinuse, &pack->HDOP, &pack->elv, &pack->elv_units,
       &pack->diff, &pack->diff_units, &pack->dgps_age, &pack->dgps_sid);
 
@@ -411,18 +411,18 @@ bool nmea_parse_GPGGA(const char *s, const size_t len, bool has_checksum, nmeaGP
   return 1;
 }
 
-bool nmea_parse_GPGSA(const char *s, const size_t len, bool has_checksum, nmeaGPGSA *pack) {
+bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack) {
   int token_count;
   int i;
 
-  if (!has_checksum) {
+  if (!hasChecksum) {
     return 0;
   }
 
   assert(s);
   assert(pack);
 
-  nmea_trace_buff(s, len);
+  nmea_trace_buff(s, sz);
 
   /*
    * Clear before parsing, to be able to detect absent fields
@@ -438,7 +438,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t len, bool has_checksum, nmeaGP
   pack->VDOP = NAN;
 
   /* parse */
-  token_count = nmea_scanf(s, len, "$GPGSA,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", &pack->fix_mode,
+  token_count = nmea_scanf(s, sz, "$GPGSA,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", &pack->fix_mode,
       &pack->fix_type, &pack->sat_prn[0], &pack->sat_prn[1], &pack->sat_prn[2], &pack->sat_prn[3], &pack->sat_prn[4],
       &pack->sat_prn[5], &pack->sat_prn[6], &pack->sat_prn[7], &pack->sat_prn[8], &pack->sat_prn[9], &pack->sat_prn[10],
       &pack->sat_prn[11], &pack->PDOP, &pack->HDOP, &pack->VDOP);
@@ -484,20 +484,20 @@ bool nmea_parse_GPGSA(const char *s, const size_t len, bool has_checksum, nmeaGP
   return 1;
 }
 
-bool nmea_parse_GPGSV(const char *s, const size_t len, bool has_checksum, nmeaGPGSV *pack) {
+bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSV *pack) {
   int token_count;
   int token_count_expected;
   int sat_count;
   int sat_counted = 0;
 
-  if (!has_checksum) {
+  if (!hasChecksum) {
     return 0;
   }
 
   assert(s);
   assert(pack);
 
-  nmea_trace_buff(s, len);
+  nmea_trace_buff(s, sz);
 
   /*
    * Clear before parsing, to be able to detect absent fields
@@ -505,7 +505,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t len, bool has_checksum, nmeaGP
   memset(pack, 0, sizeof(nmeaGPGSV));
 
   /* parse */
-  token_count = nmea_scanf(s, len, "$GPGSV,%d,%d,%d,"
+  token_count = nmea_scanf(s, sz, "$GPGSV,%d,%d,%d,"
       "%d,%d,%d,%d,"
       "%d,%d,%d,%d,"
       "%d,%d,%d,%d,"
@@ -562,20 +562,20 @@ bool nmea_parse_GPGSV(const char *s, const size_t len, bool has_checksum, nmeaGP
   return 1;
 }
 
-bool nmea_parse_GPRMC(const char *s, const size_t len, bool has_checksum, nmeaGPRMC *pack) {
+bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRMC *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
   int date;
   size_t time_buff_len = 0;
 
-  if (!has_checksum) {
+  if (!hasChecksum) {
     return 0;
   }
 
   assert(s);
   assert(pack);
 
-  nmea_trace_buff(s, len);
+  nmea_trace_buff(s, sz);
 
   /*
    * Clear before parsing, to be able to detect absent fields
@@ -602,7 +602,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t len, bool has_checksum, nmeaGP
   pack->mode = 0;
 
   /* parse */
-  token_count = nmea_scanf(s, len, "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", &time_buff[0], &pack->status,
+  token_count = nmea_scanf(s, sz, "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", &time_buff[0], &pack->status,
       &pack->lat, &pack->ns, &pack->lon, &pack->ew, &pack->speed, &pack->track, &date, &pack->magvar, &pack->magvar_ew,
       &pack->mode);
 
@@ -691,17 +691,17 @@ bool nmea_parse_GPRMC(const char *s, const size_t len, bool has_checksum, nmeaGP
   return 1;
 }
 
-bool nmea_parse_GPVTG(const char *s, const size_t len, bool has_checksum, nmeaGPVTG *pack) {
+bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVTG *pack) {
   int token_count;
 
-  if (!has_checksum) {
+  if (!hasChecksum) {
     return 0;
   }
 
   assert(s);
   assert(pack);
 
-  nmea_trace_buff(s, len);
+  nmea_trace_buff(s, sz);
 
   /*
    * Clear before parsing, to be able to detect absent fields
@@ -717,7 +717,7 @@ bool nmea_parse_GPVTG(const char *s, const size_t len, bool has_checksum, nmeaGP
   pack->spk_k = 0;
 
   /* parse */
-  token_count = nmea_scanf(s, len, "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c*", &pack->track, &pack->track_t, &pack->mtrack,
+  token_count = nmea_scanf(s, sz, "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c*", &pack->track, &pack->track_t, &pack->mtrack,
       &pack->mtrack_m, &pack->spn, &pack->spn_n, &pack->spk, &pack->spk_k);
 
   /* see that we have enough tokens */
