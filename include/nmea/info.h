@@ -129,6 +129,8 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
   }
 }
 
+#define NMEA_PREFIX_LENGTH 5
+
 #define NMEA_MAXSAT    (72)
 #define NMEA_SATINPACK (4)
 #define NMEA_NSATPACKS (NMEA_MAXSAT / NMEA_SATINPACK)

@@ -60,6 +60,44 @@ static const InvalidNMEACharacter invalidCharacters[] = {
 };
 
 /**
+ * The type definition for a map from NMEA sentence prefix to sentence type
+ */
+typedef struct {
+  const char * prefix;
+  const enum nmeaPACKTYPE sentenceType;
+} SentencePrefixToType;
+
+/**
+ * The map from NMEA sentence prefix to sentence type
+ */
+static const SentencePrefixToType sentencePrefixToType[] = {
+    {
+      .prefix = "GPGGA",
+      .sentenceType = GPGGA
+    },
+    {
+      .prefix = "GPGSA",
+      .sentenceType = GPGSA
+    },
+    {
+      .prefix = "GPGSV",
+      .sentenceType = GPGSV
+    },
+    {
+      .prefix = "GPRMC",
+      .sentenceType = GPRMC
+    },
+    {
+      .prefix = "GPVTG",
+      .sentenceType = GPVTG
+    },
+    {
+      .prefix = NULL,
+      .sentenceType = GPNON
+    }
+};
+
+/**
  * Parse nmeaTIME (time only, no date) from a string.
  *
  * The format that is used (hhmmss, hhmmss.s, hhmmss.ss or hhmmss.sss) is
@@ -322,30 +360,18 @@ const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * 
 }
 
 enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
-  static const char *pheads[] = {
-      "GPGGA",
-      "GPGSA",
-      "GPGSV",
-      "GPRMC",
-      "GPVTG" };
-  static const enum nmeaPACKTYPE types[] = {
-      GPGGA,
-      GPGSA,
-      GPGSV,
-      GPRMC,
-      GPVTG };
-  unsigned int i;
+  size_t i = 0;
 
-  assert(s);
-
-  if (sz < 5) {
+  if (!s || (sz < NMEA_PREFIX_LENGTH)) {
     return GPNON;
   }
 
-  for (i = 0; i < (sizeof(types) / sizeof(types[0])); i++) {
-    if (!memcmp(s, pheads[i], 5)) {
-      return types[i];
+  while (sentencePrefixToType[i].prefix) {
+    if (!strncmp(s, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
+      return sentencePrefixToType[i].sentenceType;
     }
+
+    i++;
   }
 
   return GPNON;
