@@ -190,12 +190,12 @@ static bool validateNSEW(char * c, const bool ns) {
 
   if (ns) {
     if (!((*c == 'N') || (*c == 'S'))) {
-      nmea_error("Parse error: invalid north/south (%c)", *c);
+      nmea_error("Parse error: invalid North/South '%c'", *c);
       return false;
     }
   } else {
     if (!((*c == 'E') || (*c == 'W'))) {
-      nmea_error("Parse error: invalid east/west (%c)", *c);
+      nmea_error("Parse error: invalid East/West '%c'", *c);
       return false;
     }
   }
