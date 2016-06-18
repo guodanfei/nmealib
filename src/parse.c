@@ -231,9 +231,17 @@ static bool validateMode(char * c) {
 
   *c = toupper(*c);
 
-  if (!((*c == 'A') || (*c == 'D') || (*c == 'E') || (*c == 'F') || (*c == 'M') || (*c == 'N') || (*c == 'P')
-      || (*c == 'R') || (*c == 'S'))) {
-    nmea_error("Parse error: invalid mode (%c)", *c);
+  if (!( //
+      (*c == 'A') //
+      || (*c == 'D') //
+      || (*c == 'E') //
+      || (*c == 'F') //
+      || (*c == 'M') //
+      || (*c == 'N') //
+      || (*c == 'P') //
+      || (*c == 'R') //
+      || (*c == 'S'))) {
+    nmea_error("Parse error: invalid mode '%c'", *c);
     return false;
   }
 
