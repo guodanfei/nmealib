@@ -19,7 +19,6 @@
 #define __NMEA_PARSE_H__
 
 #include <nmea/sentence.h>
-
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -70,7 +69,7 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const int len);
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA *pack);
+bool nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA *pack);
 
 /**
  * Parse a GPGSA sentence from a string
@@ -81,7 +80,7 @@ int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA 
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA *pack);
+bool nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA *pack);
 
 /**
  * Parse a GPGSV sentence from a string
@@ -92,7 +91,7 @@ int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA 
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV *pack);
+bool nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV *pack);
 
 /**
  * Parse a GPRMC sentence from a string
@@ -103,7 +102,7 @@ int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV 
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC *pack);
+bool nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC *pack);
 
 /**
  * Parse a GPVTG sentence from a string
@@ -114,7 +113,7 @@ int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC 
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-int nmea_parse_GPVTG(const char *s, const int len, bool has_checksum, nmeaGPVTG *pack);
+bool nmea_parse_GPVTG(const char *s, const int len, bool has_checksum, nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

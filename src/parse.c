@@ -305,7 +305,7 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const int len) {
   return GPNON;
 }
 
-int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA *pack) {
+bool nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
   size_t time_buff_len = 0;
@@ -411,7 +411,7 @@ int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA 
   return 1;
 }
 
-int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA *pack) {
+bool nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA *pack) {
   int token_count;
   int i;
 
@@ -484,7 +484,7 @@ int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA 
   return 1;
 }
 
-int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV *pack) {
+bool nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV *pack) {
   int token_count;
   int token_count_expected;
   int sat_count;
@@ -562,7 +562,7 @@ int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV 
   return 1;
 }
 
-int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC *pack) {
+bool nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
   int date;
@@ -691,7 +691,7 @@ int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC 
   return 1;
 }
 
-int nmea_parse_GPVTG(const char *s, const int len, bool has_checksum, nmeaGPVTG *pack) {
+bool nmea_parse_GPVTG(const char *s, const int len, bool has_checksum, nmeaGPVTG *pack) {
   int token_count;
 
   if (!has_checksum) {
