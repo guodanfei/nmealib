@@ -88,14 +88,16 @@ static bool _nmea_parse_date(const int date, nmeaTIME *t) {
   assert(t);
 
   if ((date < 0) || (date > 999999)) {
-    nmea_error("Parse error: invalid time format in %d", date);
+    nmea_error("Parse error: invalid time format in '%d'", date);
     return false;
   }
 
-  t->day = date / 10000;
+  t->day = (date / 10000) % 100;
   t->mon = (date / 100) % 100;
-  t->mon--;
   t->year = date % 100;
+
+  t->mon--;
+
   if (t->year < 90) {
     t->year += 100;
   }
