@@ -226,16 +226,6 @@ static bool validateMode(char * c) {
   return true;
 }
 
-/**
- * Determine whether the given character is not allowed in an NMEA string.
- *
- * @param c
- * The character to check
- *
- * @return
- * - a pointer to the invalid character name/description when the string has invalid characters
- * - NULL otherwise
- */
 const char * isInvalidNMEACharacter(const char * c) {
   static const char * invalidNonAsciiCharsName = "non-ascii character";
   static const char invalidChars[] = {
@@ -268,19 +258,6 @@ const char * isInvalidNMEACharacter(const char * c) {
   return NULL;
 }
 
-/**
- * Determine whether the given string contains characters that are not allowed
- * in an NMEA string.
- *
- * @param s
- * The string to check
- * @param len
- * The length of the string to check
- *
- * @return
- * - a pointer to the invalid character name/description when the string has invalid characters
- * - NULL otherwise
- */
 const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t len) {
   size_t i;
 
@@ -298,14 +275,6 @@ const char * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t 
   return NULL;
 }
 
-/**
- * Determine sentence type (see nmeaPACKTYPE) by the header of a string.
- * The header is the start of an NMEA sentence, right after the $.
- *
- * @param s the string. must be the NMEA string, right after the initial $
- * @param len the length of the string
- * @return The packet type (or GPNON when it could not be determined)
- */
 enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const int len) {
   static const char *pheads[] = {
       "GPGGA",
@@ -336,15 +305,6 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const int len) {
   return GPNON;
 }
 
-/**
- * Parse a GPGGA sentence from a string
- *
- * @param s the string
- * @param len the length of the string
- * @param has_checksum true when the string contains a checksum
- * @param pack a pointer to the result structure
- * @return 1 (true) - if parsed successfully or 0 (false) otherwise.
- */
 int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
@@ -451,15 +411,6 @@ int nmea_parse_GPGGA(const char *s, const int len, bool has_checksum, nmeaGPGGA 
   return 1;
 }
 
-/**
- * Parse a GPGSA sentence from a string
- *
- * @param s the string
- * @param len the length of the string
- * @param has_checksum true when the string contains a checksum
- * @param pack a pointer to the result structure
- * @return 1 (true) - if parsed successfully or 0 (false) otherwise.
- */
 int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA *pack) {
   int token_count;
   int i;
@@ -533,15 +484,6 @@ int nmea_parse_GPGSA(const char *s, const int len, bool has_checksum, nmeaGPGSA 
   return 1;
 }
 
-/**
- * Parse a GPGSV sentence from a string
- *
- * @param s the string
- * @param len the length of the string
- * @param has_checksum true when the string contains a checksum
- * @param pack a pointer to the result structure
- * @return 1 (true) - if parsed successfully or 0 (false) otherwise.
- */
 int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV *pack) {
   int token_count;
   int token_count_expected;
@@ -620,15 +562,6 @@ int nmea_parse_GPGSV(const char *s, const int len, bool has_checksum, nmeaGPGSV 
   return 1;
 }
 
-/**
- * Parse a GPRMC sentence from a string
- *
- * @param s the string
- * @param len the length of the string
- * @param has_checksum true when the string contains a checksum
- * @param pack a pointer to the result structure
- * @return 1 (true) - if parsed successfully or 0 (false) otherwise.
- */
 int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC *pack) {
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
@@ -758,15 +691,6 @@ int nmea_parse_GPRMC(const char *s, const int len, bool has_checksum, nmeaGPRMC 
   return 1;
 }
 
-/**
- * Parse a GPVTG sentence from a string
- *
- * @param s the string
- * @param len the length of the string
- * @param has_checksum true when the string contains a checksum
- * @param pack a pointer to the result structure
- * @return 1 (true) - if parsed successfully or 0 (false) otherwise.
- */
 int nmea_parse_GPVTG(const char *s, const int len, bool has_checksum, nmeaGPVTG *pack) {
   int token_count;
 
