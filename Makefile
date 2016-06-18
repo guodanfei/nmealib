@@ -56,7 +56,10 @@ samples: all
 # Phony Targets
 #
 
-.PHONY: all default_target all-before clean doc install install-headers uninstall uninstall-headers
+.PHONY: all test default_target all-before clean doc install install-headers uninstall uninstall-headers
+
+test : all samples
+	$(MAKECMDPREFIX)LD_PRELOAD=./lib/libnmea.so ./build/samples/parse_test
 
 all-before:
 	$(MAKECMDPREFIX)mkdir -p build lib

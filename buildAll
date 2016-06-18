@@ -1,14 +1,25 @@
 #!/bin/bash
 
+set -e
+set -u
 
 declare -i VERBOSE=0
 
 for m in M64 M32; do
   for i in 0 1; do
-    echo "=== clean"
-    git clean -fdx
-    make ${m}=1 DEBUG=${i} VERBOSE=${VERBOSE} all samples
+    echo "=== CLEAN"
+    git clean -fdx   &> /dev/null
+    git reset --hard &> /dev/null
+    echo "=== MAKE $m DEBUG=$i"
+    make ${m}=1 DEBUG=${i} VERBOSE=${VERBOSE} all samples test
   done
 done
 
+echo "=== DOC"
 make doc VERBOSE=${VERBOSE}
+
+echo "=== CLEAN"
+git clean -fdx   &> /dev/null
+git reset --hard &> /dev/null
+
+echo "=== DONE"
