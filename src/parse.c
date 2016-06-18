@@ -40,8 +40,9 @@
  * @return True on success, false otherwise
  */
 static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
-  assert(s);
-  assert(t);
+  if (!s || !t) {
+    return false;
+  }
 
   if (sz == 6) { // hhmmss
     t->hsec = 0;
@@ -124,9 +125,12 @@ static bool validateTime(const nmeaTIME * t) {
     return false;
   }
 
-  if (!((t->hour >= 0) && (t->hour < 24) && (t->min >= 0) && (t->min < 60) && (t->sec >= 0) && (t->sec <= 60)
-      && (t->hsec >= 0) && (t->hsec < 100))) {
-    nmea_error("Parse error: invalid time (%d:%d:%d.%d)", t->hour, t->min, t->sec, t->hsec);
+  if (!( //
+      (t->hour >= 0) && (t->hour <= 23) //
+      && (t->min >= 0) && (t->min <= 59) //
+      && (t->sec >= 0) && (t->sec <= 60) //
+      && (t->hsec >= 0) && (t->hsec <= 99))) {
+    nmea_error("Parse error: invalid time '%02d:%02d:%02d.%03d' (hh:mm:ss.mmm)", t->hour, t->min, t->sec, t->hsec * 10);
     return false;
   }
 
