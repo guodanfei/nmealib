@@ -61,6 +61,14 @@ extern "C" {
 #define INLINE inline __attribute__((always_inline))
 #endif
 
+#ifndef MAX
+#define MAX(x,y) (((x) >= (y)) ? (x) : (y))
+#endif
+
+#ifndef MIN
+#define MIN(x,y) (((x) <= (y)) ? (x) : (y))
+#endif
+
 #define NMEA_SIG_FIRST (NMEA_SIG_BAD)
 #define NMEA_SIG_BAD   (0)            /* 0 = Invalid                           */
 #define NMEA_SIG_LOW   (1)            /* 1 = Fix                               */
