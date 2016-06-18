@@ -43,12 +43,12 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
   assert(s);
   assert(t);
 
-  if (sz == (sizeof("hhmmss") - 1)) {
+  if (sz == 6) { // hhmmss
     t->hsec = 0;
     return (3 == nmea_scanf(s, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
   }
 
-  if (sz == (sizeof("hhmmss.s") - 1)) {
+  if (sz == 8) { // hhmmss.s
     if (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
@@ -56,11 +56,11 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
     return false;
   }
 
-  if (sz == (sizeof("hhmmss.ss") - 1)) {
+  if (sz == 9) { // hhmmss.ss
     return (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
-  if (sz == (sizeof("hhmmss.sss") - 1)) {
+  if (sz == 10) { // hhmmss.sss
     if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 9) / 10;
       return true;
@@ -68,7 +68,8 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
     return false;
   }
 
-  nmea_error("Parse error: invalid time format in %s", s);
+  nmea_error("Parse error: invalid time format in '%s'", s);
+
   return false;
 }
 
