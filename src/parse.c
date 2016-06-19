@@ -399,11 +399,9 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
   return GPNON;
 }
 
-bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack) {
-  int expectedFields = INT_MAX;
+bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fields = 0;
   char buf[16];
-  unsigned int checksum = INT_MAX;
 
   if (!pack) {
     return false;
@@ -423,57 +421,33 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   pack->dgps_sid = INT_MAX;
 
   if (!s) {
-    return false;
+    goto err;
   }
 
   nmea_trace_buff(s, sz);
 
   /* parse */
-  if (hasChecksum) {
-    expectedFields = 15;
-    fields = sscanf(s, //
-        "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d*%02x\r\n", //
-        buf, //
-        &pack->lat, //
-        &pack->ns, //
-        &pack->lon, //
-        &pack->ew, //
-        &pack->sig, //
-        &pack->satinuse, //
-        &pack->HDOP, //
-        &pack->elv, //
-        &pack->elv_units, //
-        &pack->diff, //
-        &pack->diff_units, //
-        &pack->dgps_age, //
-        &pack->dgps_sid, //
-        &checksum);
-  } else {
-    expectedFields = 14;
-    fields = sscanf(s, //
-        "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d\r\n", //
-        buf, //
-        &pack->lat, //
-        &pack->ns, //
-        &pack->lon, //
-        &pack->ew, //
-        &pack->sig, //
-        &pack->satinuse, //
-        &pack->HDOP, //
-        &pack->elv, //
-        &pack->elv_units, //
-        &pack->diff, //
-        &pack->diff_units, //
-        &pack->dgps_age, //
-        &pack->dgps_sid);
-  }
+  fields = sscanf(s, //
+      "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d", //
+      buf, //
+      &pack->lat, //
+      &pack->ns, //
+      &pack->lon, //
+      &pack->ew, //
+      &pack->sig, //
+      &pack->satinuse, //
+      &pack->HDOP, //
+      &pack->elv, //
+      &pack->elv_units, //
+      &pack->diff, //
+      &pack->diff_units, //
+      &pack->dgps_age, //
+      &pack->dgps_sid);
 
   /* see that there are enough tokens */
-  if (fields != expectedFields) {
-    nmea_error("GPGGA parse error: need %d tokens, got %d (%s)", expectedFields, fields, s);
-    memset(pack, 0, sizeof(*pack));
-    pack->sig = NMEA_SIG_INVALID;
-    return false;
+  if (fields != 14) {
+    nmea_error("GPGGA parse error: need %d tokens, got %d (%s)", 14, fields, s);
+    goto err;
   }
 
   /* determine which fields are present and validate them */
@@ -481,8 +455,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   buf[sizeof(buf) - 1] = '\0';
   if (*buf) {
     if (!_nmea_parse_time(buf, &pack->time) || !validateTime(&pack->time)) {
-      memset(&pack->time, 0, sizeof(pack->time));
-      return false;
+      goto err;
     }
 
     nmea_INFO_set_present(&pack->present, UTCTIME);
@@ -492,9 +465,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
 
   if (!isnan(pack->lat) && (pack->ns)) {
     if (!validateNSEW(&pack->ns, true)) {
-      pack->lat = 0.0;
-      pack->ns = '\0';
-      return false;
+      goto err;
     }
 
     pack->lat = fabs(pack->lat);
@@ -506,9 +477,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
 
   if (!isnan(pack->lon) && (pack->ew)) {
     if (!validateNSEW(&pack->ew, false)) {
-      pack->lon = 0.0;
-      pack->ew = '\0';
-      return false;
+      goto err;
     }
 
     pack->lon = fabs(pack->lon);
@@ -520,8 +489,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
 
   if (pack->sig != INT_MAX) {
     if (!validateSignal(&pack->sig)) {
-      pack->sig = NMEA_SIG_INVALID;
-      return false;
+      goto err;
     }
 
     nmea_INFO_set_present(&pack->present, SIG);
@@ -546,9 +514,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   if (!isnan(pack->elv) && (pack->elv_units)) {
     if (pack->elv_units != 'M') {
       nmea_error("GPGGA parse error: invalid elevation unit '%c'", pack->elv_units);
-      pack->elv = 0.0;
-      pack->elv_units = '\0';
-      return false;
+      goto err;
     }
 
     nmea_INFO_set_present(&pack->present, ELV);
@@ -560,9 +526,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   if (!isnan(pack->diff) && (pack->diff_units)) {
     if (pack->diff_units != 'M') {
       nmea_error("GPGGA parse error: invalid height unit '%c'", pack->diff_units);
-      pack->diff = 0.0;
-      pack->diff_units = '\0';
-      return false;
+      goto err;
     }
 
     /* not supported yet */
@@ -585,6 +549,10 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   }
 
   return true;
+
+err:
+  nmea_zero_GPGGA(pack);
+  return false;
 }
 
 bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack) {

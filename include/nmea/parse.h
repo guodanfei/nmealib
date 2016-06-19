@@ -73,11 +73,10 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz);
  *
  * @param s The string
  * @param sz The length of the string
- * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack);
+bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack);
 
 /**
  * Parse a GPGSA sentence from a string

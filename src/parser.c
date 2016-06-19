@@ -209,8 +209,7 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
           parser->buffer.length - 1);
       switch (sentence_type) {
         case GPGGA:
-          if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
-              &parser->sentence.gpgga)) {
+          if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gpgga)) {
             sentences_count++;
             nmea_GPGGA2info(&parser->sentence.gpgga, info);
           }
