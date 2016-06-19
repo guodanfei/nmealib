@@ -421,7 +421,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   pack->HDOP = NAN;
   pack->elv = NAN;
   pack->diff = NAN;
-  pack->dgps_age = LONG_MAX;
+  pack->dgps_age = NAN;
   pack->dgps_sid = INT_MAX;
 
   if (!s) {
@@ -431,9 +431,9 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   nmea_trace_buff(s, sz);
 
   if (hasChecksum) {
-    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%l,%d*";
+    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*";
   } else {
-    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%l,%d";
+    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d";
   }
 
   buf = malloc(NMEA_TIMEPARSE_BUF);
@@ -559,13 +559,15 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
     pack->diff_units = '\0';
   }
 
-  if (pack->dgps_age != LONG_MAX) {
+  if (!isnan(pack->dgps_age)) {
+    pack->dgps_age = fabs(pack->dgps_age);
     /* not supported yet */
   } else {
-    pack->dgps_age = 0;
+    pack->dgps_age = 0.0;
   }
 
   if (pack->dgps_sid != INT_MAX) {
+    pack->dgps_sid = abs(pack->dgps_sid);
     /* not supported yet */
   } else {
     pack->dgps_sid = 0;

@@ -135,7 +135,7 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
   pack->diff_units = 'M';
 
   /* defaults for (ignored) dgps_age and dgps_sid */
-  pack->dgps_age = 0;
+  pack->dgps_age = 0.0;
   pack->dgps_sid = 0;
 }
 

@@ -109,7 +109,7 @@ typedef struct _nmeaGPGGA {
   char     elv_units;  /**< [M]eters (Antenna height unit)                                                                                      */
   double   diff;       /**< Geoidal separation (Diff. between WGS-84 earth ellipsoid and mean sea level. '-' = geoid is below WGS-84 ellipsoid) */
   char     diff_units; /**< [M]eters (Units of geoidal separation)                                                                              */
-  long     dgps_age;   /**< Time in seconds since last DGPS update                                                                              */
+  double   dgps_age;   /**< Time in seconds since last DGPS update                                                                              */
   int      dgps_sid;   /**< DGPS station ID number                                                                                              */
 } nmeaGPGGA;
 
