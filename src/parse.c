@@ -106,22 +106,25 @@ static const SentencePrefixToType sentencePrefixToType[] = {
  * determined by the length of the string.
  *
  * @param s The string
- * @param sz The length of the string
  * @param t The structure in which to store the parsed time
  * @return True on success, false otherwise
  */
-static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
+static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
+  size_t sz;
+
   if (!s || !t) {
     return false;
   }
 
+  sz = strlen(s);
+
   if (sz == 6) { // hhmmss
     t->hsec = 0;
-    return (3 == nmea_scanf(s, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
+    return (3 == sscanf(s, "%02d%02d%02d", &t->hour, &t->min, &t->sec));
   }
 
   if (sz == 8) { // hhmmss.s
-    if (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+    if (4 == sscanf(s, "%02d%02d%02d.%1d", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
     }
@@ -129,11 +132,11 @@ static bool _nmea_parse_time(const char *s, const size_t sz, nmeaTIME *t) {
   }
 
   if (sz == 9) { // hhmmss.ss
-    return (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
+    return (4 == sscanf(s, "%02d%02d%02d.%02d", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
   if (sz == 10) { // hhmmss.sss
-    if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+    if ((4 == sscanf(s, "%02d%02d%02d.%03d", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 5) / 10;
       return true;
     }
@@ -403,7 +406,6 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   bool r = false;
   const char * fmt = NULL;
   char * buf = NULL;
-  size_t bufLen = 0;
   int fields = 0;
 
   if (!pack) {
@@ -465,9 +467,8 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   /* determine which fields are present and validate them */
 
   buf[NMEA_TIMEPARSE_BUF - 1] = '\0';
-  bufLen = strlen(buf);
-  if (bufLen) {
-    if (!_nmea_parse_time(buf, bufLen, &pack->time) || !validateTime(&pack->time)) {
+  if (*buf) {
+    if (!_nmea_parse_time(buf, &pack->time) || !validateTime(&pack->time)) {
       memset(&pack->time, 0, sizeof(pack->time));
       goto out;
     }
@@ -728,7 +729,6 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRM
   int token_count;
   char time_buff[NMEA_TIMEPARSE_BUF];
   int date;
-  size_t time_buff_len = 0;
 
   if (!hasChecksum) {
     return 0;
@@ -774,9 +774,9 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRM
 
   /* determine which fields are present and validate them */
 
-  time_buff_len = strlen(&time_buff[0]);
-  if (time_buff_len) {
-    if (!_nmea_parse_time(&time_buff[0], time_buff_len, &pack->utc)) {
+  time_buff[NMEA_TIMEPARSE_BUF - 1] = '\0';
+  if (*time_buff) {
+    if (!_nmea_parse_time(&time_buff[0], &pack->utc)) {
       return 0;
     }
 
