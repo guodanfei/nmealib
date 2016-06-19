@@ -53,56 +53,64 @@ static INLINE const char * nmea_INFO_smask_packtype_to_string(enum nmeaPACKTYPE 
 /**
  * GGA packet information structure (Global Positioning System Fix Data)
  *
+ * Essential fix data which provide 3D location and accuracy data.
+ *
  * <pre>
- * GGA - essential fix data which provide 3D location and accuracy data.
- *
- * $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
- *
- * Where:
- *      GGA          Global Positioning System Fix Data
- *      123519       Fix taken at 12:35:19 UTC
- *      4807.038,N   Latitude 48 deg 07.038' N
- *      01131.000,E  Longitude 11 deg 31.000' E
- *      1            Signal quality: 0 = Invalid
- *                                   1 = Fix
- *                                   2 = Differential
- *                                   3 = Sensitive
- *                                   4 = Real Time Kinematic
- *                                   5 = Float RTK,
- *                                   6 = estimated (dead reckoning) (v2.3)
- *                                   7 = Manual input mode
- *                                   8 = Simulation mode)
- *      08           Number of satellites being tracked
- *      0.9          Horizontal dilution of position
- *      545.4,M      Altitude, Meters, above mean sea level
- *      46.9,M       Height of geoid (mean sea level) above WGS84
- *                       ellipsoid
- *      (empty field) time in seconds since last DGPS update
- *      (empty field) DGPS station ID number
- *      *47          the checksum data, always begins with *
- *
- * If the height of geoid is missing then the altitude should be suspect. Some
- * non-standard implementations report altitude with respect to the ellipsoid
- * rather than geoid altitude. Some units do not report negative altitudes at
- * all. This is the only sentence that reports altitude.
+ * $GPGGA,time,lat,ns,lon,ew,sig,sats,hdop,elv,elv unit,height,height unit,dgps age,dgps id*checksum
  * </pre>
+ *
+ * | Field       | Description                                            | present       |
+ * | :---------: | ------------------------------------------------------ | :-----------: |
+ * | $GPGGA      | NMEA prefix                                            | -             |
+ * | time        | Fix time, in the format HHMMSS.hh (UTC)                | UTCTIME       |
+ * | lat         | Latitude, in NDEG (DDMM.SSS)                           | LAT (1)       |
+ * | ns          | North or south ('N' or 'S')                            | LAT (1)       |
+ * | lon         | Longitude, in NDEG (DDDMM.SSS)                         | LON (2)       |
+ * | ew          | East or west ('E' or 'W')                              | LON (2)       |
+ * | sig         | Signal quality, see the NMEA_SIG_* defines             | SIG           |
+ * | sats        | Number of satellites being tracked                     | SATINUSECOUNT |
+ * | hdop        | Horizontal dilution of position                        | HDOP          |
+ * | elv         | Altitude above mean sea level, in meters               | ELV (3)       |
+ * | elv unit    | Unit of altitude ('M')                                 | ELV (3)       |
+ * | height      | Height of geoid (mean sea level) above WGS84 ellipsoid | - (4)         |
+ * | height unit | Unit of height ('M')                                   | - (4)         |
+ * | dgps age    | Time since last DGPS update, in seconds                | - (4)         |
+ * | dgps id     | DGPS station ID number                                 | - (4)         |
+ * | checksum    | NMEA checksum                                          | -             |
+ *
+ * (1) These fields are both required for a valid latitude<br/>
+ * (2) These fields are both required for a valid longitude<br/>
+ * (3) These fields are both required for a valid altitude<br/>
+ * (4) Not supported yet<br/>
+ *
+ * Example:
+ *
+ * <pre>
+ *
+ * $GPGGA,123519.43,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+ * </pre>
+ *
+ * Note that if the height of geoid is missing then the altitude should be
+ * suspect. Some non-standard implementations report altitude with respect to
+ * the ellipsoid rather than geoid altitude. Some units do not report negative
+ * altitudes at all. This is the only sentence that reports altitude.
  */
 typedef struct _nmeaGPGGA {
-    uint32_t present; /**< Mask specifying which fields are present, same as in nmeaINFO */
-    nmeaTIME utc; /**< UTC of position (just time) */
-    double lat; /**< Latitude in NDEG - [degree][min].[sec/60] */
-    char ns; /**< [N]orth or [S]outh */
-    double lon; /**< Longitude in NDEG - [degree][min].[sec/60] */
-    char ew; /**< [E]ast or [W]est */
-    int sig; /**< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive) */
-    int satinuse; /**< Number of satellites in use (not those in view) */
-    double HDOP; /**< Horizontal dilution of precision */
-    double elv; /**< Antenna altitude above/below mean sea level (geoid) */
-    char elv_units; /**< [M]eters (Antenna height unit) */
-    double diff; /**< Geoidal separation (Diff. between WGS-84 earth ellipsoid and mean sea level. '-' = geoid is below WGS-84 ellipsoid) */
-    char diff_units; /**< [M]eters (Units of geoidal separation) */
-    double dgps_age; /**< Time in seconds since last DGPS update */
-    int dgps_sid; /**< DGPS station ID number */
+  uint32_t present;    /**< Mask specifying which fields are present, same as in nmeaINFO                                                       */
+  nmeaTIME time;       /**< UTC of position (just time)                                                                                         */
+  double   lat;        /**< Latitude in NDEG - [degree][min].[sec/60]                                                                           */
+  char     ns;         /**< [N]orth or [S]outh                                                                                                  */
+  double   lon;        /**< Longitude in NDEG - [degree][min].[sec/60]                                                                          */
+  char     ew;         /**< [E]ast or [W]est                                                                                                    */
+  int      sig;        /**< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)                                       */
+  int      satinuse;   /**< Number of satellites in use (not those in view)                                                                     */
+  double   HDOP;       /**< Horizontal dilution of precision                                                                                    */
+  double   elv;        /**< Antenna altitude above/below mean sea level (geoid)                                                                 */
+  char     elv_units;  /**< [M]eters (Antenna height unit)                                                                                      */
+  double   diff;       /**< Geoidal separation (Diff. between WGS-84 earth ellipsoid and mean sea level. '-' = geoid is below WGS-84 ellipsoid) */
+  char     diff_units; /**< [M]eters (Units of geoidal separation)                                                                              */
+  long     dgps_age;   /**< Time in seconds since last DGPS update                                                                              */
+  int      dgps_sid;   /**< DGPS station ID number                                                                                              */
 } nmeaGPGGA;
 
 /**

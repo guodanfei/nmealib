@@ -43,10 +43,10 @@ void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
   info->smask |= GPGGA;
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    info->utc.hour = pack->utc.hour;
-    info->utc.min = pack->utc.min;
-    info->utc.sec = pack->utc.sec;
-    info->utc.hsec = pack->utc.hsec;
+    info->utc.hour = pack->time.hour;
+    info->utc.min = pack->time.min;
+    info->utc.sec = pack->time.sec;
+    info->utc.hsec = pack->time.hsec;
     nmea_INFO_set_present(&info->present, UTCTIME);
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
@@ -92,10 +92,10 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
   nmea_INFO_unset_present(&pack->present, SMASK);
 
   if (nmea_INFO_is_present(info->present, UTCTIME)) {
-    pack->utc.hour = info->utc.hour;
-    pack->utc.min = info->utc.min;
-    pack->utc.sec = info->utc.sec;
-    pack->utc.hsec = info->utc.hsec;
+    pack->time.hour = info->utc.hour;
+    pack->time.min = info->utc.min;
+    pack->time.sec = info->utc.sec;
+    pack->time.hsec = info->utc.hsec;
     nmea_INFO_set_present(&pack->present, UTCTIME);
   }
   if (nmea_INFO_is_present(info->present, LAT)) {

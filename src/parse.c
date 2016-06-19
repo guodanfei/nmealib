@@ -23,10 +23,12 @@
 #include <assert.h>
 #include <math.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
 /** The size of the buffer to put a time string (that is to be parsed) into */
-#define NMEA_TIMEPARSE_BUF  256
+#define NMEA_TIMEPARSE_BUF  4096
 
 /** Invalid NMEA character: non-ASCII */
 static const InvalidNMEACharacter invalidNonAsciiCharsName = {
@@ -273,6 +275,26 @@ static bool validateNSEW(char * c, const bool ns) {
 }
 
 /**
+ * Validate a signal.
+ *
+ * Expects:
+ * <pre>
+ *   sig in [NMEA_SIG_FIRST, NMEA_SIG_LAST]
+ * </pre>
+ *
+ * @param sig The signal
+ * @return True when valid, false otherwise
+ */
+static bool validateSignal(int * sig) {
+  if ((*sig < NMEA_SIG_FIRST) || (*sig > NMEA_SIG_LAST)) {
+    nmea_error("Parse error: invalid signal %d, expected [%d, %d]", *sig, NMEA_SIG_FIRST, NMEA_SIG_LAST);
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Validate and upper-case the mode.
  *
  * Expects:
@@ -378,109 +400,181 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
 }
 
 bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack) {
-  int token_count;
-  char time_buff[NMEA_TIMEPARSE_BUF];
-  size_t time_buff_len = 0;
+  bool r = false;
+  const char * fmt = NULL;
+  char * buf = NULL;
+  size_t bufLen = 0;
+  int fields = 0;
 
-  if (!hasChecksum) {
-    return 0;
+  if (!pack) {
+    goto out;
   }
 
-  assert(s);
-  assert(pack);
+  /* Clear before parsing, to be able to detect absent fields */
+  memset(pack, 0, sizeof(*pack));
+  pack->lat = NAN;
+  pack->lon = NAN;
+  pack->sig = INT_MAX;
+  pack->satinuse = INT_MAX;
+  pack->HDOP = NAN;
+  pack->elv = NAN;
+  pack->diff = NAN;
+  pack->dgps_age = LONG_MAX;
+  pack->dgps_sid = INT_MAX;
+
+  if (!s) {
+    goto out;
+  }
 
   nmea_trace_buff(s, sz);
 
-  /* Clear before parsing, to be able to detect absent fields */
-  time_buff[0] = '\0';
-  pack->present = 0;
-  pack->utc.hour = -1;
-  pack->utc.min = -1;
-  pack->utc.sec = -1;
-  pack->utc.hsec = -1;
-  pack->lat = NAN;
-  pack->ns = 0;
-  pack->lon = NAN;
-  pack->ew = 0;
-  pack->sig = -1;
-  pack->satinuse = -1;
-  pack->HDOP = NAN;
-  pack->elv = NAN;
-  pack->elv_units = 0;
-  pack->diff = 0; /* ignored */
-  pack->diff_units = 0; /* ignored */
-  pack->dgps_age = 0; /* ignored */
-  pack->dgps_sid = 0; /* ignored */
+  if (hasChecksum) {
+    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%l,%d*";
+  } else {
+    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%l,%d";
+  }
+
+  buf = malloc(NMEA_TIMEPARSE_BUF);
+  *buf = '\0';
 
   /* parse */
-  token_count = nmea_scanf(s, sz, "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", &time_buff[0], &pack->lat,
-      &pack->ns, &pack->lon, &pack->ew, &pack->sig, &pack->satinuse, &pack->HDOP, &pack->elv, &pack->elv_units,
-      &pack->diff, &pack->diff_units, &pack->dgps_age, &pack->dgps_sid);
+  fields = nmea_scanf(s, sz, fmt, //
+      buf, //
+      &pack->lat, //
+      &pack->ns, //
+      &pack->lon, //
+      &pack->ew, //
+      &pack->sig, //
+      &pack->satinuse, //
+      &pack->HDOP, //
+      &pack->elv, //
+      &pack->elv_units, //
+      &pack->diff, //
+      &pack->diff_units, //
+      &pack->dgps_age, //
+      &pack->dgps_sid);
 
   /* see that there are enough tokens */
-  if (token_count != 14) {
-    nmea_error("GPGGA parse error: need 14 tokens, got %d in %s", token_count, s);
-    return 0;
+  if (fields != 14) {
+    nmea_error("GPGGA parse error: need 14 tokens, got %d (%s)", fields, s);
+    memset(&pack, 0, sizeof(pack));
+    pack->sig = NMEA_SIG_INVALID;
+    goto out;
   }
 
   /* determine which fields are present and validate them */
 
-  time_buff_len = strlen(&time_buff[0]);
-  if (time_buff_len > (NMEA_TIMEPARSE_BUF - 1))
-    time_buff_len = NMEA_TIMEPARSE_BUF - 1;
-  if (time_buff_len) {
-    if (!_nmea_parse_time(&time_buff[0], time_buff_len, &pack->utc)) {
-      return 0;
-    }
-
-    if (!validateTime(&pack->utc)) {
-      return 0;
+  buf[NMEA_TIMEPARSE_BUF - 1] = '\0';
+  bufLen = strlen(buf);
+  if (bufLen) {
+    if (!_nmea_parse_time(buf, bufLen, &pack->time) || !validateTime(&pack->time)) {
+      memset(&pack->time, 0, sizeof(pack->time));
+      goto out;
     }
 
     nmea_INFO_set_present(&pack->present, UTCTIME);
+  } else {
+    memset(&pack->time, 0, sizeof(pack->time));
   }
+
   if (!isnan(pack->lat) && (pack->ns)) {
     if (!validateNSEW(&pack->ns, true)) {
-      return 0;
+      pack->lat = 0.0;
+      pack->ns = '\0';
+      goto out;
     }
 
+    pack->lat = fabs(pack->lat);
     nmea_INFO_set_present(&pack->present, LAT);
+  } else {
+    pack->lat = 0.0;
+    pack->ns = '\0';
   }
+
   if (!isnan(pack->lon) && (pack->ew)) {
     if (!validateNSEW(&pack->ew, false)) {
-      return 0;
+      pack->lon = 0.0;
+      pack->ew = '\0';
+      goto out;
     }
 
+    pack->lon = fabs(pack->lon);
     nmea_INFO_set_present(&pack->present, LON);
+  } else {
+    pack->lon = 0.0;
+    pack->ew = '\0';
   }
-  if (pack->sig != -1) {
-    if (!((pack->sig >= NMEA_SIG_FIRST) && (pack->sig <= NMEA_SIG_LAST))) {
-      nmea_error("GPGGA parse error: invalid signal %d, expected [%d, %d]", pack->sig, NMEA_SIG_FIRST, NMEA_SIG_LAST);
-      return 0;
+
+  if (pack->sig != INT_MAX) {
+    if (!validateSignal(&pack->sig)) {
+      pack->sig = NMEA_SIG_INVALID;
+      goto out;
     }
 
     nmea_INFO_set_present(&pack->present, SIG);
+  } else {
+    pack->sig = NMEA_SIG_INVALID;
   }
-  if (pack->satinuse != -1) {
+
+  if (pack->satinuse != INT_MAX) {
+    pack->satinuse = abs(pack->satinuse);
     nmea_INFO_set_present(&pack->present, SATINUSECOUNT);
+  } else {
+    pack->satinuse = 0;
   }
+
   if (!isnan(pack->HDOP)) {
+    pack->HDOP = fabs(pack->HDOP);
     nmea_INFO_set_present(&pack->present, HDOP);
+  } else {
+    pack->HDOP = 0.0;
   }
+
   if (!isnan(pack->elv) && (pack->elv_units)) {
     if (pack->elv_units != 'M') {
-      nmea_error("GPGGA parse error: invalid elevation unit (%c)", pack->elv_units);
-      return 0;
+      nmea_error("GPGGA parse error: invalid elevation unit '%c'", pack->elv_units);
+      pack->elv = 0.0;
+      pack->elv_units = '\0';
+      goto out;
     }
 
     nmea_INFO_set_present(&pack->present, ELV);
+  } else {
+    pack->elv = 0.0;
+    pack->elv_units = '\0';
   }
 
-  /* ignore diff and diff_units */
+  if (!isnan(pack->diff) && (pack->diff_units)) {
+    if (pack->diff_units != 'M') {
+      nmea_error("GPGGA parse error: invalid height unit '%c'", pack->diff_units);
+      pack->diff = 0.0;
+      pack->diff_units = '\0';
+      goto out;
+    }
 
-  /* ignore dgps_age and dgps_sid */
+    /* not supported yet */
+  } else {
+    pack->diff = 0.0;
+    pack->diff_units = '\0';
+  }
 
-  return 1;
+  if (pack->dgps_age != LONG_MAX) {
+    /* not supported yet */
+  } else {
+    pack->dgps_age = 0;
+  }
+
+  if (pack->dgps_sid != INT_MAX) {
+    /* not supported yet */
+  } else {
+    pack->dgps_sid = 0;
+  }
+
+  r = true;
+
+  out: free(buf);
+
+  return r;
 }
 
 bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack) {

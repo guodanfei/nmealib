@@ -55,8 +55,8 @@ int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
   sElvUnit[0] = sElvUnit[1] = 0;
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec,
-        pack->utc.hsec);
+    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->time.hour, pack->time.min, pack->time.sec,
+        pack->time.hsec);
   }
   if (nmea_INFO_is_present(pack->present, LAT)) {
     snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
