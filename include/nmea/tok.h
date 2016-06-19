@@ -24,6 +24,7 @@ extern "C" {
 
 int nmea_calc_crc(const char *s, const int len);
 int nmea_atoi(const char *s, const int len, const int radix);
+long nmea_atol(const char *s, int len, int radix);
 double nmea_atof(const char *s, const int len);
 int nmea_printf(char *s, int len, const char *format, ...) __attribute__ ((format(printf, 3, 4)));
 int nmea_scanf(const char *s, int len, const char *format, ...);

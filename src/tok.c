@@ -62,6 +62,18 @@ int nmea_calc_crc(const char *s, const int len) {
  * @return the converted number, or 0 on failure
  */
 int nmea_atoi(const char *s, int len, int radix) {
+  return (int)nmea_atol(s, len, radix);
+}
+
+/**
+ * Convert string to a long
+ *
+ * @param s the string
+ * @param len the length of the string
+ * @param radix the radix of the numbers in the string
+ * @return the converted number, or 0 on failure
+ */
+long nmea_atol(const char *s, int len, int radix) {
   char *tmp_ptr;
   char buff[NMEA_CONVSTR_BUF];
   long res = 0;
@@ -69,10 +81,10 @@ int nmea_atoi(const char *s, int len, int radix) {
   if (len < NMEA_CONVSTR_BUF) {
     memcpy(&buff[0], s, len);
     buff[len] = '\0';
-    res = strtol(&buff[0], &tmp_ptr, radix);
+    res = strtol(buff, &tmp_ptr, radix);
   }
 
-  return (int) res;
+  return res;
 }
 
 /**
@@ -149,6 +161,7 @@ int nmea_scanf(const char *s, int len, const char *format, ...) {
   int width = 0;
   const char *beg_fmt = 0;
   int snum = 0, unum = 0;
+  long slnum = 0;
 
   int tok_count = 0;
   void *parg_target;
@@ -247,6 +260,10 @@ int nmea_scanf(const char *s, int len, const char *format, ...) {
           case 'u':
             unum = nmea_atoi(beg_tok, width, 10);
             memcpy(parg_target, &unum, sizeof(unsigned int));
+            break;
+          case 'l':
+            slnum = nmea_atol(beg_tok, width, 10);
+            memcpy(parg_target, &slnum, sizeof(long));
             break;
           case 'x':
           case 'X':
