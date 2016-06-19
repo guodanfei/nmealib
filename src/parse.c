@@ -117,11 +117,11 @@ static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
 
   if (sz == 6) { // hhmmss
     t->hsec = 0;
-    return (3 == sscanf(s, "%02d%02d%02d", &t->hour, &t->min, &t->sec));
+    return (3 == nmea_scanf(s, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
   }
 
   if (sz == 8) { // hhmmss.s
-    if (4 == sscanf(s, "%02d%02d%02d.%1d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+    if (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
     }
@@ -129,11 +129,11 @@ static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
   }
 
   if (sz == 9) { // hhmmss.ss
-    return (4 == sscanf(s, "%02d%02d%02d.%02d", &t->hour, &t->min, &t->sec, &t->hsec));
+    return (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
   if (sz == 10) { // hhmmss.sss
-    if ((4 == sscanf(s, "%02d%02d%02d.%03d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+    if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 5) / 10;
       return true;
     }
@@ -401,7 +401,7 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
 
 bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
-  char timeBuf[16];
+  char timeBuf[256];
 
   if (!pack) {
     return false;
@@ -427,8 +427,8 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   pack->dgps_sid = INT_MAX;
 
   /* parse */
-  fieldCount = sscanf(s, //
-      "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d", //
+  fieldCount = nmea_scanf(s, sz, //
+      "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
       timeBuf, //
       &pack->lat, //
       &pack->ns, //
