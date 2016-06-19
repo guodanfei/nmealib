@@ -19,15 +19,6 @@
 
 #include <string.h>
 
-void nmea_zero_GPGGA(nmeaGPGGA *pack) {
-  memset(pack, 0, sizeof(nmeaGPGGA));
-  nmea_time_now(&pack->time, &pack->present);
-  pack->ns = 'N';
-  pack->ew = 'E';
-  pack->elv_units = 'M';
-  pack->diff_units = 'M';
-}
-
 void nmea_zero_GPGSA(nmeaGPGSA *pack) {
   memset(pack, 0, sizeof(nmeaGPGSA));
   pack->fix_mode = 'A';
