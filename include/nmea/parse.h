@@ -30,8 +30,8 @@ extern "C" {
  * The type definition for an invalid NMEA character/description
  */
 typedef struct {
-    const char character;
-    const char * description;
+  const char character;
+  const char * description;
 } InvalidNMEACharacter;
 
 /**
