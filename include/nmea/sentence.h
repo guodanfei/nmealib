@@ -96,21 +96,21 @@ static INLINE const char * nmea_INFO_smask_packtype_to_string(enum nmeaPACKTYPE 
  * altitudes at all. This is the only sentence that reports altitude.
  */
 typedef struct _nmeaGPGGA {
-  uint32_t present;    /**< Mask specifying which fields are present, same as in nmeaINFO                                                       */
-  nmeaTIME time;       /**< UTC of position (just time)                                                                                         */
-  double   lat;        /**< Latitude in NDEG - [degree][min].[sec/60]                                                                           */
-  char     ns;         /**< [N]orth or [S]outh                                                                                                  */
-  double   lon;        /**< Longitude in NDEG - [degree][min].[sec/60]                                                                          */
-  char     ew;         /**< [E]ast or [W]est                                                                                                    */
-  int      sig;        /**< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)                                       */
-  int      satinuse;   /**< Number of satellites in use (not those in view)                                                                     */
-  double   HDOP;       /**< Horizontal dilution of precision                                                                                    */
-  double   elv;        /**< Antenna altitude above/below mean sea level (geoid)                                                                 */
-  char     elv_units;  /**< [M]eters (Antenna height unit)                                                                                      */
-  double   diff;       /**< Geoidal separation (Diff. between WGS-84 earth ellipsoid and mean sea level. '-' = geoid is below WGS-84 ellipsoid) */
-  char     diff_units; /**< [M]eters (Units of geoidal separation)                                                                              */
-  double   dgps_age;   /**< Time in seconds since last DGPS update                                                                              */
-  int      dgps_sid;   /**< DGPS station ID number                                                                                              */
+  uint32_t present;
+  nmeaTIME time;
+  double   lat;
+  char     ns;
+  double   lon;
+  char     ew;
+  int      sig;
+  int      satinuse;
+  double   HDOP;
+  double   elv;
+  char     elv_units;
+  double   diff;
+  char     diff_units;
+  double   dgps_age;
+  int      dgps_sid;
 } nmeaGPGGA;
 
 /**
