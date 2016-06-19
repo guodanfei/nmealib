@@ -162,7 +162,7 @@ static bool _nmea_parse_date(const int date, nmeaTIME *t) {
   }
 
   if ((date < 0) || (date > 999999)) {
-    nmea_error("Parse error: invalid time format in '%d'", date);
+    nmea_error("Parse error: invalid date format in '%d'", date);
     return false;
   }
 
