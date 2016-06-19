@@ -27,9 +27,6 @@
 #include <stdio.h>
 #include <limits.h>
 
-/** The size of the buffer to put a time string (that is to be parsed) into */
-#define NMEA_TIMEPARSE_BUF  4096
-
 /** Invalid NMEA character: non-ASCII */
 static const InvalidNMEACharacter invalidNonAsciiCharsName = {
   .character = '*',
@@ -403,16 +400,17 @@ enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
 }
 
 bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGGA *pack) {
-  bool r = false;
-  const char * fmt = NULL;
-  char * buf = NULL;
+  int expectedFields = INT_MAX;
   int fields = 0;
+  char buf[16];
+  unsigned int checksum = INT_MAX;
 
   if (!pack) {
-    goto out;
+    return false;
   }
 
   /* Clear before parsing, to be able to detect absent fields */
+  memset(buf, 0, sizeof(buf));
   memset(pack, 0, sizeof(*pack));
   pack->lat = NAN;
   pack->lon = NAN;
@@ -425,52 +423,66 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   pack->dgps_sid = INT_MAX;
 
   if (!s) {
-    goto out;
+    return false;
   }
 
   nmea_trace_buff(s, sz);
 
+  /* parse */
   if (hasChecksum) {
-    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*";
+    expectedFields = 15;
+    fields = sscanf(s, //
+        "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d*%02x\r\n", //
+        buf, //
+        &pack->lat, //
+        &pack->ns, //
+        &pack->lon, //
+        &pack->ew, //
+        &pack->sig, //
+        &pack->satinuse, //
+        &pack->HDOP, //
+        &pack->elv, //
+        &pack->elv_units, //
+        &pack->diff, //
+        &pack->diff_units, //
+        &pack->dgps_age, //
+        &pack->dgps_sid, //
+        &checksum);
   } else {
-    fmt = "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d";
+    expectedFields = 14;
+    fields = sscanf(s, //
+        "$GPGGA,%16[^,],%lf,%c,%lf,%c,%d,%d,%lf,%lf,%c,%lf,%c,%lf,%d\r\n", //
+        buf, //
+        &pack->lat, //
+        &pack->ns, //
+        &pack->lon, //
+        &pack->ew, //
+        &pack->sig, //
+        &pack->satinuse, //
+        &pack->HDOP, //
+        &pack->elv, //
+        &pack->elv_units, //
+        &pack->diff, //
+        &pack->diff_units, //
+        &pack->dgps_age, //
+        &pack->dgps_sid);
   }
 
-  buf = malloc(NMEA_TIMEPARSE_BUF);
-  *buf = '\0';
-
-  /* parse */
-  fields = nmea_scanf(s, sz, fmt, //
-      buf, //
-      &pack->lat, //
-      &pack->ns, //
-      &pack->lon, //
-      &pack->ew, //
-      &pack->sig, //
-      &pack->satinuse, //
-      &pack->HDOP, //
-      &pack->elv, //
-      &pack->elv_units, //
-      &pack->diff, //
-      &pack->diff_units, //
-      &pack->dgps_age, //
-      &pack->dgps_sid);
-
   /* see that there are enough tokens */
-  if (fields != 14) {
-    nmea_error("GPGGA parse error: need 14 tokens, got %d (%s)", fields, s);
-    memset(&pack, 0, sizeof(pack));
+  if (fields != expectedFields) {
+    nmea_error("GPGGA parse error: need %d tokens, got %d (%s)", expectedFields, fields, s);
+    memset(pack, 0, sizeof(*pack));
     pack->sig = NMEA_SIG_INVALID;
-    goto out;
+    return false;
   }
 
   /* determine which fields are present and validate them */
 
-  buf[NMEA_TIMEPARSE_BUF - 1] = '\0';
+  buf[sizeof(buf) - 1] = '\0';
   if (*buf) {
     if (!_nmea_parse_time(buf, &pack->time) || !validateTime(&pack->time)) {
       memset(&pack->time, 0, sizeof(pack->time));
-      goto out;
+      return false;
     }
 
     nmea_INFO_set_present(&pack->present, UTCTIME);
@@ -482,7 +494,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
     if (!validateNSEW(&pack->ns, true)) {
       pack->lat = 0.0;
       pack->ns = '\0';
-      goto out;
+      return false;
     }
 
     pack->lat = fabs(pack->lat);
@@ -496,7 +508,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
     if (!validateNSEW(&pack->ew, false)) {
       pack->lon = 0.0;
       pack->ew = '\0';
-      goto out;
+      return false;
     }
 
     pack->lon = fabs(pack->lon);
@@ -509,7 +521,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   if (pack->sig != INT_MAX) {
     if (!validateSignal(&pack->sig)) {
       pack->sig = NMEA_SIG_INVALID;
-      goto out;
+      return false;
     }
 
     nmea_INFO_set_present(&pack->present, SIG);
@@ -536,7 +548,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
       nmea_error("GPGGA parse error: invalid elevation unit '%c'", pack->elv_units);
       pack->elv = 0.0;
       pack->elv_units = '\0';
-      goto out;
+      return false;
     }
 
     nmea_INFO_set_present(&pack->present, ELV);
@@ -550,7 +562,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
       nmea_error("GPGGA parse error: invalid height unit '%c'", pack->diff_units);
       pack->diff = 0.0;
       pack->diff_units = '\0';
-      goto out;
+      return false;
     }
 
     /* not supported yet */
@@ -567,17 +579,12 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGG
   }
 
   if (pack->dgps_sid != INT_MAX) {
-    pack->dgps_sid = abs(pack->dgps_sid);
     /* not supported yet */
   } else {
     pack->dgps_sid = 0;
   }
 
-  r = true;
-
-  out: free(buf);
-
-  return r;
+  return true;
 }
 
 bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack) {
@@ -729,7 +736,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
 
 bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRMC *pack) {
   int token_count;
-  char time_buff[NMEA_TIMEPARSE_BUF];
+  char time_buff[256];
   int date;
 
   if (!hasChecksum) {
@@ -776,7 +783,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRM
 
   /* determine which fields are present and validate them */
 
-  time_buff[NMEA_TIMEPARSE_BUF - 1] = '\0';
+  time_buff[sizeof(time_buff) - 1] = '\0';
   if (*time_buff) {
     if (!_nmea_parse_time(&time_buff[0], &pack->utc)) {
       return 0;
