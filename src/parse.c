@@ -552,7 +552,8 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   return true;
 
 err:
-  nmea_zero_GPGGA(pack);
+  memset(pack, 0, sizeof(*pack));
+  pack->sig = NMEA_SIG_INVALID;
   return false;
 }
 
