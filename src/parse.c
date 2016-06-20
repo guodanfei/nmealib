@@ -481,7 +481,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmea_error("GPGGA parse error: need 14 tokens, got %d (%s)", fieldCount, s);
+    nmea_error("GPGGA parse error: need 14 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
@@ -636,7 +636,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmea_error("GPGSA parse error: need 17 tokens, got %d (%s)", fieldCount, s);
+    nmea_error("GPGSA parse error: need 17 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
