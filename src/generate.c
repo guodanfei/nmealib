@@ -114,11 +114,11 @@ int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
   sVdop[0] = 0;
 
   if (nmea_INFO_is_present(pack->present, FIX)) {
-    sFixMode[0] = pack->fix_mode;
-    snprintf(&sFixType[0], sizeof(sFixType), "%1d", pack->fix_type);
+    sFixMode[0] = pack->sig;
+    snprintf(&sFixType[0], sizeof(sFixType), "%1d", pack->fix);
   }
 
-  for (i = 0; i < NMEA_MAXSAT; i++) {
+  for (i = 0; (i < NMEA_MAXSAT) && (i < GPGSA_SAT_COUNT); i++) {
     if (satinuse && pack->sat_prn[i]) {
       int cnt = snprintf(psSatPrn, ssSatPrn, "%d", pack->sat_prn[i]);
       if (cnt >= ssSatPrn) {

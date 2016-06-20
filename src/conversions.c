@@ -147,7 +147,6 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
     nmea_INFO_set_present(&pack->present, ELV);
   }
 
-
   /* diff and diff_units not supported yet */
 
   /* dgps_age not supported yet */
@@ -156,62 +155,114 @@ void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
 }
 
 void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info) {
-  int i = 0;
-
-  assert(pack);
-  assert(info);
-
-  info->present |= pack->present;
-  nmea_INFO_set_present(&info->present, SMASK);
-  info->smask |= GPGSA;
-  if (nmea_INFO_is_present(pack->present, FIX)) {
-    /* fix_mode is ignored */
-    info->fix = pack->fix_type;
+  if (!pack || !info) {
+    return;
   }
+
+  nmea_INFO_set_present(&info->present, SMASK);
+
+  info->smask |= GPGSA;
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    if (pack->sig == 'M') {
+      info->sig = NMEA_SIG_MANUAL;
+    } else if (nmea_INFO_is_present(pack->present, FIX)) {
+      info->sig = NMEA_SIG_FIX;
+    } else {
+      info->sig = NMEA_SIG_INVALID;
+    }
+
+    nmea_INFO_set_present(&info->present, SIG);
+  }
+
+  if (nmea_INFO_is_present(pack->present, FIX)) {
+    info->fix = pack->fix;
+    nmea_INFO_set_present(&info->present, FIX);
+  }
+
   if (nmea_INFO_is_present(pack->present, SATINUSE)) {
+    unsigned int packIndex = 0;
+    unsigned int infoIndex = 0;
+
     info->satinfo.inuse = 0;
-    for (i = 0; i < NMEA_MAXSAT; i++) {
-      info->satinfo.in_use[i] = pack->sat_prn[i];
-      if (pack->sat_prn[i]) {
+    memset(&info->satinfo.in_use, 0, sizeof(info->satinfo.in_use[0]));
+
+    for (packIndex = 0; (infoIndex < NMEA_MAXSAT) && (packIndex < GPGSA_SAT_COUNT); packIndex++) {
+      int prn = pack->sat_prn[packIndex];
+      if (prn) {
+        info->satinfo.in_use[infoIndex++] = prn;
         info->satinfo.inuse++;
       }
     }
-    nmea_INFO_set_present(&info->present, SATINUSECOUNT);
+    nmea_INFO_set_present(&info->present, (SATINUSECOUNT | SATINUSE));
   }
+
   if (nmea_INFO_is_present(pack->present, PDOP)) {
     info->PDOP = pack->PDOP;
+    nmea_INFO_set_present(&info->present, PDOP);
   }
+
   if (nmea_INFO_is_present(pack->present, HDOP)) {
     info->HDOP = pack->HDOP;
+    nmea_INFO_set_present(&info->present, HDOP);
   }
+
   if (nmea_INFO_is_present(pack->present, VDOP)) {
     info->VDOP = pack->VDOP;
+    nmea_INFO_set_present(&info->present, VDOP);
   }
 }
 
 void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack) {
-  assert(pack);
-  assert(info);
+  if (!pack || !info) {
+    return;
+  }
 
-  nmea_zero_GPGSA(pack);
+  memset(pack, 0, sizeof(*pack));
+  pack->fix = NMEA_FIX_BAD;
 
-  pack->present = info->present;
-  nmea_INFO_unset_present(&pack->present, SMASK);
+  if (nmea_INFO_is_present(info->present, SIG)) {
+    if (info->sig == NMEA_SIG_MANUAL) {
+      pack->sig = 'M';
+    } else {
+      pack->sig = 'A';
+    }
+
+    nmea_INFO_set_present(&pack->present, SIG);
+  }
+
   if (nmea_INFO_is_present(info->present, FIX)) {
-    pack->fix_mode = 'A';
-    pack->fix_type = info->fix;
+    pack->fix = info->fix;
+    nmea_INFO_set_present(&pack->present, FIX);
   }
+
   if (nmea_INFO_is_present(info->present, SATINUSE)) {
-    memcpy(pack->sat_prn, info->satinfo.in_use, sizeof(pack->sat_prn));
+    unsigned int infoIndex = 0;
+    unsigned int packIndex = 0;
+
+    for (infoIndex = 0; (infoIndex < NMEA_MAXSAT) && (packIndex < GPGSA_SAT_COUNT); infoIndex++) {
+      int prn = info->satinfo.in_use[infoIndex];
+      if (prn) {
+        pack->sat_prn[packIndex++] = prn;
+      }
+    }
+
+    nmea_INFO_set_present(&pack->present, SATINUSE);
   }
+
   if (nmea_INFO_is_present(info->present, PDOP)) {
     pack->PDOP = info->PDOP;
+    nmea_INFO_set_present(&pack->present, PDOP);
   }
+
   if (nmea_INFO_is_present(info->present, HDOP)) {
     pack->HDOP = info->HDOP;
+    nmea_INFO_set_present(&pack->present, HDOP);
   }
+
   if (nmea_INFO_is_present(info->present, VDOP)) {
     pack->VDOP = info->VDOP;
+    nmea_INFO_set_present(&pack->present, VDOP);
   }
 }
 

@@ -19,12 +19,6 @@
 
 #include <string.h>
 
-void nmea_zero_GPGSA(nmeaGPGSA *pack) {
-  memset(pack, 0, sizeof(nmeaGPGSA));
-  pack->fix_mode = 'A';
-  pack->fix_type = NMEA_FIX_BAD;
-}
-
 void nmea_zero_GPGSV(nmeaGPGSV *pack) {
   memset(pack, 0, sizeof(nmeaGPGSV));
 }

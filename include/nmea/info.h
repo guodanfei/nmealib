@@ -138,6 +138,8 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
 #define NMEA_DEF_LAT   (0.0)
 #define NMEA_DEF_LON   (0.0)
 
+#define GPGSA_SAT_COUNT (12)
+
 /**
  * Date and time data
  * @see nmea_time_now

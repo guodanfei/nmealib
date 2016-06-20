@@ -83,11 +83,10 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack);
  *
  * @param s The string
  * @param sz The length of the string
- * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGSA(const char *s, const size_t sz, bool hasChecksum, nmeaGPGSA *pack);
+bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack);
 
 /**
  * Parse a GPGSV sentence from a string

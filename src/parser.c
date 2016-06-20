@@ -216,8 +216,7 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
           break;
 
         case GPGSA:
-          if (nmea_parse_GPGSA(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
-              &parser->sentence.gpgsa)) {
+          if (nmea_parse_GPGSA(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gpgsa)) {
             sentences_count++;
             nmea_GPGSA2info(&parser->sentence.gpgsa, info);
           }

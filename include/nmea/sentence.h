@@ -86,7 +86,6 @@ static INLINE const char * nmea_INFO_smask_packtype_to_string(enum nmeaPACKTYPE 
  * Example:
  *
  * <pre>
- *
  * $GPGGA,123519.43,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
  * </pre>
  *
@@ -116,16 +115,29 @@ typedef struct _nmeaGPGGA {
 /**
  * GSA packet information structure (Satellite status)
  *
+ * GPS DOP and active satellites.
+ *
  * <pre>
- * GSA - GPS DOP and active satellites.
+ * $GPGSA,selection,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
+ * </pre>
+ *
+ * | Field       | Description                                            | present                   |
+ * | :---------: | ------------------------------------------------------ | :-----------------------: |
+ * | $GPGSA      | NMEA prefix                                            | -                         |
+ * | selection   | Selection of 2D or 3D fix (A = auto, M = manual)       | SIG                       |
+ * | fix         | Fix, see NMEA_FIX_* defines                            | FIX                       |
+ * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)              | SATINUSE \| SATINUSECOUNT |
+ * | pdop        | Dilution of position                                   | PDOP                      |
+ * | hdop        | Horizontal dilution of position                        | HDOP                      |
+ * | vdop        | Vertical dilution of position                          | VDOP                      |
  *
  * This sentence provides details on the nature of the fix. It includes the
  * numbers of the satellites being used in the current solution and the DOP.
  *
  * DOP (dilution of precision) is an indication of the effect of satellite
- * geometry on the accuracy of the fix. It is a unitless number where smaller
+ * geometry on the accuracy of the fix. It is a unit-less number where smaller
  * is better. For 3D fixes using 4 satellites a 1.0 would be considered to be
- * a perfect number, however for overdetermined solutions it is possible to see
+ * a perfect number, however for over-determined solutions it is possible to see
  * numbers below 1.0.
  *
  * There are differences in the way the PRN's are presented which can effect the
@@ -139,29 +151,20 @@ typedef struct _nmeaGPGGA {
  * being tracked. Some units may show all satellites that have ephemeris data
  * without regard to their use as part of the solution but this is non-standard.
  *
- * $GPGSA,A,3,04,05,,09,12,,,24,,,,,2.5,1.3,2.1*39
+ * Example:
  *
- * Where:
- *      GSA      Satellite status
- *      A        Auto selection of 2D or 3D fix (M = manual)
- *      3        3D fix - values include: 1 = no fix
- *                                        2 = 2D fix
- *                                        3 = 3D fix
- *      04,05... PRNs of satellites used for fix (space for 12)
- *      2.5      PDOP (dilution of precision)
- *      1.3      Horizontal dilution of precision (HDOP)
- *      2.1      Vertical dilution of precision (VDOP)
- *      *39      the checksum data, always begins with *
+ * <pre>
+ * $GPGSA,A,3,04,05,,09,12,,,24,,,,,2.5,1.3,2.1*39
  * </pre>
  */
 typedef struct _nmeaGPGSA {
-    uint32_t present; /**< Mask specifying which fields are present, same as in nmeaINFO */
-    char fix_mode; /**< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D) */
-    int fix_type; /**< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D) */
-    int sat_prn[NMEA_MAXSAT]; /**< PRNs of satellites used in position fix (0 for unused fields) */
-    double PDOP; /**< Dilution of precision */
-    double HDOP; /**< Horizontal dilution of precision */
-    double VDOP; /**< Vertical dilution of precision */
+  uint32_t present;
+  char     sig;
+  int      fix;
+  int      sat_prn[GPGSA_SAT_COUNT];
+  double   PDOP;
+  double   HDOP;
+  double   VDOP;
 } nmeaGPGSA;
 
 /**
@@ -291,7 +294,6 @@ typedef struct _nmeaGPVTG {
     char spk_k; /**< Fixed text 'K' indicates that speed over ground is in kilometers/hour */
 } nmeaGPVTG;
 
-void nmea_zero_GPGSA(nmeaGPGSA *pack);
 void nmea_zero_GPGSV(nmeaGPGSV *pack);
 void nmea_zero_GPRMC(nmeaGPRMC *pack);
 void nmea_zero_GPVTG(nmeaGPVTG *pack);
