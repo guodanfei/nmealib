@@ -119,9 +119,10 @@ static int cmp_int(const void *p1, const void *p2) {
  *
  * @param s The string
  * @param t The structure in which to store the parsed time
+ * @param prefix The NMEA prefix
  * @return True on success, false otherwise
  */
-static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
+static bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix) {
   size_t sz;
 
   if (!s || !t) {
@@ -155,7 +156,7 @@ static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
     return false;
   }
 
-  nmea_error("Parse error: invalid time format in '%s'", s);
+  nmea_error("%s parse error: invalid time format in '%s'", prefix, s);
 
   return false;
 }
@@ -169,15 +170,17 @@ static bool _nmea_parse_time(const char *s, nmeaTIME *t) {
  *
  * @param date The date (DDMMYY)
  * @param t The structure in which to store the parsed date
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True on success, false otherwise
  */
-static bool _nmea_parse_date(const int date, nmeaTIME *t) {
+static bool _nmea_parse_date(const int date, nmeaTIME *t, const char * prefix, const char * s) {
   if (!t) {
     return false;
   }
 
   if ((date < 0) || (date > 999999)) {
-    nmea_error("Parse error: invalid date format in '%d'", date);
+    nmea_error("%s parse error: invalid date '%d' in '%s'", prefix, date, s);
     return false;
   }
 
@@ -206,9 +209,11 @@ static bool _nmea_parse_date(const int date, nmeaTIME *t) {
  * </pre>
  *
  * @param t The structure
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-static bool validateTime(const nmeaTIME * t) {
+static bool validateTime(const nmeaTIME * t, const char * prefix, const char * s) {
   if (!t) {
     return false;
   }
@@ -218,7 +223,8 @@ static bool validateTime(const nmeaTIME * t) {
       && (t->min >= 0) && (t->min <= 59) //
       && (t->sec >= 0) && (t->sec <= 60) //
       && (t->hsec >= 0) && (t->hsec <= 99))) {
-    nmea_error("Parse error: invalid time '%02d:%02d:%02d.%03d' (hh:mm:ss.mmm)", t->hour, t->min, t->sec, t->hsec * 10);
+    nmea_error("%s parse error: invalid time '%02d:%02d:%02d.%03d' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
+        t->sec, t->hsec * 10, s);
     return false;
   }
 
@@ -236,9 +242,11 @@ static bool validateTime(const nmeaTIME * t) {
  * </pre>
  *
  * @param t a pointer to the structure
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return true when valid, false otherwise
  */
-static bool validateDate(const nmeaTIME * t) {
+static bool validateDate(const nmeaTIME * t, const char * prefix, const char * s) {
   if (!t) {
     return false;
   }
@@ -247,7 +255,8 @@ static bool validateDate(const nmeaTIME * t) {
       (t->year >= 90) && (t->year <= 189) //
       && (t->mon >= 0) && (t->mon <= 11) //
       && (t->day >= 1) && (t->day <= 31))) {
-    nmea_error("Parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy)", t->day, t->mon, t->year + 1900);
+    nmea_error("%s parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
+        t->year + 1900, s);
     return false;
   }
 
@@ -265,9 +274,11 @@ static bool validateDate(const nmeaTIME * t) {
  *
  * @param c The character, will also be converted to upper-case.
  * @param ns Evaluate north/south when true, evaluate east/west otherwise
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-static bool validateNSEW(char * c, const bool ns) {
+static bool validateNSEW(char * c, const bool ns, const char * prefix, const char * s) {
   if (!c) {
     return false;
   }
@@ -276,12 +287,12 @@ static bool validateNSEW(char * c, const bool ns) {
 
   if (ns) {
     if (!((*c == 'N') || (*c == 'S'))) {
-      nmea_error("Parse error: invalid North/South '%c'", *c);
+      nmea_error("%s parse error: invalid North/South '%c' in '%s'", prefix, *c, s);
       return false;
     }
   } else {
     if (!((*c == 'E') || (*c == 'W'))) {
-      nmea_error("Parse error: invalid East/West '%c'", *c);
+      nmea_error("%s parse error: invalid East/West '%c' in '%s'", prefix, *c, s);
       return false;
     }
   }
@@ -298,11 +309,14 @@ static bool validateNSEW(char * c, const bool ns) {
  * </pre>
  *
  * @param fix The fix
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-static bool validateFix(int * fix) {
+static bool validateFix(int * fix, const char * prefix, const char * s) {
   if ((*fix < NMEA_FIX_FIRST) || (*fix > NMEA_FIX_LAST)) {
-    nmea_error("Parse error: invalid fix %d, expected [%d, %d]", *fix, NMEA_FIX_FIRST, NMEA_FIX_LAST);
+    nmea_error("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, *fix, NMEA_FIX_FIRST, NMEA_FIX_LAST,
+        s);
     return false;
   }
 
@@ -318,11 +332,14 @@ static bool validateFix(int * fix) {
  * </pre>
  *
  * @param sig The signal
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-static bool validateSignal(int * sig) {
+static bool validateSignal(int * sig, const char * prefix, const char * s) {
   if ((*sig < NMEA_SIG_FIRST) || (*sig > NMEA_SIG_LAST)) {
-    nmea_error("Parse error: invalid signal %d, expected [%d, %d]", *sig, NMEA_SIG_FIRST, NMEA_SIG_LAST);
+    nmea_error("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, *sig, NMEA_SIG_FIRST,
+        NMEA_SIG_LAST, s);
     return false;
   }
 
@@ -348,9 +365,11 @@ static bool validateSignal(int * sig) {
  * </pre>
  *
  * @param c The character, will also be converted to upper-case.
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-static bool validateMode(char * c) {
+static bool validateMode(char * c, const char * prefix, const char * s) {
   if (!c) {
     return false;
   }
@@ -367,7 +386,7 @@ static bool validateMode(char * c) {
       || (*c == 'E') //
       || (*c == 'M') //
       || (*c == 'S'))) {
-    nmea_error("Parse error: invalid mode '%c'", *c);
+    nmea_error("%s parse error: invalid mode '%c' in '%s'", prefix, *c, s);
     return false;
   }
 
@@ -489,7 +508,8 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!_nmea_parse_time(timeBuf, &pack->time) || !validateTime(&pack->time)) {
+    if (!_nmea_parse_time(timeBuf, &pack->time, "GPGGA") //
+        || !validateTime(&pack->time, "GPGGA", s)) {
       goto err;
     }
 
@@ -499,7 +519,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->lat) && (pack->ns)) {
-    if (!validateNSEW(&pack->ns, true)) {
+    if (!validateNSEW(&pack->ns, true, "GPGGA", s)) {
       goto err;
     }
 
@@ -511,7 +531,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->lon) && (pack->ew)) {
-    if (!validateNSEW(&pack->ew, false)) {
+    if (!validateNSEW(&pack->ew, false, "GPGGA", s)) {
       goto err;
     }
 
@@ -523,7 +543,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (pack->sig != INT_MAX) {
-    if (!validateSignal(&pack->sig)) {
+    if (!validateSignal(&pack->sig, "GPGGA", s)) {
       goto err;
     }
 
@@ -548,7 +568,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->elv) && (pack->elv_units)) {
     if (pack->elv_units != 'M') {
-      nmea_error("Parse error: invalid elevation unit '%c' in '%s'", pack->elv_units, s);
+      nmea_error("GPGGA parse error: invalid elevation unit '%c' in '%s'", pack->elv_units, s);
       goto err;
     }
 
@@ -560,7 +580,7 @@ bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->diff) && (pack->diff_units)) {
     if (pack->diff_units != 'M') {
-      nmea_error("Parse error: invalid height unit '%c' in '%s'", pack->diff_units, s);
+      nmea_error("GPGGA parse error: invalid height unit '%c' in '%s'", pack->diff_units, s);
       goto err;
     }
 
@@ -655,7 +675,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   if (pack->fix != INT_MAX) {
-    if (!validateFix(&pack->fix)) {
+    if (!validateFix(&pack->fix, "GPGSA", s)) {
       goto err;
     }
 
@@ -831,7 +851,8 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!_nmea_parse_time(timeBuf, &pack->utc) || !validateTime(&pack->utc)) {
+    if (!_nmea_parse_time(timeBuf, &pack->utc, "GPRMC") //
+        || !validateTime(&pack->utc, "GPRMC", s)) {
       goto err;
     }
 
@@ -868,7 +889,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
         goto err;
       }
 
-      if (!validateMode(&pack->sigMode)) {
+      if (!validateMode(&pack->sigMode, "GPRMC", s)) {
         goto err;
       }
 
@@ -880,7 +901,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lat) && (pack->ns)) {
-    if (!validateNSEW(&pack->ns, true)) {
+    if (!validateNSEW(&pack->ns, true, "GPRMC", s)) {
       goto err;
     }
 
@@ -892,7 +913,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lon) && (pack->ew)) {
-    if (!validateNSEW(&pack->ew, false)) {
+    if (!validateNSEW(&pack->ew, false, "GPRMC", s)) {
       goto err;
     }
 
@@ -918,7 +939,8 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (date != INT_MAX) {
-    if (!_nmea_parse_date(date, &pack->utc) || !validateDate(&pack->utc)) {
+    if (!_nmea_parse_date(date, &pack->utc, "GPRMC", s) //
+        || !validateDate(&pack->utc, "GPRMC", s)) {
       goto err;
     }
 
@@ -930,7 +952,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar) && (pack->magvar_ew)) {
-    if (!validateNSEW(&pack->magvar_ew, false)) {
+    if (!validateNSEW(&pack->magvar_ew, false, "GPRMC", s)) {
       goto err;
     }
 
