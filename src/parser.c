@@ -231,8 +231,7 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
           break;
 
         case GPRMC:
-          if (nmea_parse_GPRMC(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
-              &parser->sentence.gprmc)) {
+          if (nmea_parse_GPRMC(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gprmc)) {
             sentences_count++;
             nmea_GPRMC2info(&parser->sentence.gprmc, info);
           }

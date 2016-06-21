@@ -223,43 +223,52 @@ typedef struct _nmeaGPGSV {
  * RMC -packet information structure (Recommended Minimum sentence C)
  *
  * <pre>
- * RMC - Recommended Minimum sentence C
+ * $GPRMC,time,selection,lat,ns,lon,ew,speed,track,date,magvar,magvar ew,mode*checksum
+ * </pre>
  *
- * NMEA has its own version of essential gps pvt (position, velocity,
- * time) data. It is called RMC, the Recommended Minimum, which will look
- * similar to:
+ * | Field       | Description                                    | present    |
+ * | :---------: | ---------------------------------------------- | :--------: |
+ * | $GPRMC      | NMEA prefix                                    | -          |
+ * | time        | Fix time, in the format HHMMSS.hh (UTC)        | UTCTIME    |
+ * | selection   | Selection of 2D or 3D fix (A = auto, V = void) | SIG        |
+ * | lat         | Latitude, in NDEG (DDMM.SSS)                   | LAT (1)    |
+ * | ns          | North or south ('N' or 'S')                    | LAT (1)    |
+ * | lon         | Longitude, in NDEG (DDDMM.SSS)                 | LON (2)    |
+ * | ew          | East or west ('E' or 'W')                      | LON (2)    |
+ * | speed       | Speed over the ground, in knots                | SPEED      |
+ * | track       | Track angle, in degrees true north             | TRACK      |
+ * | date        | Fix date, in the format DDMMYY (UTC)           | UTCDATE    |
+ * | magvar      | Magnetic variation                             | MAGVAR (3) |
+ * | magvar ew   | Magnetic variation east or west ('E' or 'W')   | MAGVAR (3) |
+ * | mode        | Mode, N=not valid, or [ADPRFEMS]               | SIG (4)    |
+ * | checksum    | NMEA checksum                                  | -          |
  *
+ * (1) These fields are both required for a valid latitude<br/>
+ * (2) These fields are both required for a valid longitude<br/>
+ * (3) These fields are both required for a valid magnetic variation<br/>
+ * (4) This field is only present in NMEA sentences with version v2.3 (and above).
+ *     If present, then the selection field and this field are both required for a valid signal<br/>
+ *
+ * Example:
+ *
+ * <pre>
  * $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W*6A
  * $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W,A*6A (v2.3)
- *
- * Where:
- *      RMC          Recommended Minimum sentence C
- *      123519       Fix taken at 12:35:19 UTC
- *      A            Status A=active or V=Void.
- *      4807.038,N   Latitude 48 deg 07.038' N
- *      01131.000,E  Longitude 11 deg 31.000' E
- *      022.4        Speed over the ground in knots
- *      084.4        Track angle in degrees True
- *      230394       Date - 23rd of March 1994
- *      003.1,W      Magnetic Variation
- *      A            Mode A=autonomous, D=differential, E=Estimated,
- *                        N=not valid, S=Simulator (NMEA v2.3)
- *      *6A          The checksum data, always begins with *
  * </pre>
  */
 typedef struct _nmeaGPRMC {
-    uint32_t present; /**< Mask specifying which fields are present, same as in nmeaINFO */
-    nmeaTIME utc; /**< UTC of position */
-    char status; /**< Status (A = active or V = void) */
-    double lat; /**< Latitude in NDEG - [degree][min].[sec/60] */
-    char ns; /**< [N]orth or [S]outh */
-    double lon; /**< Longitude in NDEG - [degree][min].[sec/60] */
-    char ew; /**< [E]ast or [W]est */
-    double speed; /**< Speed over the ground in knots */
-    double track; /**< Track angle in degrees True */
-    double magvar; /**< Magnetic variation degrees (Easterly var. subtracts from true course) */
-    char magvar_ew; /**< [E]ast or [W]est */
-    char mode; /**< Mode indicator of fix type (A=autonomous, D=differential, E=Estimated, N=not valid, S=Simulator) */
+  uint32_t present;
+  nmeaTIME utc;
+  char     sig;
+  double   lat;
+  char     ns;
+  double   lon;
+  char     ew;
+  double   speed;
+  double   track;
+  double   magvar;
+  char     magvar_ew;
+  char     sigMode;
 } nmeaGPRMC;
 
 /**
@@ -295,7 +304,6 @@ typedef struct _nmeaGPVTG {
 } nmeaGPVTG;
 
 void nmea_zero_GPGSV(nmeaGPGSV *pack);
-void nmea_zero_GPRMC(nmeaGPRMC *pack);
 void nmea_zero_GPVTG(nmeaGPVTG *pack);
 
 #ifdef  __cplusplus

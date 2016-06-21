@@ -247,7 +247,7 @@ static bool validateDate(const nmeaTIME * t) {
       (t->year >= 90) && (t->year <= 189) //
       && (t->mon >= 0) && (t->mon <= 11) //
       && (t->day >= 1) && (t->day <= 31))) {
-    nmea_error("Parse error: invalid date '%02d-%02d-%02d' (dd-mm-yyyy)", t->day, t->mon, t->year + 1900);
+    nmea_error("Parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy)", t->day, t->mon, t->year + 1900);
     return false;
   }
 
@@ -358,14 +358,14 @@ static bool validateMode(char * c) {
   *c = toupper(*c);
 
   if (!( //
-      (*c == 'A') //
+         (*c == 'N') //
+      || (*c == 'A') //
       || (*c == 'D') //
-      || (*c == 'E') //
-      || (*c == 'F') //
-      || (*c == 'M') //
-      || (*c == 'N') //
       || (*c == 'P') //
       || (*c == 'R') //
+      || (*c == 'F') //
+      || (*c == 'E') //
+      || (*c == 'M') //
       || (*c == 'S'))) {
     nmea_error("Parse error: invalid mode '%c'", *c);
     return false;
@@ -780,130 +780,171 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
   return 1;
 }
 
-bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRMC *pack) {
-  int token_count;
-  char time_buff[256];
+bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
+  int fieldCount;
+  char timeBuf[256];
   int date;
 
-  if (!hasChecksum) {
-    return 0;
+  if (!pack) {
+    return false;
   }
 
-  assert(s);
-  assert(pack);
+  if (!s) {
+    goto err;
+  }
 
   nmea_trace_buff(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  time_buff[0] = '\0';
-  date = -1;
-  pack->present = 0;
-  pack->utc.year = -1;
-  pack->utc.mon = -1;
-  pack->utc.day = -1;
-  pack->utc.hour = -1;
-  pack->utc.min = -1;
-  pack->utc.sec = -1;
-  pack->utc.hsec = -1;
-  pack->status = 0;
+  memset(timeBuf, 0, sizeof(timeBuf));
+  memset(pack, 0, sizeof(*pack));
   pack->lat = NAN;
-  pack->ns = 0;
   pack->lon = NAN;
-  pack->ew = 0;
   pack->speed = NAN;
   pack->track = NAN;
+  date = INT_MAX;
   pack->magvar = NAN;
-  pack->magvar_ew = 0;
-  pack->mode = 0;
 
   /* parse */
-  token_count = nmea_scanf(s, sz, "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", &time_buff[0], &pack->status,
-      &pack->lat, &pack->ns, &pack->lon, &pack->ew, &pack->speed, &pack->track, &date, &pack->magvar, &pack->magvar_ew,
-      &pack->mode);
+  fieldCount = nmea_scanf(s, sz, //
+      "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c", //
+      timeBuf, //
+      &pack->sig, //
+      &pack->lat, //
+      &pack->ns, //
+      &pack->lon, //
+      &pack->ew, //
+      &pack->speed, //
+      &pack->track, //
+      &date, //
+      &pack->magvar, //
+      &pack->magvar_ew, //
+      &pack->sigMode);
 
   /* see that there are enough tokens */
-  if ((token_count != 11) && (token_count != 12)) {
-    nmea_error("GPRMC parse error: need 11 or 12 tokens, got %d in %s", token_count, s);
-    return 0;
+  if ((fieldCount != 11) && (fieldCount != 12)) {
+    nmea_error("GPRMC parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
+    goto err;
   }
 
   /* determine which fields are present and validate them */
 
-  time_buff[sizeof(time_buff) - 1] = '\0';
-  if (*time_buff) {
-    if (!_nmea_parse_time(&time_buff[0], &pack->utc)) {
-      return 0;
-    }
-
-    if (!validateTime(&pack->utc)) {
-      return 0;
+  timeBuf[sizeof(timeBuf) - 1] = '\0';
+  if (*timeBuf) {
+    if (!_nmea_parse_time(timeBuf, &pack->utc) || !validateTime(&pack->utc)) {
+      goto err;
     }
 
     nmea_INFO_set_present(&pack->present, UTCTIME);
+  } else {
+    pack->utc.hour = 0;
+    pack->utc.min = 0;
+    pack->utc.sec = 0;
+    pack->utc.hsec = 0;
   }
 
-  if (!pack->status) {
-    pack->status = 'V';
+  if (fieldCount == 11) {
+    /* no mode */
+    if (pack->sig) {
+      pack->sig = toupper(pack->sig);
+      if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
+        nmea_error("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        goto err;
+      }
+
+      pack->sigMode = '\0';
+
+      nmea_INFO_set_present(&pack->present, SIG);
+    } else {
+      pack->sig = '\0';
+      pack->sigMode = '\0';
+    }
   } else {
-    pack->status = toupper(pack->status);
-    if (!((pack->status == 'A') || (pack->status == 'V'))) {
-      nmea_error("GPRMC parse error: invalid status (%c)", pack->status);
-      return 0;
+    /* with mode */
+    if (pack->sig && pack->sigMode) {
+      pack->sig = toupper(pack->sig);
+      if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
+        nmea_error("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        goto err;
+      }
+
+      if (!validateMode(&pack->sigMode)) {
+        goto err;
+      }
+
+      nmea_INFO_set_present(&pack->present, SIG);
+    } else {
+      pack->sig = '\0';
+      pack->sigMode = '\0';
     }
   }
+
   if (!isnan(pack->lat) && (pack->ns)) {
     if (!validateNSEW(&pack->ns, true)) {
-      return 0;
+      goto err;
     }
 
+    pack->lat = fabs(pack->lat);
     nmea_INFO_set_present(&pack->present, LAT);
+  } else {
+    pack->lat = 0.0;
+    pack->ns = '\0';
   }
+
   if (!isnan(pack->lon) && (pack->ew)) {
     if (!validateNSEW(&pack->ew, false)) {
-      return 0;
+      goto err;
     }
 
+    pack->lon = fabs(pack->lon);
     nmea_INFO_set_present(&pack->present, LON);
+  } else {
+    pack->lon = 0.0;
+    pack->ew = '\0';
   }
+
   if (!isnan(pack->speed)) {
+    pack->speed = fabs(pack->speed);
     nmea_INFO_set_present(&pack->present, SPEED);
+  } else {
+    pack->speed = 0.0;
   }
+
   if (!isnan(pack->track)) {
+    pack->track = fabs(pack->track);
     nmea_INFO_set_present(&pack->present, TRACK);
+  } else {
+    pack->track = 0.0;
   }
 
-  if (date != -1) {
-    if (!_nmea_parse_date(date, &pack->utc)) {
-      return 0;
-    }
-
-    if (!validateDate(&pack->utc)) {
-      return 0;
+  if (date != INT_MAX) {
+    if (!_nmea_parse_date(date, &pack->utc) || !validateDate(&pack->utc)) {
+      goto err;
     }
 
     nmea_INFO_set_present(&pack->present, UTCDATE);
+  } else {
+    pack->utc.year = 0;
+    pack->utc.mon = 0;
+    pack->utc.day = 0;
   }
 
   if (!isnan(pack->magvar) && (pack->magvar_ew)) {
     if (!validateNSEW(&pack->magvar_ew, false)) {
-      return 0;
+      goto err;
     }
 
+    pack->magvar = fabs(pack->magvar);
     nmea_INFO_set_present(&pack->present, MAGVAR);
-  }
-  if (token_count == 11) {
-    pack->mode = 'A';
   } else {
-    if (!pack->mode) {
-      pack->mode = 'N';
-    } else {
-      if (!validateMode(&pack->mode)) {
-        return 0;
-      }
-    }
+    pack->magvar = 0.0;
+    pack->magvar_ew = '\0';
   }
 
-  return 1;
+  return true;
+
+  err: memset(pack, 0, sizeof(*pack));
+  return false;
 }
 
 bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVTG *pack) {

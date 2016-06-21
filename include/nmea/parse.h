@@ -104,11 +104,10 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, bool hasChecksum, nmeaGPGS
  *
  * @param s The string
  * @param sz The length of the string
- * @param hasChecksum True when the string contains a checksum
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPRMC(const char *s, const size_t sz, bool hasChecksum, nmeaGPRMC *pack);
+bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack);
 
 /**
  * Parse a GPVTG sentence from a string

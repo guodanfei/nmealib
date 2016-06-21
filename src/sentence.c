@@ -23,16 +23,6 @@ void nmea_zero_GPGSV(nmeaGPGSV *pack) {
   memset(pack, 0, sizeof(nmeaGPGSV));
 }
 
-void nmea_zero_GPRMC(nmeaGPRMC *pack) {
-  memset(pack, 0, sizeof(nmeaGPRMC));
-  nmea_time_now(&pack->utc, &pack->present);
-  pack->status = 'V';
-  pack->ns = 'N';
-  pack->ew = 'E';
-  pack->magvar_ew = 'E';
-  pack->mode = 'N';
-}
-
 void nmea_zero_GPVTG(nmeaGPVTG *pack) {
   memset(pack, 0, sizeof(nmeaGPVTG));
   pack->track_t = 'T';

@@ -354,116 +354,137 @@ void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_id
 }
 
 void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
-  assert(pack);
-  assert(info);
-
-  info->present |= pack->present;
-  nmea_INFO_set_present(&info->present, SMASK);
-  info->smask |= GPRMC;
-  if (nmea_INFO_is_present(pack->present, UTCDATE)) {
-    info->utc.year = pack->utc.year;
-    info->utc.mon = pack->utc.mon;
-    info->utc.day = pack->utc.day;
+  if (!pack || !info) {
+    return;
   }
+
+  nmea_INFO_set_present(&info->present, SMASK);
+
+  info->smask |= GPRMC;
+
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
     info->utc.hour = pack->utc.hour;
     info->utc.min = pack->utc.min;
     info->utc.sec = pack->utc.sec;
     info->utc.hsec = pack->utc.hsec;
+    nmea_INFO_set_present(&info->present, UTCTIME);
   }
-  nmea_INFO_set_present(&info->present, SIG);
-  nmea_INFO_set_present(&info->present, FIX);
-  if (pack->status == 'A') {
-    if (info->sig == NMEA_SIG_INVALID) {
-      info->sig = NMEA_SIG_DIFFERENTIAL;
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    if (pack->sig != 'A') {
+      info->sig = NMEA_SIG_INVALID;
+    } else if (pack->sigMode != '\0') {
+      /* with mode */
+      info->sig = nmea_INFO_mode_to_sig(pack->sigMode);
+    } else {
+      /* without mode */
+      info->sig = NMEA_SIG_FIX;
     }
-    if (info->fix == NMEA_FIX_BAD) {
-      info->fix = NMEA_FIX_2D;
-    }
-  } else {
-    info->sig = NMEA_SIG_INVALID;
-    info->fix = NMEA_FIX_BAD;
+
+    nmea_INFO_set_present(&info->present, SIG);
   }
+
   if (nmea_INFO_is_present(pack->present, LAT)) {
     info->lat = ((pack->ns == 'N') ?
-        pack->lat :
-        -pack->lat);
+        fabs(pack->lat) :
+        -fabs(pack->lat));
+    nmea_INFO_set_present(&info->present, LAT);
   }
+
   if (nmea_INFO_is_present(pack->present, LON)) {
     info->lon = ((pack->ew == 'E') ?
-        pack->lon :
-        -pack->lon);
+        fabs(pack->lon) :
+        -fabs(pack->lon));
+    nmea_INFO_set_present(&info->present, LON);
   }
+
   if (nmea_INFO_is_present(pack->present, SPEED)) {
     info->speed = pack->speed * NMEA_TUD_KNOTS;
+    nmea_INFO_set_present(&info->present, SPEED);
   }
+
   if (nmea_INFO_is_present(pack->present, TRACK)) {
     info->track = pack->track;
+    nmea_INFO_set_present(&info->present, TRACK);
   }
+
+  if (nmea_INFO_is_present(pack->present, UTCDATE)) {
+    info->utc.year = pack->utc.year;
+    info->utc.mon = pack->utc.mon;
+    info->utc.day = pack->utc.day;
+    nmea_INFO_set_present(&info->present, UTCDATE);
+  }
+
   if (nmea_INFO_is_present(pack->present, MAGVAR)) {
     info->magvar = ((pack->magvar_ew == 'E') ?
-        pack->magvar :
-        -pack->magvar);
+        fabs(pack->magvar) :
+        -fabs(pack->magvar));
+    nmea_INFO_set_present(&info->present, MAGVAR);
   }
-  /* mode is ignored */
 }
 
 void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
-  assert(pack);
-  assert(info);
-
-  nmea_zero_GPRMC(pack);
-
-  pack->present = info->present;
-  nmea_INFO_unset_present(&pack->present, SMASK);
-  if (nmea_INFO_is_present(info->present, UTCDATE)) {
-    pack->utc.year = info->utc.year;
-    pack->utc.mon = info->utc.mon;
-    pack->utc.day = info->utc.day;
+  if (!pack || !info) {
+    return;
   }
+
+  memset(pack, 0, sizeof(*pack));
+
   if (nmea_INFO_is_present(info->present, UTCTIME)) {
     pack->utc.hour = info->utc.hour;
     pack->utc.min = info->utc.min;
     pack->utc.sec = info->utc.sec;
     pack->utc.hsec = info->utc.hsec;
+    nmea_INFO_set_present(&pack->present, UTCTIME);
   }
+
   if (nmea_INFO_is_present(info->present, SIG)) {
-    pack->status = ((info->sig != NMEA_SIG_INVALID) ?
+    pack->sig = ((info->sig != NMEA_SIG_INVALID) ?
         'A' :
         'V');
-  } else {
-    pack->status = 'V';
+    pack->sigMode = nmea_INFO_sig_to_mode(info->sig);
+    nmea_INFO_set_present(&pack->present, SIG);
   }
+
   if (nmea_INFO_is_present(info->present, LAT)) {
     pack->lat = fabs(info->lat);
-    pack->ns = ((info->lat > 0) ?
+    pack->ns = ((info->lat >= 0.0) ?
         'N' :
         'S');
+    nmea_INFO_set_present(&pack->present, LAT);
   }
+
   if (nmea_INFO_is_present(info->present, LON)) {
     pack->lon = fabs(info->lon);
-    pack->ew = ((info->lon > 0) ?
+    pack->ew = ((info->lon >= 0.0) ?
         'E' :
         'W');
+    nmea_INFO_set_present(&pack->present, LON);
   }
+
   if (nmea_INFO_is_present(info->present, SPEED)) {
     pack->speed = info->speed / NMEA_TUD_KNOTS;
+    nmea_INFO_set_present(&pack->present, SPEED);
   }
+
   if (nmea_INFO_is_present(info->present, TRACK)) {
     pack->track = info->track;
+    nmea_INFO_set_present(&pack->present, TRACK);
   }
+
+  if (nmea_INFO_is_present(info->present, UTCDATE)) {
+    pack->utc.year = info->utc.year;
+    pack->utc.mon = info->utc.mon;
+    pack->utc.day = info->utc.day;
+    nmea_INFO_set_present(&pack->present, UTCDATE);
+  }
+
   if (nmea_INFO_is_present(info->present, MAGVAR)) {
     pack->magvar = fabs(info->magvar);
-    pack->magvar_ew = ((info->magvar > 0) ?
+    pack->ew = ((info->magvar >= 0.0) ?
         'E' :
         'W');
-  }
-  if (nmea_INFO_is_present(info->present, SIG)) {
-    pack->mode = ((info->sig != NMEA_SIG_INVALID) ?
-        'A' :
-        'N');
-  } else {
-    pack->mode = 'N';
+    nmea_INFO_set_present(&pack->present, MAGVAR);
   }
 }
 

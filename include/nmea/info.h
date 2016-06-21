@@ -106,6 +106,74 @@ static INLINE const char * nmea_INFO_sig_to_string(int sig) {
   }
 }
 
+static INLINE int nmea_INFO_mode_to_sig(char mode) {
+  switch (mode) {
+    case 'N':
+      return NMEA_SIG_INVALID;
+
+    case 'A':
+      return NMEA_SIG_FIX;
+
+    case 'D':
+      return NMEA_SIG_DIFFERENTIAL;
+
+    case 'P':
+      return NMEA_SIG_SENSITIVE;
+
+    case 'R':
+      return NMEA_SIG_RTKIN;
+
+    case 'F':
+      return NMEA_SIG_FLOAT_RTK;
+
+    case 'E':
+      return NMEA_SIG_ESTIMATED;
+
+    case 'M':
+      return NMEA_SIG_MANUAL;
+
+    case 'S':
+      return NMEA_SIG_SIMULATION;
+
+    default:
+      return NMEA_SIG_INVALID;
+  }
+}
+
+static INLINE char nmea_INFO_sig_to_mode(int sig) {
+  switch (sig) {
+    case NMEA_SIG_INVALID:
+      return 'N';
+
+    case NMEA_SIG_FIX:
+      return 'A';
+
+    case NMEA_SIG_DIFFERENTIAL:
+      return 'D';
+
+    case NMEA_SIG_SENSITIVE:
+      return 'P';
+
+    case NMEA_SIG_RTKIN:
+      return 'R';
+
+    case NMEA_SIG_FLOAT_RTK:
+      return 'F';
+
+    case NMEA_SIG_ESTIMATED:
+      return 'E';
+
+    case NMEA_SIG_MANUAL:
+      return 'M';
+
+    case NMEA_SIG_SIMULATION:
+      return 'S';
+
+    default:
+      return 'N';
+  }
+}
+
 #define NMEA_FIX_FIRST (NMEA_FIX_BAD)
 #define NMEA_FIX_BAD   (1)
 #define NMEA_FIX_2D    (2)
