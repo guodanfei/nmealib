@@ -42,7 +42,7 @@ ifeq ($(VERBOSE),0)
 endif
 	$(MAKECMDPREFIX)$(CC) $(LDFLAGS) -Wl,-soname=$(LIBNAME) -o "$@" $(LIBRARIES) $(OBJ)
 
-build/%.o: src/%.c Makefile Makefile.inc
+build/%.o: src/%.c include/nmea/%.h Makefile Makefile.inc
 ifeq ($(VERBOSE),0)
 	@echo "[CC] $<"
 endif
