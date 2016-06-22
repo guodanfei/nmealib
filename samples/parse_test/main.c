@@ -49,6 +49,10 @@ static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, siz
   return lineCount;
 }
 
+static void nmeaError(const char *s, size_t sz __attribute__((unused))) {
+  fprintf(stderr, "ERROR: %s\n", s);
+}
+
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
   char expectedFileName[2048];
   char inputFileName[2048];
@@ -96,6 +100,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     fprintf(stderr, "Could not open file %s\n", expectedFileName);
     exit(EXIT_FAILURE);
   }
+
+  nmea_context_set_error_func(nmeaError);
 
   nmea_parser_init(&parser);
   nmea_zero_INFO(&info);

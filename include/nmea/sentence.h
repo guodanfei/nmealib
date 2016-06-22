@@ -24,7 +24,6 @@
 #define __NMEA_SENTENCE_H__
 
 #include <nmea/info.h>
-
 #include <stdint.h>
 #include <stddef.h>
 
@@ -172,7 +171,32 @@ typedef struct _nmeaGPGSA {
  * GSV packet information structure (Satellites in view)
  *
  * <pre>
- * GSV - Satellites in View
+ * $GPGSV,sentences,sentence,satellites,prn1,elevation1,azimuth1,snr1,prn2,elevation2,azimuth2,snr2,prn3,elevation3,azimuth3,snr3,prn4,elevation4,azimuth4,snr4*checksum
+ * </pre>
+ *
+ * | Field       | Description                                      | present    |
+ * | :---------: | ------------------------------------------------ | :--------: |
+ * | $GPGSV      | NMEA prefix                                      | -          |
+ * | sentences   | The number of sentences for full data            | SATINVIEW  |
+ * | sentence    | The current sentence number                      | SATINVIEW  |
+ * | satellites  | The number of satellites in view                 | SATINVIEW  |
+ * | prn1        | Satellite PRN number                             | SATINVIEW  |
+ * | elevation1  | Elevation, in degrees                            | SATINVIEW  |
+ * | azimuth1    | Azimuth, in degrees                              | SATINVIEW  |
+ * | snr1        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
+ * | prn2        | Satellite PRN number                             | SATINVIEW  |
+ * | elevation2  | Elevation, in degrees                            | SATINVIEW  |
+ * | azimuth2    | Azimuth, in degrees                              | SATINVIEW  |
+ * | snr2        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
+ * | prn3        | Satellite PRN number                             | SATINVIEW  |
+ * | elevation3  | Elevation, in degrees                            | SATINVIEW  |
+ * | azimuth3    | Azimuth, in degrees                              | SATINVIEW  |
+ * | snr3        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
+ * | prn4        | Satellite PRN number                             | SATINVIEW  |
+ * | elevation4  | Elevation, in degrees                            | SATINVIEW  |
+ * | azimuth4    | Azimuth, in degrees                              | SATINVIEW  |
+ * | snr4        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
+ * | checksum    | NMEA checksum                                    | -          |
  *
  * Shows data about the satellites that the unit might be able to find based on
  * its viewing mask and almanac data. It also shows current ability to track
@@ -195,29 +219,18 @@ typedef struct _nmeaGPGSA {
  * lowest and highest values, however 0 is a special case and may be shown on
  * satellites that are in view but not being tracked.
  *
+ * Example:
+ *
+ * <pre>
  * $GPGSV,2,1,08,01,40,083,46,02,17,308,41,12,07,344,39,14,22,228,45*75
- *
- * Where:
- *      GSV          Satellites in view
- *      2            Number of sentences for full data
- *      1            sentence 1 of 2
- *      08           Number of satellites in view
- *
- *      01           Satellite PRN number
- *      40           Elevation, degrees
- *      083          Azimuth, degrees
- *      46           SNR - higher is better
- *           for up to 4 satellites per sentence
- *
- *      *75          the checksum data, always begins with *
  * </pre>
  */
 typedef struct _nmeaGPGSV {
-    uint32_t present; /**< Mask specifying which fields are present, same as in nmeaINFO */
-    int pack_count; /**< Total number of messages of this type in this cycle */
-    int pack_index; /**< Message number */
-    int sat_count; /**< Total number of satellites in view */
-    nmeaSATELLITE sat_data[NMEA_SATINPACK];
+  uint32_t      present;
+  int           sentences;
+  int           sentence;
+  int           satellites;
+  nmeaSATELLITE satellite[NMEA_SATINPACK];
 } nmeaGPGSV;
 
 /**
@@ -314,8 +327,6 @@ typedef struct _nmeaGPVTG {
   double   spk;
   char     spk_k;
 } nmeaGPVTG;
-
-void nmea_zero_GPGSV(nmeaGPGSV *pack);
 
 #ifdef  __cplusplus
 }

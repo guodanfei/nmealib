@@ -223,8 +223,7 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
           break;
 
         case GPGSV:
-          if (nmea_parse_GPGSV(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
-              &parser->sentence.gpgsv)) {
+          if (nmea_parse_GPGSV(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gpgsv)) {
             sentences_count++;
             nmea_GPGSV2info(&parser->sentence.gpgsv, info);
           }

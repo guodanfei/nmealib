@@ -163,7 +163,7 @@ int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
  */
 int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
   char sentence[256];
-  int sentencesInPack = pack->sat_count - ((pack->pack_index - 1) * NMEA_SATINPACK);
+  int sentencesInPack = pack->satellites - ((pack->sentence - 1) * NMEA_SATINPACK);
   char * pSentence = sentence;
   int sentenceLength = sizeof(sentence);
   int writeCount;
@@ -171,15 +171,15 @@ int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
 
   sentence[0] = '\0';
 
-  writeCount = snprintf(pSentence, sentenceLength, "$GPGSV,%d,%d,%d", pack->pack_count, pack->pack_index,
-      pack->sat_count);
+  writeCount = snprintf(pSentence, sentenceLength, "$GPGSV,%d,%d,%d", pack->sentences, pack->sentence,
+      pack->satellites);
   pSentence += writeCount;
   sentenceLength -= writeCount;
 
   for (i = 0; i < NMEA_SATINPACK; i++) {
     if (i < sentencesInPack) {
-      writeCount = snprintf(pSentence, sentenceLength, ",%02d,%02d,%03d,%02d", pack->sat_data[i].id,
-          pack->sat_data[i].elv, pack->sat_data[i].azimuth, pack->sat_data[i].sig);
+      writeCount = snprintf(pSentence, sentenceLength, ",%02d,%02d,%03d,%02d", pack->satellite[i].id,
+          pack->satellite[i].elv, pack->satellite[i].azimuth, pack->satellite[i].sig);
     } else {
       writeCount = snprintf(pSentence, sentenceLength, ",,,,");
     }

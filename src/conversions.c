@@ -267,89 +267,106 @@ void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack) {
 }
 
 void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
-  int pack_index;
+  if (!pack || !info) {
+    return;
+  }
 
-  assert(pack);
-  assert(info);
+  if (pack->sentence < 1) {
+    return;
+  }
 
-  pack_index = pack->pack_index;
-  if (pack_index < 1)
-    pack_index = 1;
+  if (pack->sentence > pack->sentences) {
+    return;
+  }
 
-  if (pack_index > pack->pack_count)
-    pack_index = pack->pack_count;
+  if (pack->sentence > NMEA_NSATPACKS) {
+    return;
+  }
 
-  if ((pack_index * NMEA_SATINPACK) > NMEA_MAXSAT)
-    pack_index = NMEA_NSATPACKS;
+  if (nmea_gsv_npack((pack->sentences * NMEA_SATINPACK)) != nmea_gsv_npack(pack->satellites)) {
+    return;
+  }
 
-  info->present |= pack->present;
   nmea_INFO_set_present(&info->present, SMASK);
+
   info->smask |= GPGSV;
+
   if (nmea_INFO_is_present(pack->present, SATINVIEW)) {
-    int sat_index;
+    int i;
+    int offset;
+    int max;
 
-    /* index of 1st sat in pack */
-    int sat_offset = (pack_index - 1) * NMEA_SATINPACK;
-    /* the number of sats in this sentence */
-    int sat_count = ((sat_offset + NMEA_SATINPACK) > pack->sat_count) ?
-        (pack->sat_count - sat_offset) :
-        NMEA_SATINPACK;
-
-    for (sat_index = 0; sat_index < sat_count; sat_index++) {
-      info->satinfo.sat[sat_offset + sat_index].id = pack->sat_data[sat_index].id;
-      info->satinfo.sat[sat_offset + sat_index].elv = pack->sat_data[sat_index].elv;
-      info->satinfo.sat[sat_offset + sat_index].azimuth = pack->sat_data[sat_index].azimuth;
-      info->satinfo.sat[sat_offset + sat_index].sig = pack->sat_data[sat_index].sig;
+    if (pack->sentence == 1) {
+      /* first sentence; clear info satellites */
+      memset(info->satinfo.sat, 0, sizeof(info->satinfo.sat));
     }
 
-    info->satinfo.inview = pack->sat_count;
+    /* index of 1st sat in pack */
+    offset = (pack->sentence - 1) * NMEA_SATINPACK;
+
+    if (pack->sentence != pack->sentences) {
+      max = NMEA_SATINPACK;
+    } else {
+      max = pack->satellites - offset;
+    }
+
+    for (i = 0; i < max; i++) {
+      const nmeaSATELLITE *src = &pack->satellite[i];
+      nmeaSATELLITE *dst = &info->satinfo.sat[offset + i];
+      if (src->id) {
+        *dst = *src;
+      }
+    }
+
+    info->satinfo.inview = pack->satellites;
+
+    nmea_INFO_set_present(&info->present, SATINVIEW);
   }
 }
 
 void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
-  assert(pack);
-  assert(info);
+  if (!pack || !info) {
+    return;
+  }
 
-  nmea_zero_GPGSV(pack);
+  memset(pack, 0, sizeof(*pack));
 
-  pack->present = info->present;
-  nmea_INFO_unset_present(&pack->present, SMASK);
   if (nmea_INFO_is_present(info->present, SATINVIEW)) {
-    int sit;
-    int pit;
-    int toskip;
+    int offset;
+    int i;
+    int skipCount;
 
-    pack->sat_count = (info->satinfo.inview < NMEA_MAXSAT) ?
+    pack->satellites = (info->satinfo.inview < NMEA_MAXSAT) ?
         info->satinfo.inview :
         NMEA_MAXSAT;
-    pack->pack_count = nmea_gsv_npack(pack->sat_count);
 
-    if ((int) pack_idx >= pack->pack_count)
-      pack->pack_index = pack->pack_count;
-    else
-      pack->pack_index = pack_idx + 1;
+    pack->sentences = nmea_gsv_npack(pack->satellites);
+
+    if ((int) pack_idx >= pack->sentences) {
+      pack->sentence = pack->sentences;
+    } else {
+      pack->sentence = pack_idx + 1;
+    }
 
     /* now skip the first ((pack->pack_index - 1) * NMEA_SATINPACK) in view sats */
-    toskip = ((pack->pack_index - 1) * NMEA_SATINPACK);
-    sit = 0;
-    while ((toskip > 0) && (sit < NMEA_MAXSAT)) {
-      if (info->satinfo.sat[sit].id) {
-        toskip--;
+    skipCount = ((pack->sentence - 1) * NMEA_SATINPACK);
+
+    offset = 0;
+    while ((skipCount > 0) && (offset < NMEA_MAXSAT)) {
+      if (info->satinfo.sat[offset].id) {
+        skipCount--;
       }
-      sit++;
+      offset++;
     }
 
-    for (pit = 0; pit < NMEA_SATINPACK; sit++) {
-      if (sit < NMEA_MAXSAT) {
-        if (info->satinfo.sat[sit].id) {
-          pack->sat_data[pit] = info->satinfo.sat[sit];
-          pit++;
-        }
-      } else {
-        memset(&pack->sat_data[pit], 0, sizeof(pack->sat_data[pit]));
-        pit++;
+    for (i = 0; (i < NMEA_SATINPACK) && (offset < NMEA_MAXSAT); offset++) {
+      if (info->satinfo.sat[offset].id) {
+        pack->satellite[i] = info->satinfo.sat[offset];
+        i++;
       }
     }
+
+    nmea_INFO_set_present(&pack->present, SATINVIEW);
   }
 }
 

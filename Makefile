@@ -13,7 +13,7 @@ INCLUDEDIR ?= $(DESTDIR)/usr/include
 LIBDIR ?= $(USRDIR)/lib
 
 
-MODULES = context conversions generate generator gmath info parse parser sentence tok
+MODULES = context conversions generate generator gmath info parse parser tok
 OBJ = $(MODULES:%=build/%.o)
 
 LIBRARIES = -lm
