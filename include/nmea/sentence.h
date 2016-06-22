@@ -121,15 +121,16 @@ typedef struct _nmeaGPGGA {
  * $GPGSA,selection,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
  * </pre>
  *
- * | Field       | Description                                            | present                   |
- * | :---------: | ------------------------------------------------------ | :-----------------------: |
- * | $GPGSA      | NMEA prefix                                            | -                         |
- * | selection   | Selection of 2D or 3D fix (A = auto, M = manual)       | SIG                       |
- * | fix         | Fix, see NMEA_FIX_* defines                            | FIX                       |
- * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)              | SATINUSE \| SATINUSECOUNT |
- * | pdop        | Dilution of position                                   | PDOP                      |
- * | hdop        | Horizontal dilution of position                        | HDOP                      |
- * | vdop        | Vertical dilution of position                          | VDOP                      |
+ * | Field       | Description                                      | present                   |
+ * | :---------: | ------------------------------------------------ | :-----------------------: |
+ * | $GPGSA      | NMEA prefix                                      | -                         |
+ * | selection   | Selection of 2D or 3D fix (A = auto, M = manual) | SIG                       |
+ * | fix         | Fix, see NMEA_FIX_* defines                      | FIX                       |
+ * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE \| SATINUSECOUNT |
+ * | pdop        | Dilution of position                             | PDOP                      |
+ * | hdop        | Horizontal dilution of position                  | HDOP                      |
+ * | vdop        | Vertical dilution of position                    | VDOP                      |
+ * | checksum    | NMEA checksum                                    | -                         |
  *
  * This sentence provides details on the nature of the fix. It includes the
  * numbers of the satellites being used in the current solution and the DOP.
@@ -275,36 +276,46 @@ typedef struct _nmeaGPRMC {
  * VTG packet information structure (Track made good and ground speed)
  *
  * <pre>
- * VTG - Velocity made good.
+ * $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*checksum
+ * </pre>
  *
- * The gps receiver may use the LC prefix instead of GP if it is emulating
- * Loran output.
+ * | Field       | Description                           | present   |
+ * | :---------: | ------------------------------------- | :-------: |
+ * | $GPVTG      | NMEA prefix                           | -         |
+ * | track       | Track, in degress true north          | TRACK (1) |
+ * | T           | Track indicator (True north)          | TRACK (1) |
+ * | mtrack      | Magnetic track made good              | TRACK (2) |
+ * | M           | Magnetic track indicator (Made good)  | TRACK (2) |
+ * | speed       | Ground speed, in knots                | SPEED (3) |
+ * | N           | Ground speed unit (kNots)             | SPEED (3) |
+ * | speedk      | Ground speed, in kph                  | SPEED (4) |
+ * | K           | Ground speed unit (Kph)               | SPEED (4) |
+ * | checksum    | NMEA checksum                         | -         |
  *
+ * (1) These fields are both required for a valid track<br/>
+ * (2) These fields are both required for a valid magnetic track<br/>
+ * (3) These fields are both required for a valid speed<br/>
+ * (4) These fields are both required for a valid speed<br/>
+ *
+ * Example:
+ *
+ * <pre>
  * $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
- *
- * where:
- *      VTG          Track made good and ground speed
- *      054.7,T      True track made good (degrees)
- *      034.4,M      Magnetic track made good
- *      005.5,N      Ground speed, knots
- *      010.2,K      Ground speed, Kilometers per hour
- *      *48          Checksum
  * </pre>
  */
 typedef struct _nmeaGPVTG {
-    uint32_t present; /**< Mask specifying which fields are present, same as in nmeaINFO */
-    double track; /**< True track made good (degrees) */
-    char track_t; /**< Fixed text 'T' indicates that track made good is relative to true north */
-    double mtrack; /**< Magnetic track made good */
-    char mtrack_m; /**< Fixed text 'M' */
-    double spn; /**< Ground speed, knots */
-    char spn_n; /**< Fixed text 'N' indicates that speed over ground is in knots */
-    double spk; /**< Ground speed, kilometers per hour */
-    char spk_k; /**< Fixed text 'K' indicates that speed over ground is in kilometers/hour */
+  uint32_t present;
+  double   track;
+  char     track_t;
+  double   mtrack;
+  char     mtrack_m;
+  double   spn;
+  char     spn_n;
+  double   spk;
+  char     spk_k;
 } nmeaGPVTG;
 
 void nmea_zero_GPGSV(nmeaGPGSV *pack);
-void nmea_zero_GPVTG(nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

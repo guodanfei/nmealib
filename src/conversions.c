@@ -489,39 +489,60 @@ void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
 }
 
 void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info) {
-  assert(pack);
-  assert(info);
-
-  info->present |= pack->present;
-  nmea_INFO_set_present(&info->present, SMASK);
-  info->smask |= GPVTG;
-  if (nmea_INFO_is_present(pack->present, SPEED)) {
-    info->speed = pack->spk;
+  if (!pack || !info) {
+    return;
   }
+
+  nmea_INFO_set_present(&info->present, SMASK);
+
+  info->smask |= GPVTG;
+
   if (nmea_INFO_is_present(pack->present, TRACK)) {
     info->track = pack->track;
+    nmea_INFO_set_present(&info->present, TRACK);
   }
+
   if (nmea_INFO_is_present(pack->present, MTRACK)) {
     info->mtrack = pack->mtrack;
+    nmea_INFO_set_present(&info->present, MTRACK);
+  }
+
+  if (nmea_INFO_is_present(pack->present, SPEED)) {
+    double speed;
+    if (pack->spk_k) {
+      speed = pack->spk;
+    } else {
+      speed = pack->spn * NMEA_TUD_KNOTS;
+    }
+    info->speed = speed;
+    nmea_INFO_set_present(&info->present, SPEED);
   }
 }
 
 void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack) {
-  assert(pack);
-  assert(info);
+  if (!pack || !info) {
+    return;
+  }
 
-  nmea_zero_GPVTG(pack); /* also sets up units */
+  memset(pack, 0, sizeof(*pack));
 
-  pack->present = info->present;
-  nmea_INFO_unset_present(&pack->present, SMASK);
   if (nmea_INFO_is_present(info->present, TRACK)) {
     pack->track = info->track;
+    pack->track_t = 'T';
+    nmea_INFO_set_present(&pack->present, TRACK);
   }
+
   if (nmea_INFO_is_present(info->present, MTRACK)) {
     pack->mtrack = info->mtrack;
+    pack->mtrack_m = 'M';
+    nmea_INFO_set_present(&pack->present, MTRACK);
   }
+
   if (nmea_INFO_is_present(info->present, SPEED)) {
     pack->spn = info->speed / NMEA_TUD_KNOTS;
+    pack->spn_n = 'N';
     pack->spk = info->speed;
+    pack->spk_k = 'K';
+    nmea_INFO_set_present(&pack->present, SPEED);
   }
 }

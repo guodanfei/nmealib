@@ -969,37 +969,44 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   return false;
 }
 
-bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVTG *pack) {
-  int token_count;
+bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack) {
+  bool speedK = false;
+  bool speedN = false;
+  int fieldCount;
 
-  if (!hasChecksum) {
-    return 0;
+  if (!pack) {
+    return false;
   }
 
-  assert(s);
-  assert(pack);
+  if (!s) {
+    goto err;
+  }
 
   nmea_trace_buff(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  pack->present = 0;
+  memset(pack, 0, sizeof(*pack));
   pack->track = NAN;
-  pack->track_t = 0;
   pack->mtrack = NAN;
-  pack->mtrack_m = 0;
   pack->spn = NAN;
-  pack->spn_n = 0;
   pack->spk = NAN;
-  pack->spk_k = 0;
 
   /* parse */
-  token_count = nmea_scanf(s, sz, "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c*", &pack->track, &pack->track_t, &pack->mtrack,
-      &pack->mtrack_m, &pack->spn, &pack->spn_n, &pack->spk, &pack->spk_k);
+  fieldCount = nmea_scanf(s, sz, //
+      "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c", //
+      &pack->track, //
+      &pack->track_t, //
+      &pack->mtrack, //
+      &pack->mtrack_m, //
+      &pack->spn, //
+      &pack->spn_n, //
+      &pack->spk, //
+      &pack->spk_k);
 
   /* see that there are enough tokens */
-  if (token_count != 8) {
-    nmea_error("GPVTG parse error: need 8 tokens, got %d in %s", token_count, s);
-    return 0;
+  if (fieldCount != 8) {
+    nmea_error("GPVTG parse error: need 8 tokens, got %d in '%s'", fieldCount, s);
+    return false;
   }
 
   /* determine which fields are present and validate them */
@@ -1007,49 +1014,66 @@ bool nmea_parse_GPVTG(const char *s, const size_t sz, bool hasChecksum, nmeaGPVT
   if (!isnan(pack->track) && (pack->track_t)) {
     pack->track_t = toupper(pack->track_t);
     if (pack->track_t != 'T') {
-      nmea_error("GPVTG parse error: invalid track unit, got %c, expected T", pack->track_t);
-      return 0;
+      nmea_error("GPVTG parse error: invalid track unit, got '%c', expected 'T'", pack->track_t);
+      return false;
     }
 
     nmea_INFO_set_present(&pack->present, TRACK);
+  } else {
+    pack->track = 0.0;
+    pack->track_t = '\0';
   }
+
   if (!isnan(pack->mtrack) && (pack->mtrack_m)) {
     pack->mtrack_m = toupper(pack->mtrack_m);
     if (pack->mtrack_m != 'M') {
-      nmea_error("GPVTG parse error: invalid mtrack unit, got %c, expected M", pack->mtrack_m);
-      return 0;
+      nmea_error("GPVTG parse error: invalid mtrack unit, got '%c', expected 'M'", pack->mtrack_m);
+      return false;
     }
 
     nmea_INFO_set_present(&pack->present, MTRACK);
+  } else {
+    pack->mtrack = 0.0;
+    pack->mtrack_m = '\0';
   }
+
   if (!isnan(pack->spn) && (pack->spn_n)) {
     pack->spn_n = toupper(pack->spn_n);
     if (pack->spn_n != 'N') {
-      nmea_error("GPVTG parse error: invalid knots speed unit, got %c, expected N", pack->spn_n);
-      return 0;
+      nmea_error("GPVTG parse error: invalid knots speed unit, got '%c', expected 'N'", pack->spn_n);
+      return false;
     }
 
+    speedN = true;
     nmea_INFO_set_present(&pack->present, SPEED);
-
-    if (isnan(pack->spk)) {
-      pack->spk = pack->spn * NMEA_TUD_KNOTS;
-      pack->spk_k = 'K';
-    }
+  } else {
+    pack->spn = 0.0;
+    pack->spn_n = '\0';
   }
+
   if (!isnan(pack->spk) && (pack->spk_k)) {
     pack->spk_k = toupper(pack->spk_k);
     if (pack->spk_k != 'K') {
-      nmea_error("GPVTG parse error: invalid kph speed unit, got %c, expected K", pack->spk_k);
-      return 0;
+      nmea_error("GPVTG parse error: invalid kph speed unit, got '%c', expected 'K'", pack->spk_k);
+      return false;
     }
 
+    speedK = true;
     nmea_INFO_set_present(&pack->present, SPEED);
 
-    if (isnan(pack->spn)) {
-      pack->spn = pack->spk / NMEA_TUD_KNOTS;
-      pack->spn_n = 'N';
-    }
   }
 
-  return 1;
+  if (!speedK && speedN) {
+    pack->spk = pack->spn * NMEA_TUD_KNOTS;
+    pack->spk_k = 'K';
+  } else if (speedK && !speedN) {
+    pack->spn = pack->spk / NMEA_TUD_KNOTS;
+    pack->spn_n = 'N';
+  }
+
+  return true;
+
+  err:
+    memset(pack, 0, sizeof(*pack));
+    return false;
 }

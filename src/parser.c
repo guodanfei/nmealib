@@ -238,8 +238,7 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
           break;
 
         case GPVTG:
-          if (nmea_parse_GPVTG(parser->buffer.buffer, parser->buffer.length, parser->sentence_parser.has_checksum,
-              &parser->sentence.gpvtg)) {
+          if (nmea_parse_GPVTG(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gpvtg)) {
             sentences_count++;
             nmea_GPVTG2info(&parser->sentence.gpvtg, info);
           }
