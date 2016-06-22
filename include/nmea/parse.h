@@ -40,16 +40,6 @@ extern "C" {
 bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
 
 /**
- * Parse a GPGSV sentence from a string
- *
- * @param s The string
- * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
- */
-bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack);
-
-/**
  * Parse a GPRMC sentence from a string
  *
  * @param s The string

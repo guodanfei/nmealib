@@ -96,6 +96,42 @@ typedef struct _nmeaGPGSV {
   nmeaSATELLITE satellite[NMEA_SATINPACK];
 } nmeaGPGSV;
 
+/**
+ * Determine the number of GSV sentences needed for the specified number of
+ * satellites
+ *
+ * @param satellites The number of satellites
+ * @return The number of GSV sentences needed (at least 1)
+ */
+unsigned int nmea_gsv_npack(unsigned int satellites);
+
+/**
+ * Parse a GPGSV sentence from a string
+ *
+ * @param s The string
+ * @param sz The length of the string
+ * @param pack Where the results should be stored
+ * @return True if parsed successfully, or false otherwise
+ */
+bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack);
+
+/**
+ * Update an unsanitised nmeaINFO structure from a GSV packet structure
+ *
+ * @param pack The GSV packet structure
+ * @param info The nmeaINFO structure
+ */
+void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGSV structure
+ * @param pack_idx The index of the nmeaGPGSV structure (zero based)
+ */
+void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

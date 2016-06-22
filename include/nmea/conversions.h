@@ -26,32 +26,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Determine the number of GSV sentences needed for the specified number of
- * satellites
- *
- * @param satellites The number of satellites
- * @return The number of GSV sentences needed (at least 1)
- */
-unsigned int nmea_gsv_npack(unsigned int satellites);
-
-/**
- * Update an unsanitised nmeaINFO structure from a GSV packet structure
- *
- * @param pack The GSV packet structure
- * @param info The nmeaINFO structure
- */
-void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info);
-
-/**
- * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
- *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPGSV structure
- * @param pack_idx The index of the nmeaGPGSV structure (zero based)
- */
-void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
-
-/**
  * Update an unsanitised nmeaINFO structure from a RMC packet structure
  *
  * @param pack The RMC packet structure
