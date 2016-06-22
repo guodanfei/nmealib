@@ -66,14 +66,6 @@ typedef struct _nmeaPARSER {
         char buffer[SENTENCE_SIZE];
     } buffer;
 
-    union {
-        nmeaGPGGA gpgga;
-        nmeaGPGSA gpgsa;
-        nmeaGPGSV gpgsv;
-        nmeaGPRMC gprmc;
-        nmeaGPVTG gpvtg;
-    } sentence;
-
     sentencePARSER sentence_parser;
 } nmeaPARSER;
 

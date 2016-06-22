@@ -18,6 +18,8 @@
 #ifndef __NMEALIB_SENTENCE_H__
 #define __NMEALIB_SENTENCE_H__
 
+#include <stddef.h>
+
 #include <nmea/gpgga.h>
 #include <nmea/gpgsa.h>
 #include <nmea/gpgsv.h>
