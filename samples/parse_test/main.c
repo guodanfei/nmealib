@@ -77,7 +77,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   long expectedLineNr = 1;
 
   directoryName = dirname(argv[0]);
-  defaultFileName = "/../../samples/parse_test/nmea.txt";
+  defaultFileName = "/../parse_test/nmea.txt";
   if (argc > 1) {
     if (!strcmp("stdout", argv[1])) {
       dooutput = true;
