@@ -35,22 +35,6 @@ extern "C" {
 unsigned int nmea_gsv_npack(unsigned int satellites);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GGA packet structure
- *
- * @param pack The GGA packet structure
- * @param info The nmeaINFO structure
- */
-void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info);
-
-/**
- * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
- *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPGGA structure
- */
-void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack);
-
-/**
  * Update an unsanitised nmeaINFO structure from a GSA packet structure
  *
  * @param pack The GSA packet structure

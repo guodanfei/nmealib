@@ -22,6 +22,7 @@
 #include <nmea/sentence.h>
 #include <nmea/conversions.h>
 #include <nmea/tok.h>
+#include <nmea/validate.h>
 
 #include <stdlib.h>
 #include <stdbool.h>

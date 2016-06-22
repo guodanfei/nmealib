@@ -27,44 +27,17 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * The type definition for an invalid NMEA character/description
- */
-typedef struct {
-  const char character;
-  const char * description;
-} InvalidNMEACharacter;
-
-/**
- * Determine whether the given character is not allowed in an NMEA string
+ * Parse nmeaTIME (time only, no date) from a string.
  *
- * @param c The character to check
- *
- * @return The invalid character name/description when the string has invalid
- * characters, NULL otherwise
- */
-const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c);
-
-/**
- * Determine whether the specified string contains characters that are not
- * allowed in an NMEA string
- *
- * @param s The string to check
- * @param sz The length of the string to check
- *
- * @return The invalid character name/description when the string has invalid
- * characters, NULL otherwise
- */
-const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
-
-/**
- * Parse a GPGGA sentence from a string
+ * The format that is used (hhmmss, hhmmss.s, hhmmss.ss or hhmmss.sss) is
+ * determined by the length of the string.
  *
  * @param s The string
- * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
+ * @param t The structure in which to store the parsed time
+ * @param prefix The NMEA prefix
+ * @return True on success, false otherwise
  */
-bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack);
+bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
 
 /**
  * Parse a GPGSA sentence from a string

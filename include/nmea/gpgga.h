@@ -24,6 +24,8 @@
 #define __NMEALIB_GPGGA_H__
 
 #include <nmea/info.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #ifdef  __cplusplus
@@ -91,6 +93,32 @@ typedef struct _nmeaGPGGA {
   double   dgps_age;
   int      dgps_sid;
 } nmeaGPGGA;
+
+/**
+ * Parse a GPGGA sentence from a string
+ *
+ * @param s The string
+ * @param sz The length of the string
+ * @param pack Where the results should be stored
+ * @return True if parsed successfully, or false otherwise
+ */
+bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack);
+
+/**
+ * Update an unsanitised nmeaINFO structure from a GGA packet structure
+ *
+ * @param pack The GGA packet structure
+ * @param info The nmeaINFO structure
+ */
+void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGGA structure
+ */
+void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack);
 
 #ifdef  __cplusplus
 }
