@@ -26,22 +26,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Update an unsanitised nmeaINFO structure from a RMC packet structure
- *
- * @param pack The RMC packet structure
- * @param info The nmeaINFO structure
- */
-void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info);
-
-/**
- * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
- *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPRMC structure
- */
-void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack);
-
-/**
  * Update an unsanitised nmeaINFO structure from a VTG packet structure
  *
  * @param pack The VTG packet structure

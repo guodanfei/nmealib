@@ -40,14 +40,19 @@ extern "C" {
 bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
 
 /**
- * Parse a GPRMC sentence from a string
+ * Parse nmeaTIME (date only, no time) from a string.
  *
- * @param s The string
- * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
+ * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
+ * range of [0, 11]. The year is adjusted (incremented by 100) for years
+ * before 90 to comply with the nmeaTIME year range of [90, 189].
+ *
+ * @param date The date (DDMMYY)
+ * @param t The structure in which to store the parsed date
+ * @param prefix The NMEA prefix
+ * @param s The NMEA sentence
+ * @return True on success, false otherwise
  */
-bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack);
+bool _nmea_parse_date(const int date, nmeaTIME *t, const char * prefix, const char * s);
 
 /**
  * Parse a GPVTG sentence from a string

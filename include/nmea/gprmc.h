@@ -82,6 +82,32 @@ typedef struct _nmeaGPRMC {
   char     sigMode;
 } nmeaGPRMC;
 
+/**
+ * Parse a GPRMC sentence from a string
+ *
+ * @param s The string
+ * @param sz The length of the string
+ * @param pack Where the results should be stored
+ * @return True if parsed successfully, or false otherwise
+ */
+bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack);
+
+/**
+ * Update an unsanitised nmeaINFO structure from a RMC packet structure
+ *
+ * @param pack The RMC packet structure
+ * @param info The nmeaINFO structure
+ */
+void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPRMC structure
+ */
+void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */
