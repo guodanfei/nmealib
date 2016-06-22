@@ -1,6 +1,8 @@
 #ifndef _NMEA_RANDOM_H
 #define _NMEA_RANDOM_H
 
+#include <nmea/compiler.h>
+
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -10,7 +12,7 @@
 
 #define NMEA_RANDOM_MAX INT32_MAX
 
-static inline long int nmea_random(const double min, const double max) {
+static INLINE long int nmea_random(const double min, const double max) {
   int32_t value;
   int randomFile;
   double range = fabs(max - min);
@@ -36,7 +38,7 @@ static inline long int nmea_random(const double min, const double max) {
   return min + ((abs(value) * range) / NMEA_RANDOM_MAX);
 }
 
-static inline void nmea_init_random(void) {
+static INLINE void nmea_init_random(void) {
   srandom(time(NULL));
 }
 

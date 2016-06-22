@@ -17,6 +17,7 @@
 
 #include <nmea/parser.h>
 
+#include <nmea/compiler.h>
 #include <nmea/parse.h>
 #include <nmea/sentence.h>
 #include <nmea/conversions.h>
@@ -40,7 +41,7 @@ static void reset_sentence_parser(nmeaPARSER * parser, sentence_parser_state new
   parser->sentence_parser.state = new_state;
 }
 
-static inline bool isHexChar(char c) {
+static INLINE bool isHexChar(char c) {
   switch (tolower(c)) {
     case '0':
     case '1':
