@@ -49,6 +49,7 @@
 #ifndef __NMEA_INFO_H__
 #define __NMEA_INFO_H__
 
+#include <nmea/compiler.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -56,18 +57,6 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
-
-#ifndef INLINE
-#define INLINE inline __attribute__((always_inline))
-#endif
-
-#ifndef MAX
-#define MAX(x,y) (((x) >= (y)) ? (x) : (y))
-#endif
-
-#ifndef MIN
-#define MIN(x,y) (((x) <= (y)) ? (x) : (y))
-#endif
 
 #define NMEA_SIG_FIRST        (NMEA_SIG_INVALID)
 #define NMEA_SIG_INVALID      (0)
