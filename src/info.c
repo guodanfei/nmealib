@@ -79,61 +79,6 @@ void nmea_zero_INFO(nmeaINFO *info) {
 }
 
 /**
- * Determine if a nmeaINFO structure has a certain field (from the smask).
- * Note: this is not the complete truth as fields may be absent in certain
- * sentences and are presented as 'present' by this function.
- *
- * @deprecated use nmea_INFO_is_present instead
- * @param smask the smask field
- * @param fieldName use a name from nmeaINFO_FIELD
- * @return a boolean, true when the structure has the requested field
- */
-bool nmea_INFO_is_present_smask(int smask, nmeaINFO_FIELD fieldName) {
-  switch (fieldName) {
-    case SMASK:
-      return true;
-
-    case ELV:
-      return ((smask & GPGGA) != 0);
-
-    case PDOP:
-    case VDOP:
-    case SATINUSE:
-      return ((smask & GPGSA) != 0);
-
-    case SATINVIEW:
-      return ((smask & GPGSV) != 0);
-
-    case UTCDATE:
-    case MAGVAR:
-      return ((smask & GPRMC) != 0);
-
-    case MTRACK:
-      return ((smask & GPVTG) != 0);
-
-    case SATINUSECOUNT:
-    case HDOP:
-      return ((smask & (GPGGA | GPGSA)) != 0);
-
-    case UTCTIME:
-    case SIG:
-    case LAT:
-    case LON:
-      return ((smask & (GPGGA | GPRMC)) != 0);
-
-    case FIX:
-      return ((smask & (GPGSA | GPRMC)) != 0);
-
-    case SPEED:
-    case TRACK:
-      return ((smask & (GPRMC | GPVTG)) != 0);
-
-    default:
-      return false;
-  }
-}
-
-/**
  * Flag a nmeaINFO structure to contain a certain field
  *
  * @param present a pointer to the presence field

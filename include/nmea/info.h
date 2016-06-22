@@ -361,8 +361,6 @@ static INLINE const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field) {
 void nmea_time_now(nmeaTIME *utc, uint32_t * present);
 void nmea_zero_INFO(nmeaINFO *info);
 
-bool nmea_INFO_is_present_smask(int smask, nmeaINFO_FIELD fieldName);
-
 /**
  * Determine if a nmeaINFO structure has a certain field
  *
