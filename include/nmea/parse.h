@@ -57,18 +57,6 @@ const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c);
 const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
 
 /**
- * Determine the sentence type (see nmeaPACKTYPE) from the start of the
- * specified string (an NMEA sentence). The '$' character with which an
- * NMEA sentence start must NOT be at the start of the specified string.
- *
- * @param s The string. Must be the NMEA string right after the initial '$'
- * character
- * @param sz The length of the string
- * @return The packet type, or GPNON when it could not be determined
- */
-enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz);
-
-/**
  * Parse a GPGGA sentence from a string
  *
  * @param s The string

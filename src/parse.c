@@ -60,44 +60,6 @@ static const InvalidNMEACharacter invalidCharacters[] = {
       .description = NULL }
 };
 
-/**
- * The type definition for a map from NMEA sentence prefix to sentence type
- */
-typedef struct {
-  const char * prefix;
-  const enum nmeaPACKTYPE sentenceType;
-} SentencePrefixToType;
-
-/**
- * The map from NMEA sentence prefix to sentence type
- */
-static const SentencePrefixToType sentencePrefixToType[] = {
-    {
-      .prefix = "GPGGA",
-      .sentenceType = GPGGA
-    },
-    {
-      .prefix = "GPGSA",
-      .sentenceType = GPGSA
-    },
-    {
-      .prefix = "GPGSV",
-      .sentenceType = GPGSV
-    },
-    {
-      .prefix = "GPRMC",
-      .sentenceType = GPRMC
-    },
-    {
-      .prefix = "GPVTG",
-      .sentenceType = GPVTG
-    },
-    {
-      .prefix = NULL,
-      .sentenceType = GPNON
-    }
-};
-
 static int cmp_int(const void *p1, const void *p2) {
   int prn1 = *((const int *) p1);
   int prn2 = *((const int *) p2);
@@ -434,24 +396,6 @@ const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * 
   }
 
   return NULL;
-}
-
-enum nmeaPACKTYPE nmea_parse_get_sentence_type(const char *s, const size_t sz) {
-  size_t i = 0;
-
-  if (!s || (sz < NMEA_PREFIX_LENGTH)) {
-    return GPNON;
-  }
-
-  while (sentencePrefixToType[i].prefix) {
-    if (!strncmp(s, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
-      return sentencePrefixToType[i].sentenceType;
-    }
-
-    i++;
-  }
-
-  return GPNON;
 }
 
 bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {

@@ -205,9 +205,9 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
   for (charIndex = 0; charIndex < len; charIndex++) {
     bool sentence_read_successfully = nmea_parse_sentence_character(parser, &s[charIndex]);
     if (sentence_read_successfully) {
-      enum nmeaPACKTYPE sentence_type = nmea_parse_get_sentence_type(&parser->buffer.buffer[1],
+      enum NmeaSentence sentence = nmeaPrefixToSentence(&parser->buffer.buffer[1],
           parser->buffer.length - 1);
-      switch (sentence_type) {
+      switch (sentence) {
         case GPGGA:
           if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, &parser->sentence.gpgga)) {
             sentences_count++;
