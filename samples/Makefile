@@ -1,19 +1,30 @@
-include ../Makefile.inc
+TOPDIR = ..
+
+include $(TOPDIR)/Makefile.inc
 
 #
 # Settings
 #
 
-SAMPLES = generate generator math parse parse_file parse_test
-SMPLS = $(SAMPLES:%=../build/samples/%)
-SMPLOBJ = $(SAMPLES:%=%/main.o)
+SAMPLESDYNAMICLINK ?= 1
 
-ifdef SAMPLESDYNAMICLINK
-  LIBRARIES = -L ../lib -lnmea -lm
+C_FILES = $(wildcard */main.c)
+SAMPLES = $(sort $(patsubst %/,%,$(dir $(C_FILES))))
+
+OBJDIRS = $(SAMPLES:%=build/%)
+BINARIES = $(SAMPLES:%=lib/%)
+
+.PRECIOUS: $(BINARIES) $(OBJDIRS:%=%/main.o)
+
+CFLAGS += -I $(TOPDIR)/include
+LDLAGS += -L $(TOPDIR)/lib -lm
+STATICLIBS =
+
+ifneq ($(SAMPLESDYNAMICLINK),0)
+  LDLAGS += -lnmea
 else
-  LIBRARIES = ../lib/libnmea.a -lm
+  STATICLIBS += $(TOPDIR)/lib/$(LIBNAMESTATIC)
 endif
-INCLUDES = -I ../include
 
 
 #
@@ -24,29 +35,29 @@ all: all-before samples
 
 remake: clean all
 
-samples: $(SMPLS)
+samples: $(BINARIES)
 
-../build/samples/%: %/main.o ../lib/libnmea.a
+lib/%: build/%/main.o $(STATICLIBS)
 ifeq ($(VERBOSE),0)
 	@echo "[LD] $@"
 endif
-	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $< $(LIBRARIES) -o $@
+	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(LDLAGS) $(LIBRARIES) -o $@ $< $(STATICLIBS)
 
-%/main.o: %/main.c Makefile ../Makefile.inc
+build/%/main.o: %/main.c Makefile $(TOPDIR)/Makefile.inc
 ifeq ($(VERBOSE),0)
 	@echo "[CC] $<"
 endif
-	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
 
 
 #
 # Phony Targets
 #
 
-.PHONY: all all-before clean samples
+.PHONY: all-before clean
 
 all-before:
-	$(MAKECMDPREFIX)mkdir -p ../build/samples
+	$(MAKECMDPREFIX)mkdir -p build lib $(OBJDIRS)
 
 clean:
-	$(MAKECMDPREFIX)rm -f $(SMPLOBJ) $(SMPLS)
+	$(MAKECMDPREFIX)rm -fr build lib
