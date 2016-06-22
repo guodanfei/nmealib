@@ -1,5 +1,15 @@
 ######################
 #
+# Settings
+#
+#
+
+LIBNAME = libnmea.so
+LIBNAMESTATIC = libnmea.a
+
+
+######################
+#
 # Highlevel configuration options for all
 #
 #

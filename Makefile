@@ -4,16 +4,16 @@ include Makefile.inc
 # Settings
 #
 
-LIBNAME = libnmea.so
-LIBNAMESTATIC = libnmea.a
-
 DESTDIR ?=
 USRDIR ?= $(DESTDIR)/usr
 INCLUDEDIR ?= $(DESTDIR)/usr/include
 LIBDIR ?= $(USRDIR)/lib
 
+H_FILES = $(wildcard include/nmea/*.h)
+C_FILES = $(wildcard src/*.c)
 
-MODULES = context conversions generate generator gmath info parse parser tok
+MODULES = $(C_FILES:src/%.c=%)
+
 OBJ = $(MODULES:%=build/%.o)
 
 LIBRARIES = -lm
@@ -42,7 +42,7 @@ ifeq ($(VERBOSE),0)
 endif
 	$(MAKECMDPREFIX)$(CC) $(LDFLAGS) -Wl,-soname=$(LIBNAME) -o "$@" $(LIBRARIES) $(OBJ)
 
-build/%.o: src/%.c include/nmea/%.h Makefile Makefile.inc
+build/%.o: src/%.c $(H_FILES) Makefile Makefile.inc
 ifeq ($(VERBOSE),0)
 	@echo "[CC] $<"
 endif
@@ -51,15 +51,15 @@ endif
 samples: all
 	$(MAKECMDPREFIX)$(MAKE) -C samples all
 
+test : all samples
+	$(MAKECMDPREFIX)LD_PRELOAD=./lib/$(LIBNAME) ./samples/lib/parse_test
+
 
 #
 # Phony Targets
 #
 
-.PHONY: all test default_target all-before clean doc install install-headers uninstall uninstall-headers
-
-test : all samples
-	$(MAKECMDPREFIX)LD_PRELOAD=./lib/libnmea.so ./build/samples/parse_test
+.PHONY: all-before clean doc doc-clean install install-headers uninstall uninstall-headers
 
 all-before:
 	$(MAKECMDPREFIX)mkdir -p build lib
@@ -67,7 +67,7 @@ all-before:
 clean:
 	$(MAKECMDPREFIX)$(MAKE) -C doc clean
 	$(MAKECMDPREFIX)$(MAKE) -C samples clean
-	$(MAKECMDPREFIX)rm -frv build lib
+	$(MAKECMDPREFIX)rm -fr build lib
 
 doc:
 	$(MAKECMDPREFIX)$(MAKE) -C doc all
