@@ -54,16 +54,6 @@ bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
  */
 bool _nmea_parse_date(const int date, nmeaTIME *t, const char * prefix, const char * s);
 
-/**
- * Parse a GPVTG sentence from a string
- *
- * @param s The string
- * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
- */
-bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack);
-
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

@@ -20,7 +20,6 @@
 #include <nmea/compiler.h>
 #include <nmea/parse.h>
 #include <nmea/sentence.h>
-#include <nmea/conversions.h>
 #include <nmea/tok.h>
 #include <nmea/validate.h>
 

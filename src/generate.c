@@ -18,7 +18,7 @@
 #include <nmea/generate.h>
 
 #include <nmea/tok.h>
-#include <nmea/conversions.h>
+#include <nmea/sentence.h>
 
 #include <stdio.h>
 #include <stdbool.h>

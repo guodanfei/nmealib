@@ -73,6 +73,32 @@ typedef struct _nmeaGPVTG {
   char     spk_k;
 } nmeaGPVTG;
 
+/**
+ * Parse a GPVTG sentence from a string
+ *
+ * @param s The string
+ * @param sz The length of the string
+ * @param pack Where the results should be stored
+ * @return True if parsed successfully, or false otherwise
+ */
+bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack);
+
+/**
+ * Update an unsanitised nmeaINFO structure from a VTG packet structure
+ *
+ * @param pack The VTG packet structure
+ * @param info The nmeaINFO structure
+ */
+void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPVTG structure
+ */
+void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */
