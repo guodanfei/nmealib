@@ -31,45 +31,43 @@ typedef struct {
  */
 static const SentencePrefixToType sentencePrefixToType[] = {
     {
-        .prefix = "GPGGA",
-        .sentenceType = GPGGA },
+        .prefix = "GPGGA", //
+        .sentenceType = GPGGA //
+    },
     {
-        .prefix = "GPGSA",
-        .sentenceType = GPGSA },
+        .prefix = "GPGSA", //
+        .sentenceType = GPGSA //
+    },
     {
-        .prefix = "GPGSV",
-        .sentenceType = GPGSV },
+        .prefix = "GPGSV", //
+        .sentenceType = GPGSV //
+    },
     {
-        .prefix = "GPRMC",
-        .sentenceType = GPRMC },
+        .prefix = "GPRMC", //
+        .sentenceType = GPRMC //
+    },
     {
-        .prefix = "GPVTG",
-        .sentenceType = GPVTG },
+        .prefix = "GPVTG", //
+        .sentenceType = GPVTG //
+    },
     {
-        .prefix = NULL,
-        .sentenceType = GPNON } };
+        .prefix = NULL, //
+        .sentenceType = GPNON //
+    }//
+};
 
 const char * nmeaSentenceToPrefix(enum NmeaSentence sentence) {
-  switch (sentence) {
-    case GPGGA:
-      return "GPGGA";
+  size_t i = 0;
 
-    case GPGSA:
-      return "GPGSA";
+  while (sentencePrefixToType[i].prefix) {
+    if (sentencePrefixToType[i].sentenceType == sentence) {
+      return sentencePrefixToType[i].prefix;
+    }
 
-    case GPGSV:
-      return "GPGSV";
-
-    case GPRMC:
-      return "GPRMC";
-
-    case GPVTG:
-      return "GPVTG";
-
-    case GPNON:
-    default:
-      return NULL;
+    i++;
   }
+
+  return NULL;
 }
 
 enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
