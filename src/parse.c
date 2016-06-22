@@ -31,20 +31,6 @@
 #include <stddef.h>
 #include <limits.h>
 
-static int cmp_int(const void *p1, const void *p2) {
-  int prn1 = *((const int *) p1);
-  int prn2 = *((const int *) p2);
-
-  if (!prn1) {
-    prn1 += 1000;
-  }
-  if (!prn2) {
-    prn2 += 1000;
-  }
-
-  return (prn1 - prn2);
-}
-
 bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix) {
   size_t sz;
 
@@ -118,118 +104,6 @@ static bool _nmea_parse_date(const int date, nmeaTIME *t, const char * prefix, c
   }
 
   return true;
-}
-
-bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack) {
-  int fieldCount;
-  int i;
-
-  if (!pack) {
-    return false;
-  }
-
-  if (!s) {
-    goto err;
-  }
-
-  nmea_trace_buff(s, sz);
-
-  /* Clear before parsing, to be able to detect absent fields */
-  memset(pack, 0, sizeof(*pack));
-  pack->fix = INT_MAX;
-  pack->PDOP = NAN;
-  pack->HDOP = NAN;
-  pack->VDOP = NAN;
-
-  /* parse */
-  fieldCount = nmea_scanf(s, sz, //
-      "$GPGSA,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
-      &pack->sig, //
-      &pack->fix, //
-      &pack->sat_prn[0], //
-      &pack->sat_prn[1], //
-      &pack->sat_prn[2], //
-      &pack->sat_prn[3], //
-      &pack->sat_prn[4], //
-      &pack->sat_prn[5], //
-      &pack->sat_prn[6], //
-      &pack->sat_prn[7], //
-      &pack->sat_prn[8], //
-      &pack->sat_prn[9], //
-      &pack->sat_prn[10], //
-      &pack->sat_prn[11], //
-      &pack->PDOP, //
-      &pack->HDOP, //
-      &pack->VDOP);
-
-  /* see that there are enough tokens */
-  if (fieldCount != 17) {
-    nmea_error("GPGSA parse error: need 17 tokens, got %d '%s'", fieldCount, s);
-    goto err;
-  }
-
-  /* determine which fields are present and validate them */
-
-  if (pack->sig) {
-    pack->sig = toupper(pack->sig);
-    if (!((pack->sig == 'A') || (pack->sig == 'M'))) {
-      nmea_error("GPGSA parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
-      goto err;
-    }
-
-    nmea_INFO_set_present(&pack->present, SIG);
-  } else {
-    pack->sig = '\0';
-  }
-
-  if (pack->fix != INT_MAX) {
-    if (!validateFix(&pack->fix, "GPGSA", s)) {
-      goto err;
-    }
-
-    nmea_INFO_set_present(&pack->present, FIX);
-  } else {
-    pack->fix = NMEA_FIX_BAD;
-  }
-
-  for (i = 0; i < GPGSA_SAT_COUNT; i++) {
-    if (pack->sat_prn[i] != 0) {
-      qsort(pack->sat_prn, GPGSA_SAT_COUNT, sizeof(int), cmp_int);
-
-      nmea_INFO_set_present(&pack->present, SATINUSE);
-      break;
-    }
-  }
-  if (!nmea_INFO_is_present(pack->present, SATINUSE)) {
-    memset(pack->sat_prn, 0, sizeof(pack->sat_prn));
-  }
-
-  if (!isnan(pack->PDOP)) {
-    pack->PDOP = fabs(pack->PDOP);
-    nmea_INFO_set_present(&pack->present, PDOP);
-  } else {
-    pack->PDOP = 0.0;
-  }
-
-  if (!isnan(pack->HDOP)) {
-    pack->HDOP = fabs(pack->HDOP);
-    nmea_INFO_set_present(&pack->present, HDOP);
-  } else {
-    pack->HDOP = 0.0;
-  }
-
-  if (!isnan(pack->VDOP)) {
-    pack->VDOP = fabs(pack->VDOP);
-    nmea_INFO_set_present(&pack->present, VDOP);
-  } else {
-    pack->VDOP = 0.0;
-  }
-
-  return true;
-
-  err: memset(pack, 0, sizeof(*pack));
-  pack->fix = NMEA_FIX_BAD;
-  return false;
 }
 
 bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack) {

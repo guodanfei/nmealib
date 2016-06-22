@@ -23,8 +23,10 @@
 #ifndef __NMEALIB_GPGSA_H__
 #define __NMEALIB_GPGSA_H__
 
-#include <stdint.h>
+#include <nmea/info.h>
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -87,6 +89,32 @@ typedef struct _nmeaGPGSA {
   double   HDOP;
   double   VDOP;
 } nmeaGPGSA;
+
+/**
+ * Parse a GPGSA sentence from a string
+ *
+ * @param s The string
+ * @param sz The length of the string
+ * @param pack Where the results should be stored
+ * @return True if parsed successfully, or false otherwise
+ */
+bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack);
+
+/**
+ * Update an unsanitised nmeaINFO structure from a GSA packet structure
+ *
+ * @param pack The GSA packet structure
+ * @param info The nmeaINFO structure
+ */
+void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info);
+
+/**
+ * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
+ *
+ * @param info The nmeaINFO structure
+ * @param pack The nmeaGPGSA structure
+ */
+void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

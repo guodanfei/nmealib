@@ -18,9 +18,9 @@
 #include <nmea/gpgga.h>
 
 #include <nmea/context.h>
+#include <nmea/parse.h>
 #include <nmea/tok.h>
 #include <nmea/validate.h>
-#include <nmea/parse.h>
 #include <limits.h>
 #include <math.h>
 #include <stdlib.h>
