@@ -46,8 +46,8 @@
  * (1) Not present in the sentence but the library sets it up.
  */
 
-#ifndef __NMEA_INFO_H__
-#define __NMEA_INFO_H__
+#ifndef __NMEALIB_INFO_H__
+#define __NMEALIB_INFO_H__
 
 #include <nmea/compiler.h>
 #include <stdint.h>
@@ -385,4 +385,4 @@ void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_INFO_H__ */
+#endif /* __NMEALIB_INFO_H__ */

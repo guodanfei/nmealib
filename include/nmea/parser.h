@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_PARSER_H__
-#define __NMEA_PARSER_H__
+#ifndef __NMEALIB_PARSER_H__
+#define __NMEALIB_PARSER_H__
 
 #include <nmea/info.h>
 #include <nmea/sentence.h>
@@ -84,4 +84,4 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_PARSER_H__ */
+#endif /* __NMEALIB_PARSER_H__ */

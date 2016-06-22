@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_TOK_H__
-#define __NMEA_TOK_H__
+#ifndef __NMEALIB_TOK_H__
+#define __NMEALIB_TOK_H__
 
 #ifdef  __cplusplus
 extern "C" {
@@ -33,4 +33,4 @@ int nmea_scanf(const char *s, int len, const char *format, ...);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_TOK_H__ */
+#endif /* __NMEALIB_TOK_H__ */

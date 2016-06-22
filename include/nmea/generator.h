@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_GENERATOR_H__
-#define __NMEA_GENERATOR_H__
+#ifndef __NMEALIB_GENERATOR_H__
+#define __NMEALIB_GENERATOR_H__
 
 #include <nmea/info.h>
 
@@ -99,4 +99,4 @@ void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_GENERATOR_H__ */
+#endif /* __NMEALIB_GENERATOR_H__ */

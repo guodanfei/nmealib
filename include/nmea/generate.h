@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_GENERATE_H__
-#define __NMEA_GENERATE_H__
+#ifndef __NMEALIB_GENERATE_H__
+#define __NMEALIB_GENERATE_H__
 
 #include <nmea/sentence.h>
 
@@ -36,4 +36,4 @@ int nmea_generate(char *s, const int len, const nmeaINFO *info, const int genera
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_GENERATE_H__ */
+#endif /* __NMEALIB_GENERATE_H__ */

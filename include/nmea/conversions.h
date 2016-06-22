@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_CONVERSIONS_H__
-#define __NMEA_CONVERSIONS_H__
+#ifndef __NMEALIB_CONVERSIONS_H__
+#define __NMEALIB_CONVERSIONS_H__
 
 #include <nmea/sentence.h>
 #include <nmea/info.h>
@@ -119,4 +119,4 @@ void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_CONVERSIONS_H__ */
+#endif /* __NMEALIB_CONVERSIONS_H__ */

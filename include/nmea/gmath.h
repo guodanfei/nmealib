@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_GMATH_H__
-#define __NMEA_GMATH_H__
+#ifndef __NMEALIB_GMATH_H__
+#define __NMEALIB_GMATH_H__
 
 #include <nmea/info.h>
 
@@ -83,4 +83,4 @@ int nmea_move_horz_ellipsoid(const nmeaPOS *start_pos, nmeaPOS *end_pos, double 
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_GMATH_H__ */
+#endif /* __NMEALIB_GMATH_H__ */

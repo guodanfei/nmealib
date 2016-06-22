@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_CONTEXT_H__
-#define __NMEA_CONTEXT_H__
+#ifndef __NMEALIB_CONTEXT_H__
+#define __NMEALIB_CONTEXT_H__
 
 #include <stddef.h>
 
@@ -115,4 +115,4 @@ void nmea_error(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_CONTEXT_H__ */
+#endif /* __NMEALIB_CONTEXT_H__ */

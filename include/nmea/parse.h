@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEA_PARSE_H__
-#define __NMEA_PARSE_H__
+#ifndef __NMEALIB_PARSE_H__
+#define __NMEALIB_PARSE_H__
 
 #include <nmea/sentence.h>
 #include <stdbool.h>
@@ -110,4 +110,4 @@ bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack);
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEA_PARSE_H__ */
+#endif /* __NMEALIB_PARSE_H__ */
