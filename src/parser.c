@@ -186,13 +186,13 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
 }
 
 /**
- * Parse a string and store the results in the nmeaINFO structure
+ * Parse NMEA sentences from a (string) buffer and store the results in the nmeaINFO structure
  *
- * @param parser a pointer to the parser
- * @param s the string
- * @param len the length of the string
- * @param info a pointer to the nmeaINFO structure
- * @return the number of packets that were parsed
+ * @param parser The parser
+ * @param s The (string) buffer
+ * @param len The length of the string in the buffer
+ * @param info The nmeaINFO structure in which to store the information
+ * @return The number of sentences that were parsed
  */
 int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
   int sentences_count = 0;
@@ -205,62 +205,8 @@ int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
   for (charIndex = 0; charIndex < len; charIndex++) {
     bool sentence_read_successfully = nmea_parse_sentence_character(parser, &s[charIndex]);
     if (sentence_read_successfully) {
-      enum NmeaSentence sentence = nmeaPrefixToSentence(&parser->buffer.buffer[1],
-          parser->buffer.length - 1);
-      switch (sentence) {
-        case GPGGA:
-          {
-            nmeaGPGGA gpgga;
-            if (nmea_parse_GPGGA(parser->buffer.buffer, parser->buffer.length, &gpgga)) {
-              sentences_count++;
-              nmea_GPGGA2info(&gpgga, info);
-            }
-          }
-          break;
-
-        case GPGSA:
-          {
-            nmeaGPGSA gpgsa;
-            if (nmea_parse_GPGSA(parser->buffer.buffer, parser->buffer.length, &gpgsa)) {
-              sentences_count++;
-              nmea_GPGSA2info(&gpgsa, info);
-            }
-          }
-          break;
-
-        case GPGSV:
-          {
-            nmeaGPGSV gpgsv;
-            if (nmea_parse_GPGSV(parser->buffer.buffer, parser->buffer.length, &gpgsv)) {
-              sentences_count++;
-              nmea_GPGSV2info(&gpgsv, info);
-            }
-          }
-          break;
-
-        case GPRMC:
-          {
-            nmeaGPRMC gprmc;
-            if (nmea_parse_GPRMC(parser->buffer.buffer, parser->buffer.length, &gprmc)) {
-              sentences_count++;
-              nmea_GPRMC2info(&gprmc, info);
-            }
-          }
-          break;
-
-        case GPVTG:
-          {
-            nmeaGPVTG gpvtg;
-            if (nmea_parse_GPVTG(parser->buffer.buffer, parser->buffer.length, &gpvtg)) {
-              sentences_count++;
-              nmea_GPVTG2info(&gpvtg, info);
-            }
-          }
-          break;
-
-        case GPNON:
-        default:
-          break;
+      if (nmeaSentenceToInfo(parser->buffer.buffer, parser->buffer.length, info)) {
+        sentences_count++;
       }
     }
   }

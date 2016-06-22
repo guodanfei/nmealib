@@ -75,7 +75,7 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
   const char * str = s;
   size_t size = sz;
 
-  if (!s) {
+  if (!str) {
     return GPNON;
   }
 
@@ -84,12 +84,12 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
     size--;
   }
 
-  if (sz < NMEA_PREFIX_LENGTH) {
+  if (size < NMEA_PREFIX_LENGTH) {
     return GPNON;
   }
 
   while (sentencePrefixToType[i].prefix) {
-    if (!strncmp(s, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
+    if (!strncmp(str, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
       return sentencePrefixToType[i].sentenceType;
     }
 
@@ -97,4 +97,63 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
   }
 
   return GPNON;
+}
+
+bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
+  enum NmeaSentence sentence = nmeaPrefixToSentence(s, sz);
+  switch (sentence) {
+    case GPGGA: {
+      nmeaGPGGA gpgga;
+      if (nmea_parse_GPGGA(s, sz, &gpgga)) {
+        nmea_GPGGA2info(&gpgga, info);
+        return true;
+      }
+
+      return false;
+    }
+
+    case GPGSA: {
+      nmeaGPGSA gpgsa;
+      if (nmea_parse_GPGSA(s, sz, &gpgsa)) {
+        nmea_GPGSA2info(&gpgsa, info);
+        return true;
+      }
+
+      return false;
+    }
+
+    case GPGSV: {
+      nmeaGPGSV gpgsv;
+      if (nmea_parse_GPGSV(s, sz, &gpgsv)) {
+        nmea_GPGSV2info(&gpgsv, info);
+        return true;
+      }
+
+      return false;
+    }
+
+    case GPRMC: {
+      nmeaGPRMC gprmc;
+      if (nmea_parse_GPRMC(s, sz, &gprmc)) {
+        nmea_GPRMC2info(&gprmc, info);
+        return true;
+      }
+
+      return false;
+    }
+
+    case GPVTG: {
+      nmeaGPVTG gpvtg;
+      if (nmea_parse_GPVTG(s, sz, &gpvtg)) {
+        nmea_GPVTG2info(&gpvtg, info);
+        return true;
+      }
+
+      return false;
+    }
+
+    case GPNON:
+    default:
+      return false;
+  }
 }

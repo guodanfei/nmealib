@@ -63,6 +63,16 @@ const char * nmeaSentenceToPrefix(enum NmeaSentence sentence);
  */
 enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
 
+/**
+ * Parse a NMEA sentence into a nmeaINFO structure
+ *
+ * @param s The NMEA sentence
+ * @param sz The length of the NMEA sentence
+ * @param info The nmeaINFO structure in which to stored the information
+ * @return True when successful
+ */
+bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */
