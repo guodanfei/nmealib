@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack) {
+bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
   char timeBuf[256];
 
@@ -185,7 +185,7 @@ err:
   return false;
 }
 
-void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
+void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   if (!pack || !info) {
     return;
   }
@@ -243,7 +243,7 @@ void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info) {
   /* dgps_sid not supported yet */
 }
 
-void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack) {
+void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   if (!pack || !info) {
     return;
   }

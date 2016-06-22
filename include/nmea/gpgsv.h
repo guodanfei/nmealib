@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * GSV packet information structure (Satellites in view)
+ * GPGSV packet information structure (Satellites in view)
  *
  * <pre>
  * $GPGSV,sentences,sentence,satellites,prn1,elevation1,azimuth1,snr1,prn2,elevation2,azimuth2,snr2,prn3,elevation3,azimuth3,snr3,prn4,elevation4,azimuth4,snr4*checksum
@@ -63,11 +63,11 @@ extern "C" {
  *
  * Shows data about the satellites that the unit might be able to find based on
  * its viewing mask and almanac data. It also shows current ability to track
- * this data. Note that one GSV sentence only can provide data for up to 4
+ * this data. Note that one GPGSV sentence only can provide data for up to 4
  * satellites and thus there may need to be 3 sentences for the full
- * information. It is reasonable for the GSV sentence to contain more satellites
- * than GGA might indicate since GSV may include satellites that are not used as
- * part of the solution. It is not a requirement that the GSV sentences all
+ * information. It is reasonable for the GPGSV sentence to contain more satellites
+ * than GPGGA might indicate since GPGSV may include satellites that are not used as
+ * part of the solution. It is not a requirement that the GPGSV sentences all
  * appear in sequence. To avoid overloading the data bandwidth some receivers
  * may place the various sentences in totally different samples since each
  * sentence identifies which one it is.
@@ -97,13 +97,13 @@ typedef struct _nmeaGPGSV {
 } nmeaGPGSV;
 
 /**
- * Determine the number of GSV sentences needed for the specified number of
+ * Determine the number of GPGSV sentences needed for the specified number of
  * satellites
  *
  * @param satellites The number of satellites
- * @return The number of GSV sentences needed (at least 1)
+ * @return The number of GPGSV sentences needed (at least 1)
  */
-unsigned int nmea_gsv_npack(unsigned int satellites);
+unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites);
 
 /**
  * Parse a GPGSV sentence from a string
@@ -113,15 +113,15 @@ unsigned int nmea_gsv_npack(unsigned int satellites);
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack);
+bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GSV packet structure
+ * Update an unsanitised nmeaINFO structure from a GPGSV packet structure
  *
- * @param pack The GSV packet structure
+ * @param pack The GPGSV packet structure
  * @param info The nmeaINFO structure
  */
-void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info);
+void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
@@ -130,7 +130,7 @@ void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info);
  * @param pack The nmeaGPGSV structure
  * @param pack_idx The index of the nmeaGPGSV structure (zero based)
  */
-void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
+void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
 
 #ifdef  __cplusplus
 }

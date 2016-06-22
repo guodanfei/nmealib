@@ -33,7 +33,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * GGA packet information structure (Global Positioning System Fix Data)
+ * GPGGA packet information structure (Global Positioning System Fix Data)
  *
  * Essential fix data which provide 3D location and accuracy data.
  *
@@ -102,15 +102,15 @@ typedef struct _nmeaGPGGA {
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGGA(const char *s, const size_t sz, nmeaGPGGA *pack);
+bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GGA packet structure
+ * Update an unsanitised nmeaINFO structure from a GPGGA packet structure
  *
- * @param pack The GGA packet structure
+ * @param pack The GPGGA packet structure
  * @param info The nmeaINFO structure
  */
-void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info);
+void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
@@ -118,7 +118,7 @@ void nmea_GPGGA2info(const nmeaGPGGA *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGGA structure
  */
-void nmea_info2GPGGA(const nmeaINFO *info, nmeaGPGGA *pack);
+void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack);
 
 #ifdef  __cplusplus
 }

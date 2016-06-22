@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * RMC -packet information structure (Recommended Minimum sentence C)
+ * GPRMC -packet information structure (Recommended Minimum sentence C)
  *
  * <pre>
  * $GPRMC,time,selection,lat,ns,lon,ew,speed,track,date,magvar,magvar ew,mode*checksum
@@ -90,15 +90,15 @@ typedef struct _nmeaGPRMC {
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack);
+bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a RMC packet structure
+ * Update an unsanitised nmeaINFO structure from a GPRMC packet structure
  *
- * @param pack The RMC packet structure
+ * @param pack The GPRMC packet structure
  * @param info The nmeaINFO structure
  */
-void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info);
+void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
@@ -106,7 +106,7 @@ void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPRMC structure
  */
-void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack);
+void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }

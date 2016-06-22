@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack) {
+bool nmeaGPVTGparse(const char *s, const size_t sz, nmeaGPVTG *pack) {
   bool speedK = false;
   bool speedN = false;
   int fieldCount;
@@ -138,7 +138,7 @@ bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack) {
     return false;
 }
 
-void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info) {
+void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info) {
   if (!pack || !info) {
     return;
   }
@@ -169,7 +169,7 @@ void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info) {
   }
 }
 
-void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack) {
+void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
   if (!pack || !info) {
     return;
   }

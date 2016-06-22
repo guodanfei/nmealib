@@ -315,38 +315,38 @@ int nmea_generate(char *s, const int len, const nmeaINFO *info, const int genera
 
   while (pack_mask) {
     if (pack_mask & GPGGA) {
-      nmeaGPGGA gga;
+      nmeaGPGGA gpgga;
 
-      nmea_info2GPGGA(info, &gga);
-      gen_count += nmea_gen_GPGGA(s + gen_count, len - gen_count, &gga);
+      nmeaGPGGAFromInfo(info, &gpgga);
+      gen_count += nmea_gen_GPGGA(s + gen_count, len - gen_count, &gpgga);
       pack_mask &= ~GPGGA;
     } else if (pack_mask & GPGSA) {
-      nmeaGPGSA gsa;
+      nmeaGPGSA gpgsa;
 
-      nmea_info2GPGSA(info, &gsa);
-      gen_count += nmea_gen_GPGSA(s + gen_count, len - gen_count, &gsa);
+      nmeaGPGSAFromInfo(info, &gpgsa);
+      gen_count += nmea_gen_GPGSA(s + gen_count, len - gen_count, &gpgsa);
       pack_mask &= ~GPGSA;
     } else if (pack_mask & GPGSV) {
-      nmeaGPGSV gsv;
-      int gsv_it;
-      int gsv_count = nmea_gsv_npack(info->satinfo.inview);
+      nmeaGPGSV gpgsv;
+      int gpgsv_it;
+      int gpgsv_count = nmeaGPGSVsatellitesToSentencesCount(info->satinfo.inview);
 
-      for (gsv_it = 0; gsv_it < gsv_count && len - gen_count > 0; gsv_it++) {
-        nmea_info2GPGSV(info, &gsv, gsv_it);
-        gen_count += nmea_gen_GPGSV(s + gen_count, len - gen_count, &gsv);
+      for (gpgsv_it = 0; gpgsv_it < gpgsv_count && len - gen_count > 0; gpgsv_it++) {
+        nmeaGPGSVFromInfo(info, &gpgsv, gpgsv_it);
+        gen_count += nmea_gen_GPGSV(s + gen_count, len - gen_count, &gpgsv);
       }
       pack_mask &= ~GPGSV;
     } else if (pack_mask & GPRMC) {
-      nmeaGPRMC rmc;
+      nmeaGPRMC gprmc;
 
-      nmea_info2GPRMC(info, &rmc);
-      gen_count += nmea_gen_GPRMC(s + gen_count, len - gen_count, &rmc);
+      nmeaGPRMCFromInfo(info, &gprmc);
+      gen_count += nmea_gen_GPRMC(s + gen_count, len - gen_count, &gprmc);
       pack_mask &= ~GPRMC;
     } else if (pack_mask & GPVTG) {
-      nmeaGPVTG vtg;
+      nmeaGPVTG gpvtg;
 
-      nmea_info2GPVTG(info, &vtg);
-      gen_count += nmea_gen_GPVTG(s + gen_count, len - gen_count, &vtg);
+      nmeaGPVTGFromInfo(info, &gpvtg);
+      gen_count += nmea_gen_GPVTG(s + gen_count, len - gen_count, &gpvtg);
       pack_mask &= ~GPVTG;
     } else {
       /* no more known sentences to process */

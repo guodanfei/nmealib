@@ -35,7 +35,7 @@ extern "C" {
 #define GPGSA_SAT_COUNT (12)
 
 /**
- * GSA packet information structure (Satellite status)
+ * GPGSA packet information structure (Satellite status)
  *
  * GPS DOP and active satellites.
  *
@@ -98,15 +98,15 @@ typedef struct _nmeaGPGSA {
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack);
+bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GSA packet structure
+ * Update an unsanitised nmeaINFO structure from a GPGSA packet structure
  *
- * @param pack The GSA packet structure
+ * @param pack The GPGSA packet structure
  * @param info The nmeaINFO structure
  */
-void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info);
+void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
@@ -114,7 +114,7 @@ void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGSA structure
  */
-void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack);
+void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

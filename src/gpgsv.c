@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned int nmea_gsv_npack(unsigned int satellites) {
+unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites) {
   unsigned int pack_count = satellites / NMEA_SATINPACK;
 
   if ((satellites % NMEA_SATINPACK) > 0) {
@@ -42,7 +42,7 @@ unsigned int nmea_gsv_npack(unsigned int satellites) {
   return pack_count;
 }
 
-bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack) {
+bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   int fieldCount;
   unsigned int i;
   int fieldCountMinimum;
@@ -98,7 +98,7 @@ bool nmea_parse_GPGSV(const char *s, const size_t sz, nmeaGPGSV *pack) {
         pack->sentences);
     goto err;
   }
-  if (nmea_gsv_npack((pack->sentences * NMEA_SATINPACK)) != nmea_gsv_npack(pack->satellites)) {
+  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEA_SATINPACK)) != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
     nmea_error("GPGSV parse error: sentence count %d does not correspond to satellite count %d", pack->sentences,
         pack->satellites);
     goto err;
@@ -156,7 +156,7 @@ clear:
   return true;
 }
 
-void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
+void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
   if (!pack || !info) {
     return;
   }
@@ -173,7 +173,7 @@ void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
     return;
   }
 
-  if (nmea_gsv_npack((pack->sentences * NMEA_SATINPACK)) != nmea_gsv_npack(pack->satellites)) {
+  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEA_SATINPACK)) != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
     return;
   }
 
@@ -214,7 +214,7 @@ void nmea_GPGSV2info(const nmeaGPGSV *pack, nmeaINFO *info) {
   }
 }
 
-void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
+void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
   if (!pack || !info) {
     return;
   }
@@ -230,7 +230,7 @@ void nmea_info2GPGSV(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_id
         info->satinfo.inview :
         NMEA_MAXSAT;
 
-    pack->sentences = nmea_gsv_npack(pack->satellites);
+    pack->sentences = nmeaGPGSVsatellitesToSentencesCount(pack->satellites);
 
     if ((int) pack_idx >= pack->sentences) {
       pack->sentence = pack->sentences;

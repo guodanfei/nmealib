@@ -104,8 +104,8 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
   switch (sentence) {
     case GPGGA: {
       nmeaGPGGA gpgga;
-      if (nmea_parse_GPGGA(s, sz, &gpgga)) {
-        nmea_GPGGA2info(&gpgga, info);
+      if (nmeaGPGGAparse(s, sz, &gpgga)) {
+        nmeaGPGGAToInfo(&gpgga, info);
         return true;
       }
 
@@ -114,8 +114,8 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
 
     case GPGSA: {
       nmeaGPGSA gpgsa;
-      if (nmea_parse_GPGSA(s, sz, &gpgsa)) {
-        nmea_GPGSA2info(&gpgsa, info);
+      if (nmeaGPGSAparse(s, sz, &gpgsa)) {
+        nmeaGPGSAToInfo(&gpgsa, info);
         return true;
       }
 
@@ -124,8 +124,8 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
 
     case GPGSV: {
       nmeaGPGSV gpgsv;
-      if (nmea_parse_GPGSV(s, sz, &gpgsv)) {
-        nmea_GPGSV2info(&gpgsv, info);
+      if (nmeaGPGSVparse(s, sz, &gpgsv)) {
+        nmeaGPGSVToInfo(&gpgsv, info);
         return true;
       }
 
@@ -134,8 +134,8 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
 
     case GPRMC: {
       nmeaGPRMC gprmc;
-      if (nmea_parse_GPRMC(s, sz, &gprmc)) {
-        nmea_GPRMC2info(&gprmc, info);
+      if (nmeaGPRMCparse(s, sz, &gprmc)) {
+        nmeaGPRMCToInfo(&gprmc, info);
         return true;
       }
 
@@ -144,8 +144,8 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
 
     case GPVTG: {
       nmeaGPVTG gpvtg;
-      if (nmea_parse_GPVTG(s, sz, &gpvtg)) {
-        nmea_GPVTG2info(&gpvtg, info);
+      if (nmeaGPVTGparse(s, sz, &gpvtg)) {
+        nmeaGPVTGToInfo(&gpvtg, info);
         return true;
       }
 

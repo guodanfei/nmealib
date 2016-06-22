@@ -50,7 +50,7 @@ static int cmp_int(const void *p1, const void *p2) {
   return (prn1 - prn2);
 }
 
-bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack) {
+bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   int fieldCount;
   int i;
 
@@ -162,7 +162,7 @@ bool nmea_parse_GPGSA(const char *s, const size_t sz, nmeaGPGSA *pack) {
   return false;
 }
 
-void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info) {
+void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
   if (!pack || !info) {
     return;
   }
@@ -221,7 +221,7 @@ void nmea_GPGSA2info(const nmeaGPGSA *pack, nmeaINFO *info) {
   }
 }
 
-void nmea_info2GPGSA(const nmeaINFO *info, nmeaGPGSA *pack) {
+void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   if (!pack || !info) {
     return;
   }

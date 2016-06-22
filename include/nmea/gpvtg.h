@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * VTG packet information structure (Track made good and ground speed)
+ * GPVTG packet information structure (Track made good and ground speed)
  *
  * <pre>
  * $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*checksum
@@ -81,15 +81,15 @@ typedef struct _nmeaGPVTG {
  * @param pack Where the results should be stored
  * @return True if parsed successfully, or false otherwise
  */
-bool nmea_parse_GPVTG(const char *s, const size_t sz, nmeaGPVTG *pack);
+bool nmeaGPVTGparse(const char *s, const size_t sz, nmeaGPVTG *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a VTG packet structure
+ * Update an unsanitised nmeaINFO structure from a GPVTG packet structure
  *
- * @param pack The VTG packet structure
+ * @param pack The GPVTG packet structure
  * @param info The nmeaINFO structure
  */
-void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info);
+void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
@@ -97,7 +97,7 @@ void nmea_GPVTG2info(const nmeaGPVTG *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPVTG structure
  */
-void nmea_info2GPVTG(const nmeaINFO *info, nmeaGPVTG *pack);
+void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

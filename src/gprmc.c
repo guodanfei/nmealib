@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
+bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   int fieldCount;
   char timeBuf[256];
   int date;
@@ -198,7 +198,7 @@ bool nmea_parse_GPRMC(const char *s, const size_t sz, nmeaGPRMC *pack) {
   return false;
 }
 
-void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
+void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
   if (!pack || !info) {
     return;
   }
@@ -268,7 +268,7 @@ void nmea_GPRMC2info(const nmeaGPRMC *pack, nmeaINFO *info) {
   }
 }
 
-void nmea_info2GPRMC(const nmeaINFO *info, nmeaGPRMC *pack) {
+void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   if (!pack || !info) {
     return;
   }
