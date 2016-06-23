@@ -23,7 +23,7 @@
 #ifndef __NMEALIB_GPGSV_H__
 #define __NMEALIB_GPGSV_H__
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 #include <stdint.h>
 
 #ifdef  __cplusplus

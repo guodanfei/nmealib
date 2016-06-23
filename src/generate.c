@@ -15,10 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/generate.h>
+#include <nmealib/generate.h>
 
-#include <nmea/tok.h>
-#include <nmea/sentence.h>
+#include <nmealib/tok.h>
+#include <nmealib/sentence.h>
 
 #include <stdio.h>
 #include <stdbool.h>

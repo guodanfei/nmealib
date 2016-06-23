@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/tok.h>
+#include <nmealib/tok.h>
 
 #include <ctype.h>
 #include <stdarg.h>

@@ -15,12 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/gpgga.h>
+#include <nmealib/gpgga.h>
 
-#include <nmea/context.h>
-#include <nmea/parse.h>
-#include <nmea/tok.h>
-#include <nmea/validate.h>
+#include <nmealib/context.h>
+#include <nmealib/parse.h>
+#include <nmealib/tok.h>
+#include <nmealib/validate.h>
 #include <limits.h>
 #include <math.h>
 #include <stdlib.h>

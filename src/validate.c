@@ -15,13 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/validate.h>
+#include <nmealib/validate.h>
 
-#include <nmea/context.h>
+#include <nmealib/context.h>
 #include <ctype.h>
-//#include <nmea/gmath.h>
-//#include <nmea/tok.h>
-//#include <nmea/conversions.h>
+//#include <nmealib/gmath.h>
+//#include <nmealib/tok.h>
+//#include <nmealib/conversions.h>
 //#include <string.h>
 //#include <assert.h>
 //#include <math.h>

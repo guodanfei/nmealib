@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/gmath.h>
+#include <nmealib/gmath.h>
 
 #include <math.h>
 #include <assert.h>

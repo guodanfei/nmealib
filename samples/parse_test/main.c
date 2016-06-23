@@ -1,7 +1,7 @@
-#include <nmea/info.h>
-#include <nmea/context.h>
-#include <nmea/parser.h>
-#include <nmea/gmath.h>
+#include <nmealib/info.h>
+#include <nmealib/context.h>
+#include <nmealib/parser.h>
+#include <nmealib/gmath.h>
 
 #include <stdlib.h>
 #include <stdio.h>

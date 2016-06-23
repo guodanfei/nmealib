@@ -15,10 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 
-#include <nmea/gmath.h>
-#include <nmea/generate.h>
+#include <nmealib/gmath.h>
+#include <nmealib/generate.h>
 
 #include <stdio.h>
 #include <unistd.h>

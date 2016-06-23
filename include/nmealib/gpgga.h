@@ -23,7 +23,7 @@
 #ifndef __NMEALIB_GPGGA_H__
 #define __NMEALIB_GPGGA_H__
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

@@ -9,7 +9,7 @@ USRDIR ?= $(DESTDIR)/usr
 INCLUDEDIR ?= $(DESTDIR)/usr/include
 LIBDIR ?= $(USRDIR)/lib
 
-H_FILES = $(wildcard include/nmea/*.h)
+H_FILES = $(wildcard include/nmealib/*.h)
 C_FILES = $(wildcard src/*.c)
 
 MODULES = $(C_FILES:src/%.c=%)
@@ -83,8 +83,8 @@ install: all
 
 install-headers: all
 	$(MAKECMDPREFIX)mkdir -v -p "$(INCLUDEDIR)"
-	$(MAKECMDPREFIX)rm -fr "$(INCLUDEDIR)/nmea"
-	$(MAKECMDPREFIX)cp -rv include/nmea "$(INCLUDEDIR)"
+	$(MAKECMDPREFIX)rm -fr "$(INCLUDEDIR)/nmealib"
+	$(MAKECMDPREFIX)cp -rv include/nmealib "$(INCLUDEDIR)"
 
 uninstall:
 	$(MAKECMDPREFIX)rm -fv "$(LIBDIR)/$(LIBNAME)" "$(LIBDIR)/$(LIBNAME).$(VERSION)"
@@ -92,6 +92,6 @@ uninstall:
 	$(MAKECMDPREFIX)rmdir -v -p --ignore-fail-on-non-empty "$(LIBDIR)"
 
 uninstall-headers:
-	$(MAKECMDPREFIX)rm -frv "$(INCLUDEDIR)/nmea"
+	$(MAKECMDPREFIX)rm -frv "$(INCLUDEDIR)/nmealib"
 	$(MAKECMDPREFIX)rmdir -v -p --ignore-fail-on-non-empty "$(INCLUDEDIR)"
 

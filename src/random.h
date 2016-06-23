@@ -1,7 +1,7 @@
 #ifndef _NMEA_RANDOM_H
 #define _NMEA_RANDOM_H
 
-#include <nmea/compiler.h>
+#include <nmealib/compiler.h>
 
 #include <fcntl.h>
 #include <unistd.h>

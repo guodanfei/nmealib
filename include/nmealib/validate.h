@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_VALIDATE_H__
 #define __NMEALIB_VALIDATE_H__
 
-#include <nmea/sentence.h>
+#include <nmealib/sentence.h>
 #include <stdbool.h>
 #include <stddef.h>
 

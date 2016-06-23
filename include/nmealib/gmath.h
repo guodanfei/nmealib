@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_GMATH_H__
 #define __NMEALIB_GMATH_H__
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 
 #ifdef  __cplusplus
 extern "C" {

@@ -15,11 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/generator.h>
+#include <nmealib/generator.h>
 
-#include <nmea/context.h>
-#include <nmea/gmath.h>
-#include <nmea/generate.h>
+#include <nmealib/context.h>
+#include <nmealib/gmath.h>
+#include <nmealib/generate.h>
 
 #include "random.h"
 

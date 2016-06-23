@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_GENERATE_H__
 #define __NMEALIB_GENERATE_H__
 
-#include <nmea/sentence.h>
+#include <nmealib/sentence.h>
 
 #ifdef  __cplusplus
 extern "C" {

@@ -15,10 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 
-#include <nmea/sentence.h>
-#include <nmea/gmath.h>
+#include <nmealib/sentence.h>
+#include <nmealib/gmath.h>
 
 #include <stdbool.h>
 #include <string.h>

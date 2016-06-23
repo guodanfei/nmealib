@@ -15,10 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/parse.h>
+#include <nmealib/parse.h>
 
-#include <nmea/context.h>
-#include <nmea/tok.h>
+#include <nmealib/context.h>
+#include <nmealib/tok.h>
 #include <string.h>
 
 bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix) {

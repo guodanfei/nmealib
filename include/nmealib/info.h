@@ -49,7 +49,7 @@
 #ifndef __NMEALIB_INFO_H__
 #define __NMEALIB_INFO_H__
 
-#include <nmea/compiler.h>
+#include <nmealib/compiler.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

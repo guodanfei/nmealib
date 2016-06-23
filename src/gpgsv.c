@@ -15,13 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmea/gpgsv.h>
+#include <nmealib/gpgsv.h>
 
-#include <nmea/context.h>
-#include <nmea/info.h>
-#include <nmea/parse.h>
-#include <nmea/tok.h>
-#include <nmea/validate.h>
+#include <nmealib/context.h>
+#include <nmealib/info.h>
+#include <nmealib/parse.h>
+#include <nmealib/tok.h>
+#include <nmealib/validate.h>
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>

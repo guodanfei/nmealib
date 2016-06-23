@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_GENERATOR_H__
 #define __NMEALIB_GENERATOR_H__
 
-#include <nmea/info.h>
+#include <nmealib/info.h>
 
 #ifdef  __cplusplus
 extern "C" {

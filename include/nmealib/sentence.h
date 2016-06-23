@@ -20,11 +20,11 @@
 
 #include <stddef.h>
 
-#include <nmea/gpgga.h>
-#include <nmea/gpgsa.h>
-#include <nmea/gpgsv.h>
-#include <nmea/gprmc.h>
-#include <nmea/gpvtg.h>
+#include <nmealib/gpgga.h>
+#include <nmealib/gpgsa.h>
+#include <nmealib/gpgsv.h>
+#include <nmealib/gprmc.h>
+#include <nmealib/gpvtg.h>
 
 #ifdef  __cplusplus
 extern "C" {

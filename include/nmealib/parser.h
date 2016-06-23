@@ -18,8 +18,8 @@
 #ifndef __NMEALIB_PARSER_H__
 #define __NMEALIB_PARSER_H__
 
-#include <nmea/info.h>
-#include <nmea/sentence.h>
+#include <nmealib/info.h>
+#include <nmealib/sentence.h>
 
 #ifdef  __cplusplus
 extern "C" {
