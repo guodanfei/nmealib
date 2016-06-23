@@ -158,6 +158,8 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
           if (*c != second_eol_char) {
             reset_sentence_parser(parser, SKIP_UNTIL_START);
           } else {
+            parser->buffer.buffer[--parser->buffer.length] = '\0';
+            parser->buffer.buffer[--parser->buffer.length] = '\0';
             parser->sentence_parser.state = SKIP_UNTIL_START;
             return (!parser->sentence_parser.sentence_checksum_chars_count
                 || (parser->sentence_parser.sentence_checksum_chars_count
