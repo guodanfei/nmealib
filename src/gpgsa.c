@@ -276,7 +276,7 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 }
 
-int nmeaGPGSAgenerate(char *s, const int sz, const nmeaGPGSA *pack) {
+int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
   int i;
   char sFixMode[2];
   char sFixType[2];

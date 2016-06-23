@@ -199,7 +199,7 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
   }
 }
 
-int nmeaGPVTGgenerate(char *s, const int sz, const nmeaGPVTG *pack) {
+int nmeaGPVTGgenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
   char sTrackT[16];
   char sTrackM[16];
   char sSpeedN[16];

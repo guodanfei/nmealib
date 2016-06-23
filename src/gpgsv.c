@@ -262,7 +262,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 }
 
-int nmeaGPGSVgenerate(char *s, const int sz, const nmeaGPGSV *pack) {
+int nmeaGPGSVgenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
   char sentence[256];
   int sentencesInPack = pack->satellites - ((pack->sentence - 1) * NMEA_SATINPACK);
   char * pSentence = sentence;

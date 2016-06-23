@@ -335,7 +335,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 }
 
-int nmeaGPRMCgenerate(char *s, const int sz, const nmeaGPRMC *pack) {
+int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
   char sTime[16];
   char sDate[16];
   char sLat[16];

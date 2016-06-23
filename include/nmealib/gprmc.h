@@ -116,7 +116,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
  * @param pack The nmeaGPRMC structure
  * @return The length of the generated sentence
  */
-int nmeaGPRMCgenerate(char *s, const int sz, const nmeaGPRMC *pack);
+int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }

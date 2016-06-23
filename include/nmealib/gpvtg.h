@@ -107,7 +107,7 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack);
  * @param pack The nmeaGPVTG structure
  * @return The length of the generated sentence
  */
-int nmeaGPVTGgenerate(char *s, const int sz, const nmeaGPVTG *pack);
+int nmeaGPVTGgenerate(char *s, const size_t sz, const nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

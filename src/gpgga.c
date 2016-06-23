@@ -306,7 +306,7 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   /* dgps_sid not supported yet */
 }
 
-int nmeaGPGGAgenerate(char *s, const int sz, const nmeaGPGGA *pack) {
+int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   char sTime[16];
   char sLat[16];
   char sNs[2];

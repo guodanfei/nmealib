@@ -146,7 +146,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
  * @param pack The nmeaGPGSV structure
  * @return The length of the generated sentence
  */
-int nmeaGPGSVgenerate(char *s, const int sz, const nmeaGPGSV *pack);
+int nmeaGPGSVgenerate(char *s, const size_t sz, const nmeaGPGSV *pack);
 
 #ifdef  __cplusplus
 }
