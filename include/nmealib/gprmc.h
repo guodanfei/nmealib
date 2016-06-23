@@ -108,6 +108,16 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info);
  */
 void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
 
+/**
+ * Generate a GPRMC sentence from an nmeaGPRMC structure
+ *
+ * @param s a pointer to the buffer to generate the string in
+ * @param len the size of the buffer
+ * @param pack the structure
+ * @return the length of the generated sentence
+ */
+int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

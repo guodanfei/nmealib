@@ -132,6 +132,16 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info);
  */
 void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx);
 
+/**
+ * Generate a GPGSV sentence from an nmeaGPGSV structure
+ *
+ * @param s a pointer to the buffer to generate the string in
+ * @param len the size of the buffer
+ * @param pack the structure
+ * @return the length of the generated sentence
+ */
+int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

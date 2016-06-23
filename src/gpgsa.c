@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -272,4 +273,65 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
     pack->VDOP = info->VDOP;
     nmea_INFO_set_present(&pack->present, VDOP);
   }
+}
+
+int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
+  int i;
+  char sFixMode[2];
+  char sFixType[2];
+  char sSatPrn[(NMEA_MAXSAT * 4) + 1];
+  char sPdop[16];
+  char sHdop[16];
+  char sVdop[16];
+
+  char * psSatPrn = &sSatPrn[0];
+  int ssSatPrn = sizeof(sSatPrn) - 1;
+
+  bool satinuse = nmea_INFO_is_present(pack->present, SATINUSE);
+
+  sFixMode[0] = sFixMode[1] = 0;
+  sFixType[0] = sFixType[1] = 0;
+  sSatPrn[0] = 0;
+  sPdop[0] = 0;
+  sHdop[0] = 0;
+  sVdop[0] = 0;
+
+  if (nmea_INFO_is_present(pack->present, FIX)) {
+    sFixMode[0] = pack->sig;
+    snprintf(&sFixType[0], sizeof(sFixType), "%1d", pack->fix);
+  }
+
+  for (i = 0; (i < NMEA_MAXSAT) && (i < GPGSA_SAT_COUNT); i++) {
+    if (satinuse && pack->sat_prn[i]) {
+      int cnt = snprintf(psSatPrn, ssSatPrn, "%d", pack->sat_prn[i]);
+      if (cnt >= ssSatPrn) {
+        ssSatPrn = 0;
+        psSatPrn = &sSatPrn[sizeof(sSatPrn) - 1];
+        *psSatPrn = '\0';
+        break;
+      } else {
+        ssSatPrn -= cnt;
+        psSatPrn += cnt;
+      }
+    }
+    if (i < (NMEA_MAXSAT - 1)) {
+      *psSatPrn = ',';
+      psSatPrn++;
+      ssSatPrn--;
+      *psSatPrn = '\0';
+    }
+  }
+
+  if (nmea_INFO_is_present(pack->present, PDOP)) {
+    snprintf(&sPdop[0], sizeof(sPdop), "%03.1f", pack->PDOP);
+  }
+  if (nmea_INFO_is_present(pack->present, HDOP)) {
+    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->HDOP);
+  }
+  if (nmea_INFO_is_present(pack->present, VDOP)) {
+    snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
+  }
+
+  return nmea_printf(s, len, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
+      &sVdop[0]);
 }

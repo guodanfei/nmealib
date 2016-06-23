@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -195,4 +196,42 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
     pack->spk_k = 'K';
     nmea_INFO_set_present(&pack->present, SPEED);
   }
+}
+
+int nmea_gen_GPVTG(char *s, const int len, const nmeaGPVTG *pack) {
+  char sTrackT[16];
+  char sTrackM[16];
+  char sSpeedN[16];
+  char sSpeedK[16];
+  char sUnitT[2];
+  char sUnitM[2];
+  char sUnitN[2];
+  char sUnitK[2];
+
+  sTrackT[0] = 0;
+  sTrackM[0] = 0;
+  sSpeedN[0] = 0;
+  sSpeedK[0] = 0;
+  sUnitT[0] = sUnitT[1] = 0;
+  sUnitM[0] = sUnitM[1] = 0;
+  sUnitN[0] = sUnitN[1] = 0;
+  sUnitK[0] = sUnitK[1] = 0;
+
+  if (nmea_INFO_is_present(pack->present, TRACK)) {
+    snprintf(&sTrackT[0], sizeof(sTrackT), "%03.1f", pack->track);
+    sUnitT[0] = 'T';
+  }
+  if (nmea_INFO_is_present(pack->present, MTRACK)) {
+    snprintf(&sTrackM[0], sizeof(sTrackM), "%03.1f", pack->mtrack);
+    sUnitM[0] = 'M';
+  }
+  if (nmea_INFO_is_present(pack->present, SPEED)) {
+    snprintf(&sSpeedN[0], sizeof(sSpeedN), "%03.1f", pack->spn);
+    sUnitN[0] = 'N';
+    snprintf(&sSpeedK[0], sizeof(sSpeedK), "%03.1f", pack->spk);
+    sUnitK[0] = 'K';
+  }
+
+  return nmea_printf(s, len, "$GPVTG,%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
+      &sSpeedN[0], &sUnitN[0], &sSpeedK[0], &sUnitK[0]);
 }

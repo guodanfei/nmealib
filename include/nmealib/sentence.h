@@ -73,6 +73,17 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
  */
 bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info);
 
+/**
+ * Generate a number of sentences from an nmeaINFO structure.
+ *
+ * @param s a pointer to the buffer in which to generate the sentences
+ * @param len the size of the buffer
+ * @param info the structure
+ * @param generate_mask the mask of which sentences to generate
+ * @return the total length of the generated sentences
+ */
+int nmea_generate(char *s, const int len, const nmeaINFO *info, const int generate_mask);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

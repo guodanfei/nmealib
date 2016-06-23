@@ -120,6 +120,16 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info);
  */
 void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack);
 
+/**
+ * Generate a GPGGA sentence from an nmeaGPGGA structure
+ *
+ * @param s a pointer to the buffer to generate the string in
+ * @param len the size of the buffer
+ * @param pack the structure
+ * @return the length of the generated sentence
+ */
+int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

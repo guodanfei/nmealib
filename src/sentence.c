@@ -157,3 +157,58 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
       return false;
   }
 }
+
+int nmea_generate(char *s, const int len, const nmeaINFO *info, const int generate_mask) {
+  int gen_count = 0;
+  int pack_mask = generate_mask;
+
+  if (!s || !len || !info || !generate_mask)
+    return 0;
+
+  while (pack_mask) {
+    if (pack_mask & GPGGA) {
+      nmeaGPGGA gpgga;
+
+      nmeaGPGGAFromInfo(info, &gpgga);
+      gen_count += nmea_gen_GPGGA(s + gen_count, len - gen_count, &gpgga);
+      pack_mask &= ~GPGGA;
+    } else if (pack_mask & GPGSA) {
+      nmeaGPGSA gpgsa;
+
+      nmeaGPGSAFromInfo(info, &gpgsa);
+      gen_count += nmea_gen_GPGSA(s + gen_count, len - gen_count, &gpgsa);
+      pack_mask &= ~GPGSA;
+    } else if (pack_mask & GPGSV) {
+      nmeaGPGSV gpgsv;
+      int gpgsv_it;
+      int gpgsv_count = nmeaGPGSVsatellitesToSentencesCount(info->satinfo.inview);
+
+      for (gpgsv_it = 0; gpgsv_it < gpgsv_count && len - gen_count > 0; gpgsv_it++) {
+        nmeaGPGSVFromInfo(info, &gpgsv, gpgsv_it);
+        gen_count += nmea_gen_GPGSV(s + gen_count, len - gen_count, &gpgsv);
+      }
+      pack_mask &= ~GPGSV;
+    } else if (pack_mask & GPRMC) {
+      nmeaGPRMC gprmc;
+
+      nmeaGPRMCFromInfo(info, &gprmc);
+      gen_count += nmea_gen_GPRMC(s + gen_count, len - gen_count, &gprmc);
+      pack_mask &= ~GPRMC;
+    } else if (pack_mask & GPVTG) {
+      nmeaGPVTG gpvtg;
+
+      nmeaGPVTGFromInfo(info, &gpvtg);
+      gen_count += nmea_gen_GPVTG(s + gen_count, len - gen_count, &gpvtg);
+      pack_mask &= ~GPVTG;
+    } else {
+      /* no more known sentences to process */
+      break;
+    }
+
+    if (len - gen_count <= 0)
+      break;
+  }
+
+  return gen_count;
+}
+

@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -331,4 +332,57 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
         'W');
     nmea_INFO_set_present(&pack->present, MAGVAR);
   }
+}
+
+int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack) {
+  char sTime[16];
+  char sDate[16];
+  char sLat[16];
+  char sNs[2];
+  char sLon[16];
+  char sEw[2];
+  char sSpeed[16];
+  char sTrack[16];
+  char sMagvar[16];
+  char sMagvar_ew[2];
+
+  sTime[0] = 0;
+  sDate[0] = 0;
+  sLat[0] = 0;
+  sNs[0] = sNs[1] = 0;
+  sLon[0] = 0;
+  sEw[0] = sEw[1] = 0;
+  sSpeed[0] = 0;
+  sTrack[0] = 0;
+  sMagvar[0] = 0;
+  sMagvar_ew[0] = sMagvar_ew[1] = 0;
+
+  if (nmea_INFO_is_present(pack->present, UTCDATE)) {
+    snprintf(&sDate[0], sizeof(sDate), "%02d%02d%02d", pack->utc.day, pack->utc.mon + 1, pack->utc.year - 100);
+  }
+  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
+    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec,
+        pack->utc.hsec);
+  }
+  if (nmea_INFO_is_present(pack->present, LAT)) {
+    snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
+    sNs[0] = pack->ns;
+  }
+  if (nmea_INFO_is_present(pack->present, LON)) {
+    snprintf(&sLon[0], sizeof(sLon), "%010.4f", pack->lon);
+    sEw[0] = pack->ew;
+  }
+  if (nmea_INFO_is_present(pack->present, SPEED)) {
+    snprintf(&sSpeed[0], sizeof(sSpeed), "%03.1f", pack->speed);
+  }
+  if (nmea_INFO_is_present(pack->present, TRACK)) {
+    snprintf(&sTrack[0], sizeof(sTrack), "%03.1f", pack->track);
+  }
+  if (nmea_INFO_is_present(pack->present, MAGVAR)) {
+    snprintf(&sMagvar[0], sizeof(sMagvar), "%03.1f", pack->magvar);
+    sMagvar_ew[0] = pack->magvar_ew;
+  }
+
+  return nmea_printf(s, len, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
+      &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->sigMode);
 }

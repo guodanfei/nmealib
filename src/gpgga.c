@@ -23,6 +23,7 @@
 #include <nmealib/validate.h>
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -302,4 +303,57 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   /* dgps_age not supported yet */
 
   /* dgps_sid not supported yet */
+}
+
+int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
+  char sTime[16];
+  char sLat[16];
+  char sNs[2];
+  char sLon[16];
+  char sEw[2];
+  char sSig[4];
+  char sSatInUse[4];
+  char sHdop[16];
+  char sElv[16];
+  char sElvUnit[2];
+
+  sTime[0] = 0;
+  sLat[0] = 0;
+  sNs[0] = sNs[1] = 0;
+  sLon[0] = 0;
+  sEw[0] = sEw[1] = 0;
+  sSig[0] = 0;
+  sSatInUse[0] = 0;
+  sHdop[0] = 0;
+  sElv[0] = 0;
+  sElvUnit[0] = sElvUnit[1] = 0;
+
+  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
+    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->time.hour, pack->time.min, pack->time.sec,
+        pack->time.hsec);
+  }
+  if (nmea_INFO_is_present(pack->present, LAT)) {
+    snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
+    sNs[0] = pack->ns;
+  }
+  if (nmea_INFO_is_present(pack->present, LON)) {
+    snprintf(&sLon[0], sizeof(sLon), "%010.4f", pack->lon);
+    sEw[0] = pack->ew;
+  }
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    snprintf(&sSig[0], sizeof(sSig), "%1d", pack->sig);
+  }
+  if (nmea_INFO_is_present(pack->present, SATINUSECOUNT)) {
+    snprintf(&sSatInUse[0], sizeof(sSatInUse), "%02d", pack->satinuse);
+  }
+  if (nmea_INFO_is_present(pack->present, HDOP)) {
+    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->HDOP);
+  }
+  if (nmea_INFO_is_present(pack->present, ELV)) {
+    snprintf(&sElv[0], sizeof(sElv), "%03.1f", pack->elv);
+    sElvUnit[0] = pack->elv_units;
+  }
+
+  return nmea_printf(s, len, "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", &sTime[0], &sLat[0], &sNs[0], &sLon[0],
+      &sEw[0], &sSig[0], &sSatInUse[0], &sHdop[0], &sElv[0], &sElvUnit[0]);
 }

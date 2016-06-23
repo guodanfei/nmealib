@@ -19,7 +19,7 @@
 
 #include <nmealib/context.h>
 #include <nmealib/gmath.h>
-#include <nmealib/generate.h>
+#include <nmealib/sentence.h>
 
 #include "random.h"
 

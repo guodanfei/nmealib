@@ -18,7 +18,7 @@
 #include <nmealib/info.h>
 
 #include <nmealib/gmath.h>
-#include <nmealib/generate.h>
+#include <nmealib/sentence.h>
 
 #include <stdio.h>
 #include <unistd.h>
