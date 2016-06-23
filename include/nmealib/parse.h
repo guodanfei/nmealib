@@ -27,20 +27,21 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Parse nmeaTIME (time only, no date) from a string.
+ * Parse a NMEA time into a nmeaTIME (time only, no date).
  *
- * The format that is used (hhmmss, hhmmss.s, hhmmss.ss or hhmmss.sss) is
+ * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
  * determined by the length of the string.
  *
- * @param s The string
+ * @param time The string
  * @param t The structure in which to store the parsed time
- * @param prefix The NMEA prefix
- * @return True on success, false otherwise
+ * @param prefix The NMEA prefix, used for error reporting
+ * @param s The NMEA sentence, used for error reporting
+ * @return True on success
  */
-bool nmeaTIMEparseTime(const char *s, nmeaTIME *t, const char * prefix);
+bool nmeaTIMEparseTime(const char *time, nmeaTIME *t, const char *prefix, const char *s);
 
 /**
- * Parse nmeaTIME (date only, no time) from a string.
+ * Parse a NMEA date into a nmeaTIME (date only, no time).
  *
  * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
  * range of [0, 11]. The year is adjusted (incremented by 100) for years
@@ -48,11 +49,11 @@ bool nmeaTIMEparseTime(const char *s, nmeaTIME *t, const char * prefix);
  *
  * @param date The date (DDMMYY)
  * @param t The structure in which to store the parsed date
- * @param prefix The NMEA prefix
- * @param s The NMEA sentence
- * @return True on success, false otherwise
+ * @param prefix The NMEA prefix, used for error reporting
+ * @param s The NMEA sentence, used for error reporting
+ * @return True on success
  */
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char * prefix, const char * s);
+bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char *prefix, const char *s);
 
 #ifdef  __cplusplus
 }

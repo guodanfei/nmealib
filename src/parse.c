@@ -21,52 +21,52 @@
 #include <nmealib/tok.h>
 #include <string.h>
 
-bool nmeaTIMEparseTime(const char *s, nmeaTIME *t, const char * prefix) {
+bool nmeaTIMEparseTime(const char *time, nmeaTIME *t, const char *prefix, const char *s) {
   size_t sz;
 
-  if (!s || !t) {
+  if (!time || !t) {
     return false;
   }
 
-  sz = strlen(s);
+  sz = strlen(time);
 
-  if (sz == 6) { // hhmmss
+  if (sz == 6) { // HHMMSS
     t->hsec = 0;
-    return (3 == nmea_scanf(s, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
+    return (3 == nmea_scanf(time, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
   }
 
-  if (sz == 8) { // hhmmss.s
-    if (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+  if (sz == 8) { // HHMMSS.t
+    if (4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
     }
     return false;
   }
 
-  if (sz == 9) { // hhmmss.ss
-    return (4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
+  if (sz == 9) { // HHMMSS.hh
+    return (4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
-  if (sz == 10) { // hhmmss.sss
-    if ((4 == nmea_scanf(s, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+  if (sz == 10) { // HHMMSS.mmm
+    if ((4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 5) / 10;
       return true;
     }
     return false;
   }
 
-  nmea_error("%s parse error: invalid time format in '%s'", prefix, s);
+  nmea_error("%s%sparse error: invalid time format in '%s'", prefix ? prefix : "", prefix ? " " : "", s);
 
   return false;
 }
 
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char * prefix, const char * s) {
+bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
 
   if ((date < 0) || (date > 999999)) {
-    nmea_error("%s parse error: invalid date '%d' in '%s'", prefix, date, s);
+    nmea_error("%s%sparse error: invalid date '%d' in '%s'", prefix ? prefix : "", prefix ? " " : "", date, s);
     return false;
   }
 

@@ -82,7 +82,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->time, NMEA_PREFIX_GPGGA) //
+    if (!nmeaTIMEparseTime(timeBuf, &pack->time, NMEA_PREFIX_GPGGA, s) //
         || !nmeaValidateTime(&pack->time, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }

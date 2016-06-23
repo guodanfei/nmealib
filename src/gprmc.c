@@ -82,7 +82,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->utc, "GPRMC") //
+    if (!nmeaTIMEparseTime(timeBuf, &pack->utc, "GPRMC", s) //
         || !nmeaValidateTime(&pack->utc, "GPRMC", s)) {
       goto err;
     }

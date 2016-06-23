@@ -100,7 +100,8 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
         pack->sentences);
     goto err;
   }
-  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE)) != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
+  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE))
+      != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
     nmea_error("GPGSV parse error: sentence count %d does not correspond to satellite count %d", pack->sentences,
         pack->satellites);
     goto err;
@@ -110,7 +111,9 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   if (pack->sentence != pack->sentences) {
     fieldCountMinimum = 19;
   } else {
-    fieldCountMinimum = (4 * (NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - ((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) - pack->satellites))) + 3;
+    fieldCountMinimum = 3 + (4 * //
+        (NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - //
+            ((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) - pack->satellites)));
   }
   if ((fieldCount != fieldCountMinimum) && (fieldCount != 19)) {
     nmea_error("GPGSV parse error: need %d (or 19) tokens, got %d in '%s'", fieldCountMinimum, fieldCount, s);
@@ -175,7 +178,8 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
     return;
   }
 
-  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE)) != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
+  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE))
+      != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
     return;
   }
 
@@ -235,12 +239,12 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 
   if (nmea_INFO_is_present(info->present, SATINVIEW)) {
-    int offset;
-    int i;
-    int skipCount;
-    int satellites;
+    int offset = 0;
+    int i = 0;
+    int skipCount = 0;
+    int satellites = 0;
 
-    for (i=0; i < NMEALIB_MAX_SATELLITES; i++) {
+    for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
       if (info->satinfo.sat[i].id) {
         satellites++;
       }

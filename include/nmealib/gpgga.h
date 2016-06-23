@@ -64,7 +64,7 @@ extern "C" {
  * (2) These fields are both required for a valid longitude<br/>
  * (3) These fields are both required for a valid altitude<br/>
  * (4) Not supported yet<br/>
- * (5) Supported formats: HHMMSS, HHMMSS.h, HHMMSS.hh, HHMMSS.hhh<br/>
+ * (5) Supported formats: HHMMSS, HHMMSS.t, HHMMSS.hh, HHMMSS.mmm<br/>
  *
  * Example:
  *
