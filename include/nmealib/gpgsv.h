@@ -43,29 +43,29 @@ extern "C" {
  * $GPGSV,sentences,sentence,satellites,prn1,elevation1,azimuth1,snr1,prn2,elevation2,azimuth2,snr2,prn3,elevation3,azimuth3,snr3,prn4,elevation4,azimuth4,snr4*checksum
  * </pre>
  *
- * | Field       | Description                                      | present    |
- * | :---------: | ------------------------------------------------ | :--------: |
- * | $GPGSV      | NMEA prefix                                      | -          |
- * | sentences   | The number of sentences for full data            | SATINVIEW  |
- * | sentence    | The current sentence number                      | SATINVIEW  |
- * | satellites  | The number of satellites in view                 | SATINVIEW  |
- * | prn1        | Satellite PRN number                             | SATINVIEW  |
- * | elevation1  | Elevation, in degrees                            | SATINVIEW  |
- * | azimuth1    | Azimuth, in degrees                              | SATINVIEW  |
- * | snr1        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
- * | prn2        | Satellite PRN number                             | SATINVIEW  |
- * | elevation2  | Elevation, in degrees                            | SATINVIEW  |
- * | azimuth2    | Azimuth, in degrees                              | SATINVIEW  |
- * | snr2        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
- * | prn3        | Satellite PRN number                             | SATINVIEW  |
- * | elevation3  | Elevation, in degrees                            | SATINVIEW  |
- * | azimuth3    | Azimuth, in degrees                              | SATINVIEW  |
- * | snr3        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
- * | prn4        | Satellite PRN number                             | SATINVIEW  |
- * | elevation4  | Elevation, in degrees                            | SATINVIEW  |
- * | azimuth4    | Azimuth, in degrees                              | SATINVIEW  |
- * | snr4        | Signal-Noise-Ration, in dB                       | SATINVIEW  |
- * | checksum    | NMEA checksum                                    | -          |
+ * | Field       | Description                                      | present        |
+ * | :---------: | ------------------------------------------------ | :------------: |
+ * | $GPGSV      | NMEA prefix                                      | -              |
+ * | sentences   | The number of sentences for full data            | -              |
+ * | sentence    | The current sentence number                      | -              |
+ * | satellites  | The number of satellites in view                 | SATINVIEWCOUNT |
+ * | prn1        | Satellite PRN number                             | SATINVIEW      |
+ * | elevation1  | Elevation, in degrees                            | SATINVIEW      |
+ * | azimuth1    | Azimuth, in degrees                              | SATINVIEW      |
+ * | snr1        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | prn2        | Satellite PRN number                             | SATINVIEW      |
+ * | elevation2  | Elevation, in degrees                            | SATINVIEW      |
+ * | azimuth2    | Azimuth, in degrees                              | SATINVIEW      |
+ * | snr2        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | prn3        | Satellite PRN number                             | SATINVIEW      |
+ * | elevation3  | Elevation, in degrees                            | SATINVIEW      |
+ * | azimuth3    | Azimuth, in degrees                              | SATINVIEW      |
+ * | snr3        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | prn4        | Satellite PRN number                             | SATINVIEW      |
+ * | elevation4  | Elevation, in degrees                            | SATINVIEW      |
+ * | azimuth4    | Azimuth, in degrees                              | SATINVIEW      |
+ * | snr4        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | checksum    | NMEA checksum                                    | -              |
  *
  * Shows data about the satellites that the unit might be able to find based on
  * its viewing mask and almanac data. It also shows current ability to track

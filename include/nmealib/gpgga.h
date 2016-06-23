@@ -38,32 +38,33 @@ extern "C" {
  * Essential fix data which provide 3D location and accuracy data.
  *
  * <pre>
- * $GPGGA,time,lat,ns,lon,ew,sig,sats,hdop,elv,elv unit,height,height unit,dgps age,dgps id*checksum
+ * $GPGGA,time,latitude,ns,longitude,ew,signal,satellites,hdop,elv,elv unit,height,height unit,dgps age,dgps id*checksum
  * </pre>
  *
- * | Field       | Description                                            | present       |
- * | :---------: | ------------------------------------------------------ | :-----------: |
- * | $GPGGA      | NMEA prefix                                            | -             |
- * | time        | Fix time, in the format HHMMSS.hh (UTC)                | UTCTIME       |
- * | lat         | Latitude, in NDEG (DDMM.SSS)                           | LAT (1)       |
- * | ns          | North or south ('N' or 'S')                            | LAT (1)       |
- * | lon         | Longitude, in NDEG (DDDMM.SSS)                         | LON (2)       |
- * | ew          | East or west ('E' or 'W')                              | LON (2)       |
- * | sig         | Signal quality, see the NMEA_SIG_* defines             | SIG           |
- * | sats        | Number of satellites being tracked                     | SATINUSECOUNT |
- * | hdop        | Horizontal dilution of position                        | HDOP          |
- * | elv         | Altitude above mean sea level, in meters               | ELV (3)       |
- * | elv unit    | Unit of altitude ('M')                                 | ELV (3)       |
- * | height      | Height of geoid (mean sea level) above WGS84 ellipsoid | - (4)         |
- * | height unit | Unit of height ('M')                                   | - (4)         |
- * | dgps age    | Time since last DGPS update, in seconds                | - (4)         |
- * | dgps id     | DGPS station ID number                                 | - (4)         |
- * | checksum    | NMEA checksum                                          | -             |
+ * | Field       | Description                                            | present        |
+ * | :---------: | ------------------------------------------------------ | :------------: |
+ * | $GPGGA      | NMEA prefix                                            | -              |
+ * | time        | Fix time, in the format HHMMSS.hh (UTC) (5)            | UTCTIME        |
+ * | latitude    | Latitude, in NDEG (DDMM.SSS)                           | LAT (1)        |
+ * | ns          | North or South ('N' or 'S')                            | LAT (1)        |
+ * | longitude   | Longitude, in NDEG (DDDMM.SSS)                         | LON (2)        |
+ * | ew          | East or West ('E' or 'W')                              | LON (2)        |
+ * | signal      | Signal quality (see the NMEA_SIG_* defines)            | SIG            |
+ * | satellites  | Number of satellites being tracked                     | SATINVIEWCOUNT |
+ * | hdop        | Horizontal dilution of position                        | HDOP           |
+ * | elv         | Altitude above mean sea level, in meters               | ELV (3)        |
+ * | elv unit    | Unit of altitude ('M')                                 | ELV (3)        |
+ * | height      | Height of geoid (mean sea level) above WGS84 ellipsoid | - (4)          |
+ * | height unit | Unit of height ('M')                                   | - (4)          |
+ * | dgps age    | Time since last DGPS update, in seconds                | - (4)          |
+ * | dgps id     | DGPS station ID number                                 | - (4)          |
+ * | checksum    | NMEA checksum                                          | -              |
  *
  * (1) These fields are both required for a valid latitude<br/>
  * (2) These fields are both required for a valid longitude<br/>
  * (3) These fields are both required for a valid altitude<br/>
  * (4) Not supported yet<br/>
+ * (5) Supported formats: HHMMSS, HHMMSS.h, HHMMSS.hh, HHMMSS.hhh<br/>
  *
  * Example:
  *
@@ -79,19 +80,19 @@ extern "C" {
 typedef struct _nmeaGPGGA {
   uint32_t present;
   nmeaTIME time;
-  double   lat;
+  double   latitude;
   char     ns;
-  double   lon;
+  double   longitude;
   char     ew;
-  int      sig;
-  int      satinuse;
+  int      signal;
+  int      satellites;
   double   HDOP;
   double   elv;
-  char     elv_units;
+  char     elvUnit;
   double   diff;
-  char     diff_units;
-  double   dgps_age;
-  int      dgps_sid;
+  char     diffUnit;
+  double   dgpsAge;
+  int      dgpsSid;
 } nmeaGPGGA;
 
 /**

@@ -237,8 +237,10 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   if (!nmea_INFO_is_present(nmeaInfo->present, SATINUSE)) {
     memset(&nmeaInfo->satinfo.in_use, 0, sizeof(nmeaInfo->satinfo.in_use));
   }
-  if (!nmea_INFO_is_present(nmeaInfo->present, SATINVIEW)) {
+  if (!nmea_INFO_is_present(nmeaInfo->present, SATINVIEWCOUNT)) {
     nmeaInfo->satinfo.inview = 0;
+  }
+  if (!nmea_INFO_is_present(nmeaInfo->present, SATINVIEW)) {
     memset(&nmeaInfo->satinfo.sat, 0, sizeof(nmeaInfo->satinfo.sat));
   }
 

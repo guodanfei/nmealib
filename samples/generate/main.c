@@ -71,7 +71,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		info.satinfo.sat[it].azimuth = it + 1;
 		info.satinfo.sat[it].sig = 99 - it;
 	}
-	nmea_INFO_set_present(&info.present, SATINVIEW);
+	nmea_INFO_set_present(&info.present, SATINVIEWCOUNT | SATINVIEW);
 
 	for (it = 0; it < 10; it++) {
 		gen_sz = nmea_generate(&buff[0], 2048, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);

@@ -212,6 +212,7 @@ static int nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), nme
 
   nmea_INFO_set_present(&info->present, SATINUSECOUNT);
   nmea_INFO_set_present(&info->present, SATINUSE);
+  nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   nmea_INFO_set_present(&info->present, SATINVIEW);
 
   return 1;
@@ -272,6 +273,7 @@ static int nmea_igen_static_reset(nmeaGENERATOR *gen __attribute__ ((unused)), n
 
   nmea_INFO_set_present(&info->present, SATINUSECOUNT);
   nmea_INFO_set_present(&info->present, SATINUSE);
+  nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   nmea_INFO_set_present(&info->present, SATINVIEW);
 
   return 1;
@@ -327,6 +329,7 @@ static int nmea_igen_rotate_loop(nmeaGENERATOR *gen __attribute__ ((unused)), nm
     srt += deg;
   }
 
+  nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   nmea_INFO_set_present(&info->present, SATINVIEW);
 
   return 1;
@@ -358,6 +361,7 @@ static int nmea_igen_rotate_reset(nmeaGENERATOR *gen __attribute__ ((unused)), n
 
   nmea_INFO_set_present(&info->present, SATINUSECOUNT);
   nmea_INFO_set_present(&info->present, SATINUSE);
+  nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   nmea_INFO_set_present(&info->present, SATINVIEW);
 
   return 1;

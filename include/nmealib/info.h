@@ -246,24 +246,30 @@ typedef struct _nmeaINFO {
  * The values are used in the 'present' mask.
  */
 typedef enum _nmeaINFO_FIELD {
-  SMASK = (1u << 0), /* 0x00001 */
-  UTCDATE = (1u << 1), /* 0x00002 */
-  UTCTIME = (1u << 2), /* 0x00004 */
-  SIG = (1u << 3), /* 0x00008 */
-  FIX = (1u << 4), /* 0x00010 */
-  PDOP = (1u << 5), /* 0x00020 */
-  HDOP = (1u << 6), /* 0x00040 */
-  VDOP = (1u << 7), /* 0x00080 */
-  LAT = (1u << 8), /* 0x00100 */
-  LON = (1u << 9), /* 0x00200 */
-  ELV = (1u << 10), /* 0x00400 */
-  SPEED = (1u << 11), /* 0x00800 */
-  TRACK = (1u << 12), /* 0x01000 */
-  MTRACK = (1u << 13), /* 0x02000 */
-  MAGVAR = (1u << 14), /* 0x04000 */
-  SATINUSECOUNT = (1u << 15), /* 0x08000 */
-  SATINUSE = (1u << 16), /* 0x10000 */
-  SATINVIEW = (1u << 17), /* 0x20000 */
+  SMASK          = (1u << 0),  /* 0x00000001 */
+  UTCDATE        = (1u << 1),  /* 0x00000002 */
+  UTCTIME        = (1u << 2),  /* 0x00000004 */
+  SIG            = (1u << 3),  /* 0x00000008 */
+
+  FIX            = (1u << 4),  /* 0x00000010 */
+  PDOP           = (1u << 5),  /* 0x00000020 */
+  HDOP           = (1u << 6),  /* 0x00000040 */
+  VDOP           = (1u << 7),  /* 0x00000080 */
+
+  LAT            = (1u << 8),  /* 0x00000100 */
+  LON            = (1u << 9),  /* 0x00000200 */
+  ELV            = (1u << 10), /* 0x00000400 */
+  SPEED          = (1u << 11), /* 0x00000800 */
+
+  TRACK          = (1u << 12), /* 0x00001000 */
+  MTRACK         = (1u << 13), /* 0x00002000 */
+  MAGVAR         = (1u << 14), /* 0x00004000 */
+  SATINUSECOUNT  = (1u << 15), /* 0x00008000 */
+
+  SATINUSE       = (1u << 16), /* 0x00010000 */
+  SATINVIEWCOUNT = (1u << 17), /* 0x00020000 */
+  SATINVIEW      = (1u << 18), /* 0x00040000 */
+
   _nmeaINFO_FIELD_LAST = SATINVIEW
 } nmeaINFO_FIELD;
 
@@ -309,6 +315,8 @@ static INLINE const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field) {
       return "SATINUSECOUNT";
     case SATINUSE:
       return "SATINUSE";
+    case SATINVIEWCOUNT:
+      return "SATINVIEWCOUNT";
     case SATINVIEW:
       return "SATINVIEW";
     default:
