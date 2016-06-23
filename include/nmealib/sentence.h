@@ -15,6 +15,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * @file
+ * NMEA Info
+ *
+ * The table below describes which fields are present in the sentences that are
+ * supported by the library.
+ * | field \ sentence       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
+ * | :--------------------- | :---: | :---: | :---: | :---: | :---: |
+ * | present:               | x     | x     | x     | x     | x     |
+ * | smask:                 | x     | x     | x     | x     | x     |
+ * | utc (date):            |       |       |       | x     |       |
+ * | utc (time):            | x     |       |       | x     |       |
+ * | sig:                   | x     |       |       | x (1) |       |
+ * | fix:                   |       | x     |       | x (1) |       |
+ * | PDOP:                  |       | x     |       |       |       |
+ * | HDOP:                  | x     | x     |       |       |       |
+ * | VDOP:                  |       | x     |       |       |       |
+ * | lat:                   | x     |       |       | x     |       |
+ * | lon:                   | x     |       |       | x     |       |
+ * | elv:                   | x     |       |       |       |       |
+ * | speed:                 |       |       |       | x     | x     |
+ * | track:                 |       |       |       | x     | x     |
+ * | mtrack:                |       |       |       |       | x     |
+ * | magvar:                |       |       |       | x     |       |
+ * | satinfo (inuse count): | x     | x (1) |       |       |       |
+ * | satinfo (inuse):       |       | x     |       |       |       |
+ * | satinfo (inview):      |       |       | x     |       |       |
+ *
+ * (1) Not present in the sentence but the library sets it up.
+ */
+
 #ifndef __NMEALIB_SENTENCE_H__
 #define __NMEALIB_SENTENCE_H__
 

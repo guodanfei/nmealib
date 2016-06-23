@@ -15,37 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @file
- * NMEA Info
- *
- * The table below describes which fields are present in the sentences that are
- * supported by the library.
- * | field \ sentence       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
- * | :--------------------- | :---: | :---: | :---: | :---: | :---: |
- * | present:               | x     | x     | x     | x     | x     |
- * | smask:                 | x     | x     | x     | x     | x     |
- * | utc (date):            |       |       |       | x     |       |
- * | utc (time):            | x     |       |       | x     |       |
- * | sig:                   | x     |       |       | x (1) |       |
- * | fix:                   |       | x     |       | x (1) |       |
- * | PDOP:                  |       | x     |       |       |       |
- * | HDOP:                  | x     | x     |       |       |       |
- * | VDOP:                  |       | x     |       |       |       |
- * | lat:                   | x     |       |       | x     |       |
- * | lon:                   | x     |       |       | x     |       |
- * | elv:                   | x     |       |       |       |       |
- * | speed:                 |       |       |       | x     | x     |
- * | track:                 |       |       |       | x     | x     |
- * | mtrack:                |       |       |       |       | x     |
- * | magvar:                |       |       |       | x     |       |
- * | satinfo (inuse count): | x     | x (1) |       |       |       |
- * | satinfo (inuse):       |       | x     |       |       |       |
- * | satinfo (inview):      |       |       | x     |       |       |
- *
- * (1) Not present in the sentence but the library sets it up.
- */
-
 #ifndef __NMEALIB_INFO_H__
 #define __NMEALIB_INFO_H__
 
@@ -197,7 +166,6 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
 
 /**
  * Date and time data
- * @see nmea_time_now
  */
 typedef struct _nmeaTIME {
     int year; /**< Years since 1900 */
@@ -219,8 +187,6 @@ typedef struct _nmeaPOS {
 
 /**
  * Information about satellite
- * @see nmeaSATINFO
- * @see nmeaGPGSV
  */
 typedef struct _nmeaSATELLITE {
     int id; /**< Satellite PRN number */
@@ -231,8 +197,6 @@ typedef struct _nmeaSATELLITE {
 
 /**
  * Information about all satellites in view
- * @see nmeaINFO
- * @see nmeaGPGSV
  */
 typedef struct _nmeaSATINFO {
     int inuse; /**< Number of satellites in use (not those in view) */
@@ -244,8 +208,6 @@ typedef struct _nmeaSATINFO {
 /**
  * Summary GPS information from all parsed packets,
  * used also for generating NMEA stream
- * @see nmea_parse
- * @see nmea_GPGGA2info,  nmea_...2info
  */
 typedef struct _nmeaINFO {
     uint32_t present; /**< Mask specifying which fields are present */
