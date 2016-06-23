@@ -395,13 +395,13 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
    */
 
   nmeaInfo->satinfo.inuse = 0;
-  for (inuseIndex = 0; inuseIndex < NMEA_MAXSAT; inuseIndex++) {
+  for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
     if (nmeaInfo->satinfo.in_use[inuseIndex])
       nmeaInfo->satinfo.inuse++;
   }
 
   nmeaInfo->satinfo.inview = 0;
-  for (inviewIndex = 0; inviewIndex < NMEA_MAXSAT; inviewIndex++) {
+  for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
     if (nmeaInfo->satinfo.sat[inviewIndex].id) {
       nmeaInfo->satinfo.inview++;
 
@@ -451,11 +451,11 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   }
 
   /* make sure the in_use IDs map to sat IDs */
-  for (inuseIndex = 0; inuseIndex < NMEA_MAXSAT; inuseIndex++) {
+  for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
     int inuseID = nmeaInfo->satinfo.in_use[inuseIndex];
     if (inuseID) {
       bool found = false;
-      for (inviewIndex = 0; inviewIndex < NMEA_MAXSAT; inviewIndex++) {
+      for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
         int inviewID = nmeaInfo->satinfo.sat[inviewIndex].id;
         if (inuseID == inviewID) {
           found = true;

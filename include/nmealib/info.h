@@ -155,7 +155,7 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
   }
 }
 
-#define NMEA_MAXSAT    (72)
+#define NMEALIB_MAX_SATELLITES    (72)
 
 #define NMEA_DEF_LAT   (0.0)
 #define NMEA_DEF_LON   (0.0)
@@ -196,9 +196,9 @@ typedef struct _nmeaSATELLITE {
  */
 typedef struct _nmeaSATINFO {
     int inuse; /**< Number of satellites in use (not those in view) */
-    int in_use[NMEA_MAXSAT]; /**< IDs of satellites in use (not those in view) */
+    int in_use[NMEALIB_MAX_SATELLITES]; /**< IDs of satellites in use (not those in view) */
     int inview; /**< Total number of satellites in view */
-    nmeaSATELLITE sat[NMEA_MAXSAT]; /**< Satellites information (in view) */
+    nmeaSATELLITE sat[NMEALIB_MAX_SATELLITES]; /**< Satellites information (in view) */
 } nmeaSATINFO;
 
 /**

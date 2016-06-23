@@ -192,7 +192,7 @@ static int nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), nme
   info->satinfo.inuse = 0;
   info->satinfo.inview = 0;
 
-  for (it = 0; it < NMEA_MAXSAT; it++) {
+  for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
     in_use = lrint(nmea_random(0, 3));
     info->satinfo.in_use[it] = in_use ?
         it :

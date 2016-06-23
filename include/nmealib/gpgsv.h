@@ -31,10 +31,10 @@ extern "C" {
 #endif /* __cplusplus */
 
   /** The maximum number of satellites per sentence */
-#define NMEA_SATINPACK (4)
+#define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4)
 
 /** The maximum number of GPGSV sentences (depends on the maximum number of satellites tracked) */
-#define NMEA_NSATPACKS (NMEA_MAXSAT / NMEA_SATINPACK)
+#define NMEALIB_GPGSV_MAX_SENTENCES (NMEALIB_MAX_SATELLITES / NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE)
 
 /**
  * GPGSV packet information structure (Satellites in view)
@@ -99,7 +99,7 @@ typedef struct _nmeaGPGSV {
   int           sentences;
   int           sentence;
   int           satellites;
-  nmeaSATELLITE satellite[NMEA_SATINPACK];
+  nmeaSATELLITE satellite[NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE];
 } nmeaGPGSV;
 
 /**

@@ -39,7 +39,7 @@ static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, siz
       info->satinfo.inuse, info->satinfo.inview);
   lineCount += 2;
 
-  for (i = 0; i < NMEA_MAXSAT; i++) {
+  for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
     index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02d %s = %d/%d/%d/%d/%d\n", i,
         "in_use/id/sig/elv/azimuth", info->satinfo.in_use[i], info->satinfo.sat[i].id, info->satinfo.sat[i].sig,
         info->satinfo.sat[i].elv, info->satinfo.sat[i].azimuth);

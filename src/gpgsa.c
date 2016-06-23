@@ -197,7 +197,7 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
     info->satinfo.inuse = 0;
     memset(&info->satinfo.in_use, 0, sizeof(info->satinfo.in_use[0]));
 
-    for (packIndex = 0; (infoIndex < NMEA_MAXSAT) && (packIndex < GPGSA_SAT_COUNT); packIndex++) {
+    for (packIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < GPGSA_SAT_COUNT); packIndex++) {
       int prn = pack->sat_prn[packIndex];
       if (prn) {
         info->satinfo.in_use[infoIndex++] = prn;
@@ -250,7 +250,7 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
     unsigned int infoIndex = 0;
     unsigned int packIndex = 0;
 
-    for (infoIndex = 0; (infoIndex < NMEA_MAXSAT) && (packIndex < GPGSA_SAT_COUNT); infoIndex++) {
+    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < GPGSA_SAT_COUNT); infoIndex++) {
       int prn = info->satinfo.in_use[infoIndex];
       if (prn) {
         pack->sat_prn[packIndex++] = prn;
@@ -280,7 +280,7 @@ int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
   int i;
   char sFixMode[2];
   char sFixType[2];
-  char sSatPrn[(NMEA_MAXSAT * 4) + 1];
+  char sSatPrn[(NMEALIB_MAX_SATELLITES * 4) + 1];
   char sPdop[16];
   char sHdop[16];
   char sVdop[16];
@@ -302,7 +302,7 @@ int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     snprintf(&sFixType[0], sizeof(sFixType), "%1d", pack->fix);
   }
 
-  for (i = 0; (i < NMEA_MAXSAT) && (i < GPGSA_SAT_COUNT); i++) {
+  for (i = 0; (i < NMEALIB_MAX_SATELLITES) && (i < GPGSA_SAT_COUNT); i++) {
     if (satinuse && pack->sat_prn[i]) {
       int cnt = snprintf(psSatPrn, ssSatPrn, "%d", pack->sat_prn[i]);
       if (cnt >= ssSatPrn) {
@@ -315,7 +315,7 @@ int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
         psSatPrn += cnt;
       }
     }
-    if (i < (NMEA_MAXSAT - 1)) {
+    if (i < (NMEALIB_MAX_SATELLITES - 1)) {
       *psSatPrn = ',';
       psSatPrn++;
       ssSatPrn--;

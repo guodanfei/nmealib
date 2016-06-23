@@ -57,15 +57,15 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmea_INFO_set_present(&info.present, VDOP);
 	nmea_INFO_set_present(&info.present, PDOP);
 
-	info.satinfo.inuse = NMEA_MAXSAT;
+	info.satinfo.inuse = NMEALIB_MAX_SATELLITES;
 	nmea_INFO_set_present(&info.present, SATINUSECOUNT);
-	for (it = 0; it < NMEA_MAXSAT; it++) {
+	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.in_use[it] = it + 1;
 	}
 	nmea_INFO_set_present(&info.present, SATINUSE);
 
-	info.satinfo.inview = NMEA_MAXSAT;
-	for (it = 0; it < NMEA_MAXSAT; it++) {
+	info.satinfo.inview = NMEALIB_MAX_SATELLITES;
+	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.sat[it].id = it + 1;
 		info.satinfo.sat[it].elv = (it * 10);
 		info.satinfo.sat[it].azimuth = it + 1;
