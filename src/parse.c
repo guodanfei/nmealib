@@ -16,57 +16,29 @@
  */
 
 #include <nmealib/parse.h>
+#include <math.h>
 
-#include <nmealib/context.h>
-#include <nmealib/tok.h>
-#include <string.h>
+bool nmeaTIMEparseTime(const double time, nmeaTIME *t) {
+  double timeInt;
+  long tm;
 
-bool nmeaTIMEparseTime(const char *time, nmeaTIME *t, const char *prefix, const char *s) {
-  size_t sz;
-
-  if (!time || !t) {
-    return false;
-  }
-
-  sz = strlen(time);
-
-  if (sz == 6) { // HHMMSS
-    t->hsec = 0;
-    return (3 == nmea_scanf(time, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
-  }
-
-  if (sz == 8) { // HHMMSS.t
-    if (4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
-      t->hsec *= 10;
-      return true;
-    }
-    return false;
-  }
-
-  if (sz == 9) { // HHMMSS.hh
-    return (4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
-  }
-
-  if (sz == 10) { // HHMMSS.mmm
-    if ((4 == nmea_scanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
-      t->hsec = (t->hsec + 5) / 10;
-      return true;
-    }
-    return false;
-  }
-
-  nmea_error("%s%sparse error: invalid time format in '%s'", prefix ? prefix : "", prefix ? " " : "", s);
-
-  return false;
-}
-
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
 
-  if ((date < 0) || (date > 999999)) {
-    nmea_error("%s%sparse error: invalid date '%d' in '%s'", prefix ? prefix : "", prefix ? " " : "", date, s);
+  modf(fabs(time) * 1E3, &timeInt);
+  tm = lrint(timeInt) + 5;
+
+  t->hour = (tm / 10000000) % 100;
+  t->min = (tm / 100000) % 100;
+  t->sec = (tm / 1000) % 100;
+  t->hsec = (tm / 10) % 100;
+
+  return true;
+}
+
+bool nmeaTIMEparseDate(const int date, nmeaTIME *t) {
+  if (!t) {
     return false;
   }
 
@@ -74,7 +46,9 @@ bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char *prefix, const ch
   t->mon = (date / 100) % 100;
   t->year = date % 100;
 
-  t->mon--;
+  if (t->mon > 0) {
+    t->mon--;
+  }
 
   if (t->year < 90) {
     t->year += 100;

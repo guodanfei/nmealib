@@ -33,7 +33,7 @@
 
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
-  char timeBuf[256];
+  double time;
 
   if (!s || !sz || !pack) {
     return false;
@@ -42,7 +42,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   nmea_trace_buff(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  *timeBuf = '\0';
+  time = NAN;
   memset(pack, 0, sizeof(*pack));
   pack->latitude = NAN;
   pack->longitude = NAN;
@@ -56,8 +56,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
-      timeBuf, //
+      "$" NMEA_PREFIX_GPGGA ",%f,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
+      &time, //
       &pack->latitude, //
       &pack->ns, //
       &pack->longitude, //
@@ -80,9 +80,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* determine which fields are present and validate them */
 
-  timeBuf[sizeof(timeBuf) - 1] = '\0';
-  if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->time, NMEA_PREFIX_GPGGA, s) //
+  if (!isnan(time)) {
+    if (!nmeaTIMEparseTime(time, &pack->time) //
         || !nmeaValidateTime(&pack->time, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }

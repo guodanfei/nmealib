@@ -33,7 +33,7 @@
 
 bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   int fieldCount;
-  char timeBuf[256];
+  double time;
   int date;
 
   if (!pack) {
@@ -47,7 +47,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   nmea_trace_buff(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  memset(timeBuf, 0, sizeof(timeBuf));
+  time = NAN;
   memset(pack, 0, sizeof(*pack));
   pack->lat = NAN;
   pack->lon = NAN;
@@ -58,8 +58,8 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPRMC,%s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c", //
-      timeBuf, //
+      "$GPRMC,%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c", //
+      &time, //
       &pack->sig, //
       &pack->lat, //
       &pack->ns, //
@@ -80,9 +80,8 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* determine which fields are present and validate them */
 
-  timeBuf[sizeof(timeBuf) - 1] = '\0';
-  if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->utc, "GPRMC", s) //
+  if (!isnan(time)) {
+    if (!nmeaTIMEparseTime(time, &pack->utc) //
         || !nmeaValidateTime(&pack->utc, "GPRMC", s)) {
       goto err;
     }
@@ -170,7 +169,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (date != INT_MAX) {
-    if (!nmeaTIMEparseDate(date, &pack->utc, "GPRMC", s) //
+    if (!nmeaTIMEparseDate(date, &pack->utc) //
         || !nmeaValidateDate(&pack->utc, "GPRMC", s)) {
       goto err;
     }

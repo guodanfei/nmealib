@@ -20,7 +20,6 @@
 
 #include <nmealib/info.h>
 #include <stdbool.h>
-#include <stddef.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -29,16 +28,11 @@ extern "C" {
 /**
  * Parse a NMEA time into a nmeaTIME (time only, no date).
  *
- * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
- * determined by the length of the string.
- *
- * @param time The string
+ * @param time The time (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm)
  * @param t The structure in which to store the parsed time
- * @param prefix The NMEA prefix, used for error reporting
- * @param s The NMEA sentence, used for error reporting
  * @return True on success
  */
-bool nmeaTIMEparseTime(const char *time, nmeaTIME *t, const char *prefix, const char *s);
+bool nmeaTIMEparseTime(const double time, nmeaTIME *t);
 
 /**
  * Parse a NMEA date into a nmeaTIME (date only, no time).
@@ -49,11 +43,9 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t, const char *prefix, const 
  *
  * @param date The date (DDMMYY)
  * @param t The structure in which to store the parsed date
- * @param prefix The NMEA prefix, used for error reporting
- * @param s The NMEA sentence, used for error reporting
  * @return True on success
  */
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char *prefix, const char *s);
+bool nmeaTIMEparseDate(const int date, nmeaTIME *t);
 
 #ifdef  __cplusplus
 }
