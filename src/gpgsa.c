@@ -115,7 +115,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   if (pack->fix != INT_MAX) {
-    if (!validateFix(&pack->fix, "GPGSA", s)) {
+    if (!nmeaValidateFix(&pack->fix, "GPGSA", s)) {
       goto err;
     }
 

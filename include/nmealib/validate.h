@@ -32,7 +32,7 @@ extern "C" {
 typedef struct {
   const char character;
   const char * description;
-} InvalidNMEACharacter;
+} NmeaInvalidCharacter;
 
 /**
  * Determine whether the given character is not allowed in an NMEA string
@@ -42,7 +42,7 @@ typedef struct {
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c);
+const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c);
 
 /**
  * Determine whether the specified string contains characters that are not
@@ -54,7 +54,7 @@ const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c);
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz);
+const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char * s, const size_t sz);
 
 /**
  * Validate the time fields in an nmeaTIME structure.
@@ -72,7 +72,7 @@ const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * 
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool validateTime(const nmeaTIME * t, const char * prefix, const char * s);
+bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s);
 
 /**
  * Validate the date fields in an nmeaTIME structure.
@@ -89,7 +89,7 @@ bool validateTime(const nmeaTIME * t, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return true when valid, false otherwise
  */
-bool validateDate(const nmeaTIME * t, const char * prefix, const char * s);
+bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s);
 
 /**
  * Validate north/south or east/west and upper-case it.
@@ -106,7 +106,7 @@ bool validateDate(const nmeaTIME * t, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool validateNSEW(char * c, const bool ns, const char * prefix, const char * s);
+bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char * s);
 
 /**
  * Validate a fix.
@@ -121,7 +121,7 @@ bool validateNSEW(char * c, const bool ns, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool validateFix(int * fix, const char * prefix, const char * s);
+bool nmeaValidateFix(int * fix, const char * prefix, const char * s);
 
 /**
  * Validate a signal.
@@ -136,7 +136,7 @@ bool validateFix(int * fix, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool validateSignal(int * sig, const char * prefix, const char * s);
+bool nmeaValidateSignal(int * sig, const char * prefix, const char * s);
 
 /**
  * Validate and upper-case the mode.
@@ -161,7 +161,7 @@ bool validateSignal(int * sig, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool validateMode(char * c, const char * prefix, const char * s);
+bool nmeaValidateMode(char * c, const char * prefix, const char * s);
 
 #ifdef  __cplusplus
 }

@@ -110,7 +110,7 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
       } else if (*c == first_eol_char) {
         parser->sentence_parser.state = READ_EOL;
         parser->sentence_parser.sentence_eol_chars_count = 1;
-      } else if (isInvalidNMEACharacter(c)) {
+      } else if (nmeaValidateIsInvalidCharacter(c)) {
         reset_sentence_parser(parser, SKIP_UNTIL_START);
       } else {
         parser->sentence_parser.calculated_checksum ^= (int) *c;

@@ -32,24 +32,20 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
   char timeBuf[256];
 
-  if (!pack) {
+  if (!s || !sz || !pack) {
     return false;
-  }
-
-  if (!s) {
-    goto err;
   }
 
   nmea_trace_buff(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  memset(timeBuf, 0, sizeof(timeBuf));
+  *timeBuf = '\0';
   memset(pack, 0, sizeof(*pack));
   pack->latitude = NAN;
   pack->longitude = NAN;
   pack->signal = INT_MAX;
   pack->satellites = INT_MAX;
-  pack->HDOP = NAN;
+  pack->hdop = NAN;
   pack->elv = NAN;
   pack->diff = NAN;
   pack->dgpsAge = NAN;
@@ -65,7 +61,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       &pack->ew, //
       &pack->signal, //
       &pack->satellites, //
-      &pack->HDOP, //
+      &pack->hdop, //
       &pack->elv, //
       &pack->elvUnit, //
       &pack->diff, //
@@ -83,8 +79,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!_nmea_parse_time(timeBuf, &pack->time, "GPGGA") //
-        || !validateTime(&pack->time, "GPGGA", s)) {
+    if (!nmeaTIMEparseTime(timeBuf, &pack->time, "GPGGA") //
+        || !nmeaValidateTime(&pack->time, "GPGGA", s)) {
       goto err;
     }
 
@@ -94,7 +90,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->latitude) && (pack->ns)) {
-    if (!validateNSEW(&pack->ns, true, "GPGGA", s)) {
+    if (!nmeaValidateNSEW(&pack->ns, true, "GPGGA", s)) {
       goto err;
     }
 
@@ -106,7 +102,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->longitude) && (pack->ew)) {
-    if (!validateNSEW(&pack->ew, false, "GPGGA", s)) {
+    if (!nmeaValidateNSEW(&pack->ew, false, "GPGGA", s)) {
       goto err;
     }
 
@@ -118,7 +114,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (pack->signal != INT_MAX) {
-    if (!validateSignal(&pack->signal, "GPGGA", s)) {
+    if (!nmeaValidateSignal(&pack->signal, "GPGGA", s)) {
       goto err;
     }
 
@@ -134,11 +130,11 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->satellites = 0;
   }
 
-  if (!isnan(pack->HDOP)) {
-    pack->HDOP = fabs(pack->HDOP);
+  if (!isnan(pack->hdop)) {
+    pack->hdop = fabs(pack->hdop);
     nmea_INFO_set_present(&pack->present, HDOP);
   } else {
-    pack->HDOP = 0.0;
+    pack->hdop = 0.0;
   }
 
   if (!isnan(pack->elv) && (pack->elvUnit)) {
@@ -229,7 +225,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = pack->HDOP;
+    info->HDOP = pack->hdop;
     nmea_INFO_set_present(&info->present, HDOP);
   }
 
@@ -289,7 +285,7 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, HDOP)) {
-    pack->HDOP = info->HDOP;
+    pack->hdop = info->HDOP;
     nmea_INFO_set_present(&pack->present, HDOP);
   }
 
@@ -348,7 +344,7 @@ int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     snprintf(&sSatInView[0], sizeof(sSatInView), "%02d", pack->satellites);
   }
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->HDOP);
+    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->hdop);
   }
   if (nmea_INFO_is_present(pack->present, ELV)) {
     snprintf(&sElv[0], sizeof(sElv), "%03.1f", pack->elv);

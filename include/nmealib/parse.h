@@ -37,7 +37,7 @@ extern "C" {
  * @param prefix The NMEA prefix
  * @return True on success, false otherwise
  */
-bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
+bool nmeaTIMEparseTime(const char *s, nmeaTIME *t, const char * prefix);
 
 /**
  * Parse nmeaTIME (date only, no time) from a string.
@@ -52,7 +52,7 @@ bool _nmea_parse_time(const char *s, nmeaTIME *t, const char * prefix);
  * @param s The NMEA sentence
  * @return True on success, false otherwise
  */
-bool _nmea_parse_date(const int date, nmeaTIME *t, const char * prefix, const char * s);
+bool nmeaTIMEparseDate(const int date, nmeaTIME *t, const char * prefix, const char * s);
 
 #ifdef  __cplusplus
 }

@@ -86,7 +86,7 @@ typedef struct _nmeaGPGGA {
   char     ew;
   int      signal;
   int      satellites;
-  double   HDOP;
+  double   hdop;
   double   elv;
   char     elvUnit;
   double   diff;

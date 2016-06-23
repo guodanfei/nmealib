@@ -82,8 +82,8 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!_nmea_parse_time(timeBuf, &pack->utc, "GPRMC") //
-        || !validateTime(&pack->utc, "GPRMC", s)) {
+    if (!nmeaTIMEparseTime(timeBuf, &pack->utc, "GPRMC") //
+        || !nmeaValidateTime(&pack->utc, "GPRMC", s)) {
       goto err;
     }
 
@@ -120,7 +120,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
         goto err;
       }
 
-      if (!validateMode(&pack->sigMode, "GPRMC", s)) {
+      if (!nmeaValidateMode(&pack->sigMode, "GPRMC", s)) {
         goto err;
       }
 
@@ -132,7 +132,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lat) && (pack->ns)) {
-    if (!validateNSEW(&pack->ns, true, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->ns, true, "GPRMC", s)) {
       goto err;
     }
 
@@ -144,7 +144,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lon) && (pack->ew)) {
-    if (!validateNSEW(&pack->ew, false, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->ew, false, "GPRMC", s)) {
       goto err;
     }
 
@@ -170,8 +170,8 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (date != INT_MAX) {
-    if (!_nmea_parse_date(date, &pack->utc, "GPRMC", s) //
-        || !validateDate(&pack->utc, "GPRMC", s)) {
+    if (!nmeaTIMEparseDate(date, &pack->utc, "GPRMC", s) //
+        || !nmeaValidateDate(&pack->utc, "GPRMC", s)) {
       goto err;
     }
 
@@ -183,7 +183,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar) && (pack->magvar_ew)) {
-    if (!validateNSEW(&pack->magvar_ew, false, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->magvar_ew, false, "GPRMC", s)) {
       goto err;
     }
 

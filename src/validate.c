@@ -19,50 +19,46 @@
 
 #include <nmealib/context.h>
 #include <ctype.h>
-//#include <nmealib/gmath.h>
-//#include <nmealib/tok.h>
-//#include <nmealib/conversions.h>
-//#include <string.h>
-//#include <assert.h>
-//#include <math.h>
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <stddef.h>
-//#include <limits.h>
 
 /** Invalid NMEA character: non-ASCII */
-static const InvalidNMEACharacter invalidNonAsciiCharsName = {
-  .character = '*',
-  .description = "non-ascii character"
-};
+static const NmeaInvalidCharacter invalidNonAsciiCharsName = {
+    .character = '*', //
+    .description = "non-ASCII character" //
+    };
 
 /** Invalid NMEA characters */
-static const InvalidNMEACharacter invalidCharacters[] = {
+static const NmeaInvalidCharacter invalidCharacters[] = {
     {
-      .character = '$',
-      .description = "sentence delimiter" },
+        .character = '$', //
+        .description = "sentence delimiter" //
+    },
     {
-      .character = '*',
-      .description = "checksum field delimiter" },
+        .character = '*', //
+        .description = "checksum field delimiter" //
+    },
     {
-      .character = '!',
-      .description = "exclamation mark" },
+        .character = '!', //
+        .description = "exclamation mark" //
+    },
     {
-      .character = '\\',
-      .description = "backslash" },
+        .character = '\\', //
+        .description = "backslash" //
+    },
     {
-      .character = '^',
-      .description = "power" },
+        .character = '^', //
+        .description = "power" //
+    },
     {
-      .character = '~',
-      .description = "tilde" },
+        .character = '~', //
+        .description = "tilde" //
+    },
     {
-      .character = '\0',
-      .description = NULL }
+        .character = '\0', //
+        .description = NULL //
+    }//
 };
 
-
-const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c) {
+const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c) {
   size_t i = 0;
   char ch;
 
@@ -87,7 +83,7 @@ const InvalidNMEACharacter * isInvalidNMEACharacter(const char * c) {
   return NULL;
 }
 
-const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * s, const size_t sz) {
+const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char * s, const size_t sz) {
   size_t i = 0;
 
   if (!s || !sz) {
@@ -95,7 +91,7 @@ const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * 
   }
 
   for (i = 0; i < sz; i++) {
-    const InvalidNMEACharacter * invalid = isInvalidNMEACharacter(&s[i]);
+    const NmeaInvalidCharacter * invalid = nmeaValidateIsInvalidCharacter(&s[i]);
     if (invalid) {
       return invalid;
     }
@@ -104,13 +100,13 @@ const InvalidNMEACharacter * nmea_parse_sentence_has_invalid_chars(const char * 
   return NULL;
 }
 
-bool validateTime(const nmeaTIME * t, const char * prefix, const char * s) {
+bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s) {
   if (!t) {
     return false;
   }
 
   if (!( //
-      (t->hour >= 0) && (t->hour <= 23) //
+  (t->hour >= 0) && (t->hour <= 23) //
       && (t->min >= 0) && (t->min <= 59) //
       && (t->sec >= 0) && (t->sec <= 60) //
       && (t->hsec >= 0) && (t->hsec <= 99))) {
@@ -122,13 +118,13 @@ bool validateTime(const nmeaTIME * t, const char * prefix, const char * s) {
   return true;
 }
 
-bool validateDate(const nmeaTIME * t, const char * prefix, const char * s) {
+bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s) {
   if (!t) {
     return false;
   }
 
   if (!( //
-      (t->year >= 90) && (t->year <= 189) //
+  (t->year >= 90) && (t->year <= 189) //
       && (t->mon >= 0) && (t->mon <= 11) //
       && (t->day >= 1) && (t->day <= 31))) {
     nmea_error("%s parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
@@ -139,7 +135,7 @@ bool validateDate(const nmeaTIME * t, const char * prefix, const char * s) {
   return true;
 }
 
-bool validateNSEW(char * c, const bool ns, const char * prefix, const char * s) {
+bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char * s) {
   if (!c) {
     return false;
   }
@@ -161,7 +157,7 @@ bool validateNSEW(char * c, const bool ns, const char * prefix, const char * s) 
   return true;
 }
 
-bool validateFix(int * fix, const char * prefix, const char * s) {
+bool nmeaValidateFix(int * fix, const char * prefix, const char * s) {
   if ((*fix < NMEA_FIX_FIRST) || (*fix > NMEA_FIX_LAST)) {
     nmea_error("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, *fix, NMEA_FIX_FIRST, NMEA_FIX_LAST,
         s);
@@ -171,17 +167,17 @@ bool validateFix(int * fix, const char * prefix, const char * s) {
   return true;
 }
 
-bool validateSignal(int * sig, const char * prefix, const char * s) {
+bool nmeaValidateSignal(int * sig, const char * prefix, const char * s) {
   if ((*sig < NMEA_SIG_FIRST) || (*sig > NMEA_SIG_LAST)) {
     nmea_error("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, *sig, NMEA_SIG_FIRST,
-        NMEA_SIG_LAST, s);
+    NMEA_SIG_LAST, s);
     return false;
   }
 
   return true;
 }
 
-bool validateMode(char * c, const char * prefix, const char * s) {
+bool nmeaValidateMode(char * c, const char * prefix, const char * s) {
   if (!c) {
     return false;
   }
@@ -189,8 +185,8 @@ bool validateMode(char * c, const char * prefix, const char * s) {
   *c = toupper(*c);
 
   if (!( //
-         (*c == 'N') //
-      || (*c == 'A') //
+  (*c == 'N') //
+  || (*c == 'A') //
       || (*c == 'D') //
       || (*c == 'P') //
       || (*c == 'R') //
