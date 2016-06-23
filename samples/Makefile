@@ -8,6 +8,7 @@ include $(TOPDIR)/Makefile.inc
 
 SAMPLESDYNAMICLINK ?= 1
 
+H_FILES = $(wildcard ../include/nmealib/*.h)
 C_FILES = $(wildcard */main.c)
 SAMPLES = $(sort $(patsubst %/,%,$(dir $(C_FILES))))
 
@@ -43,7 +44,7 @@ ifeq ($(VERBOSE),0)
 endif
 	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(LDLAGS) $(LIBRARIES) -o $@ $< $(STATICLIBS)
 
-build/%/main.o: %/main.c Makefile $(TOPDIR)/Makefile.inc
+build/%/main.o: %/main.c $(H_FILES) Makefile $(TOPDIR)/Makefile.inc
 ifeq ($(VERBOSE),0)
 	@echo "[CC] $<"
 endif
