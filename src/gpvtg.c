@@ -55,7 +55,7 @@ bool nmeaGPVTGparse(const char *s, const size_t sz, nmeaGPVTG *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c", //
+      "$GPVTG,%f,%c,%f,%c,%f,%c,%f,%c*", //
       &pack->track, //
       &pack->track_t, //
       &pack->mtrack, //

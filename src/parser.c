@@ -158,8 +158,19 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
           if (*c != second_eol_char) {
             reset_sentence_parser(parser, SKIP_UNTIL_START);
           } else {
-            parser->buffer.buffer[--parser->buffer.length] = '\0';
-            parser->buffer.buffer[--parser->buffer.length] = '\0';
+            parser->sentence_parser.sentence_eol_chars_count = 2;
+
+            /* strip off the end-of-line characters */
+            parser->buffer.length -= parser->sentence_parser.sentence_eol_chars_count;
+            parser->buffer.buffer[parser->buffer.length] = '\0';
+
+            if (!parser->sentence_parser.has_checksum) {
+              /* fake a checksum, needed for correct parsing of empty fields at the end of the sentence */
+              parser->buffer.buffer[parser->buffer.length] = '*';
+              parser->buffer.length++;
+              parser->buffer.buffer[parser->buffer.length] = '\0';
+            }
+
             parser->sentence_parser.state = SKIP_UNTIL_START;
             return (!parser->sentence_parser.sentence_checksum_chars_count
                 || (parser->sentence_parser.sentence_checksum_chars_count

@@ -112,10 +112,10 @@ typedef struct _nmeaGPGSV {
 unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites);
 
 /**
- * Parse a GPGSV sentence from a string
+ * Parse a GPGSV sentence
  *
- * @param s The string
- * @param sz The length of the string
+ * @param s The sentence, must include a checksum or end with a '*' character
+ * @param sz The length of the sentence
  * @param pack Where the result should be stored
  * @return True on success
  */

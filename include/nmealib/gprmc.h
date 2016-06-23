@@ -83,10 +83,10 @@ typedef struct _nmeaGPRMC {
 } nmeaGPRMC;
 
 /**
- * Parse a GPRMC sentence from a string
+ * Parse a GPRMC sentence
  *
- * @param s The string
- * @param sz The length of the string
+ * @param s The sentence, must include a checksum or end with a '*' character
+ * @param sz The length of the sentence
  * @param pack Where the result should be stored
  * @return True on success
  */

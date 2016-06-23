@@ -58,7 +58,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPRMC,%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c", //
+      "$GPRMC,%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", //
       &time, //
       &pack->sig, //
       &pack->lat, //

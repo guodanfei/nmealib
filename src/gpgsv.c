@@ -77,7 +77,7 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
           "%d,%d,%d,%d,"//
           "%d,%d,%d,%d,"//
           "%d,%d,%d,%d,"//
-          "%d,%d,%d,%d",//
+          "%d,%d,%d,%d*",//
       &pack->sentences, &pack->sentence, &pack->satellites, //
       &pack->satellite[0].id, &pack->satellite[0].elv, &pack->satellite[0].azimuth, &pack->satellite[0].sig, //
       &pack->satellite[1].id, &pack->satellite[1].elv, &pack->satellite[1].azimuth, &pack->satellite[1].sig, //
