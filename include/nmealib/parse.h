@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_PARSE_H__
 #define __NMEALIB_PARSE_H__
 
-#include <nmealib/sentence.h>
+#include <nmealib/info.h>
 #include <stdbool.h>
 #include <stddef.h>
 

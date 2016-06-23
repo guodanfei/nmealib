@@ -74,6 +74,9 @@ enum NmeaSentence {
   _NmeaSentenceLast = GPVTG
 };
 
+/** The fixed length of a NMEA prefix */
+#define NMEA_PREFIX_LENGTH 5
+
 /**
  * Determine the NMEA prefix from the sentence type.
  *

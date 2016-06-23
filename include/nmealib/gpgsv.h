@@ -30,6 +30,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
+  /** The maximum number of satellites per sentence */
+#define NMEA_SATINPACK (4)
+
+/** The maximum number of GPGSV sentences (depends on the maximum number of satellites tracked) */
+#define NMEA_NSATPACKS (NMEA_MAXSAT / NMEA_SATINPACK)
+
 /**
  * GPGSV packet information structure (Satellites in view)
  *
