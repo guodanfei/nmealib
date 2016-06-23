@@ -198,7 +198,7 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
   }
 }
 
-int nmea_gen_GPVTG(char *s, const int len, const nmeaGPVTG *pack) {
+int nmeaGPVTGgenerate(char *s, const int sz, const nmeaGPVTG *pack) {
   char sTrackT[16];
   char sTrackM[16];
   char sSpeedN[16];
@@ -232,6 +232,6 @@ int nmea_gen_GPVTG(char *s, const int len, const nmeaGPVTG *pack) {
     sUnitK[0] = 'K';
   }
 
-  return nmea_printf(s, len, "$GPVTG,%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
+  return nmea_printf(s, sz, "$GPVTG,%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
       &sSpeedN[0], &sUnitN[0], &sSpeedK[0], &sUnitK[0]);
 }

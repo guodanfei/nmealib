@@ -334,7 +334,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 }
 
-int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack) {
+int nmeaGPRMCgenerate(char *s, const int sz, const nmeaGPRMC *pack) {
   char sTime[16];
   char sDate[16];
   char sLat[16];
@@ -383,6 +383,6 @@ int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack) {
     sMagvar_ew[0] = pack->magvar_ew;
   }
 
-  return nmea_printf(s, len, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
+  return nmea_printf(s, sz, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
       &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->sigMode);
 }

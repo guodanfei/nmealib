@@ -305,7 +305,7 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   /* dgps_sid not supported yet */
 }
 
-int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
+int nmeaGPGGAgenerate(char *s, const int sz, const nmeaGPGGA *pack) {
   char sTime[16];
   char sLat[16];
   char sNs[2];
@@ -354,6 +354,6 @@ int nmea_gen_GPGGA(char *s, const int len, const nmeaGPGGA *pack) {
     sElvUnit[0] = pack->elv_units;
   }
 
-  return nmea_printf(s, len, "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", &sTime[0], &sLat[0], &sNs[0], &sLon[0],
+  return nmea_printf(s, sz, "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", &sTime[0], &sLat[0], &sNs[0], &sLon[0],
       &sEw[0], &sSig[0], &sSatInUse[0], &sHdop[0], &sElv[0], &sElvUnit[0]);
 }

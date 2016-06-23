@@ -261,7 +261,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 }
 
-int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
+int nmeaGPGSVgenerate(char *s, const int sz, const nmeaGPGSV *pack) {
   char sentence[256];
   int sentencesInPack = pack->satellites - ((pack->sentence - 1) * NMEA_SATINPACK);
   char * pSentence = sentence;
@@ -287,5 +287,5 @@ int nmea_gen_GPGSV(char *s, const int len, const nmeaGPGSV *pack) {
     sentenceLength -= writeCount;
   }
 
-  return nmea_printf(s, len, "%s", sentence);
+  return nmea_printf(s, sz, "%s", sentence);
 }

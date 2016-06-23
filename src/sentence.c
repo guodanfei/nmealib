@@ -170,13 +170,13 @@ int nmea_generate(char *s, const int len, const nmeaINFO *info, const int genera
       nmeaGPGGA gpgga;
 
       nmeaGPGGAFromInfo(info, &gpgga);
-      gen_count += nmea_gen_GPGGA(s + gen_count, len - gen_count, &gpgga);
+      gen_count += nmeaGPGGAgenerate(s + gen_count, len - gen_count, &gpgga);
       pack_mask &= ~GPGGA;
     } else if (pack_mask & GPGSA) {
       nmeaGPGSA gpgsa;
 
       nmeaGPGSAFromInfo(info, &gpgsa);
-      gen_count += nmea_gen_GPGSA(s + gen_count, len - gen_count, &gpgsa);
+      gen_count += nmeaGPGSAgenerate(s + gen_count, len - gen_count, &gpgsa);
       pack_mask &= ~GPGSA;
     } else if (pack_mask & GPGSV) {
       nmeaGPGSV gpgsv;
@@ -185,20 +185,20 @@ int nmea_generate(char *s, const int len, const nmeaINFO *info, const int genera
 
       for (gpgsv_it = 0; gpgsv_it < gpgsv_count && len - gen_count > 0; gpgsv_it++) {
         nmeaGPGSVFromInfo(info, &gpgsv, gpgsv_it);
-        gen_count += nmea_gen_GPGSV(s + gen_count, len - gen_count, &gpgsv);
+        gen_count += nmeaGPGSVgenerate(s + gen_count, len - gen_count, &gpgsv);
       }
       pack_mask &= ~GPGSV;
     } else if (pack_mask & GPRMC) {
       nmeaGPRMC gprmc;
 
       nmeaGPRMCFromInfo(info, &gprmc);
-      gen_count += nmea_gen_GPRMC(s + gen_count, len - gen_count, &gprmc);
+      gen_count += nmeaGPRMCgenerate(s + gen_count, len - gen_count, &gprmc);
       pack_mask &= ~GPRMC;
     } else if (pack_mask & GPVTG) {
       nmeaGPVTG gpvtg;
 
       nmeaGPVTGFromInfo(info, &gpvtg);
-      gen_count += nmea_gen_GPVTG(s + gen_count, len - gen_count, &gpvtg);
+      gen_count += nmeaGPVTGgenerate(s + gen_count, len - gen_count, &gpvtg);
       pack_mask &= ~GPVTG;
     } else {
       /* no more known sentences to process */

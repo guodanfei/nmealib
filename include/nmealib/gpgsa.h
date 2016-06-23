@@ -117,14 +117,14 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info);
 void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack);
 
 /**
- * Generate a GPGSA sentence from an nmeaGPGSA structure
+ * Generate a GPGSA sentence from a nmeaGPGSA structure
  *
- * @param s a pointer to the buffer to generate the string in
- * @param len the size of the buffer
- * @param pack the structure
- * @return the length of the generated sentence
+ * @param s The buffer to generate the sentence in
+ * @param sz The size of the buffer
+ * @param pack The nmeaGPGSA structure
+ * @return The length of the generated sentence
  */
-int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack);
+int nmeaGPGSAgenerate(char *s, const int sz, const nmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

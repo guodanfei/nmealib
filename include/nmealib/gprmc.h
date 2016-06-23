@@ -109,14 +109,14 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info);
 void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
 
 /**
- * Generate a GPRMC sentence from an nmeaGPRMC structure
+ * Generate a GPRMC sentence from a nmeaGPRMC structure
  *
- * @param s a pointer to the buffer to generate the string in
- * @param len the size of the buffer
- * @param pack the structure
- * @return the length of the generated sentence
+ * @param s The buffer to generate the sentence in
+ * @param sz The size of the buffer
+ * @param pack The nmeaGPRMC structure
+ * @return The length of the generated sentence
  */
-int nmea_gen_GPRMC(char *s, const int len, const nmeaGPRMC *pack);
+int nmeaGPRMCgenerate(char *s, const int sz, const nmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }

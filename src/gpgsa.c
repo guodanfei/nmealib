@@ -275,7 +275,7 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 }
 
-int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
+int nmeaGPGSAgenerate(char *s, const int sz, const nmeaGPGSA *pack) {
   int i;
   char sFixMode[2];
   char sFixType[2];
@@ -332,6 +332,6 @@ int nmea_gen_GPGSA(char *s, const int len, const nmeaGPGSA *pack) {
     snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
   }
 
-  return nmea_printf(s, len, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
+  return nmea_printf(s, sz, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
       &sVdop[0]);
 }

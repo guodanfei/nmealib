@@ -100,14 +100,14 @@ void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info);
 void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack);
 
 /**
- * Generate a GPVTG sentence from an nmeaGPVTG structure
+ * Generate a GPVTG sentence from a nmeaGPVTG structure
  *
- * @param s a pointer to the buffer to generate the string in
- * @param len the size of the buffer
- * @param pack the structure
- * @return the length of the generated sentence
+ * @param s The buffer to generate the sentence in
+ * @param sz The size of the buffer
+ * @param pack The nmeaGPVTG structure
+ * @return The length of the generated sentence
  */
-int nmea_gen_GPVTG(char *s, const int len, const nmeaGPVTG *pack);
+int nmeaGPVTGgenerate(char *s, const int sz, const nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }
