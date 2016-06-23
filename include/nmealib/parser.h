@@ -19,7 +19,7 @@
 #define __NMEALIB_PARSER_H__
 
 #include <nmealib/info.h>
-#include <nmealib/sentence.h>
+#include <stdbool.h>
 
 #ifdef  __cplusplus
 extern "C" {

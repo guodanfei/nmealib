@@ -15,12 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmealib/parse.h>
+#include <nmealib/gpvtg.h>
 
 #include <nmealib/context.h>
 #include <nmealib/gmath.h>
 #include <nmealib/info.h>
 #include <nmealib/parse.h>
+#include <nmealib/sentence.h>
 #include <nmealib/tok.h>
 #include <nmealib/validate.h>
 #include <ctype.h>

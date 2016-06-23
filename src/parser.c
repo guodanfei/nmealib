@@ -17,17 +17,13 @@
 
 #include <nmealib/parser.h>
 
-#include <nmealib/compiler.h>
-#include <nmealib/parse.h>
 #include <nmealib/sentence.h>
 #include <nmealib/tok.h>
 #include <nmealib/validate.h>
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <string.h>
 
 #define first_eol_char  ('\r')
 #define second_eol_char ('\n')
