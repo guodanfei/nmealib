@@ -87,8 +87,8 @@ typedef struct _nmeaGPRMC {
  *
  * @param s The string
  * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
+ * @param pack Where the result should be stored
+ * @return True on success
  */
 bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack);
 

@@ -44,7 +44,7 @@ extern "C" {
  * | Field       | Description                                            | present        |
  * | :---------: | ------------------------------------------------------ | :------------: |
  * | $GPGGA      | NMEA prefix                                            | -              |
- * | time        | Fix time, in the format HHMMSS.hh (UTC) (5)            | UTCTIME        |
+ * | time        | Fix time (UTC) (5)                                     | UTCTIME        |
  * | latitude    | Latitude, in NDEG (DDMM.SSS)                           | LAT (1)        |
  * | ns          | North or South ('N' or 'S')                            | LAT (1)        |
  * | longitude   | Longitude, in NDEG (DDDMM.SSS)                         | LON (2)        |
@@ -100,8 +100,8 @@ typedef struct _nmeaGPGGA {
  *
  * @param s The string
  * @param sz The length of the string
- * @param pack Where the results should be stored
- * @return True if parsed successfully, or false otherwise
+ * @param pack Where the result should be stored
+ * @return True on success
  */
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack);
 
