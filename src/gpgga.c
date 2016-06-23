@@ -28,6 +28,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#define NMEA_PREFIX_GPGGA "GPGGA"
+
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
   char timeBuf[256];
@@ -53,7 +56,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPGGA,%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
+      "$" NMEA_PREFIX_GPGGA ",%s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -71,7 +74,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmea_error("GPGGA parse error: need 14 tokens, got %d '%s'", fieldCount, s);
+    nmea_error(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
@@ -79,8 +82,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   timeBuf[sizeof(timeBuf) - 1] = '\0';
   if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->time, "GPGGA") //
-        || !nmeaValidateTime(&pack->time, "GPGGA", s)) {
+    if (!nmeaTIMEparseTime(timeBuf, &pack->time, NMEA_PREFIX_GPGGA) //
+        || !nmeaValidateTime(&pack->time, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -90,7 +93,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->latitude) && (pack->ns)) {
-    if (!nmeaValidateNSEW(&pack->ns, true, "GPGGA", s)) {
+    if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -102,7 +105,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->longitude) && (pack->ew)) {
-    if (!nmeaValidateNSEW(&pack->ew, false, "GPGGA", s)) {
+    if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -114,7 +117,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (pack->signal != INT_MAX) {
-    if (!nmeaValidateSignal(&pack->signal, "GPGGA", s)) {
+    if (!nmeaValidateSignal(&pack->signal, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -139,7 +142,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->elv) && (pack->elvUnit)) {
     if (pack->elvUnit != 'M') {
-      nmea_error("GPGGA parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
+      nmea_error(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
       goto err;
     }
 
@@ -151,7 +154,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->diff) && (pack->diffUnit)) {
     if (pack->diffUnit != 'M') {
-      nmea_error("GPGGA parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
+      nmea_error(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
       goto err;
     }
 
@@ -352,7 +355,7 @@ int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   return nmea_printf(s, sz, //
-      "$GPGGA,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", //
+      "$" NMEA_PREFIX_GPGGA ",%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", //
       &sTime[0], //
       &sLat[0], //
       &sNs[0], //
