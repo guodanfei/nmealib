@@ -16,15 +16,11 @@
  */
 
 #include <nmealib/context.h>
+
+#include <nmealib/util.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-/** The power-of-2 chunk size of a buffer allocation */
-#define BUFFER_CHUNK_SIZE (4096UL)
-
-/** The maximum buffer size (16MB) */
-#define BUFFER_SIZE_MAX   (1UL << 24)
 
 /**
  * The structure with the nmealib context.
@@ -38,37 +34,6 @@ typedef struct _NmeaContext {
 static NmeaContext context = {
     .traceFunction = NULL,
     .errorFunction = NULL };
-
-/**
- * Round up a value to the first larger multiple of the power-of-2 value pow2
- *
- * @param val The value to round up
- * @param pow2 The power-of-2 value to round up to
- * @return The first larger multiple of the power-of-2 value pow2, or BUFFER_SIZE_MAX
- * when the request buffer would become too large
- */
-static size_t ROUND_UP_TO_POWER_OF_2(size_t val, size_t pow2) {
-  if (val <= (BUFFER_SIZE_MAX - (pow2 - 1))) {
-    /* no overflow */
-    return ((val + (pow2 - 1)) & ~(pow2 - 1));
-  }
-
-  /* overflow */
-  return (BUFFER_SIZE_MAX & ~(pow2 - 1));
-}
-
-/**
- * Enlarge a malloc-ed buffer
- *
- * @param buf The malloc-ed buffer
- * @param sz The new size
- * @return The re-alloc-ed buffer, can be NULL
- */
-static void * nmeaEnlargeBuffer(void * buf, size_t sz) {
-  size_t bufSize = ROUND_UP_TO_POWER_OF_2(sz, BUFFER_CHUNK_SIZE);
-  buf = realloc(buf, bufSize);
-  return buf;
-}
 
 nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction traceFunction) {
   nmeaPrintFunction r = context.traceFunction;
@@ -93,7 +58,7 @@ void nmeaTrace(const char *s, ...) {
   nmeaPrintFunction func = context.traceFunction;
   if (s && func) {
     char *buf;
-    size_t bufSize = BUFFER_CHUNK_SIZE;
+    size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
     va_list args;
     int chars;
 
@@ -110,7 +75,7 @@ void nmeaTrace(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      if (!nmeaEnlargeBuffer(buf, (size_t) chars + 1)) {
+      if (!realloc(buf, nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE))) {
         goto out;
       }
 
@@ -131,7 +96,7 @@ void nmeaError(const char *s, ...) {
   nmeaPrintFunction func = context.errorFunction;
   if (s && func) {
     char *buf;
-    size_t bufSize = BUFFER_CHUNK_SIZE;
+    size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
     va_list args;
     int chars;
 
@@ -148,7 +113,7 @@ void nmeaError(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      if (!nmeaEnlargeBuffer(buf, (size_t) chars + 1)) {
+      if (!realloc(buf, nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE))) {
         goto out;
       }
 
