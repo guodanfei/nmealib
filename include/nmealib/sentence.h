@@ -17,39 +17,42 @@
 
 /**
  * @file
- * NMEA Info
+ * NMEA Sentences
  *
- * The table below describes which fields are present in the sentences that are
- * supported by the library.
- * | field \ sentence       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
- * | :--------------------- | :---: | :---: | :---: | :---: | :---: |
- * | present:               | x     | x     | x     | x     | x     |
- * | smask:                 | x     | x     | x     | x     | x     |
- * | utc (date):            |       |       |       | x     |       |
- * | utc (time):            | x     |       |       | x     |       |
- * | sig:                   | x     |       |       | x (1) |       |
- * | fix:                   |       | x     |       | x (1) |       |
- * | PDOP:                  |       | x     |       |       |       |
- * | HDOP:                  | x     | x     |       |       |       |
- * | VDOP:                  |       | x     |       |       |       |
- * | lat:                   | x     |       |       | x     |       |
- * | lon:                   | x     |       |       | x     |       |
- * | elv:                   | x     |       |       |       |       |
- * | speed:                 |       |       |       | x     | x     |
- * | track:                 |       |       |       | x     | x     |
- * | mtrack:                |       |       |       |       | x     |
- * | magvar:                |       |       |       | x     |       |
- * | satinfo (inuse count): | x     | x (1) |       |       |       |
- * | satinfo (inuse):       |       | x     |       |       |       |
- * | satinfo (inview):      |       |       | x     |       |       |
+ * The table below describes which nmeaINFO fields are present in the
+ * sentences that are supported by the library.
+ *
+ * | nmeaINFO field       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
+ * | :------------------- | :---: | :---: | :---: | :---: | :---: |
+ * | present              | x     | x     | x     | x     | x     |
+ * | smask                | x     | x     | x     | x     | x     |
+ * | utc (date)           |       |       |       | x     |       |
+ * | utc (time)           | x     |       |       | x     |       |
+ * | sig                  | x     |       |       | x (1) |       |
+ * | fix                  |       | x     |       | x (1) |       |
+ * | PDOP                 |       | x     |       |       |       |
+ * | HDOP                 | x     | x     |       |       |       |
+ * | VDOP                 |       | x     |       |       |       |
+ * | lat                  | x     |       |       | x     |       |
+ * | lon                  | x     |       |       | x     |       |
+ * | elv                  | x     |       |       |       |       |
+ * | speed                |       |       |       | x     | x     |
+ * | track                |       |       |       | x     | x     |
+ * | mtrack               |       |       |       |       | x     |
+ * | magvar               |       |       |       | x     |       |
+ * | dgps_age             | x (2) |       |       |       |       |
+ * | dgps_sid             | x (2) |       |       |       |       |
+ * | satinfo inuse count  | x     | x (1) |       |       |       |
+ * | satinfo inuse        |       | x     |       |       |       |
+ * | satinfo inview count |       |       | x     |       |       |
+ * | satinfo inview       |       |       | x     |       |       |
  *
  * (1) Not present in the sentence but the library sets it up.
+ * (2) Not supported yet
  */
 
 #ifndef __NMEALIB_SENTENCE_H__
 #define __NMEALIB_SENTENCE_H__
-
-#include <stddef.h>
 
 #include <nmealib/gpgga.h>
 #include <nmealib/gpgsa.h>
@@ -86,37 +89,37 @@ enum NmeaSentence {
 const char * nmeaSentenceToPrefix(enum NmeaSentence sentence);
 
 /**
- * Determine the sentence type from the start of the specified string
- * (an NMEA sentence). The '$' character with which an NMEA sentence
- * starts must NOT be at the start of the specified string.
+ * Determine the sentence type from the start of the specified NMEA
+ * sentence. If the first character of the string is equal
+ * to the NMEA start-of-line character ('$') then that character is
+ * skipped.
  *
- * @param s The string. Must be the NMEA string right after the initial '$'
- * character
- * @param sz The length of the string
+ * @param s The NMEA sentence
+ * @param sz The length of the NMEA sentence
  * @return The packet type, or GPNON when it could not be determined
  */
 enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
 
 /**
- * Parse a NMEA sentence into a nmeaINFO structure
+ * Parse a NMEA sentence into an (unsanitised) nmeaINFO structure
  *
  * @param s The NMEA sentence
  * @param sz The length of the NMEA sentence
  * @param info The nmeaINFO structure in which to stored the information
  * @return True when successful
  */
-bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info);
+bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info);
 
 /**
- * Generate a number of sentences from an nmeaINFO structure.
+ * Generate NMEA sentences from a (sanitised) nmeaINFO structure.
  *
- * @param s a pointer to the buffer in which to generate the sentences
- * @param len the size of the buffer
- * @param info the structure
- * @param generate_mask the mask of which sentences to generate
- * @return the total length of the generated sentences
+ * @param s The buffer in which to generate the sentences
+ * @param sz The size of the buffer
+ * @param info The (sanitised) nmeaINFO structure
+ * @param mask The bit-mask of sentences to generate
+ * @return The total length of the generated sentences
  */
-int nmea_generate(char *s, const int len, const nmeaINFO *info, const int generate_mask);
+int nmeaSentenceGenerate(char *s, const size_t sz, const nmeaINFO *info, const enum NmeaSentence mask);
 
 #ifdef  __cplusplus
 }

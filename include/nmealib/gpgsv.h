@@ -30,7 +30,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-  /** The maximum number of satellites per sentence */
+/** The NMEA prefix */
+#define NMEA_PREFIX_GPGSV "GPGSV"
+
+/** The maximum number of satellites per sentence */
 #define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4)
 
 /** The maximum number of GPGSV sentences (depends on the maximum number of satellites tracked) */

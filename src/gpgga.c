@@ -28,8 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define NMEA_PREFIX_GPGGA "GPGGA"
-
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   int fieldCount = 0;
   double time;

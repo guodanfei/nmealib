@@ -142,7 +142,7 @@ int nmea_generate_from(char *s, int len, nmeaINFO *info, nmeaGENERATOR *gen, int
   int retval;
 
   if ((retval = nmea_gen_loop(gen, info)))
-    retval = nmea_generate(s, len, info, generate_mask);
+    retval = nmeaSentenceGenerate(s, len, info, generate_mask);
 
   return retval;
 }

@@ -32,6 +32,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+  /** The NMEA prefix */
+#define NMEA_PREFIX_GPGGA "GPGGA"
+
 /**
  * GPGGA packet information structure (Global Positioning System Fix Data)
  *

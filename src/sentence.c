@@ -23,7 +23,7 @@
  */
 typedef struct {
   const char * prefix;
-  const enum NmeaSentence sentenceType;
+  const enum NmeaSentence sentence;
 } SentencePrefixToType;
 
 /**
@@ -31,28 +31,28 @@ typedef struct {
  */
 static const SentencePrefixToType sentencePrefixToType[] = {
     {
-        .prefix = "GPGGA", //
-        .sentenceType = GPGGA //
+        .prefix = NMEA_PREFIX_GPGGA, //
+        .sentence = GPGGA //
     },
     {
-        .prefix = "GPGSA", //
-        .sentenceType = GPGSA //
+        .prefix = NMEA_PREFIX_GPGSA, //
+        .sentence = GPGSA //
     },
     {
-        .prefix = "GPGSV", //
-        .sentenceType = GPGSV //
+        .prefix = NMEA_PREFIX_GPGSV, //
+        .sentence = GPGSV //
     },
     {
-        .prefix = "GPRMC", //
-        .sentenceType = GPRMC //
+        .prefix = NMEA_PREFIX_GPRMC, //
+        .sentence = GPRMC //
     },
     {
-        .prefix = "GPVTG", //
-        .sentenceType = GPVTG //
+        .prefix = NMEA_PREFIX_GPVTG, //
+        .sentence = GPVTG //
     },
     {
         .prefix = NULL, //
-        .sentenceType = GPNON //
+        .sentence = GPNON //
     }//
 };
 
@@ -60,7 +60,7 @@ const char * nmeaSentenceToPrefix(enum NmeaSentence sentence) {
   size_t i = 0;
 
   while (sentencePrefixToType[i].prefix) {
-    if (sentencePrefixToType[i].sentenceType == sentence) {
+    if (sentencePrefixToType[i].sentence == sentence) {
       return sentencePrefixToType[i].prefix;
     }
 
@@ -71,11 +71,11 @@ const char * nmeaSentenceToPrefix(enum NmeaSentence sentence) {
 }
 
 enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
-  size_t i = 0;
   const char * str = s;
   size_t size = sz;
+  size_t i = 0;
 
-  if (!str) {
+  if (!str || !size) {
     return GPNON;
   }
 
@@ -90,7 +90,7 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
 
   while (sentencePrefixToType[i].prefix) {
     if (!strncmp(str, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
-      return sentencePrefixToType[i].sentenceType;
+      return sentencePrefixToType[i].sentence;
     }
 
     i++;
@@ -99,9 +99,8 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
   return GPNON;
 }
 
-bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
-  enum NmeaSentence sentence = nmeaPrefixToSentence(s, sz);
-  switch (sentence) {
+bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
+  switch (nmeaPrefixToSentence(s, sz)) {
     case GPGGA: {
       nmeaGPGGA gpgga;
       if (nmeaGPGGAparse(s, sz, &gpgga)) {
@@ -158,57 +157,56 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO * info) {
   }
 }
 
-int nmea_generate(char *s, const int len, const nmeaINFO *info, const int generate_mask) {
-  int gen_count = 0;
-  int pack_mask = generate_mask;
+int nmeaSentenceGenerate(char *s, const size_t sz, const nmeaINFO *info, const enum NmeaSentence mask) {
+  int chars = 0;
+  int msk = mask;
 
-  if (!s || !len || !info || !generate_mask)
+  if (!s || !sz || !info || !mask) {
     return 0;
+  }
 
-  while (pack_mask) {
-    if (pack_mask & GPGGA) {
-      nmeaGPGGA gpgga;
+  while (msk) {
+    if (msk & GPGGA) {
+      nmeaGPGGA pack;
+      nmeaGPGGAFromInfo(info, &pack);
+      chars += nmeaGPGGAgenerate(&s[chars], sz - chars, &pack);
+      msk &= ~GPGGA;
+    } else if (msk & GPGSA) {
+      nmeaGPGSA pack;
+      nmeaGPGSAFromInfo(info, &pack);
+      chars += nmeaGPGSAgenerate(&s[chars], sz - chars, &pack);
+      msk &= ~GPGSA;
+    } else if (msk & GPGSV) {
+      nmeaGPGSV pack;
+      int sentence;
+      int sentences = nmeaGPGSVsatellitesToSentencesCount(info->satinfo.inview);
 
-      nmeaGPGGAFromInfo(info, &gpgga);
-      gen_count += nmeaGPGGAgenerate(s + gen_count, len - gen_count, &gpgga);
-      pack_mask &= ~GPGGA;
-    } else if (pack_mask & GPGSA) {
-      nmeaGPGSA gpgsa;
-
-      nmeaGPGSAFromInfo(info, &gpgsa);
-      gen_count += nmeaGPGSAgenerate(s + gen_count, len - gen_count, &gpgsa);
-      pack_mask &= ~GPGSA;
-    } else if (pack_mask & GPGSV) {
-      nmeaGPGSV gpgsv;
-      int gpgsv_it;
-      int gpgsv_count = nmeaGPGSVsatellitesToSentencesCount(info->satinfo.inview);
-
-      for (gpgsv_it = 0; gpgsv_it < gpgsv_count && len - gen_count > 0; gpgsv_it++) {
-        nmeaGPGSVFromInfo(info, &gpgsv, gpgsv_it);
-        gen_count += nmeaGPGSVgenerate(s + gen_count, len - gen_count, &gpgsv);
+      for (sentence = 0; (sentence < sentences) && ((sz - chars) > 0); sentence++) {
+        nmeaGPGSVFromInfo(info, &pack, sentence);
+        chars += nmeaGPGSVgenerate(&s[chars], sz - chars, &pack);
       }
-      pack_mask &= ~GPGSV;
-    } else if (pack_mask & GPRMC) {
-      nmeaGPRMC gprmc;
-
-      nmeaGPRMCFromInfo(info, &gprmc);
-      gen_count += nmeaGPRMCgenerate(s + gen_count, len - gen_count, &gprmc);
-      pack_mask &= ~GPRMC;
-    } else if (pack_mask & GPVTG) {
-      nmeaGPVTG gpvtg;
-
-      nmeaGPVTGFromInfo(info, &gpvtg);
-      gen_count += nmeaGPVTGgenerate(s + gen_count, len - gen_count, &gpvtg);
-      pack_mask &= ~GPVTG;
+      msk &= ~GPGSV;
+    } else if (msk & GPRMC) {
+      nmeaGPRMC pack;
+      nmeaGPRMCFromInfo(info, &pack);
+      chars += nmeaGPRMCgenerate(&s[chars], sz - chars, &pack);
+      msk &= ~GPRMC;
+    } else if (msk & GPVTG) {
+      nmeaGPVTG pack;
+      nmeaGPVTGFromInfo(info, &pack);
+      chars += nmeaGPVTGgenerate(&s[chars], sz - chars, &pack);
+      msk &= ~GPVTG;
     } else {
       /* no more known sentences to process */
       break;
     }
 
-    if (len - gen_count <= 0)
+    if ((sz - chars) <= 0) {
       break;
+    }
   }
 
-  return gen_count;
-}
+  s[sz - 1] = '\0';
 
+  return chars;
+}

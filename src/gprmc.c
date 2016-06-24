@@ -58,7 +58,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPRMC,%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", //
+      "$" NMEA_PREFIX_GPRMC ",%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", //
       &time, //
       &pack->sig, //
       &pack->lat, //
@@ -74,7 +74,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* see that there are enough tokens */
   if ((fieldCount != 11) && (fieldCount != 12)) {
-    nmeaError("GPRMC parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPRMC " parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
     goto err;
   }
 
@@ -82,7 +82,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   if (!isnan(time)) {
     if (!nmeaTIMEparseTime(time, &pack->utc) //
-        || !nmeaValidateTime(&pack->utc, "GPRMC", s)) {
+        || !nmeaValidateTime(&pack->utc, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -99,7 +99,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     if (pack->sig) {
       pack->sig = toupper(pack->sig);
       if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmeaError("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        nmeaError(NMEA_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sig, s);
         goto err;
       }
 
@@ -115,11 +115,11 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     if (pack->sig && pack->sigMode) {
       pack->sig = toupper(pack->sig);
       if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmeaError("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        nmeaError(NMEA_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sig, s);
         goto err;
       }
 
-      if (!nmeaValidateMode(&pack->sigMode, "GPRMC", s)) {
+      if (!nmeaValidateMode(&pack->sigMode, NMEA_PREFIX_GPRMC, s)) {
         goto err;
       }
 
@@ -131,7 +131,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lat) && (pack->ns)) {
-    if (!nmeaValidateNSEW(&pack->ns, true, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -143,7 +143,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->lon) && (pack->ew)) {
-    if (!nmeaValidateNSEW(&pack->ew, false, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -170,7 +170,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   if (date != INT_MAX) {
     if (!nmeaTIMEparseDate(date, &pack->utc) //
-        || !nmeaValidateDate(&pack->utc, "GPRMC", s)) {
+        || !nmeaValidateDate(&pack->utc, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -182,7 +182,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar) && (pack->magvar_ew)) {
-    if (!nmeaValidateNSEW(&pack->magvar_ew, false, "GPRMC", s)) {
+    if (!nmeaValidateNSEW(&pack->magvar_ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -383,6 +383,6 @@ int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
     sMagvar_ew[0] = pack->magvar_ew;
   }
 
-  return nmea_printf(s, sz, "$GPRMC,%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
+  return nmea_printf(s, sz, "$" NMEA_PREFIX_GPRMC ",%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
       &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->sigMode);
 }

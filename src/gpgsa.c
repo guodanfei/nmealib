@@ -75,7 +75,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* parse */
   fieldCount = nmea_scanf(s, sz, //
-      "$GPGSA,%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
+      "$" NMEA_PREFIX_GPGSA ",%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
       &pack->sig, //
       &pack->fix, //
       &pack->sat_prn[0], //
@@ -96,7 +96,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmeaError("GPGSA parse error: need 17 tokens, got %d '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGSA " parse error: need 17 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
@@ -105,7 +105,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   if (pack->sig) {
     pack->sig = toupper(pack->sig);
     if (!((pack->sig == 'A') || (pack->sig == 'M'))) {
-      nmeaError("GPGSA parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
+      nmeaError(NMEA_PREFIX_GPGSA " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
       goto err;
     }
 
@@ -115,7 +115,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   if (pack->fix != INT_MAX) {
-    if (!nmeaValidateFix(&pack->fix, "GPGSA", s)) {
+    if (!nmeaValidateFix(&pack->fix, NMEA_PREFIX_GPGSA, s)) {
       goto err;
     }
 
@@ -333,6 +333,6 @@ int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
   }
 
-  return nmea_printf(s, sz, "$GPGSA,%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
+  return nmea_printf(s, sz, "$" NMEA_PREFIX_GPGSA ",%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
       &sVdop[0]);
 }
