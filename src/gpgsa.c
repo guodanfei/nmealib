@@ -96,7 +96,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmeaError(NMEA_PREFIX_GPGSA " parse error: need 17 tokens, got %d '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGSA " parse error: need 17 tokens, got %d in '%s'", fieldCount, s);
     goto err;
   }
 

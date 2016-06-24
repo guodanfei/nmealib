@@ -232,15 +232,19 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           width = 1;
         }
 
-        if (width == 1) {
+        if (!width) {
+          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
+            sCharacter = sEnd;
+          }
+        } else if ('S' == toupper(*formatCharacter)) {
+          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
+            sCharacter = sEnd;
+          }
+        } else {
           if ((sCharacter + width) <= sEnd) {
             sCharacter += width;
           } else {
             goto out;
-          }
-        } else {
-          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
-            sCharacter = sEnd;
           }
         }
 
