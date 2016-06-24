@@ -66,9 +66,9 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   pack->satellites = INT_MAX;
   for (i = 0; i < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE; i++) {
     pack->satellite[i].id = INT_MAX;
-    pack->satellite[i].elv = INT_MAX;
-    pack->satellite[i].azimuth = INT_MAX;
-    pack->satellite[i].sig = INT_MAX;
+    pack->satellite[i].elv = 0;
+    pack->satellite[i].azimuth = 0;
+    pack->satellite[i].sig = 0;
   }
 
   /* parse */
@@ -123,14 +123,11 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   /* validate all satellite settings and count the number of satellites in the sentence */
   for (i = 0; i < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE; i++) {
     nmeaSATELLITE *sat = &pack->satellite[i];
-    if ((sat->id == INT_MAX) //
-        || (sat->elv == INT_MAX) //
-        || (sat->azimuth == INT_MAX) //
-        || (sat->sig == INT_MAX)) {
-      /* incomplete satellite data */
+    if (sat->id == INT_MAX) {
+      /* no satellite PRN */
       memset(sat, 0, sizeof(*sat));
     } else {
-      /* complete satellite data */
+      /* satellite PRN */
 
       if ((sat->id <= 0)) {
         nmeaError(NMEA_PREFIX_GPGSV " parse error: invalid satellite PRN %d in '%s'", sat->id, s);
