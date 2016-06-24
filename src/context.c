@@ -16,93 +16,151 @@
  */
 
 #include <nmealib/context.h>
-#include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+/** The power-of-2 chunk size of a buffer allocation */
+#define BUFFER_CHUNK_SIZE (4096UL)
+
+/** The maximum buffer size (16MB) */
+#define BUFFER_SIZE_MAX   (1UL << 24)
 
 /**
  * The structure with the nmealib context.
  */
-typedef struct _nmeaPROPERTY {
-  volatile nmeaTraceFunc traceCallback; /**< The trace callback, defaults to NULL (disabled)               */
-  volatile nmeaErrorFunc errorCallback; /**< The error logging callback, defaults to NULL (disabled)       */
-  volatile size_t parseBufferSize;      /**< The size to use for temporary trace and error logging buffers */
-} nmeaPROPERTY;
+typedef struct _NmeaContext {
+  volatile nmeaPrintFunction traceFunction;
+  volatile nmeaPrintFunction errorFunction;
+} NmeaContext;
 
 /** The nmealib context */
-static nmeaPROPERTY property = {
-    .traceCallback = NULL,
-    .errorCallback = NULL,
-    .parseBufferSize = NMEA_TRACE_ERROR_BUFF_DEF
-};
+static NmeaContext context = {
+    .traceFunction = NULL,
+    .errorFunction = NULL };
 
-void nmea_context_set_trace_func(nmeaTraceFunc func) {
-  property.traceCallback = func;
-}
-
-void nmea_context_set_error_func(nmeaErrorFunc func) {
-  property.errorCallback = func;
-}
-
-void nmea_context_set_buffer_size(size_t sz) {
-  property.parseBufferSize = (sz < NMEA_TRACE_ERROR_BUFF_MIN) ?
-      NMEA_TRACE_ERROR_BUFF_MIN :
-      sz;
-}
-
-size_t nmea_context_get_buffer_size(void) {
-  return property.parseBufferSize;
-}
-
-void nmea_trace(const char *s, ...) {
-  nmeaTraceFunc func = property.traceCallback;
-  if (func) {
-    int size;
-    va_list arg_list;
-    char *buff;
-    size_t buffSize = property.parseBufferSize;
-
-    buff = malloc(buffSize);
-    buff[buffSize -1] = '\0';
-
-    va_start(arg_list, s);
-    size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
-    va_end(arg_list);
-
-    if (size > 0) {
-      (*func)(&buff[0], size);
-    }
-
-    free(buff);
+/**
+ * Round up a value to the first larger multiple of the power-of-2 value pow2
+ *
+ * @param val The value to round up
+ * @param pow2 The power-of-2 value to round up to
+ * @return The first larger multiple of the power-of-2 value pow2, or BUFFER_SIZE_MAX
+ * when the request buffer would become too large
+ */
+static size_t ROUND_UP_TO_POWER_OF_2(size_t val, size_t pow2) {
+  if (val <= (BUFFER_SIZE_MAX - (pow2 - 1))) {
+    /* no overflow */
+    return ((val + (pow2 - 1)) & ~(pow2 - 1));
   }
+
+  /* overflow */
+  return (BUFFER_SIZE_MAX & ~(pow2 - 1));
 }
 
-void nmea_trace_buff(const char *s, size_t sz) {
-  nmeaTraceFunc func = property.traceCallback;
+/**
+ * Enlarge a malloc-ed buffer
+ *
+ * @param buf The malloc-ed buffer
+ * @param sz The new size
+ * @return The re-alloc-ed buffer, can be NULL
+ */
+static void * nmeaEnlargeBuffer(void * buf, size_t sz) {
+  size_t bufSize = ROUND_UP_TO_POWER_OF_2(sz, BUFFER_CHUNK_SIZE);
+  buf = realloc(buf, bufSize);
+  return buf;
+}
+
+nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction traceFunction) {
+  nmeaPrintFunction r = context.traceFunction;
+  context.traceFunction = traceFunction;
+  return r;
+}
+
+nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction errorFunction) {
+  nmeaPrintFunction r = context.errorFunction;
+  context.errorFunction = errorFunction;
+  return r;
+}
+
+void nmeaTraceBuffer(const char *s, size_t sz) {
+  nmeaPrintFunction func = context.traceFunction;
   if (func && s && sz) {
     (*func)(s, sz);
   }
 }
 
-void nmea_error(const char *s, ...) {
-  nmeaErrorFunc func = property.errorCallback;
-  if (func) {
-    int size;
-    va_list arg_list;
-    char *buff;
-    size_t buffSize = property.parseBufferSize;
+void nmeaTrace(const char *s, ...) {
+  nmeaPrintFunction func = context.traceFunction;
+  if (s && func) {
+    char *buf;
+    size_t bufSize = BUFFER_CHUNK_SIZE;
+    va_list args;
+    int chars;
 
-    buff = malloc(buffSize);
-    buff[buffSize -1] = '\0';
+    buf = malloc(bufSize);
+    if (!buf) {
+      return;
+    }
+    buf[0] = '\0';
 
-    va_start(arg_list, s);
-    size = vsnprintf(&buff[0], buffSize - 1, s, arg_list);
-    va_end(arg_list);
+    va_start(args, s);
 
-    if (size > 0) {
-      (*func)(&buff[0], size);
+    chars = vsnprintf(buf, bufSize, s, args);
+    if (chars < 0) {
+      goto out;
+    }
+    if ((size_t) chars >= bufSize) {
+      if (!nmeaEnlargeBuffer(buf, (size_t) chars + 1)) {
+        goto out;
+      }
+
+      chars = vsnprintf(buf, bufSize, s, args);
     }
 
-    free(buff);
+    buf[bufSize - 1] = '\0';
+
+    (*func)(buf, chars);
+
+out:
+    va_end(args);
+    free(buf);
+  }
+}
+
+void nmeaError(const char *s, ...) {
+  nmeaPrintFunction func = context.errorFunction;
+  if (s && func) {
+    char *buf;
+    size_t bufSize = BUFFER_CHUNK_SIZE;
+    va_list args;
+    int chars;
+
+    buf = malloc(bufSize);
+    if (!buf) {
+      return;
+    }
+    buf[0] = '\0';
+
+    va_start(args, s);
+
+    chars = vsnprintf(buf, bufSize, s, args);
+    if (chars < 0) {
+      goto out;
+    }
+    if ((size_t) chars >= bufSize) {
+      if (!nmeaEnlargeBuffer(buf, (size_t) chars + 1)) {
+        goto out;
+      }
+
+      chars = vsnprintf(buf, bufSize, s, args);
+    }
+
+    buf[bufSize - 1] = '\0';
+
+    (*func)(buf, chars);
+
+out:
+    va_end(args);
+    free(buf);
   }
 }

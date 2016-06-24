@@ -57,7 +57,7 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
     goto err;
   }
 
-  nmea_trace_buff(s, sz);
+  nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   pack->present = 0;
@@ -92,17 +92,17 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
 
   /* check data */
   if (pack->sentence <= 0) {
-    nmea_error("GPGSV parse error: sentence index %d is invalid", pack->sentence);
+    nmeaError("GPGSV parse error: sentence index %d is invalid", pack->sentence);
     goto err;
   }
   if (pack->sentence > pack->sentences) {
-    nmea_error("GPGSV parse error: sentence index %d is larger than the number of sentences %d", pack->sentence,
+    nmeaError("GPGSV parse error: sentence index %d is larger than the number of sentences %d", pack->sentence,
         pack->sentences);
     goto err;
   }
   if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE))
       != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
-    nmea_error("GPGSV parse error: sentence count %d does not correspond to satellite count %d", pack->sentences,
+    nmeaError("GPGSV parse error: sentence count %d does not correspond to satellite count %d", pack->sentences,
         pack->satellites);
     goto err;
   }
@@ -116,7 +116,7 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
             ((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) - pack->satellites)));
   }
   if ((fieldCount != fieldCountMinimum) && (fieldCount != 19)) {
-    nmea_error("GPGSV parse error: need %d (or 19) tokens, got %d in '%s'", fieldCountMinimum, fieldCount, s);
+    nmeaError("GPGSV parse error: need %d (or 19) tokens, got %d in '%s'", fieldCountMinimum, fieldCount, s);
     goto err;
   }
 
@@ -133,16 +133,16 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
       /* complete satellite data */
 
       if ((sat->id <= 0)) {
-        nmea_error("GPGSV parse error: invalid satellite PRN %d in '%s'", sat->id, s);
+        nmeaError("GPGSV parse error: invalid satellite PRN %d in '%s'", sat->id, s);
         memset(sat, 0, sizeof(*sat));
       } else if ((sat->elv < -180) || (sat->elv > 180)) {
-        nmea_error("GPGSV parse error: invalid satellite elevation %d in '%s'", sat->elv, s);
+        nmeaError("GPGSV parse error: invalid satellite elevation %d in '%s'", sat->elv, s);
         memset(sat, 0, sizeof(*sat));
       } else if ((sat->azimuth < 0) || (sat->azimuth >= 360)) {
-        nmea_error("GPGSV parse error: invalid satellite azimuth %d in '%s'", sat->azimuth, s);
+        nmeaError("GPGSV parse error: invalid satellite azimuth %d in '%s'", sat->azimuth, s);
         memset(sat, 0, sizeof(*sat));
       } else if ((sat->sig < 0) || (sat->sig > 99)) {
-        nmea_error("GPGSV parse error: invalid satellite signal %d in '%s'", sat->sig, s);
+        nmeaError("GPGSV parse error: invalid satellite signal %d in '%s'", sat->sig, s);
         memset(sat, 0, sizeof(*sat));
       }
     }

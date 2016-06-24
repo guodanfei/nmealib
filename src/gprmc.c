@@ -44,7 +44,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     goto err;
   }
 
-  nmea_trace_buff(s, sz);
+  nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   time = NAN;
@@ -74,7 +74,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* see that there are enough tokens */
   if ((fieldCount != 11) && (fieldCount != 12)) {
-    nmea_error("GPRMC parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
+    nmeaError("GPRMC parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
     goto err;
   }
 
@@ -99,7 +99,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     if (pack->sig) {
       pack->sig = toupper(pack->sig);
       if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmea_error("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        nmeaError("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
         goto err;
       }
 
@@ -115,7 +115,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     if (pack->sig && pack->sigMode) {
       pack->sig = toupper(pack->sig);
       if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmea_error("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
+        nmeaError("GPRMC parse error: invalid status '%c' in '%s'", pack->sig, s);
         goto err;
       }
 

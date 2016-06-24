@@ -49,7 +49,7 @@ static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, siz
   return lineCount;
 }
 
-static void nmeaError(const char *s, size_t sz __attribute__((unused))) {
+static void nmeaErrorLocal(const char *s, size_t sz __attribute__((unused))) {
   fprintf(stderr, "ERROR: %s\n", s);
 }
 
@@ -101,7 +101,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     exit(EXIT_FAILURE);
   }
 
-  nmea_context_set_error_func(nmeaError);
+  nmeaContextSetErrorFunction(nmeaErrorLocal);
 
   nmea_parser_init(&parser);
   nmea_zero_INFO(&info);

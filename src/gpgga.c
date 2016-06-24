@@ -28,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #define NMEA_PREFIX_GPGGA "GPGGA"
 
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
@@ -39,7 +38,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     return false;
   }
 
-  nmea_trace_buff(s, sz);
+  nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   time = NAN;
@@ -74,7 +73,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmea_error(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %d '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
@@ -141,7 +140,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->elv) && (pack->elvUnit)) {
     if (pack->elvUnit != 'M') {
-      nmea_error(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
+      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
       goto err;
     }
 
@@ -153,7 +152,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->diff) && (pack->diffUnit)) {
     if (pack->diffUnit != 'M') {
-      nmea_error(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
+      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
       goto err;
     }
 

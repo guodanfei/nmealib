@@ -478,7 +478,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, nmeaINFO *info) {
   switch (type) {
     case NMEA_GEN_NOISE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
-        nmea_error("__nmea_create_generator: insufficient memory!");
+        nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(nmeaGENERATOR));
         gen->loop_call = &nmea_igen_noise_loop;
@@ -487,7 +487,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, nmeaINFO *info) {
     case NMEA_GEN_STATIC:
     case NMEA_GEN_SAT_STATIC:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
-        nmea_error("__nmea_create_generator: insufficient memory!");
+        nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(nmeaGENERATOR));
         gen->init_call = &nmea_igen_static_init;
@@ -497,7 +497,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, nmeaINFO *info) {
       break;
     case NMEA_GEN_SAT_ROTATE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
-        nmea_error("__nmea_create_generator: insufficient memory!");
+        nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(nmeaGENERATOR));
         gen->init_call = &nmea_igen_rotate_init;
@@ -507,7 +507,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, nmeaINFO *info) {
       break;
     case NMEA_GEN_POS_RANDMOVE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
-        nmea_error("__nmea_create_generator: insufficient memory!");
+        nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(nmeaGENERATOR));
         gen->init_call = &nmea_igen_pos_rmove_init;

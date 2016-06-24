@@ -18,98 +18,74 @@
 #ifndef __NMEALIB_CONTEXT_H__
 #define __NMEALIB_CONTEXT_H__
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-/** The default size for temporary trace and error logging buffers */
-#define NMEA_TRACE_ERROR_BUFF_DEF  4096
-
-/** The minimum size for temporary trace and error logging buffers */
-#define NMEA_TRACE_ERROR_BUFF_MIN   256
-
 /**
- * Function type definition for tracing functions
+ * Function type definition for tracing and error logging functions
  *
- * @param s The string to trace
+ * @param s The string to trace or log an error with
  * @param sz The length of the string
  */
-typedef void (*nmeaTraceFunc)(const char *s, size_t sz);
-
-/**
- * Function type definition for error logging functions
- *
- * @param s The string to log
- * @param sz The length of the string
- */
-typedef void (*nmeaErrorFunc)(const char *s, size_t sz);
+typedef void (*nmeaPrintFunction)(const char *s, size_t sz);
 
 /**
  * Set the trace function
  *
  * Note that only 1 trace function is accepted, it will overwrite
- * any trace function that was previously set.
+ * any trace function that was previously set, use the return value
+ * for function chaining.
  *
  * Setting the function to NULL disables tracing.
  *
  * The function can be set at any time.
  *
- * @param func The trace function
+ * @param function The trace function
+ * @return The overwritten trace function
  */
-void nmea_context_set_trace_func(nmeaTraceFunc func);
+nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction function);
 
 /**
  * Set the error logging function
  *
  * Note that only 1 error logging function is accepted, it will overwrite
- * any error logging function that was previously set.
+ * any error logging function that was previously set, use the return value
+ * for function chaining.
  *
  * Setting the function to NULL disables error logging.
  *
  * The function can be set at any time.
  *
- * @param func The error logging function
+ * @param function The error logging function
+ * @return The overwritten error logging function
  */
-void nmea_context_set_error_func(nmeaErrorFunc func);
+nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction function);
 
 /**
- * Set the buffer size for temporary trace and error logging buffers
+ * Trace a buffer (a sized string)
  *
- * If the size is less than NMEA_TRACE_ERROR_BUFF_MIN, then the size that is
- * configured will be NMEA_TRACE_ERROR_BUFF_MIN.
- *
- * @param sz The buffer size for temporary trace and error logging buffers
+ * @param s The buffer (sized string)
+ * @param sz The size of the buffer (length of the size string)
  */
-void nmea_context_set_buffer_size(size_t sz);
-
-/**
- * @return The buffer size for temporary trace and error logging buffers
- */
-size_t nmea_context_get_buffer_size(void);
+void nmeaTraceBuffer(const char *s, size_t sz);
 
 /**
  * Trace a formatted string
  *
  * @param s The formatted string to trace
  */
-void nmea_trace(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
+void nmeaTrace(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
 
 /**
- * Trace a sized string (buffer)
- *
- * @param s The size string
- * @param sz The length (size) of the string (buffer)
- */
-void nmea_trace_buff(const char *s, size_t sz);
-
-/**
- * Log a formatted error string as an error
+ * Log a formatted string as an error
  *
  * @param s The formatted string to log as an error
  */
-void nmea_error(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
+void nmeaError(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
 
 #ifdef  __cplusplus
 }

@@ -64,7 +64,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
     goto err;
   }
 
-  nmea_trace_buff(s, sz);
+  nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
@@ -96,7 +96,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmea_error("GPGSA parse error: need 17 tokens, got %d '%s'", fieldCount, s);
+    nmeaError("GPGSA parse error: need 17 tokens, got %d '%s'", fieldCount, s);
     goto err;
   }
 
@@ -105,7 +105,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   if (pack->sig) {
     pack->sig = toupper(pack->sig);
     if (!((pack->sig == 'A') || (pack->sig == 'M'))) {
-      nmea_error("GPGSA parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
+      nmeaError("GPGSA parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
       goto err;
     }
 

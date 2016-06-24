@@ -69,8 +69,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		return -1;
 	}
 
-	nmea_context_set_trace_func(&trace);
-	nmea_context_set_error_func(&error);
+	nmeaContextSetTraceFunction(&trace);
+	nmeaContextSetErrorFunction(&error);
 
 	nmea_zero_INFO(&info);
 	nmea_parser_init(&parser);
