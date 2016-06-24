@@ -77,6 +77,9 @@ enum NmeaSentence {
   _NmeaSentenceLast = GPVTG
 };
 
+/** The bit-mask with all NmeaSentence entries */
+#define NMEA_SENTENCE_MASK (_NmeaSentenceLast - 1)
+
 /** The fixed length of a NMEA prefix */
 #define NMEA_PREFIX_LENGTH 5
 
