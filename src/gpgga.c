@@ -53,7 +53,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%16s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d", //
+      "$" NMEA_PREFIX_GPGGA ",%16s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //

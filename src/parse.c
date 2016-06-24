@@ -58,14 +58,22 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
   return false;
 }
 
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t) {
-  if (!t) {
+bool nmeaTIMEparseDate(const char *date, nmeaTIME *t) {
+  size_t sz;
+
+  if (!date || !t) {
     return false;
   }
 
-  t->day = (date / 10000) % 100;
-  t->mon = (date / 100) % 100;
-  t->year = date % 100;
+  sz = strlen(date);
+
+  if (sz != 6) {
+    return false;
+  }
+
+  if (3 != nmeaScanf(date, sz, "%2d%2d%2d", &t->day, &t->mon, &t->year)) {
+    return false;
+  }
 
   if (t->mon > 0) {
     t->mon--;

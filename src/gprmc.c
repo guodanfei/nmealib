@@ -34,7 +34,7 @@
 bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   int fieldCount;
   char timeBuf[16];
-  int date;
+  char dateBuf[8];
 
   if (!pack) {
     return false;
@@ -53,12 +53,12 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   pack->lon = NAN;
   pack->speed = NAN;
   pack->track = NAN;
-  date = INT_MAX;
+  *dateBuf = '\0';
   pack->magvar = NAN;
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$GPRMC,%16s,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c", //
+      "$GPRMC,%16s,%c,%f,%c,%f,%c,%f,%f,%8s,%f,%c,%c*", //
       timeBuf, //
       &pack->sig, //
       &pack->lat, //
@@ -67,7 +67,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
       &pack->ew, //
       &pack->speed, //
       &pack->track, //
-      &date, //
+      dateBuf, //
       &pack->magvar, //
       &pack->magvar_ew, //
       &pack->sigMode);
@@ -168,8 +168,8 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     pack->track = 0.0;
   }
 
-  if (date != INT_MAX) {
-    if (!nmeaTIMEparseDate(date, &pack->utc) //
+  if (*dateBuf) {
+    if (!nmeaTIMEparseDate(dateBuf, &pack->utc) //
         || !nmeaValidateDate(&pack->utc, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }

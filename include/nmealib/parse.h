@@ -48,7 +48,7 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t);
  * @param t The structure in which to store the parsed date
  * @return True on success
  */
-bool nmeaTIMEparseDate(const int date, nmeaTIME *t);
+bool nmeaTIMEparseDate(const char *date, nmeaTIME *t);
 
 #ifdef  __cplusplus
 }
