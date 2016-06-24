@@ -17,278 +17,328 @@
 
 #include <nmealib/tok.h>
 
+#include <nmealib/compiler.h>
+#include <nmealib/context.h>
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
+#include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define NMEA_TOKS_COMPARE   1
-#define NMEA_TOKS_PERCENT   2
-#define NMEA_TOKS_WIDTH     3
-#define NMEA_TOKS_TYPE      4
-
-/** number conversion buffer size */
+/** The maximum size of a string-to-number conversion buffer*/
 #define NMEA_CONVSTR_BUF    64
 
-/**
- * Calculate crc control sum of a string.
- * If the string starts with a '$' then that character is skipped as per
- * the NMEA spec.
- *
- * @param s the string
- * @param len the length of the string
- * @return the crc
- */
-int nmea_calc_crc(const char *s, const int len) {
-  int chksum = 0;
-  int it = 0;
+unsigned int nmeaCalculateCRC(const char *s, const size_t sz) {
+  size_t i = 0;
+  int crc = 0;
 
-  if (s[it] == '$')
-    it++;
-
-  for (; it < len; it++)
-    chksum ^= (int) s[it];
-
-  return chksum;
-}
-
-/**
- * Convert string to an integer
- *
- * @param s the string
- * @param len the length of the string
- * @param radix the radix of the numbers in the string
- * @return the converted number, or 0 on failure
- */
-int nmea_atoi(const char *s, int len, int radix) {
-  return (int)nmea_atol(s, len, radix);
-}
-
-/**
- * Convert string to a long
- *
- * @param s the string
- * @param len the length of the string
- * @param radix the radix of the numbers in the string
- * @return the converted number, or 0 on failure
- */
-long nmea_atol(const char *s, int len, int radix) {
-  char *tmp_ptr;
-  char buff[NMEA_CONVSTR_BUF];
-  long res = 0;
-
-  if (len < NMEA_CONVSTR_BUF) {
-    memcpy(&buff[0], s, len);
-    buff[len] = '\0';
-    res = strtol(buff, &tmp_ptr, radix);
+  if (s[i] == '$') {
+    i++;
   }
 
-  return res;
-}
-
-/**
- * Convert string to a floating point number
- *
- * @param s the string
- * @param len the length of the string
- * @return the converted number, or 0 on failure
- */
-double nmea_atof(const char *s, const int len) {
-  char *tmp_ptr;
-  char buff[NMEA_CONVSTR_BUF];
-  double res = 0;
-
-  if (len < NMEA_CONVSTR_BUF) {
-    memcpy(&buff[0], s, len);
-    buff[len] = '\0';
-    res = strtod(&buff[0], &tmp_ptr);
+  for (; i < sz; i++) {
+    crc ^= (int) s[i];
   }
 
-  return res;
+  return ((unsigned int) crc & 0xff);
 }
 
-/**
- * Formating string (like standart printf) with CRC tail (*CRC)
- *
- * @param s the string buffer to printf into
- * @param len the size of the string buffer
- * @param format the string format to use
- * @return the number of printed characters
- */
-int nmea_printf(char *s, int len, const char *format, ...) {
-  int retval;
-  int add = 0;
-  va_list arg_ptr;
+int nmeaStringToInteger(const char *s, size_t sz, int radix) {
+  long r = nmeaStringToLong(s, sz, radix);
 
-  if (len <= 0)
+  if (r < INT_MIN) {
+    r = INT_MIN;
+  }
+
+  if (r > INT_MAX) {
+    r = INT_MAX;
+  }
+
+  return (int) r;
+}
+
+unsigned int nmeaStringToUnsignedInteger(const char *s, size_t sz, int radix) {
+  unsigned long r = nmeaStringToUnsignedLong(s, sz, radix);
+
+  if (r > UINT_MAX) {
+    r = UINT_MAX;
+  }
+
+  return (unsigned int) r;
+}
+
+long nmeaStringToLong(const char *s, size_t sz, int radix) {
+  char buf[NMEA_CONVSTR_BUF];
+  char * endPtr = NULL;
+  long value;
+
+  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF) || (radix < 1)) {
     return 0;
-
-  va_start(arg_ptr, format);
-
-  retval = vsnprintf(s, len, format, arg_ptr);
-
-  if (retval > 0) {
-    add = snprintf(s + retval, len - retval, "*%02x\r\n", nmea_calc_crc(s + 1, retval - 1));
   }
 
-  retval += add;
+  memcpy(buf, s, sz);
+  buf[sz] = '\0';
 
-  if (retval < 0 || retval > len) {
-    memset(s, ' ', len);
-    retval = len;
+  errno = 0;
+  value = strtol(buf, &endPtr, radix);
+
+  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+    /* invalid conversion */
+    nmeaError("Could not convert '%s' to a long integer", buf);
+    return 0;
   }
 
-  va_end(arg_ptr);
-
-  return retval;
+  return value;
 }
 
-/**
- * Analyse a string (specific for NMEA sentences)
- *
- * @param s the string
- * @param len the length of the string
- * @param format the string format to use
- * @return the number of scanned characters
- */
-int nmea_scanf(const char *s, int len, const char *format, ...) {
-  const char *beg_tok;
-  const char *end_buf = s + len;
+unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
+  char buf[NMEA_CONVSTR_BUF];
+  char * endPtr = NULL;
+  unsigned long value;
 
-  va_list arg_ptr;
-  int tok_type = NMEA_TOKS_COMPARE;
-  int width = 0;
-  const char *beg_fmt = 0;
-  int snum = 0, unum = 0;
-  long slnum = 0;
+  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF) || (radix < 1)) {
+    return 0;
+  }
 
-  int tok_count = 0;
-  void *parg_target;
+  memcpy(buf, s, sz);
+  buf[sz] = '\0';
 
-  va_start(arg_ptr, format);
+  errno = 0;
+  value = strtoul(buf, &endPtr, radix);
 
-  for (; *format && s < end_buf; format++) {
-    switch (tok_type) {
-      case NMEA_TOKS_COMPARE:
-        if ('%' == *format)
-          tok_type = NMEA_TOKS_PERCENT;
-        else if (*s++ != *format)
-          goto fail;
+  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+    /* invalid conversion */
+    nmeaError("Could not convert '%s' to an unsigned long integer", buf);
+    return 0;
+  }
+
+  return value;
+}
+
+double nmeaStringToDouble(const char *s, const size_t sz) {
+  char buf[NMEA_CONVSTR_BUF];
+  char * endPtr = NULL;
+  double value;
+
+  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF)) {
+    return 0.0;
+  }
+
+  memcpy(buf, s, sz);
+  buf[sz] = '\0';
+
+  errno = 0;
+  value = strtod(buf, &endPtr);
+
+  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+    /* invalid conversion */
+    nmeaError("Could not convert '%s' to a double", buf);
+    return 0.0;
+  }
+
+  return value;
+}
+
+int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
+  va_list args;
+  int chars;
+  int addedChars;
+
+  if (!s || !sz || !format) {
+    return 0;
+  }
+
+  va_start(args, format);
+
+  chars = vsnprintf(s, sz, format, args);
+
+  if ((chars < 0) //
+      || (size_t) chars >= sz) {
+    goto out;
+  }
+
+  addedChars = snprintf(&s[chars], sz - chars, "*%02x\r\n", nmeaCalculateCRC(s, chars));
+  if (addedChars < 0) {
+    chars = addedChars;
+    goto out;
+  }
+
+  chars += addedChars;
+
+out:
+  va_end(args);
+  return chars;
+}
+
+unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
+
+#define NMEA_SCANF_COMPARE   1u
+#define NMEA_SCANF_TOKEN     2u
+
+  unsigned int tokens = 0;
+  unsigned char state = NMEA_SCANF_COMPARE;
+
+  const char *sCharacter = s;
+  const char *sEnd = &s[sz];
+
+  const char *formatCharacter = format;
+  const char *formatStart = format;
+
+  size_t width = 0;
+  size_t widthMax = sz;
+  size_t widthCount = 0;
+  const char *sTokenStart = sCharacter;
+
+  void *arg = NULL;
+  va_list args;
+
+  va_start(args, format);
+
+  for (formatCharacter = format; *formatCharacter && (sCharacter < sEnd); formatCharacter++) {
+    switch (state) {
+      case NMEA_SCANF_COMPARE:
+        if (*formatCharacter == '%') {
+          /* start of format */
+          formatStart = &formatCharacter[1];
+          widthCount = 0;
+          state = NMEA_SCANF_TOKEN;
+        } else if (*sCharacter++ != *formatCharacter) {
+          /* compare regular character between s and format */
+          goto out;
+        }
         break;
-      case NMEA_TOKS_PERCENT:
-        width = 0;
-        beg_fmt = format;
-        tok_type = NMEA_TOKS_WIDTH;
-        /* no break */
-      case NMEA_TOKS_WIDTH:
-        if (isdigit(*format))
+
+      case NMEA_SCANF_TOKEN:
+        if (isdigit(*formatCharacter)) {
+          widthCount++;
           break;
-        {
-          /* No need to do 'tok_type = NMEA_TOKS_TYPE' since we'll do a fall-through */
-          if (format > beg_fmt)
-            width = nmea_atoi(beg_fmt, (int) (format - beg_fmt), 10);
         }
-        /* no break */
-      case NMEA_TOKS_TYPE:
-        beg_tok = s;
 
-        if (!width && ('c' == *format || 'C' == *format) && *s != format[1])
-          width = 1;
-
-        if (width) {
-          if (s + width <= end_buf)
-            s += width;
-          else
-            goto fail;
+        /* determine width */
+        if (!widthCount) {
+          width = 0;
+          widthMax = (size_t)(sEnd - sCharacter);
         } else {
-          if (!format[1] || (0 == (s = (char *) memchr(s, format[1], end_buf - s))))
-            s = end_buf;
+          width = nmeaStringToUnsignedInteger(formatStart, widthCount, 10);
+          widthMax = width;
         }
 
-        if (s > end_buf)
-          goto fail;
+        sTokenStart = sCharacter;
 
-        tok_type = NMEA_TOKS_COMPARE;
-        tok_count++;
+        if (!width && ('C' == toupper(*formatCharacter)) && (*sCharacter != formatCharacter[1])) {
+          width = 1;
+        }
 
-        parg_target = 0;
-        width = (int) (s - beg_tok);
+        if (width == 1) {
+          if ((sCharacter + width) <= sEnd) {
+            sCharacter += width;
+          } else {
+            goto out;
+          }
+        } else {
+          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
+            sCharacter = sEnd;
+          }
+        }
 
-        switch (*format) {
+        if (sCharacter > sEnd) {
+          goto out;
+        }
+
+        state = NMEA_SCANF_COMPARE;
+        tokens++;
+
+        arg = NULL;
+        width = (size_t) (sCharacter - sTokenStart);
+        if (width > widthMax) {
+          width = widthMax;
+        }
+
+        switch (*formatCharacter) {
           case 'c':
           case 'C':
-            parg_target = (void *) va_arg(arg_ptr, char *);
-            if (width && 0 != (parg_target))
-              *((char *) parg_target) = *beg_tok;
-            break;
-          case 's':
-          case 'S':
-            parg_target = (void *) va_arg(arg_ptr, char *);
-            if (width && 0 != (parg_target)) {
-              memcpy(parg_target, beg_tok, width);
-              ((char *) parg_target)[width] = '\0';
+            arg = (void *) va_arg(args, char *);
+            if (width && arg) {
+              *((char *) arg) = *sTokenStart;
             }
             break;
+
+          case 's':
+          case 'S':
+            arg = (void *) va_arg(args, char *);
+            if (width && arg) {
+              memcpy(arg, sTokenStart, width);
+              if (width < widthMax) {
+                ((char *) arg)[width] = '\0';
+              } else {
+                ((char *) arg)[widthMax - 1] = '\0';
+              }
+            }
+            break;
+
           case 'f':
           case 'g':
           case 'G':
           case 'e':
           case 'E':
-            parg_target = (void *) va_arg(arg_ptr, double *);
-            if (width && 0 != (parg_target))
-              *((double *) parg_target) = nmea_atof(beg_tok, width);
+            arg = (void *) va_arg(args, double *);
+            if (width && arg) {
+              *((double *) arg) = nmeaStringToDouble(sTokenStart, width);
+            }
             break;
-          default:
-            break;
-        }
-        ;
 
-        if (parg_target)
-          break;
-        if (0 == (parg_target = (void *) va_arg(arg_ptr, int *)))
-          break;
-        if (!width)
-          break;
-
-        switch (*format) {
           case 'd':
           case 'i':
-            snum = nmea_atoi(beg_tok, width, 10);
-            memcpy(parg_target, &snum, sizeof(int));
+            arg = (void *) va_arg(args, int *);
+            if (width && arg) {
+              *((int *) arg) = nmeaStringToInteger(sTokenStart, width, 10);
+            }
             break;
+
           case 'u':
-            unum = nmea_atoi(beg_tok, width, 10);
-            memcpy(parg_target, &unum, sizeof(unsigned int));
+            arg = (void *) va_arg(args, unsigned int *);
+            if (width && arg) {
+              *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 10);
+            }
             break;
+
           case 'l':
-            slnum = nmea_atol(beg_tok, width, 10);
-            memcpy(parg_target, &slnum, sizeof(long));
+            arg = (void *) va_arg(args, long *);
+            if (width && arg) {
+              *((long *) arg) = nmeaStringToLong(sTokenStart, width, 10);
+            }
             break;
+
           case 'x':
           case 'X':
-            unum = nmea_atoi(beg_tok, width, 16);
-            memcpy(parg_target, &unum, sizeof(unsigned int));
+            arg = (void *) va_arg(args, unsigned int *);
+            if (width && arg) {
+              *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 16);
+            }
             break;
+
           case 'o':
-            unum = nmea_atoi(beg_tok, width, 8);
-            memcpy(parg_target, &unum, sizeof(unsigned int));
+            arg = (void *) va_arg(args, unsigned int *);
+            if (width && arg) {
+              *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 8);
+            }
             break;
+
           default:
-            goto fail;
+            goto out;
         }
-        ;
 
         break;
 
       default:
         break;
     };
-  }
+  } /* for */
 
-  fail:
-
-  va_end(arg_ptr);
-
-  return tok_count;
+out:
+  va_end(args);
+  return tokens;
 }

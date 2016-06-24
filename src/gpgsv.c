@@ -72,7 +72,7 @@ bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   }
 
   /* parse */
-  fieldCount = nmea_scanf(s, sz, //
+  fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPGSV ",%d,%d,%d," //
           "%d,%d,%d,%d,"//
           "%d,%d,%d,%d,"//
@@ -306,5 +306,5 @@ int nmeaGPGSVgenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
     sentenceLength -= writeCount;
   }
 
-  return nmea_printf(s, sz, "%s", sentence);
+  return nmeaPrintf(s, sz, "%s", sentence);
 }

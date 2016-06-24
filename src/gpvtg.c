@@ -54,7 +54,7 @@ bool nmeaGPVTGparse(const char *s, const size_t sz, nmeaGPVTG *pack) {
   pack->spk = NAN;
 
   /* parse */
-  fieldCount = nmea_scanf(s, sz, //
+  fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPVTG ",%f,%c,%f,%c,%f,%c,%f,%c*", //
       &pack->track, //
       &pack->track_t, //
@@ -233,6 +233,6 @@ int nmeaGPVTGgenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
     sUnitK[0] = 'K';
   }
 
-  return nmea_printf(s, sz, "$" NMEA_PREFIX_GPVTG ",%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
+  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPVTG ",%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
       &sSpeedN[0], &sUnitN[0], &sSpeedK[0], &sUnitK[0]);
 }

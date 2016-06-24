@@ -74,7 +74,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   pack->VDOP = NAN;
 
   /* parse */
-  fieldCount = nmea_scanf(s, sz, //
+  fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPGSA ",%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
       &pack->sig, //
       &pack->fix, //
@@ -333,6 +333,6 @@ int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
   }
 
-  return nmea_printf(s, sz, "$" NMEA_PREFIX_GPGSA ",%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
+  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPGSA ",%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
       &sVdop[0]);
 }

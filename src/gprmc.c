@@ -57,7 +57,7 @@ bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   pack->magvar = NAN;
 
   /* parse */
-  fieldCount = nmea_scanf(s, sz, //
+  fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPRMC ",%f,%c,%f,%c,%f,%c,%f,%f,%d,%f,%c,%c*", //
       &time, //
       &pack->sig, //
@@ -383,6 +383,6 @@ int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
     sMagvar_ew[0] = pack->magvar_ew;
   }
 
-  return nmea_printf(s, sz, "$" NMEA_PREFIX_GPRMC ",%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
+  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPRMC ",%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
       &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->sigMode);
 }

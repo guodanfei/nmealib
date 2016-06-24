@@ -52,7 +52,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   pack->dgpsSid = INT_MAX;
 
   /* parse */
-  fieldCount = nmea_scanf(s, sz, //
+  fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPGGA ",%f,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", //
       &time, //
       &pack->latitude, //
@@ -350,7 +350,7 @@ int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     sElvUnit[0] = pack->elvUnit;
   }
 
-  return nmea_printf(s, sz, //
+  return nmeaPrintf(s, sz, //
       "$" NMEA_PREFIX_GPGGA ",%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", //
       &sTime[0], //
       &sLat[0], //

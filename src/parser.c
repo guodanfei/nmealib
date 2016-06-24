@@ -131,7 +131,7 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
           case 1:
             parser->sentence_parser.sentence_checksum_chars[1] = *c;
             parser->sentence_parser.sentence_checksum_chars_count = 2;
-            parser->sentence_parser.sentence_checksum = nmea_atoi(parser->sentence_parser.sentence_checksum_chars, 2,
+            parser->sentence_parser.sentence_checksum = nmeaStringToInteger(parser->sentence_parser.sentence_checksum_chars, 2,
                 16);
             parser->sentence_parser.has_checksum = true;
             parser->sentence_parser.state = READ_EOL;
