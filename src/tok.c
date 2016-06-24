@@ -17,8 +17,8 @@
 
 #include <nmealib/tok.h>
 
-#include <nmealib/compiler.h>
 #include <nmealib/context.h>
+#include <nmealib/util.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>

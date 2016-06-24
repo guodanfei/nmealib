@@ -1,14 +1,13 @@
 #ifndef _NMEA_RANDOM_H
 #define _NMEA_RANDOM_H
 
-#include <nmealib/compiler.h>
-
+#include <nmealib/util.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
+#include <unistd.h>
 
 #define NMEA_RANDOM_MAX INT32_MAX
 

@@ -18,7 +18,7 @@
 #ifndef __NMEALIB_INFO_H__
 #define __NMEALIB_INFO_H__
 
-#include <nmealib/compiler.h>
+#include <nmealib/util.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

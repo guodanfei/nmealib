@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEALIB_COMPILER_H__
-#define __NMEALIB_COMPILER_H__
+#ifndef __NMEALIB_UTIL_H__
+#define __NMEALIB_UTIL_H__
 
 #ifdef  __cplusplus
 extern "C" {
@@ -38,4 +38,4 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEALIB_COMPILER_H__ */
+#endif /* __NMEALIB_UTIL_H__ */
