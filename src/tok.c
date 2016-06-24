@@ -160,7 +160,7 @@ int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
     goto out;
   }
 
-  addedChars = snprintf(&s[chars], sz - chars, "*%02x\r\n", nmeaCalculateCRC(s, chars));
+  addedChars = snprintf(&s[chars], sz - chars, "*%02X\r\n", nmeaCalculateCRC(s, chars));
   if (addedChars < 0) {
     chars = addedChars;
     goto out;
