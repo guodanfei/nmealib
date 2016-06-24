@@ -16,25 +16,46 @@
  */
 
 #include <nmealib/parse.h>
-#include <math.h>
 
-bool nmeaTIMEparseTime(const double time, nmeaTIME *t) {
-  double timeInt;
-  long tm;
+#include <nmealib/context.h>
+#include <nmealib/tok.h>
+#include <string.h>
 
-  if (!t) {
+bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
+  size_t sz;
+
+  if (!time || !t) {
     return false;
   }
 
-  modf(fabs(time) * 1E3, &timeInt);
-  tm = lrint(timeInt) + 5;
+  sz = strlen(time);
 
-  t->hour = (tm / 10000000) % 100;
-  t->min = (tm / 100000) % 100;
-  t->sec = (tm / 1000) % 100;
-  t->hsec = (tm / 10) % 100;
+  if (sz == 6) { // HHMMSS
+    t->hsec = 0;
+    return (3 == nmeaScanf(time, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
+  }
 
-  return true;
+  if (sz == 8) { // HHMMSS.t
+    if (4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+      t->hsec *= 10;
+      return true;
+    }
+    return false;
+  }
+
+  if (sz == 9) { // HHMMSS.hh
+    return (4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
+  }
+
+  if (sz == 10) { // HHMMSS.mmm
+    if ((4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+      t->hsec = (t->hsec + 5) / 10;
+      return true;
+    }
+    return false;
+  }
+
+  return false;
 }
 
 bool nmeaTIMEparseDate(const int date, nmeaTIME *t) {

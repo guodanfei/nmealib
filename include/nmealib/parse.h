@@ -26,16 +26,19 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * Parse a NMEA time into a nmeaTIME (time only, no date).
+ * Parse a NMEA time into a nmeaTIME structure (time only, no date).
  *
- * @param time The time (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm)
+ * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
+ * determined by the length of the string.
+ *
+ * @param time The time
  * @param t The structure in which to store the parsed time
  * @return True on success
  */
-bool nmeaTIMEparseTime(const double time, nmeaTIME *t);
+bool nmeaTIMEparseTime(const char *time, nmeaTIME *t);
 
 /**
- * Parse a NMEA date into a nmeaTIME (date only, no time).
+ * Parse a NMEA date into a nmeaTIME structure (date only, no time).
  *
  * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
  * range of [0, 11]. The year is adjusted (incremented by 100) for years
