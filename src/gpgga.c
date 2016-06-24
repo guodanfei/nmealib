@@ -352,14 +352,14 @@ int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
 
   return nmeaPrintf(s, sz, //
       "$" NMEA_PREFIX_GPGGA ",%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", //
-      &sTime[0], //
-      &sLat[0], //
-      &sNs[0], //
-      &sLon[0], //
-      &sEw[0], //
-      &sSig[0], //
-      &sSatInView[0], //
-      &sHdop[0], //
-      &sElv[0], //
-      &sElvUnit[0]);
+      sTime, //
+      sLat, //
+      sNs, //
+      sLon, //
+      sEw, //
+      sSig, //
+      sSatInView, //
+      sHdop, //
+      sElv, //
+      sElvUnit);
 }
