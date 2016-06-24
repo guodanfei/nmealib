@@ -1,7 +1,8 @@
-#include <nmealib/info.h>
 #include <nmealib/context.h>
-#include <nmealib/parser.h>
 #include <nmealib/gmath.h>
+#include <nmealib/info.h>
+#include <nmealib/parser.h>
+#include <nmealib/sentence.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -54,6 +55,7 @@ static void nmeaErrorLocal(const char *s, size_t sz __attribute__((unused))) {
 }
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
+  int exitCode = EXIT_SUCCESS;
   char expectedFileName[2048];
   char inputFileName[2048];
   FILE * expectedFile;
@@ -76,6 +78,13 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   long inputLineNr = 0;
   long expectedLineNr = 1;
 
+  inputLineLength = 4096;
+  inputLine = malloc(inputLineLength);
+  if (!inputLine) {
+    exitCode = EXIT_FAILURE;
+    goto out;
+  }
+
   directoryName = dirname(dirname(argv[0]));
   defaultFileName = "/parse_test/nmea.txt";
   if (argc > 1) {
@@ -93,12 +102,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   inputFile = fopen(inputFileName, "r");
   if (inputFile == NULL) {
     fprintf(stderr, "Could not open file %s\n", inputFileName);
-    exit(EXIT_FAILURE);
+    exitCode = EXIT_FAILURE;
+    goto out;
   }
   expectedFile = fopen(expectedFileName, "r");
   if (expectedFile == NULL) {
     fprintf(stderr, "Could not open file %s\n", expectedFileName);
-    exit(EXIT_FAILURE);
+    exitCode = EXIT_FAILURE;
+    goto out;
   }
 
   nmeaContextSetErrorFunction(nmeaErrorLocal);
@@ -140,7 +151,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
         printf("%s", outputbuffer);
         printf("\n  EXPECTED on line %ld:\n", expectedLineNr);
         printf("%s", expectedbuffer);
-        exit(EXIT_FAILURE);
+        exitCode = EXIT_FAILURE;
+        goto out;
       }
 
       expectedLineNr += linesInExpected;
@@ -151,15 +163,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     printf("SUCCESS\n");
   }
 
-  if (inputLine)
-    free(inputLine);
-  if (expectedLine)
-    free(expectedLine);
-
   if (inputFile)
     fclose(inputFile);
   if (expectedFile)
     fclose(expectedFile);
 
-  exit(EXIT_SUCCESS);
+  exitCode = EXIT_SUCCESS;
+
+out:
+  free(inputLine);
+  exit(exitCode);
 }
