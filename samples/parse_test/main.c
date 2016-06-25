@@ -15,7 +15,7 @@ static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, siz
   int index = 0;
   int lineCount = 0;
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "\n%s\n", inputLine);
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "\n%-5s%-8lu: %s\n", "", (unsigned long) strlen(inputLine), inputLine);
   lineCount += 3;
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig,
