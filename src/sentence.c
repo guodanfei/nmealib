@@ -157,7 +157,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
   }
 }
 
-int nmeaSentenceGenerate(char *s, const size_t sz, const nmeaINFO *info, const enum NmeaSentence mask) {
+int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const enum NmeaSentence mask) {
   int chars = 0;
   int msk = mask;
 

@@ -152,7 +152,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
     nmea_parse(&parser, inputLine, inputLineCount, &info);
 
-    outputLineResult = nmeaSentenceGenerate(outputLine, outputLineLength, &info, info.smask);
+    outputLineResult = nmeaSentenceFromInfo(outputLine, outputLineLength, &info, info.smask);
 
     lineCount = printInfo(inputLine, outputLine, outputLineResult, &info, outputbuffer, sizeof(outputbuffer));
 
