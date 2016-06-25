@@ -335,54 +335,83 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
 }
 
 int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
-  char sTime[16];
-  char sDate[16];
-  char sLat[16];
-  char sNs[2];
-  char sLon[16];
-  char sEw[2];
-  char sSpeed[16];
-  char sTrack[16];
-  char sMagvar[16];
-  char sMagvar_ew[2];
 
-  sTime[0] = 0;
-  sDate[0] = 0;
-  sLat[0] = 0;
-  sNs[0] = sNs[1] = 0;
-  sLon[0] = 0;
-  sEw[0] = sEw[1] = 0;
-  sSpeed[0] = 0;
-  sTrack[0] = 0;
-  sMagvar[0] = 0;
-  sMagvar_ew[0] = sMagvar_ew[1] = 0;
+#define dst       (&s[chars])
+#define available ((size_t) MAX((long) sz - 1 - chars, 0))
+
+  int chars = 0;
+
+  if (!s || !sz || !pack) {
+    return 0;
+  }
+
+  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPRMC);
+
+  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
+    chars += snprintf(dst, available, //
+        ",%02d%02d%02d.%02d", //
+        pack->utc.hour, //
+        pack->utc.min, //
+        pack->utc.sec, //
+        pack->utc.hsec);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    chars += snprintf(dst, available, ",%c", pack->sig);
+  } else {
+    chars += snprintf(dst, available, ",V");
+  }
+
+  if (nmea_INFO_is_present(pack->present, LAT)) {
+    chars += snprintf(dst, available, ",%09.4f,%c", pack->lat, pack->ns);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, LON)) {
+    chars += snprintf(dst, available, ",%010.4f,%c", pack->lon, pack->ew);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SPEED)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->speed);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, TRACK)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->track);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
 
   if (nmea_INFO_is_present(pack->present, UTCDATE)) {
-    snprintf(&sDate[0], sizeof(sDate), "%02d%02d%02d", pack->utc.day, pack->utc.mon + 1, pack->utc.year - 100);
-  }
-  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->utc.hour, pack->utc.min, pack->utc.sec,
-        pack->utc.hsec);
-  }
-  if (nmea_INFO_is_present(pack->present, LAT)) {
-    snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->lat);
-    sNs[0] = pack->ns;
-  }
-  if (nmea_INFO_is_present(pack->present, LON)) {
-    snprintf(&sLon[0], sizeof(sLon), "%010.4f", pack->lon);
-    sEw[0] = pack->ew;
-  }
-  if (nmea_INFO_is_present(pack->present, SPEED)) {
-    snprintf(&sSpeed[0], sizeof(sSpeed), "%03.1f", pack->speed);
-  }
-  if (nmea_INFO_is_present(pack->present, TRACK)) {
-    snprintf(&sTrack[0], sizeof(sTrack), "%03.1f", pack->track);
-  }
-  if (nmea_INFO_is_present(pack->present, MAGVAR)) {
-    snprintf(&sMagvar[0], sizeof(sMagvar), "%03.1f", pack->magvar);
-    sMagvar_ew[0] = pack->magvar_ew;
+    chars += snprintf(dst, available, //
+        ",%02d%02d%02d", //
+        pack->utc.day, //
+        pack->utc.mon + 1, //
+        pack->utc.year - 100);
+  } else {
+    chars += snprintf(dst, available, ",");
   }
 
-  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPRMC ",%s,%c,%s,%s,%s,%s,%s,%s,%s,%s,%s,%c", &sTime[0], pack->sig, &sLat[0], &sNs[0],
-      &sLon[0], &sEw[0], &sSpeed[0], &sTrack[0], &sDate[0], &sMagvar[0], &sMagvar_ew[0], pack->sigMode);
+  if (nmea_INFO_is_present(pack->present, MAGVAR)) {
+    chars += snprintf(dst, available, ",%03.1f,%c", pack->magvar, pack->magvar_ew);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    chars += snprintf(dst, available, ",%c", pack->sigMode);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  /* checksum */
+  chars += nmeaAppendChecksum(s, sz, chars);
+
+  return chars;
 }
