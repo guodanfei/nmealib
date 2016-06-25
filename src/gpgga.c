@@ -302,64 +302,76 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
 }
 
 int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
-  char sTime[16];
-  char sLat[16];
-  char sNs[2];
-  char sLon[16];
-  char sEw[2];
-  char sSig[4];
-  char sSatInView[4];
-  char sHdop[16];
-  char sElv[16];
-  char sElvUnit[2];
 
-  sTime[0] = 0;
-  sLat[0] = 0;
-  sNs[0] = sNs[1] = 0;
-  sLon[0] = 0;
-  sEw[0] = sEw[1] = 0;
-  sSig[0] = 0;
-  sSatInView[0] = 0;
-  sHdop[0] = 0;
-  sElv[0] = 0;
-  sElvUnit[0] = sElvUnit[1] = 0;
+#define dst       (&s[chars])
+#define available ((size_t) MAX((long) sz - 1 - chars, 0))
+
+  int chars = 0;
+
+  if (!s || !sz || !pack) {
+    return 0;
+  }
+
+  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGGA);
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
-    snprintf(&sTime[0], sizeof(sTime), "%02d%02d%02d.%02d", pack->time.hour, pack->time.min, pack->time.sec,
+    chars += snprintf(dst, available, //
+        ",%02d%02d%02d.%02d", //
+        pack->time.hour, //
+        pack->time.min, //
+        pack->time.sec, //
         pack->time.hsec);
-  }
-  if (nmea_INFO_is_present(pack->present, LAT)) {
-    snprintf(&sLat[0], sizeof(sLat), "%09.4f", pack->latitude);
-    sNs[0] = pack->ns;
-  }
-  if (nmea_INFO_is_present(pack->present, LON)) {
-    snprintf(&sLon[0], sizeof(sLon), "%010.4f", pack->longitude);
-    sEw[0] = pack->ew;
-  }
-  if (nmea_INFO_is_present(pack->present, SIG)) {
-    snprintf(&sSig[0], sizeof(sSig), "%1d", pack->signal);
-  }
-  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    snprintf(&sSatInView[0], sizeof(sSatInView), "%02d", pack->satellites);
-  }
-  if (nmea_INFO_is_present(pack->present, HDOP)) {
-    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->hdop);
-  }
-  if (nmea_INFO_is_present(pack->present, ELV)) {
-    snprintf(&sElv[0], sizeof(sElv), "%03.1f", pack->elv);
-    sElvUnit[0] = pack->elvUnit;
+  } else {
+    chars += snprintf(dst, available, ",");
   }
 
-  return nmeaPrintf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,,,,", //
-      sTime, //
-      sLat, //
-      sNs, //
-      sLon, //
-      sEw, //
-      sSig, //
-      sSatInView, //
-      sHdop, //
-      sElv, //
-      sElvUnit);
+  if (nmea_INFO_is_present(pack->present, LAT)) {
+    chars += snprintf(dst, available, ",%09.4f,%c", pack->latitude, pack->ns);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, LON)) {
+    chars += snprintf(dst, available, ",%010.4f,%c", pack->longitude, pack->ew);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    chars += snprintf(dst, available, ",%d", pack->signal);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
+    chars += snprintf(dst, available, ",%02d", pack->satellites);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, HDOP)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->hdop);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, ELV)) {
+    chars += snprintf(dst, available, ",%03.1f,%c", pack->elv, pack->elvUnit);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  /* height */
+  chars += snprintf(dst, available, ",,");
+
+  /* dgps age */
+  chars += snprintf(dst, available, ",");
+
+  /* dgps id */
+  chars += snprintf(dst, available, ",");
+
+  /* checksum */
+  chars += nmeaAppendChecksum(s, sz, chars);
+
+  return chars;
 }
