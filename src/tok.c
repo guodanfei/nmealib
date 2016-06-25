@@ -142,6 +142,10 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
   return value;
 }
 
+int nmeaAppendChecksum(char *s, size_t sz, size_t len) {
+  return snprintf(&s[len], sz - len, "*%02X\r\n", nmeaCalculateCRC(s, len));
+}
+
 int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
   va_list args;
   int chars;
@@ -160,7 +164,7 @@ int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
     goto out;
   }
 
-  addedChars = snprintf(&s[chars], sz - chars, "*%02X\r\n", nmeaCalculateCRC(s, chars));
+  addedChars = nmeaAppendChecksum(s, sz, chars);
   if (addedChars < 0) {
     chars = addedChars;
     goto out;

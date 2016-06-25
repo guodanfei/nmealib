@@ -86,6 +86,16 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix);
 double nmeaStringToDouble(const char *s, const size_t sz);
 
 /**
+ * Append a NMEA checksum to the string in the buffer
+ *
+ * @param s The buffer containing the string
+ * @param sz The size of the buffer
+ * @param len The length of the string in the buffer
+ * @return The number of printed characters, -1 on error
+ */
+int nmeaAppendChecksum(char *s, size_t sz, size_t len);
+
+/**
  * Format a string (with vsnprintf) and add the NMEA checksum
  *
  * @param s The buffer
