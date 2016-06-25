@@ -200,39 +200,39 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
 }
 
 int nmeaGPVTGgenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
-  char sTrackT[16];
-  char sTrackM[16];
-  char sSpeedN[16];
-  char sSpeedK[16];
-  char sUnitT[2];
-  char sUnitM[2];
-  char sUnitN[2];
-  char sUnitK[2];
 
-  sTrackT[0] = 0;
-  sTrackM[0] = 0;
-  sSpeedN[0] = 0;
-  sSpeedK[0] = 0;
-  sUnitT[0] = sUnitT[1] = 0;
-  sUnitM[0] = sUnitM[1] = 0;
-  sUnitN[0] = sUnitN[1] = 0;
-  sUnitK[0] = sUnitK[1] = 0;
+#define dst       (&s[chars])
+#define available ((size_t) MAX((long) sz - 1 - chars, 0))
+
+  int chars = 0;
+
+  if (!s || !sz || !pack) {
+    return 0;
+  }
+
+  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPVTG);
+
 
   if (nmea_INFO_is_present(pack->present, TRACK)) {
-    snprintf(&sTrackT[0], sizeof(sTrackT), "%03.1f", pack->track);
-    sUnitT[0] = 'T';
-  }
-  if (nmea_INFO_is_present(pack->present, MTRACK)) {
-    snprintf(&sTrackM[0], sizeof(sTrackM), "%03.1f", pack->mtrack);
-    sUnitM[0] = 'M';
-  }
-  if (nmea_INFO_is_present(pack->present, SPEED)) {
-    snprintf(&sSpeedN[0], sizeof(sSpeedN), "%03.1f", pack->spn);
-    sUnitN[0] = 'N';
-    snprintf(&sSpeedK[0], sizeof(sSpeedK), "%03.1f", pack->spk);
-    sUnitK[0] = 'K';
+    chars += snprintf(dst, available, ",%03.1f,%c", pack->track, pack->track_t);
+  } else {
+    chars += snprintf(dst, available, ",,");
   }
 
-  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPVTG ",%s,%s,%s,%s,%s,%s,%s,%s", &sTrackT[0], &sUnitT[0], &sTrackM[0], &sUnitM[0],
-      &sSpeedN[0], &sUnitN[0], &sSpeedK[0], &sUnitK[0]);
+  if (nmea_INFO_is_present(pack->present, MTRACK)) {
+    chars += snprintf(dst, available, ",%03.1f,%c", pack->mtrack, pack->mtrack_m);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
+
+  if (nmea_INFO_is_present(pack->present, SPEED)) {
+    chars += snprintf(dst, available, ",%03.1f,%c,%03.1f,%c", pack->spn, pack->spn_n, pack->spk, pack->spk_k);
+  } else {
+    chars += snprintf(dst, available, ",,,,");
+  }
+
+  /* checksum */
+  chars += nmeaAppendChecksum(s, sz, chars);
+
+  return chars;
 }
