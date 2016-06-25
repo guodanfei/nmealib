@@ -10,13 +10,31 @@
 #include <libgen.h>
 #include <string.h>
 
-static int printInfo(char * inputLine, nmeaINFO * info, char * outputbuffer, size_t outputbuffersize) {
+static size_t countlines(char * line) {
+  size_t cnt = 0;
+  char * s = line;
+
+  while (*s && (s = strchr(s, '\n'))) {
+    s++;
+    cnt++;
+  }
+
+  return cnt;
+}
+
+static int printInfo(char * inputLine, char * outputLine, int outputLineResult, nmeaINFO * info, char * outputbuffer, size_t outputbuffersize) {
   unsigned int i;
   int index = 0;
   int lineCount = 0;
+  int eq;
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "\n%-5s%-8lu: %s\n", "", (unsigned long) strlen(inputLine), inputLine);
   lineCount += 3;
+
+  eq = !strcmp(inputLine, outputLine);
+
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "%-5s%-8d: %s\n", eq ? "EQ" : "NEQ", outputLineResult, outputLine);
+  lineCount += 1 + countlines(outputLine);
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig,
       info->fix);
@@ -62,8 +80,10 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   FILE * inputFile;
   char * expectedLine = NULL;
   char * inputLine = NULL;
+  char * outputLine = NULL;
   size_t expectedLineLength = 0;
   size_t inputLineLength = 0;
+  size_t outputLineLength = 0;
   ssize_t expectedLineCount;
   ssize_t inputLineCount;
   const char * defaultFileName;
@@ -79,8 +99,10 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   long expectedLineNr = 1;
 
   inputLineLength = 4096;
+  outputLineLength = 4096;
   inputLine = malloc(inputLineLength);
-  if (!inputLine) {
+  outputLine = malloc(outputLineLength);
+  if (!inputLine || !outputLine) {
     exitCode = EXIT_FAILURE;
     goto out;
   }
@@ -121,13 +143,18 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   expectedLineNr = 1;
 
   while ((inputLineCount = getline(&inputLine, &inputLineLength, inputFile)) != -1) {
+    int outputLineResult;
     int lineCount;
 
     inputLineNr++;
 
     memset(&info, 0, sizeof(info));
+
     nmea_parse(&parser, inputLine, inputLineCount, &info);
-    lineCount = printInfo(inputLine, &info, outputbuffer, sizeof(outputbuffer));
+
+    outputLineResult = nmeaSentenceGenerate(outputLine, outputLineLength, &info, info.smask);
+
+    lineCount = printInfo(inputLine, outputLine, outputLineResult, &info, outputbuffer, sizeof(outputbuffer));
 
     if (dooutput) {
       printf("%s", outputbuffer);
@@ -172,5 +199,6 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
 out:
   free(inputLine);
+  free(outputLine);
   exit(exitCode);
 }

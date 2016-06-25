@@ -6,7 +6,7 @@ set -u
 declare -i VERBOSE=0
 
 for m in M64 M32; do
-  for i in 0 1; do
+  for i in 1 0; do
     echo "=== CLEAN"
     git clean -fdx   &> /dev/null
     git reset --hard &> /dev/null
