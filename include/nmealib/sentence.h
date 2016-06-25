@@ -42,7 +42,7 @@
  * | magvar               |       |       |       | x     |       |
  * | dgps_age             | x (2) |       |       |       |       |
  * | dgps_sid             | x (2) |       |       |       |       |
- * | satinfo inuse count  | x     | x (1) |       |       |       |
+ * | satinfo inuse count  | x     |       |       |       |       |
  * | satinfo inuse        |       | x     |       |       |       |
  * | satinfo inview count |       |       | x     |       |       |
  * | satinfo inview       |       |       | x     |       |       |

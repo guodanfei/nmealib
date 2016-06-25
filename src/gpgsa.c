@@ -277,62 +277,61 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
 }
 
 int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
-  int i;
-  char sFixMode[2];
-  char sFixType[2];
-  char sSatPrn[(NMEALIB_MAX_SATELLITES * 4) + 1];
-  char sPdop[16];
-  char sHdop[16];
-  char sVdop[16];
 
-  char * psSatPrn = &sSatPrn[0];
-  int ssSatPrn = sizeof(sSatPrn) - 1;
+#define dst       (&s[chars])
+#define available ((size_t) MAX((long) sz - 1 - chars, 0))
 
-  bool satinuse = nmea_INFO_is_present(pack->present, SATINUSE);
+  bool satInUse = nmea_INFO_is_present(pack->present, SATINUSE);
+  size_t i;
+  int chars = 0;
 
-  sFixMode[0] = sFixMode[1] = 0;
-  sFixType[0] = sFixType[1] = 0;
-  sSatPrn[0] = 0;
-  sPdop[0] = 0;
-  sHdop[0] = 0;
-  sVdop[0] = 0;
-
-  if (nmea_INFO_is_present(pack->present, FIX)) {
-    sFixMode[0] = pack->sig;
-    snprintf(&sFixType[0], sizeof(sFixType), "%1d", pack->fix);
+  if (!s || !sz || !pack) {
+    return 0;
   }
 
-  for (i = 0; (i < NMEALIB_MAX_SATELLITES) && (i < GPGSA_SAT_COUNT); i++) {
-    if (satinuse && pack->sat_prn[i]) {
-      int cnt = snprintf(psSatPrn, ssSatPrn, "%d", pack->sat_prn[i]);
-      if (cnt >= ssSatPrn) {
-        ssSatPrn = 0;
-        psSatPrn = &sSatPrn[sizeof(sSatPrn) - 1];
-        *psSatPrn = '\0';
-        break;
-      } else {
-        ssSatPrn -= cnt;
-        psSatPrn += cnt;
-      }
-    }
-    if (i < (NMEALIB_MAX_SATELLITES - 1)) {
-      *psSatPrn = ',';
-      psSatPrn++;
-      ssSatPrn--;
-      *psSatPrn = '\0';
+  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGSA);
+
+  if (nmea_INFO_is_present(pack->present, SIG)) {
+    chars += snprintf(dst, available, ",%c", pack->sig);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, FIX)) {
+    chars += snprintf(dst, available, ",%d", pack->fix);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  for (i = 0; i < GPGSA_SAT_COUNT; i++) {
+    int prn = pack->sat_prn[i];
+    if (satInUse && prn) {
+      chars += snprintf(dst, available, ",%d", prn);
+    } else {
+      chars += snprintf(dst, available, ",");
     }
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
-    snprintf(&sPdop[0], sizeof(sPdop), "%03.1f", pack->PDOP);
-  }
-  if (nmea_INFO_is_present(pack->present, HDOP)) {
-    snprintf(&sHdop[0], sizeof(sHdop), "%03.1f", pack->HDOP);
-  }
-  if (nmea_INFO_is_present(pack->present, VDOP)) {
-    snprintf(&sVdop[0], sizeof(sVdop), "%03.1f", pack->VDOP);
+    chars += snprintf(dst, available, ",%03.1f", pack->PDOP);
+  } else {
+    chars += snprintf(dst, available, ",");
   }
 
-  return nmeaPrintf(s, sz, "$" NMEA_PREFIX_GPGSA ",%s,%s,%s,%s,%s,%s", &sFixMode[0], &sFixType[0], &sSatPrn[0], &sPdop[0], &sHdop[0],
-      &sVdop[0]);
+  if (nmea_INFO_is_present(pack->present, HDOP)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->HDOP);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  if (nmea_INFO_is_present(pack->present, VDOP)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->VDOP);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
+
+  /* checksum */
+  chars += nmeaAppendChecksum(s, sz, chars);
+
+  return chars;
 }
