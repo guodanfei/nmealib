@@ -177,9 +177,10 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
       chars += nmeaGPGSAgenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPGSA;
     } else if (msk & GPGSV) {
+      int satCount = nmea_INFO_is_present(info->present, SATINVIEWCOUNT) ? info->satinfo.inview : 0;
       nmeaGPGSV pack;
       int sentence;
-      int sentences = nmeaGPGSVsatellitesToSentencesCount(info->satinfo.inview);
+      int sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);
 
       for (sentence = 0; (sentence < sentences) && ((sz - chars) > 0); sentence++) {
         nmeaGPGSVFromInfo(info, &pack, sentence);
