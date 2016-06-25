@@ -194,17 +194,15 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
     unsigned int packIndex = 0;
     unsigned int infoIndex = 0;
 
-    info->satinfo.inuse = 0;
     memset(&info->satinfo.in_use, 0, sizeof(info->satinfo.in_use[0]));
 
     for (packIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < GPGSA_SAT_COUNT); packIndex++) {
       int prn = pack->sat_prn[packIndex];
       if (prn) {
         info->satinfo.in_use[infoIndex++] = prn;
-        info->satinfo.inuse++;
       }
     }
-    nmea_INFO_set_present(&info->present, (SATINUSECOUNT | SATINUSE));
+    nmea_INFO_set_present(&info->present, SATINUSE);
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
