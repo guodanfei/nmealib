@@ -137,7 +137,6 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   nmeaContextSetErrorFunction(nmeaErrorLocal);
 
   nmea_parser_init(&parser);
-  nmea_zero_INFO(&info);
 
   inputLineNr = 0;
   expectedLineNr = 1;
