@@ -20,6 +20,9 @@ LIBRARIES = -lm
 INCLUDES = -I ./include
 
 
+.PRECIOUS: $(OBJ)
+
+
 #
 # Targets
 #
