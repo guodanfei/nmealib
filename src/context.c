@@ -60,26 +60,31 @@ void nmeaTrace(const char *s, ...) {
     char *buf;
     size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
     va_list args;
+    va_list args2;
     int chars;
 
     buf = malloc(bufSize);
     if (!buf) {
+      /* can't be covered in a test */
       return;
     }
     buf[0] = '\0';
 
     va_start(args, s);
+    va_copy(args2, args);
 
     chars = vsnprintf(buf, bufSize, s, args);
-    if (chars < 0) {
+    if (chars <= 0) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      if (!realloc(buf, nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE))) {
+      bufSize = nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE);
+      if (!realloc(buf, bufSize)) {
+        /* can't be covered in a test */
         goto out;
       }
 
-      chars = vsnprintf(buf, bufSize, s, args);
+      chars = vsnprintf(buf, bufSize, s, args2);
     }
 
     buf[bufSize - 1] = '\0';
@@ -87,6 +92,7 @@ void nmeaTrace(const char *s, ...) {
     (*func)(buf, chars);
 
 out:
+    va_end(args2);
     va_end(args);
     free(buf);
   }
@@ -98,26 +104,31 @@ void nmeaError(const char *s, ...) {
     char *buf;
     size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
     va_list args;
+    va_list args2;
     int chars;
 
     buf = malloc(bufSize);
     if (!buf) {
+      /* can't be covered in a test */
       return;
     }
     buf[0] = '\0';
 
     va_start(args, s);
+    va_copy(args2, args);
 
     chars = vsnprintf(buf, bufSize, s, args);
-    if (chars < 0) {
+    if (chars <= 0) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      if (!realloc(buf, nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE))) {
+      bufSize = nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE);
+      if (!realloc(buf, bufSize)) {
+        /* can't be covered in a test */
         goto out;
       }
 
-      chars = vsnprintf(buf, bufSize, s, args);
+      chars = vsnprintf(buf, bufSize, s, args2);
     }
 
     buf[bufSize - 1] = '\0';
@@ -125,6 +136,7 @@ void nmeaError(const char *s, ...) {
     (*func)(buf, chars);
 
 out:
+    va_end(args2);
     va_end(args);
     free(buf);
   }

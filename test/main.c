@@ -18,6 +18,7 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
+extern int contextSuiteSetup(void);
 extern int utilSuiteSetup(void);
 
 int main(void) {
@@ -26,7 +27,8 @@ int main(void) {
   }
 
   if ( //
-      (utilSuiteSetup() != CUE_SUCCESS) //
+      (contextSuiteSetup() != CUE_SUCCESS) //
+      || (utilSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;
   }
