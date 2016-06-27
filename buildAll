@@ -11,7 +11,7 @@ for m in M64 M32; do
     git clean -fdx   &> /dev/null
     git reset --hard &> /dev/null
     echo "=== MAKE $m DEBUG=$i"
-    make ${m}=1 DEBUG=${i} VERBOSE=${VERBOSE} all samples test
+    make ${m}=1 DEBUG=${i} VERBOSE=${VERBOSE} full check
   done
 done
 

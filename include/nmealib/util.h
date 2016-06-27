@@ -52,6 +52,15 @@ extern "C" {
  * when the request buffer would become too large
  */
 static INLINE size_t nmeaUtilRoundUpToPowerOfTwo(size_t maxSize, size_t val, size_t pow2) {
+  if (!maxSize //
+      || !val //
+      || !pow2 //
+      || (maxSize < (pow2 - 1)) //
+      ) {
+    /* underflow */
+    return pow2;
+  }
+
   if (val <= (maxSize - (pow2 - 1))) {
     /* no overflow */
     return ((val + (pow2 - 1)) & ~(pow2 - 1));

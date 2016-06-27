@@ -51,11 +51,17 @@ ifeq ($(VERBOSE),0)
 endif
 	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+full : all samples test
+
+test: all
+	$(MAKECMDPREFIX)$(MAKE) -C test all
+
 samples: all
 	$(MAKECMDPREFIX)$(MAKE) -C samples all
 
-test : all samples
-	$(MAKECMDPREFIX)LD_PRELOAD=./lib/$(LIBNAME) ./samples/lib/parse_test
+check: test samples
+	$(MAKECMDPREFIX)$(MAKE) -C test check
+	$(MAKECMDPREFIX)./samples/lib/parse_test
 
 
 #
@@ -68,6 +74,7 @@ all-before:
 	$(MAKECMDPREFIX)mkdir -p build lib
 
 clean:
+	$(MAKECMDPREFIX)$(MAKE) -C test clean
 	$(MAKECMDPREFIX)$(MAKE) -C samples clean
 	$(MAKECMDPREFIX)$(MAKE) -C doc clean
 	$(MAKECMDPREFIX)rm -fr build lib

@@ -70,6 +70,11 @@ CLANGCFLAGS := $(COMMONCFLAGS)
 
 CC ?= gcc
 
+ifdef COV
+CFLAGS += -fprofile-arcs -ftest-coverage
+LDFLAG += -lgov
+endif
+
 ifneq ($(CC),clang)
 CFLAGS += $(GCCCFLAGS)
 else
@@ -97,6 +102,7 @@ LDFLAGS += -m64
 endif
 
 
+export COV
 export DEBUG
 export M32
 export M64
