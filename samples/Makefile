@@ -6,7 +6,7 @@ include $(TOPDIR)/Makefile.inc
 # Settings
 #
 
-SAMPLESDYNAMICLINK ?= 1
+SAMPLESDYNAMICLINK ?= 0
 
 H_FILES = $(wildcard ../include/nmealib/*.h)
 C_FILES = $(wildcard */main.c)
