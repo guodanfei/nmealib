@@ -71,15 +71,15 @@ CLANGCFLAGS := $(COMMONCFLAGS)
 CC ?= gcc
 
 ifneq ($(CC),clang)
-CFLAGS ?= $(GCCCFLAGS)
+CFLAGS += $(GCCCFLAGS)
 else
-CFLAGS ?= $(CLANGCFLAGS)
+CFLAGS += $(CLANGCFLAGS)
 endif
 
 ifeq ($(DEBUG),0)
-CFLAGS+= -O2
+CFLAGS += -O2
 else
-CFLAGS+= -O0
+CFLAGS += -O0
 endif
 
 CFLAGS += -mfpmath=sse -msse2

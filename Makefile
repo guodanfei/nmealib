@@ -68,8 +68,8 @@ all-before:
 	$(MAKECMDPREFIX)mkdir -p build lib
 
 clean:
-	$(MAKECMDPREFIX)$(MAKE) -C doc clean
 	$(MAKECMDPREFIX)$(MAKE) -C samples clean
+	$(MAKECMDPREFIX)$(MAKE) -C doc clean
 	$(MAKECMDPREFIX)rm -fr build lib
 
 doc:
