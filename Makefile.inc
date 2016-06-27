@@ -41,7 +41,7 @@ ifeq ($(DEBUG),0)
   STRIP ?=  :
   endif
 else
-STRIP ?=	:
+STRIP ?= :
 endif
 
 
@@ -88,10 +88,16 @@ LDFLAGS = -shared -Wl,--warn-common -fPIC
 
 # 32/64 cross compilation
 ifdef M32
-CFLAGS +=	-m32
-LDFLAGS +=	-m32
+CFLAGS += -m32
+LDFLAGS += -m32
 endif
 ifdef M64
-CFLAGS +=	-m64
-LDFLAGS +=	-m64
+CFLAGS += -m64
+LDFLAGS += -m64
 endif
+
+
+export DEBUG
+export M32
+export M64
+export VERBOSE
