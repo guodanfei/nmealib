@@ -27,6 +27,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/*
+ * SIG
+ */
+
 #define NMEA_SIG_FIRST        (NMEA_SIG_INVALID)
 #define NMEA_SIG_INVALID      (0)
 #define NMEA_SIG_FIX          (1)
@@ -132,6 +136,10 @@ static INLINE char nmea_INFO_sig_to_mode(int sig) {
   }
 }
 
+/*
+ * FIX
+ */
+
 #define NMEA_FIX_FIRST (NMEA_FIX_BAD)
 #define NMEA_FIX_BAD   (1)
 #define NMEA_FIX_2D    (2)
@@ -155,6 +163,10 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
   }
 }
 
+/*
+ * Limits and defaults
+ */
+
 #define NMEALIB_MAX_SATELLITES    (72)
 
 #define NMEA_DEF_LAT   (0.0)
@@ -164,20 +176,20 @@ static INLINE const char * nmea_INFO_fix_to_string(int fix) {
  * Date and time data
  */
 typedef struct _nmeaTIME {
-    int year; /**< Years since 1900 */
-    int mon; /**< Months since January - [0,11] */
-    int day; /**< Day of the month - [1,31] */
-    int hour; /**< Hours since midnight - [0,23] */
-    int min; /**< Minutes after the hour - [0,59] */
-    int sec; /**< Seconds after the minute - [0,60] (1 leap second) */
-    int hsec; /**< Hundredth part of second - [0,99] */
+    int year; /**< Years since 1900                                  */
+    int mon;  /**< Months since January - [0,11]                     */
+    int day;  /**< Day of the month - [1,31]                         */
+    int hour; /**< Hours since midnight - [0,23]                     */
+    int min;  /**< Minutes after the hour - [0,59]                   */
+    int sec;  /**< Seconds after the minute - [0,60] (1 leap second) */
+    int hsec; /**< Hundredth part of second - [0,99]                 */
 } nmeaTIME;
 
 /**
  * Position data in fractional degrees or radians
  */
 typedef struct _nmeaPOS {
-    double lat; /**< Latitude */
+    double lat; /**< Latitude  */
     double lon; /**< Longitude */
 } nmeaPOS;
 
