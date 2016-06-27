@@ -136,20 +136,30 @@ bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s) {
 }
 
 bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char * s) {
+  char cu[3];
+
   if (!c) {
     return false;
   }
 
-  *c = toupper(*c);
+  cu[1] = '\0';
+  cu[2] = '\0';
+  if (*c) {
+    *c = toupper(*c);
+    cu[0] = *c;
+  } else {
+    cu[0] = '\\';
+    cu[1] = '0';
+  }
 
   if (ns) {
     if (!((*c == 'N') || (*c == 'S'))) {
-      nmeaError("%s parse error: invalid North/South '%c' in '%s'", prefix, *c, s);
+      nmeaError("%s parse error: invalid North/South '%s' in '%s'", prefix, cu, s);
       return false;
     }
   } else {
     if (!((*c == 'E') || (*c == 'W'))) {
-      nmeaError("%s parse error: invalid East/West '%c' in '%s'", prefix, *c, s);
+      nmeaError("%s parse error: invalid East/West '%s' in '%s'", prefix, cu, s);
       return false;
     }
   }
