@@ -78,7 +78,7 @@ void nmeaTrace(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      bufSize = nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE);
+      bufSize = chars + 1;
       if (!realloc(buf, bufSize)) {
         /* can't be covered in a test */
         goto out;
@@ -122,7 +122,7 @@ void nmeaError(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      bufSize = nmeaUtilRoundUpToPowerOfTwo(NMEA_BUFFER_SIZE_MAX, (size_t) chars + 1, NMEA_BUFFER_CHUNK_SIZE);
+      bufSize = chars + 1;
       if (!realloc(buf, bufSize)) {
         /* can't be covered in a test */
         goto out;

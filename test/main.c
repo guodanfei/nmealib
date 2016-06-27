@@ -19,7 +19,6 @@
 #include <CUnit/Basic.h>
 
 extern int contextSuiteSetup(void);
-extern int utilSuiteSetup(void);
 
 int main(void) {
   if (CUE_SUCCESS != CU_initialize_registry()) {
@@ -28,7 +27,6 @@ int main(void) {
 
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
-      || (utilSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;
   }
