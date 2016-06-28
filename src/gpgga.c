@@ -206,16 +206,16 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
-    info->lat = ((pack->ns == 'N') ?
-        fabs(pack->latitude) :
-        -fabs(pack->latitude));
+    info->lat = ((pack->ns != 'N') ?
+        -fabs(pack->latitude) :
+        fabs(pack->latitude));
     nmea_INFO_set_present(&info->present, LAT);
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
-    info->lon = ((pack->ew == 'E') ?
-        fabs(pack->longitude) :
-        -fabs(pack->longitude));
+    info->lon = ((pack->ew != 'E') ?
+        -fabs(pack->longitude) :
+        fabs(pack->longitude));
     nmea_INFO_set_present(&info->present, LON);
   }
 
