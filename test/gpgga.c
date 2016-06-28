@@ -83,7 +83,7 @@ static void errorFunction(const char *s __attribute__((unused)), size_t sz __att
  * Tests
  */
 
-static void test_nmeaGPGGAparse(void) {
+static void test_nmeaGPGGAParse(void) {
   const char * s = "some string";
   nmeaGPGGA packEmpty;
   nmeaGPGGA pack;
@@ -96,38 +96,38 @@ static void test_nmeaGPGGAparse(void) {
 
   /* invalid inputs */
 
-  r = nmeaGPGGAparse(NULL, 1, &pack);
+  r = nmeaGPGGAParse(NULL, 1, &pack);
   validateParsePack(&pack, r, false, 0, 0, true);
 
-  r = nmeaGPGGAparse(s, 0, &pack);
+  r = nmeaGPGGAParse(s, 0, &pack);
   validateParsePack(&pack, r, false, 0, 0, true);
 
-  r = nmeaGPGGAparse(s, strlen(s), NULL);
+  r = nmeaGPGGAParse(s, strlen(s), NULL);
   validateParsePack(&pack, r, false, 0, 0, true);
 
   /* invalid sentence / not enough fields */
 
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* all fields empty */
 
   s = "$GPGGA,,,,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
   /* time */
 
   s = "$GPGGA,invalid,,,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
   s = "$GPGGA,999999,,,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,104559.64,,,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, UTCTIME);
   CU_ASSERT_EQUAL(pack.time.hour, 10);
@@ -139,15 +139,15 @@ static void test_nmeaGPGGAparse(void) {
   /* lat */
 
   s = "$GPGGA,,1,,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,1,!,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,-1242.55,s,,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, LAT);
   CU_ASSERT_EQUAL(pack.latitude, 1242.55);
@@ -156,15 +156,15 @@ static void test_nmeaGPGGAparse(void) {
   /* lon */
 
   s = "$GPGGA,,,,1,,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,1,!,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,-1242.55,e,,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, LON);
   CU_ASSERT_EQUAL(pack.longitude, 1242.55);
@@ -173,11 +173,11 @@ static void test_nmeaGPGGAparse(void) {
   /* sig */
 
   s = "$GPGGA,,,,,,4242,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,,,2,,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SIG);
   CU_ASSERT_EQUAL(pack.signal, 2);
@@ -185,7 +185,7 @@ static void test_nmeaGPGGAparse(void) {
   /* satellites */
 
   s = "$GPGGA,,,,,,,-8,,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SATINVIEWCOUNT);
   CU_ASSERT_EQUAL(pack.satellites, 8);
@@ -193,7 +193,7 @@ static void test_nmeaGPGGAparse(void) {
   /* hdop */
 
   s = "$GPGGA,,,,,,,,-12.128,,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, HDOP);
   CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 12.128, DBL_EPSILON);
@@ -201,15 +201,15 @@ static void test_nmeaGPGGAparse(void) {
   /* elv */
 
   s = "$GPGGA,,,,,,,,,1,,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,,,,,,1,!,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,,,,,,-42,m,,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, ELV);
   CU_ASSERT_DOUBLE_EQUAL(pack.elv, -42, DBL_EPSILON);
@@ -218,15 +218,15 @@ static void test_nmeaGPGGAparse(void) {
   /* diff */
 
   s = "$GPGGA,,,,,,,,,,,1,,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,,,,,,,,1,!,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   s = "$GPGGA,,,,,,,,,,,-42,m,,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, HEIGHT);
   CU_ASSERT_DOUBLE_EQUAL(pack.diff, -42, DBL_EPSILON);
@@ -235,7 +235,7 @@ static void test_nmeaGPGGAparse(void) {
   /* dgpsAge */
 
   s = "$GPGGA,,,,,,,,,,,,,-1.250,*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, DGPSAGE);
   CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1.250, DBL_EPSILON);
@@ -243,7 +243,7 @@ static void test_nmeaGPGGAparse(void) {
   /* dgpsSid */
 
   s = "$GPGGA,,,,,,,,,,,,,,-42*";
-  r = nmeaGPGGAparse(s, strlen(s), &pack);
+  r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, DGPSSID);
   CU_ASSERT_EQUAL(pack.dgpsSid, 42);
@@ -704,7 +704,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   memset(&info, 0, sizeof(info));
 }
 
-static void test_nmeaGPGGAgenerate(void) {
+static void test_nmeaGPGGAGenerate(void) {
 }
 
 /*
@@ -740,10 +740,10 @@ int gpggaSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaGPGGAparse", test_nmeaGPGGAparse)) //
+      (!CU_add_test(pSuite, "nmeaGPGGAParse", test_nmeaGPGGAParse)) //
       || (!CU_add_test(pSuite, "nmeaGPGGAToInfo", test_nmeaGPGGAToInfo)) //
       || (!CU_add_test(pSuite, "nmeaGPGGAFromInfo", test_nmeaGPGGAFromInfo)) //
-      || (!CU_add_test(pSuite, "nmeaGPGGAgenerate", test_nmeaGPGGAgenerate)) //
+      || (!CU_add_test(pSuite, "nmeaGPGGAGenerate", test_nmeaGPGGAGenerate)) //
       ) {
     return CU_get_error();
   }

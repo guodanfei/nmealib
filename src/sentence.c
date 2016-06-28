@@ -103,7 +103,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
   switch (nmeaPrefixToSentence(s, sz)) {
     case GPGGA: {
       nmeaGPGGA gpgga;
-      if (nmeaGPGGAparse(s, sz, &gpgga)) {
+      if (nmeaGPGGAParse(s, sz, &gpgga)) {
         nmeaGPGGAToInfo(&gpgga, info);
         return true;
       }
@@ -169,7 +169,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
     if (msk & GPGGA) {
       nmeaGPGGA pack;
       nmeaGPGGAFromInfo(info, &pack);
-      chars += nmeaGPGGAgenerate(&s[chars], sz - chars, &pack);
+      chars += nmeaGPGGAGenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPGGA;
     } else if (msk & GPGSA) {
       nmeaGPGSA pack;
