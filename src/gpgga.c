@@ -30,7 +30,7 @@
 #include <string.h>
 
 bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
-  int fieldCount;
+  unsigned int fieldCount;
   char timeBuf[16];
 
   if (!s //
