@@ -159,7 +159,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    /* not supported yet */
+    nmea_INFO_set_present(&pack->present, HEIGHT);
   } else {
     pack->diff = 0.0;
     pack->diffUnit = '\0';
@@ -167,14 +167,14 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->dgpsAge)) {
     pack->dgpsAge = fabs(pack->dgpsAge);
-    /* not supported yet */
+    nmea_INFO_set_present(&pack->present, DGPSAGE);
   } else {
     pack->dgpsAge = 0.0;
   }
 
   if (pack->dgpsSid != INT_MAX) {
     pack->dgpsSid = abs(pack->dgpsSid);
-    /* not supported yet */
+    nmea_INFO_set_present(&pack->present, DGPSSID);
   } else {
     pack->dgpsSid = 0;
   }
@@ -238,11 +238,20 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
     nmea_INFO_set_present(&info->present, ELV);
   }
 
-  /* diff and diff_units not supported yet */
+  if (nmea_INFO_is_present(pack->present, HEIGHT)) {
+    info->height = pack->diff;
+    nmea_INFO_set_present(&info->present, HEIGHT);
+  }
 
-  /* dgps_age not supported yet */
+  if (nmea_INFO_is_present(pack->present, DGPSAGE)) {
+    info->dgpsAge = pack->dgpsAge;
+    nmea_INFO_set_present(&info->present, DGPSAGE);
+  }
 
-  /* dgps_sid not supported yet */
+  if (nmea_INFO_is_present(pack->present, DGPSSID)) {
+    info->dgpsSid = pack->dgpsSid;
+    nmea_INFO_set_present(&info->present, DGPSSID);
+  }
 }
 
 void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
@@ -299,11 +308,21 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
     nmea_INFO_set_present(&pack->present, ELV);
   }
 
-  /* diff and diff_units not supported yet */
+  if (nmea_INFO_is_present(info->present, HEIGHT)) {
+    pack->diff = info->height;
+    pack->diffUnit = 'M';
+    nmea_INFO_set_present(&pack->present, HEIGHT);
+  }
 
-  /* dgps_age not supported yet */
+  if (nmea_INFO_is_present(info->present, DGPSAGE)) {
+    pack->dgpsAge = info->dgpsAge;
+    nmea_INFO_set_present(&pack->present, DGPSAGE);
+  }
 
-  /* dgps_sid not supported yet */
+  if (nmea_INFO_is_present(info->present, DGPSSID)) {
+    pack->dgpsSid = info->dgpsSid;
+    nmea_INFO_set_present(&pack->present, DGPSSID);
+  }
 }
 
 int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
@@ -366,14 +385,23 @@ int nmeaGPGGAgenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",,");
   }
 
-  /* height */
-  chars += snprintf(dst, available, ",,");
+  if (nmea_INFO_is_present(pack->present, HEIGHT)) {
+    chars += snprintf(dst, available, ",%03.1f,%c", pack->diff, pack->diffUnit);
+  } else {
+    chars += snprintf(dst, available, ",,");
+  }
 
-  /* dgps age */
-  chars += snprintf(dst, available, ",");
+  if (nmea_INFO_is_present(pack->present, DGPSAGE)) {
+    chars += snprintf(dst, available, ",%03.1f", pack->dgpsAge);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
 
-  /* dgps id */
-  chars += snprintf(dst, available, ",");
+  if (nmea_INFO_is_present(pack->present, DGPSSID)) {
+    chars += snprintf(dst, available, ",%d", pack->dgpsSid);
+  } else {
+    chars += snprintf(dst, available, ",");
+  }
 
   /* checksum */
   chars += nmeaAppendChecksum(s, sz, chars);

@@ -36,19 +36,19 @@
  * | lat                  | x     |       |       | x     |       |
  * | lon                  | x     |       |       | x     |       |
  * | elv                  | x     |       |       |       |       |
+ * | height               | x     |       |       |       |       |
  * | speed                |       |       |       | x     | x     |
  * | track                |       |       |       | x     | x     |
  * | mtrack               |       |       |       |       | x     |
  * | magvar               |       |       |       | x     |       |
- * | dgps_age             | x (2) |       |       |       |       |
- * | dgps_sid             | x (2) |       |       |       |       |
- * | satinfo inuse count  | x     |       |       |       |       |
+ * | dgps_age             | x     |       |       |       |       |
+ * | dgps_sid             | x     |       |       |       |       |
+ * | satinfo inuse count  |       |       |       |       |       |
  * | satinfo inuse        |       | x     |       |       |       |
- * | satinfo inview count |       |       | x     |       |       |
+ * | satinfo inview count | x     |       | x     |       |       |
  * | satinfo inview       |       |       | x     |       |       |
  *
  * (1) Not present in the sentence but the library sets it up.
- * (2) Not supported yet
  */
 
 #ifndef __NMEALIB_SENTENCE_H__

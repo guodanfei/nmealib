@@ -207,24 +207,24 @@ static void test_nmeaGPGGAparse(void) {
   s = "$GPGGA,,,,,,,,,,,-42,m,,*";
   r = nmeaGPGGAparse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
-  //CU_ASSERT_EQUAL(pack.present, HEIGHT); not supported yet
+  CU_ASSERT_EQUAL(pack.present, HEIGHT);
   CU_ASSERT_DOUBLE_EQUAL(pack.diff, -42, DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.diffUnit, 'M');
 
-  /* dgpsAge: not supported yet */
+  /* dgpsAge */
 
   s = "$GPGGA,,,,,,,,,,,,,-1.250,*";
   r = nmeaGPGGAparse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
-  //CU_ASSERT_EQUAL(pack.present, HEIGHT); not supported yet
+  CU_ASSERT_EQUAL(pack.present, DGPSAGE);
   CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1.250, DBL_EPSILON);
 
-  /* dgpsSid: not supported yet */
+  /* dgpsSid */
 
   s = "$GPGGA,,,,,,,,,,,,,,-42*";
   r = nmeaGPGGAparse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
-  //CU_ASSERT_EQUAL(pack.present, HEIGHT); not supported yet
+  CU_ASSERT_EQUAL(pack.present, DGPSSID);
   CU_ASSERT_EQUAL(pack.dgpsSid, 42);
 }
 
