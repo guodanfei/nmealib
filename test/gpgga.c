@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "testHelpers.h"
+
 #include <nmealib/context.h>
 #include <nmealib/gpgga.h>
 #include <nmealib/info.h>
@@ -28,57 +30,6 @@
 
 int gpggaSuiteSetup(void);
 
-static int nmeaTraceCalls = 0;
-static int nmeaErrorCalls = 0;
-
-static void reset(void) {
-  nmeaTraceCalls = 0;
-  nmeaErrorCalls = 0;
-}
-
-static void traceFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
-  nmeaTraceCalls++;
-}
-
-static void errorFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
-  nmeaErrorCalls++;
-}
-
-/*
- * Helpers
- */
-
-#define validateParsePack(pack, r, rexp, traces, errors, empty) \
-  {CU_ASSERT_EQUAL(r, rexp); \
-   CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
-   CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
-   if (empty) { \
-     CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) == 0); \
-   } else { \
-     CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) != 0); \
-   } \
-   reset();}
-
-#define validatePackToInfo(info, traces, errors, empty) \
-   {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
-    CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
-    if (empty) { \
-      CU_ASSERT_TRUE(memcmp(info, &infoEmpty, sizeof(*info)) == 0); \
-    } else { \
-      CU_ASSERT_TRUE(memcmp(info, &infoEmpty, sizeof(*info)) != 0); \
-    } \
-    reset();}
-
-#define validateInfoToPack(pack, traces, errors, empty) \
-   {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
-    CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
-    if (empty) { \
-      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) == 0); \
-    } else { \
-      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) != 0); \
-    } \
-    reset();}
-
 /*
  * Tests
  */
@@ -88,8 +39,6 @@ static void test_nmeaGPGGAParse(void) {
   nmeaGPGGA packEmpty;
   nmeaGPGGA pack;
   bool r;
-
-  reset();
 
   memset(&packEmpty, 0, sizeof(packEmpty));
   memset(&pack, 0, sizeof(pack));
@@ -134,7 +83,6 @@ static void test_nmeaGPGGAParse(void) {
   CU_ASSERT_EQUAL(pack.time.min, 45);
   CU_ASSERT_EQUAL(pack.time.sec, 59);
   CU_ASSERT_EQUAL(pack.time.hsec, 64);
-  reset();
 
   /* lat */
 
@@ -253,8 +201,6 @@ static void test_nmeaGPGGAToInfo(void) {
   nmeaGPGGA pack;
   nmeaINFO infoEmpty;
   nmeaINFO info;
-
-  reset();
 
   memset(&pack, 0, sizeof(pack));
   memset(&infoEmpty, 0, sizeof(infoEmpty));
@@ -541,8 +487,6 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGA packEmpty;
   nmeaGPGGA pack;
 
-  reset();
-
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
   memset(&pack, 0, sizeof(pack));
@@ -708,8 +652,6 @@ static void test_nmeaGPGGAGenerate(void) {
   char buf[256];
   nmeaGPGGA pack;
   int r;
-
-  reset();
 
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
