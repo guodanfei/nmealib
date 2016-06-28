@@ -188,7 +188,8 @@ err:
 }
 
 void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
@@ -229,7 +230,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = pack->hdop;
+    info->HDOP = fabs(pack->hdop);
     nmea_INFO_set_present(&info->present, HDOP);
   }
 
