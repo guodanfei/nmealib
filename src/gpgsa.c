@@ -45,8 +45,8 @@ int comparePRN(const void *p1, const void *p2) {
 }
 
 bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
-  int fieldCount;
-  int i;
+  unsigned int fieldCount;
+  size_t i;
 
   if (!s //
       || !sz //
@@ -166,13 +166,12 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
 
   info->smask |= GPGSA;
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
+  if (nmea_INFO_is_present(pack->present, SIG) //
+      && (info->sig == NMEA_SIG_INVALID)) {
     if (pack->sig == 'M') {
       info->sig = NMEA_SIG_MANUAL;
-    } else if (nmea_INFO_is_present(pack->present, FIX)) {
-      info->sig = NMEA_SIG_FIX;
     } else {
-      info->sig = NMEA_SIG_INVALID;
+      info->sig = NMEA_SIG_FIX;
     }
 
     nmea_INFO_set_present(&info->present, SIG);
@@ -184,32 +183,35 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, SATINUSE)) {
-    unsigned int packIndex = 0;
-    unsigned int infoIndex = 0;
+    size_t packIndex = 0;
+    size_t infoIndex = 0;
 
+    info->satinfo.inuse = 0;
     memset(&info->satinfo.in_use, 0, sizeof(info->satinfo.in_use[0]));
 
-    for (packIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEA_GPGSA_SATS_IN_SENTENCE); packIndex++) {
+    for (packIndex = 0; (packIndex < NMEA_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++) {
       int prn = pack->satPrn[packIndex];
       if (prn) {
         info->satinfo.in_use[infoIndex++] = prn;
+        info->satinfo.inuse++;
       }
     }
-    nmea_INFO_set_present(&info->present, SATINUSE);
+
+    nmea_INFO_set_present(&info->present, SATINUSECOUNT | SATINUSE);
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
-    info->PDOP = pack->pdop;
+    info->PDOP = fabs(pack->pdop);
     nmea_INFO_set_present(&info->present, PDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = pack->hdop;
+    info->HDOP = fabs(pack->hdop);
     nmea_INFO_set_present(&info->present, HDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, VDOP)) {
-    info->VDOP = pack->vdop;
+    info->VDOP = fabs(pack->vdop);
     nmea_INFO_set_present(&info->present, VDOP);
   }
 }

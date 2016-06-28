@@ -28,8 +28,8 @@
  * | smask                | x     | x     | x     | x     | x     |
  * | utc (date)           |       |       |       | x     |       |
  * | utc (time)           | x     |       |       | x     |       |
- * | sig                  | x     |       |       | x (1) |       |
- * | fix                  |       | x     |       | x (1) |       |
+ * | sig                  | x     | x (1) |       | x (2) |       |
+ * | fix                  |       | x     |       | x (2) |       |
  * | PDOP                 |       | x     |       |       |       |
  * | HDOP                 | x     | x     |       |       |       |
  * | VDOP                 |       | x     |       |       |       |
@@ -43,12 +43,13 @@
  * | magvar               |       |       |       | x     |       |
  * | dgps_age             | x     |       |       |       |       |
  * | dgps_sid             | x     |       |       |       |       |
- * | satinfo inuse count  |       |       |       |       |       |
+ * | satinfo inuse count  |       | x (2) |       |       |       |
  * | satinfo inuse        |       | x     |       |       |       |
  * | satinfo inview count | x     |       | x     |       |       |
  * | satinfo inview       |       |       | x     |       |       |
  *
- * (1) Not present in the sentence but the library sets it up.
+ * (1) Only sets the nmeaINFO sig when it is not set yet.
+ * (2) Not present in the sentence but the library sets it up.
  */
 
 #ifndef __NMEALIB_SENTENCE_H__

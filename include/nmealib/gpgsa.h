@@ -44,13 +44,13 @@ extern "C" {
  * GPS DOP and active satellites.
  *
  * <pre>
- * $GPGSA,selection,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
+ * $GPGSA,sig,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
  * </pre>
  *
  * | Field       | Description                                      | present  |
  * | :---------: | ------------------------------------------------ | :------: |
  * | $GPGSA      | NMEA prefix                                      | -        |
- * | selection   | Selection of 2D or 3D fix (A = auto, M = manual) | SIG      |
+ * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG      |
  * | fix         | Fix, see NMEA_FIX_* defines                      | FIX      |
  * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE |
  * | pdop        | Dilution of position                             | PDOP     |
