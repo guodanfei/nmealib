@@ -36,7 +36,7 @@ extern "C" {
 #define NMEA_PREFIX_GPGSA "GPGSA"
 
 /** The number of satellite PRNs in the sentence */
-#define GPGSA_SAT_COUNT (12)
+#define NMEA_GPGSA_SATS_IN_SENTENCE (12)
 
 /**
  * GPGSA packet information structure (Satellite status)
@@ -88,10 +88,10 @@ typedef struct _nmeaGPGSA {
   uint32_t present;
   char     sig;
   int      fix;
-  int      sat_prn[GPGSA_SAT_COUNT];
-  double   PDOP;
-  double   HDOP;
-  double   VDOP;
+  int      satPrn[NMEA_GPGSA_SATS_IN_SENTENCE];
+  double   pdop;
+  double   hdop;
+  double   vdop;
 } nmeaGPGSA;
 
 /**

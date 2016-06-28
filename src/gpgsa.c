@@ -59,30 +59,30 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
   pack->fix = INT_MAX;
-  pack->PDOP = NAN;
-  pack->HDOP = NAN;
-  pack->VDOP = NAN;
+  pack->pdop = NAN;
+  pack->hdop = NAN;
+  pack->vdop = NAN;
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
       "$" NMEA_PREFIX_GPGSA ",%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
       &pack->sig, //
       &pack->fix, //
-      &pack->sat_prn[0], //
-      &pack->sat_prn[1], //
-      &pack->sat_prn[2], //
-      &pack->sat_prn[3], //
-      &pack->sat_prn[4], //
-      &pack->sat_prn[5], //
-      &pack->sat_prn[6], //
-      &pack->sat_prn[7], //
-      &pack->sat_prn[8], //
-      &pack->sat_prn[9], //
-      &pack->sat_prn[10], //
-      &pack->sat_prn[11], //
-      &pack->PDOP, //
-      &pack->HDOP, //
-      &pack->VDOP);
+      &pack->satPrn[0], //
+      &pack->satPrn[1], //
+      &pack->satPrn[2], //
+      &pack->satPrn[3], //
+      &pack->satPrn[4], //
+      &pack->satPrn[5], //
+      &pack->satPrn[6], //
+      &pack->satPrn[7], //
+      &pack->satPrn[8], //
+      &pack->satPrn[9], //
+      &pack->satPrn[10], //
+      &pack->satPrn[11], //
+      &pack->pdop, //
+      &pack->hdop, //
+      &pack->vdop);
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
@@ -115,37 +115,37 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
     pack->fix = NMEA_FIX_BAD;
   }
 
-  for (i = 0; i < GPGSA_SAT_COUNT; i++) {
-    if (pack->sat_prn[i] != 0) {
-      qsort(pack->sat_prn, GPGSA_SAT_COUNT, sizeof(int), comparePRN);
+  for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
+    if (pack->satPrn[i] != 0) {
+      qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), comparePRN);
 
       nmea_INFO_set_present(&pack->present, SATINUSE);
       break;
     }
   }
   if (!nmea_INFO_is_present(pack->present, SATINUSE)) {
-    memset(pack->sat_prn, 0, sizeof(pack->sat_prn));
+    memset(pack->satPrn, 0, sizeof(pack->satPrn));
   }
 
-  if (!isnan(pack->PDOP)) {
-    pack->PDOP = fabs(pack->PDOP);
+  if (!isnan(pack->pdop)) {
+    pack->pdop = fabs(pack->pdop);
     nmea_INFO_set_present(&pack->present, PDOP);
   } else {
-    pack->PDOP = 0.0;
+    pack->pdop = 0.0;
   }
 
-  if (!isnan(pack->HDOP)) {
-    pack->HDOP = fabs(pack->HDOP);
+  if (!isnan(pack->hdop)) {
+    pack->hdop = fabs(pack->hdop);
     nmea_INFO_set_present(&pack->present, HDOP);
   } else {
-    pack->HDOP = 0.0;
+    pack->hdop = 0.0;
   }
 
-  if (!isnan(pack->VDOP)) {
-    pack->VDOP = fabs(pack->VDOP);
+  if (!isnan(pack->vdop)) {
+    pack->vdop = fabs(pack->vdop);
     nmea_INFO_set_present(&pack->present, VDOP);
   } else {
-    pack->VDOP = 0.0;
+    pack->vdop = 0.0;
   }
 
   return true;
@@ -189,8 +189,8 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
 
     memset(&info->satinfo.in_use, 0, sizeof(info->satinfo.in_use[0]));
 
-    for (packIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < GPGSA_SAT_COUNT); packIndex++) {
-      int prn = pack->sat_prn[packIndex];
+    for (packIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEA_GPGSA_SATS_IN_SENTENCE); packIndex++) {
+      int prn = pack->satPrn[packIndex];
       if (prn) {
         info->satinfo.in_use[infoIndex++] = prn;
       }
@@ -199,17 +199,17 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
-    info->PDOP = pack->PDOP;
+    info->PDOP = pack->pdop;
     nmea_INFO_set_present(&info->present, PDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = pack->HDOP;
+    info->HDOP = pack->hdop;
     nmea_INFO_set_present(&info->present, HDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, VDOP)) {
-    info->VDOP = pack->VDOP;
+    info->VDOP = pack->vdop;
     nmea_INFO_set_present(&info->present, VDOP);
   }
 }
@@ -242,10 +242,10 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
     unsigned int infoIndex = 0;
     unsigned int packIndex = 0;
 
-    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < GPGSA_SAT_COUNT); infoIndex++) {
+    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEA_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
       int prn = info->satinfo.in_use[infoIndex];
       if (prn) {
-        pack->sat_prn[packIndex++] = prn;
+        pack->satPrn[packIndex++] = prn;
       }
     }
 
@@ -253,17 +253,17 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, PDOP)) {
-    pack->PDOP = info->PDOP;
+    pack->pdop = info->PDOP;
     nmea_INFO_set_present(&pack->present, PDOP);
   }
 
   if (nmea_INFO_is_present(info->present, HDOP)) {
-    pack->HDOP = info->HDOP;
+    pack->hdop = info->HDOP;
     nmea_INFO_set_present(&pack->present, HDOP);
   }
 
   if (nmea_INFO_is_present(info->present, VDOP)) {
-    pack->VDOP = info->VDOP;
+    pack->vdop = info->VDOP;
     nmea_INFO_set_present(&pack->present, VDOP);
   }
 }
@@ -296,8 +296,8 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     chars += snprintf(dst, available, ",");
   }
 
-  for (i = 0; i < GPGSA_SAT_COUNT; i++) {
-    int prn = pack->sat_prn[i];
+  for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
+    int prn = pack->satPrn[i];
     if (satInUse && prn) {
       chars += snprintf(dst, available, ",%d", prn);
     } else {
@@ -306,19 +306,19 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->PDOP);
+    chars += snprintf(dst, available, ",%03.1f", pack->pdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->HDOP);
+    chars += snprintf(dst, available, ",%03.1f", pack->hdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
   if (nmea_INFO_is_present(pack->present, VDOP)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->VDOP);
+    chars += snprintf(dst, available, ",%03.1f", pack->vdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
