@@ -69,6 +69,16 @@ static void errorFunction(const char *s __attribute__((unused)), size_t sz __att
     } \
     reset();}
 
+#define validateInfoToPack(pack, traces, errors, empty) \
+   {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
+    CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
+    if (empty) { \
+      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) == 0); \
+    } else { \
+      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) != 0); \
+    } \
+    reset();}
+
 /*
  * Tests
  */
@@ -527,6 +537,171 @@ static void test_nmeaGPGGAToInfo(void) {
 }
 
 static void test_nmeaGPGGAFromInfo(void) {
+  nmeaINFO info;
+  nmeaGPGGA packEmpty;
+  nmeaGPGGA pack;
+
+  reset();
+
+  memset(&info, 0, sizeof(info));
+  memset(&packEmpty, 0, sizeof(packEmpty));
+  memset(&pack, 0, sizeof(pack));
+
+  /* invalid inputs */
+
+  nmeaGPGGAFromInfo(NULL, &pack);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  nmeaGPGGAFromInfo(&info, NULL);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  /* empty */
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  /* time */
+
+  info.utc.hour = 12;
+  info.utc.min = 42;
+  info.utc.sec = 43;
+  info.utc.hsec = 44;
+  nmea_INFO_set_present(&info.present, UTCTIME);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, UTCTIME);
+  CU_ASSERT_EQUAL(pack.time.hour, 12);
+  CU_ASSERT_EQUAL(pack.time.min, 42);
+  CU_ASSERT_EQUAL(pack.time.sec, 43);
+  CU_ASSERT_EQUAL(pack.time.hsec, 44);
+  memset(&info, 0, sizeof(info));
+
+  /* latitude  */
+
+  info.lat = -1232.5523;
+  nmea_INFO_set_present(&info.present, LAT);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, LAT);
+  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.ns, 'S');
+  memset(&info, 0, sizeof(info));
+
+  info.lat = 1232.5523;
+  nmea_INFO_set_present(&info.present, LAT);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, LAT);
+  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.ns, 'N');
+  memset(&info, 0, sizeof(info));
+
+  /* longitude */
+
+  info.lon = -1232.5523;
+  nmea_INFO_set_present(&info.present, LON);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, LON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.ew, 'W');
+  memset(&info, 0, sizeof(info));
+
+  info.lon = 1232.5523;
+  nmea_INFO_set_present(&info.present, LON);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, LON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.ew, 'E');
+  memset(&info, 0, sizeof(info));
+
+  /* signal */
+
+  info.sig = NMEA_SIG_MANUAL;
+  nmea_INFO_set_present(&info.present, SIG);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SIG);
+  CU_ASSERT_EQUAL(pack.signal, NMEA_SIG_MANUAL);
+  memset(&info, 0, sizeof(info));
+
+  /* satellites */
+
+  info.satinfo.inview = 42;
+  nmea_INFO_set_present(&info.present, SATINVIEWCOUNT);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SATINVIEWCOUNT);
+  CU_ASSERT_EQUAL(pack.satellites, 42);
+  memset(&info, 0, sizeof(info));
+
+  /* hdop */
+
+  info.HDOP = 1232.5523;
+  nmea_INFO_set_present(&info.present, HDOP);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, HDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 1232.5523, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
+
+  /* elv */
+
+  info.elv = -1232.5523;
+  nmea_INFO_set_present(&info.present, ELV);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, ELV);
+  CU_ASSERT_DOUBLE_EQUAL(pack.elv, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.elvUnit, 'M');
+  memset(&info, 0, sizeof(info));
+
+  /* diff */
+
+  info.height = -1232.5523;
+  nmea_INFO_set_present(&info.present, HEIGHT);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, HEIGHT);
+  CU_ASSERT_DOUBLE_EQUAL(pack.diff, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_EQUAL(pack.diffUnit, 'M');
+  memset(&info, 0, sizeof(info));
+
+  /* dgpsAge */
+
+  info.dgpsAge = 1232.5523;
+  nmea_INFO_set_present(&info.present, DGPSAGE);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, DGPSAGE);
+  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1232.5523, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
+
+  /* dgpsSid */
+
+  info.dgpsSid = 42;
+  nmea_INFO_set_present(&info.present, DGPSSID);
+
+  nmeaGPGGAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, DGPSSID);
+  CU_ASSERT_EQUAL(pack.dgpsSid, 42);
+  memset(&info, 0, sizeof(info));
 }
 
 static void test_nmeaGPGGAgenerate(void) {

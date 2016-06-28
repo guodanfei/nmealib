@@ -256,7 +256,8 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
 }
 
 void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
