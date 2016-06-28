@@ -334,7 +334,8 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
 
   int chars = 0;
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !pack) {
     return 0;
   }
 
@@ -352,13 +353,23 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
-    chars += snprintf(dst, available, ",%09.4f,%c", pack->latitude, pack->ns);
+    chars += snprintf(dst, available, ",%09.4f", pack->latitude);
+    if (pack->ns) {
+      chars += snprintf(dst, available, ",%c", pack->ns);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
-    chars += snprintf(dst, available, ",%010.4f,%c", pack->longitude, pack->ew);
+    chars += snprintf(dst, available, ",%010.4f", pack->longitude);
+    if (pack->ew) {
+      chars += snprintf(dst, available, ",%c", pack->ew);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
@@ -382,13 +393,23 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, ELV)) {
-    chars += snprintf(dst, available, ",%03.1f,%c", pack->elv, pack->elvUnit);
+    chars += snprintf(dst, available, ",%03.1f", pack->elv);
+    if (pack->elvUnit) {
+      chars += snprintf(dst, available, ",%c", pack->elvUnit);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmea_INFO_is_present(pack->present, HEIGHT)) {
-    chars += snprintf(dst, available, ",%03.1f,%c", pack->diff, pack->diffUnit);
+    chars += snprintf(dst, available, ",%03.1f", pack->diff);
+    if (pack->diffUnit) {
+      chars += snprintf(dst, available, ",%c", pack->diffUnit);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }

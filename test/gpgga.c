@@ -705,6 +705,202 @@ static void test_nmeaGPGGAFromInfo(void) {
 }
 
 static void test_nmeaGPGGAGenerate(void) {
+  char buf[256];
+  nmeaGPGGA pack;
+  int r;
+
+  reset();
+
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* invalid inputs */
+
+  r = nmeaGPGGAGenerate(NULL, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), NULL);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty with 0 length */
+
+  r = nmeaGPGGAGenerate(buf, 0, &pack);
+  CU_ASSERT_EQUAL(r, 25);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty */
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 25);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,,,,,,*56\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* time */
+
+  pack.time.hour = 12;
+  pack.time.min = 42;
+  pack.time.sec = 43;
+  pack.time.hsec = 44;
+  nmea_INFO_set_present(&pack.present, UTCTIME);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 34);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,124243.44,,,,,,,,,,,,,*7A\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* latitude */
+
+  pack.latitude = 1242.55;
+  pack.ns = 'N';
+  nmea_INFO_set_present(&pack.present, LAT);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 35);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,1242.5500,N,,,,,,,,,,,*33\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.latitude = 1242.55;
+  pack.ns = '\0';
+  nmea_INFO_set_present(&pack.present, LAT);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 34);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,1242.5500,,,,,,,,,,,,*7D\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* longitude */
+
+  pack.longitude = 1242.55;
+  pack.ew = 'E';
+  nmea_INFO_set_present(&pack.present, LON);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 36);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,01242.5500,E,,,,,,,,,*08\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.longitude = 1242.55;
+  pack.ew = '\0';
+  nmea_INFO_set_present(&pack.present, LON);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 35);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,01242.5500,,,,,,,,,,*4D\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+
+  /* signal */
+
+  pack.signal = NMEA_SIG_MANUAL;
+  nmea_INFO_set_present(&pack.present, SIG);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 26);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,7,,,,,,,,*61\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* satellites */
+
+  pack.satellites = 42;
+  nmea_INFO_set_present(&pack.present, SATINVIEWCOUNT);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 27);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,42,,,,,,,*50\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* hdop */
+
+  pack.hdop = 42.64;
+  nmea_INFO_set_present(&pack.present, HDOP);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,42.6,,,,,,*48\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* elv */
+
+  pack.elv = 42.64;
+  pack.elvUnit = 'M';
+  nmea_INFO_set_present(&pack.present, ELV);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 30);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,42.6,M,,,,*05\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.elv = 42.64;
+  pack.elvUnit = '\0';
+  nmea_INFO_set_present(&pack.present, ELV);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,42.6,,,,,*48\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* diff */
+
+  pack.diff = 42.64;
+  pack.diffUnit = 'M';
+  nmea_INFO_set_present(&pack.present, HEIGHT);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 30);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,,,42.6,M,,*05\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.diff = 42.64;
+  pack.diffUnit = '\0';
+  nmea_INFO_set_present(&pack.present, HEIGHT);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,,,42.6,,,*48\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* dgpsAge */
+
+  pack.dgpsAge = 42.64;
+  nmea_INFO_set_present(&pack.present, DGPSAGE);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,,,,,42.6,*48\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* dgpsSid */
+
+  pack.dgpsSid = 42;
+  nmea_INFO_set_present(&pack.present, DGPSSID);
+
+  r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 27);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,,,,,,,,,,,,,,42*50\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
 }
 
 /*
