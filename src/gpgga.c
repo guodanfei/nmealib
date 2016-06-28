@@ -22,6 +22,7 @@
 #include <nmealib/sentence.h>
 #include <nmealib/tok.h>
 #include <nmealib/validate.h>
+#include <ctype.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
@@ -29,10 +30,12 @@
 #include <string.h>
 
 bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
-  int fieldCount = 0;
+  int fieldCount;
   char timeBuf[16];
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !sz //
+      || !pack) {
     return false;
   }
 
@@ -88,7 +91,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     memset(&pack->time, 0, sizeof(pack->time));
   }
 
-  if (!isnan(pack->latitude) && (pack->ns)) {
+  if (!isnan(pack->latitude)) {
     if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
@@ -100,7 +103,7 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->ns = '\0';
   }
 
-  if (!isnan(pack->longitude) && (pack->ew)) {
+  if (!isnan(pack->longitude)) {
     if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
@@ -136,7 +139,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->hdop = 0.0;
   }
 
-  if (!isnan(pack->elv) && (pack->elvUnit)) {
+  if (!isnan(pack->elv)) {
+    pack->elvUnit = toupper(pack->elvUnit);
     if (pack->elvUnit != 'M') {
       nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
       goto err;
@@ -148,7 +152,8 @@ bool nmeaGPGGAparse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->elvUnit = '\0';
   }
 
-  if (!isnan(pack->diff) && (pack->diffUnit)) {
+  if (!isnan(pack->diff)) {
+    pack->diffUnit = toupper(pack->diffUnit);
     if (pack->diffUnit != 'M') {
       nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
       goto err;

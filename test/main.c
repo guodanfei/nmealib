@@ -19,6 +19,7 @@
 #include <CUnit/Basic.h>
 
 extern int contextSuiteSetup(void);
+extern int gpggaSuiteSetup(void);
 
 int main(void) {
   if (CUE_SUCCESS != CU_initialize_registry()) {
@@ -27,6 +28,7 @@ int main(void) {
 
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
+      || (gpggaSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;
   }
