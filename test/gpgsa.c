@@ -527,7 +527,125 @@ static void test_nmeaGPGSAFromInfo(void) {
 }
 
 static void test_nmeaGPGSAGenerate(void) {
-  // FIXME
+  char buf[256];
+  nmeaGPGSA pack;
+  int r;
+
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* invalid inputs */
+
+  r = nmeaGPGSAGenerate(NULL, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), NULL);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty with 0 length */
+
+  r = nmeaGPGSAGenerate(buf, 0, &pack);
+  CU_ASSERT_EQUAL(r, 28);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty */
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 28);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* sig */
+
+  pack.sig = 'A';
+  nmea_INFO_set_present(&pack.present, SIG);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,A,,,,,,,,,,,,,,,,*2F\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.sig = '\0';
+  nmea_INFO_set_present(&pack.present, SIG);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 28);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* fix */
+
+  pack.fix = NMEA_FIX_3D;
+  nmea_INFO_set_present(&pack.present, FIX);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* satPrn */
+
+  pack.satPrn[0] = 1;
+  pack.satPrn[1] = 2;
+  pack.satPrn[2] = 3;
+  pack.satPrn[4] = 5;
+  pack.satPrn[5] = 6;
+  pack.satPrn[6] = 7;
+  pack.satPrn[9] = 10;
+  pack.satPrn[10] = 11;
+  pack.satPrn[11] = 12;
+  nmea_INFO_set_present(&pack.present, SATINUSE);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 40);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,1,2,3,,5,6,7,,,10,11,12,,,*68\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* pdop */
+
+  pack.pdop = 42.64;
+  nmea_INFO_set_present(&pack.present, PDOP);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 32);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,,,,,,,,,,,,,42.6,,*70\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* hdop */
+
+  pack.hdop = 42.64;
+  nmea_INFO_set_present(&pack.present, HDOP);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 32);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,,,,,,,,,,,,,,42.6,*70\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* vdop */
+
+  pack.vdop = 42.64;
+  nmea_INFO_set_present(&pack.present, VDOP);
+
+  r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 32);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,,,,,,,,,,,,,,,,42.6*70\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
 }
 
 /*

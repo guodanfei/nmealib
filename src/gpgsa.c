@@ -275,9 +275,9 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
 
-  bool satInUse = nmea_INFO_is_present(pack->present, SATINUSE);
-  size_t i;
   int chars = 0;
+  bool satInUse;
+  size_t i;
 
   if (!s //
       || !pack) {
@@ -286,7 +286,8 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
 
   chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGSA);
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
+  if (nmea_INFO_is_present(pack->present, SIG) //
+      && pack->sig) {
     chars += snprintf(dst, available, ",%c", pack->sig);
   } else {
     chars += snprintf(dst, available, ",");
@@ -298,6 +299,7 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     chars += snprintf(dst, available, ",");
   }
 
+  satInUse = nmea_INFO_is_present(pack->present, SATINUSE);
   for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
     int prn = pack->satPrn[i];
     if (satInUse && prn) {
