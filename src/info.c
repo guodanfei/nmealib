@@ -27,13 +27,197 @@
 #include <sys/time.h>
 #include <assert.h>
 
-/**
- * Reset the time to now
- *
- * @param utc a pointer to the time structure
- * @param present a pointer to a present field. when non-NULL then the UTCDATE
- * and UTCTIME flags are set in it.
- */
+const char * nmea_INFO_sig_to_string(int sig) {
+  switch (sig) {
+    case NMEA_SIG_INVALID:
+      return "INVALID";
+
+    case NMEA_SIG_FIX:
+      return "FIX";
+
+    case NMEA_SIG_DIFFERENTIAL:
+      return "DIFFERENTIAL";
+
+    case NMEA_SIG_SENSITIVE:
+      return "SENSITIVE";
+
+    case NMEA_SIG_RTKIN:
+      return "REAL TIME KINEMATIC";
+
+    case NMEA_SIG_FLOAT_RTK:
+      return "FLOAT RTK";
+
+    case NMEA_SIG_ESTIMATED:
+      return "ESTIMATED (DEAD RECKONING)";
+
+    case NMEA_SIG_MANUAL:
+      return "MANUAL INPUT";
+
+    case NMEA_SIG_SIMULATION:
+      return "SIMULATION";
+
+    default:
+      return NULL;
+  }
+}
+
+int nmea_INFO_mode_to_sig(char mode) {
+  switch (mode) {
+    case 'N':
+      return NMEA_SIG_INVALID;
+
+    case 'A':
+      return NMEA_SIG_FIX;
+
+    case 'D':
+      return NMEA_SIG_DIFFERENTIAL;
+
+    case 'P':
+      return NMEA_SIG_SENSITIVE;
+
+    case 'R':
+      return NMEA_SIG_RTKIN;
+
+    case 'F':
+      return NMEA_SIG_FLOAT_RTK;
+
+    case 'E':
+      return NMEA_SIG_ESTIMATED;
+
+    case 'M':
+      return NMEA_SIG_MANUAL;
+
+    case 'S':
+      return NMEA_SIG_SIMULATION;
+
+    default:
+      return NMEA_SIG_INVALID;
+  }
+}
+
+char nmea_INFO_sig_to_mode(int sig) {
+  switch (sig) {
+    case NMEA_SIG_INVALID:
+      return 'N';
+
+    case NMEA_SIG_FIX:
+      return 'A';
+
+    case NMEA_SIG_DIFFERENTIAL:
+      return 'D';
+
+    case NMEA_SIG_SENSITIVE:
+      return 'P';
+
+    case NMEA_SIG_RTKIN:
+      return 'R';
+
+    case NMEA_SIG_FLOAT_RTK:
+      return 'F';
+
+    case NMEA_SIG_ESTIMATED:
+      return 'E';
+
+    case NMEA_SIG_MANUAL:
+      return 'M';
+
+    case NMEA_SIG_SIMULATION:
+      return 'S';
+
+    default:
+      return 'N';
+  }
+}
+
+const char * nmea_INFO_fix_to_string(int fix) {
+  switch (fix) {
+    case NMEA_FIX_BAD:
+      return "BAD";
+
+    case NMEA_FIX_2D:
+      return "2D";
+
+    case NMEA_FIX_3D:
+      return "3D";
+
+    default:
+      return NULL;
+  }
+}
+
+const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field) {
+  switch (field) {
+    case SMASK:
+      return "SMASK";
+
+    case UTCDATE:
+      return "UTCDATE";
+
+    case UTCTIME:
+      return "UTCTIME";
+
+    case SIG:
+      return "SIG";
+
+    case FIX:
+      return "FIX";
+
+    case PDOP:
+      return "PDOP";
+
+    case HDOP:
+      return "HDOP";
+
+    case VDOP:
+      return "VDOP";
+
+    case LAT:
+      return "LAT";
+
+    case LON:
+      return "LON";
+
+    case ELV:
+      return "ELV";
+
+    case HEIGHT:
+      return "HEIGHT";
+
+    case SPEED:
+      return "SPEED";
+
+    case TRACK:
+      return "TRACK";
+
+    case MTRACK:
+      return "MTRACK";
+
+    case MAGVAR:
+      return "MAGVAR";
+
+    case SATINUSECOUNT:
+      return "SATINUSECOUNT";
+
+    case SATINUSE:
+      return "SATINUSE";
+
+    case SATINVIEWCOUNT:
+      return "SATINVIEWCOUNT";
+
+    case SATINVIEW:
+      return "SATINVIEW";
+
+    case DGPSAGE:
+      return "DGPSAGE";
+
+    case DGPSSID:
+      return "DGPSSID";
+
+    default:
+      return NULL;
+  }
+}
+
 void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
   struct timeval tp;
   struct tm tt;
@@ -55,20 +239,13 @@ void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
   }
 }
 
-/**
- * Clear an info structure.
- * Resets the time to now, sets up the signal as BAD, the FIX as BAD, and
- * signals presence of these fields.
- * Resets all other fields to 0.
- *
- * @param info a pointer to the structure
- */
 void nmea_zero_INFO(nmeaINFO *info) {
   if (!info) {
     return;
   }
 
   memset(info, 0, sizeof(nmeaINFO));
+
   nmea_time_now(&info->utc, &info->present);
 
   info->sig = NMEA_SIG_INVALID;
@@ -78,53 +255,6 @@ void nmea_zero_INFO(nmeaINFO *info) {
   nmea_INFO_set_present(&info->present, FIX);
 }
 
-/**
- * Flag a nmeaINFO structure to contain a certain field
- *
- * @param present a pointer to the presence field
- * @param fieldName use a name from nmeaINFO_FIELD
- */
-void nmea_INFO_set_present(uint32_t * present, nmeaINFO_FIELD fieldName) {
-  assert(present);
-  *present |= fieldName;
-}
-
-/**
- * Flag a nmeaINFO structure to NOT contain a certain field
- *
- * @param present a pointer to the presence field
- * @param fieldName use a name from nmeaINFO_FIELD
- */
-void nmea_INFO_unset_present(uint32_t * present, nmeaINFO_FIELD fieldName) {
-  assert(present);
-  *present &= ~fieldName;
-}
-
-/**
- * Sanitise the NMEA info, make sure that:
- * - sig is in the range [0, 8],
- * - fix is in the range [1, 3],
- * - DOPs are positive,
- * - latitude is in the range [-9000, 9000],
- * - longitude is in the range [-18000, 18000],
- * - speed is positive,
- * - track is in the range [0, 360>.
- * - mtrack is in the range [0, 360>.
- * - magvar is in the range [0, 360>.
- * - satinfo:
- *   - inuse and in_use are consistent (w.r.t. count)
- *   - inview and sat are consistent (w.r.t. count/id)
- *   - in_use and sat are consistent (w.r.t. count/id)
- *   - elv is in the range [0, 90]
- *   - azimuth is in the range [0, 359]
- *   - sig is in the range [0, 99]
- *
- * Time is set to the current time when not present.
- * Fields are reset to their defaults (0) when not signaled as being present.
- *
- * @param nmeaInfo
- * the NMEA info structure to sanitise
- */
 void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   double lat = 0;
   double lon = 0;
@@ -172,7 +302,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   if (!nmea_INFO_is_present(nmeaInfo->present, SIG)) {
     nmeaInfo->sig = NMEA_SIG_INVALID;
   } else {
-    if ((nmeaInfo->sig < NMEA_SIG_INVALID) || (nmeaInfo->sig > NMEA_SIG_SIMULATION)) {
+    if ((nmeaInfo->sig < NMEA_SIG_FIRST) || (nmeaInfo->sig > NMEA_SIG_LAST)) {
       nmeaInfo->sig = NMEA_SIG_INVALID;
     }
   }
@@ -180,7 +310,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   if (!nmea_INFO_is_present(nmeaInfo->present, FIX)) {
     nmeaInfo->fix = NMEA_FIX_BAD;
   } else {
-    if ((nmeaInfo->fix < NMEA_FIX_BAD) || (nmeaInfo->fix > NMEA_FIX_3D)) {
+    if ((nmeaInfo->fix < NMEA_FIX_FIRST) || (nmeaInfo->fix > NMEA_FIX_LAST)) {
       nmeaInfo->fix = NMEA_FIX_BAD;
     }
   }
