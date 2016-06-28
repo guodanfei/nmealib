@@ -85,147 +85,91 @@ static void test_nmeaGPGSAParse(void) {
   r = nmeaGPGSAParse(s, strlen(s), NULL);
   validateParsePack(&pack, r, false, 0, 0, true);
 
+  packEmpty.fix = NMEA_FIX_BAD;
+
   /* invalid sentence / not enough fields */
 
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  /* all fields empty */
-//
-//  s = "$GPGSA,,,,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, true);
-//
-//  /* time */
-//
-//  s = "$GPGSA,invalid,,,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 0, true);
-//
-//  s = "$GPGSA,999999,,,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,104559.64,,,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, UTCTIME);
-//  CU_ASSERT_EQUAL(pack.time.hour, 10);
-//  CU_ASSERT_EQUAL(pack.time.min, 45);
-//  CU_ASSERT_EQUAL(pack.time.sec, 59);
-//  CU_ASSERT_EQUAL(pack.time.hsec, 64);
-//
-//  /* lat */
-//
-//  s = "$GPGSA,,1,,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,1,!,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,-1242.55,s,,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, LAT);
-//  CU_ASSERT_EQUAL(pack.latitude, 1242.55);
-//  CU_ASSERT_EQUAL(pack.ns, 'S');
-//
-//  /* lon */
-//
-//  s = "$GPGSA,,,,1,,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,1,!,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,-1242.55,e,,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, LON);
-//  CU_ASSERT_EQUAL(pack.longitude, 1242.55);
-//  CU_ASSERT_EQUAL(pack.ew, 'E');
-//
-//  /* sig */
-//
-//  s = "$GPGSA,,,,,,4242,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,,,2,,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, SIG);
-//  CU_ASSERT_EQUAL(pack.signal, 2);
-//
-//  /* satellites */
-//
-//  s = "$GPGSA,,,,,,,-8,,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, SATINVIEWCOUNT);
-//  CU_ASSERT_EQUAL(pack.satellites, 8);
-//
-//  /* hdop */
-//
-//  s = "$GPGSA,,,,,,,,-12.128,,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, HDOP);
-//  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 12.128, DBL_EPSILON);
-//
-//  /* elv */
-//
-//  s = "$GPGSA,,,,,,,,,1,,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,,,,,,1,!,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,,,,,,-42,m,,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, ELV);
-//  CU_ASSERT_DOUBLE_EQUAL(pack.elv, -42, DBL_EPSILON);
-//  CU_ASSERT_EQUAL(pack.elvUnit, 'M');
-//
-//  /* diff */
-//
-//  s = "$GPGSA,,,,,,,,,,,1,,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,,,,,,,,1,!,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, false, 1, 1, true);
-//
-//  s = "$GPGSA,,,,,,,,,,,-42,m,,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, HEIGHT);
-//  CU_ASSERT_DOUBLE_EQUAL(pack.diff, -42, DBL_EPSILON);
-//  CU_ASSERT_EQUAL(pack.diffUnit, 'M');
-//
-//  /* dgpsAge */
-//
-//  s = "$GPGSA,,,,,,,,,,,,,-1.250,*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, DGPSAGE);
-//  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1.250, DBL_EPSILON);
-//
-//  /* dgpsSid */
-//
-//  s = "$GPGSA,,,,,,,,,,,,,,-42*";
-//  r = nmeaGPGSAParse(s, strlen(s), &pack);
-//  validateParsePack(&pack, r, true, 1, 0, false);
-//  CU_ASSERT_EQUAL(pack.present, DGPSSID);
-//  CU_ASSERT_EQUAL(pack.dgpsSid, 42);
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, false, 1, 1, true);
+
+  /* all fields empty */
+
+  s = "$GPGSA,,,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, true);
+
+  /* sig */
+
+  s = "$GPGSA,!,,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, false, 1, 1, true);
+
+  s = "$GPGSA,a,,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SIG);
+  CU_ASSERT_EQUAL(pack.sig, 'A');
+
+  s = "$GPGSA,m,,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SIG);
+  CU_ASSERT_EQUAL(pack.sig, 'M');
+
+  /* fix */
+
+  s = "$GPGSA,,42,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, false, 1, 1, true);
+
+  s = "$GPGSA,,3,,,,,,,,,,,,,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, FIX);
+  CU_ASSERT_EQUAL(pack.fix, NMEA_FIX_3D);
+
+  /* satPrn */
+
+  s = "$GPGSA,,,12,11,10,5,6,7,8,9,4,3,2,1,,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SATINUSE);
+  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
+  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
+  CU_ASSERT_EQUAL(pack.satPrn[2], 3);
+  CU_ASSERT_EQUAL(pack.satPrn[3], 4);
+  CU_ASSERT_EQUAL(pack.satPrn[4], 5);
+  CU_ASSERT_EQUAL(pack.satPrn[5], 6);
+  CU_ASSERT_EQUAL(pack.satPrn[6], 7);
+  CU_ASSERT_EQUAL(pack.satPrn[7], 8);
+  CU_ASSERT_EQUAL(pack.satPrn[8], 9);
+  CU_ASSERT_EQUAL(pack.satPrn[9], 10);
+  CU_ASSERT_EQUAL(pack.satPrn[10], 11);
+  CU_ASSERT_EQUAL(pack.satPrn[11], 12);
+
+  /* pdop */
+
+  s = "$GPGSA,,,,,,,,,,,,,,,-12.128,,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, PDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.pdop, 12.128, DBL_EPSILON);
+
+  /* hdop */
+
+  s = "$GPGSA,,,,,,,,,,,,,,,,-12.128,*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, HDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 12.128, DBL_EPSILON);
+
+  /* vdop */
+
+  s = "$GPGSA,,,,,,,,,,,,,,,,,-12.128*";
+  r = nmeaGPGSAParse(s, strlen(s), &pack);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, VDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.vdop, 12.128, DBL_EPSILON);
 }
 
 static void test_nmeaGPGSAToInfo(void) {

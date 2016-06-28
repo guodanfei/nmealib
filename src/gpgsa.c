@@ -116,7 +116,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
-    if (pack->satPrn[i] != 0) {
+    if (pack->satPrn[i]) {
       qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), comparePRN);
 
       nmea_INFO_set_present(&pack->present, SATINUSE);
