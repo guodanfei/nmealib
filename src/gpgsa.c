@@ -31,14 +31,14 @@
 #include <string.h>
 
 /**
- * Compare 2 integers, but put zeroes last (consider them to be 1000)
+ * Compare 2 satellite PRNs, but put zeroes last (consider them to be 1000)
  *
- * @param p1 The first integer
- * @param p2 The second integer
+ * @param p1 The first satellite PRN
+ * @param p2 The second satellite PRN
  * @return 0 when both are equal, a negative value when p1 < p2, a positive
  * value otherwise
  */
-static int cmp_int(const void *p1, const void *p2) {
+static int comparePRN(const void *p1, const void *p2) {
   int prn1 = *((const int *) p1);
   int prn2 = *((const int *) p2);
 
@@ -52,7 +52,7 @@ static int cmp_int(const void *p1, const void *p2) {
   return (prn1 - prn2);
 }
 
-bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
+bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   int fieldCount;
   int i;
 
@@ -126,7 +126,7 @@ bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   for (i = 0; i < GPGSA_SAT_COUNT; i++) {
     if (pack->sat_prn[i] != 0) {
-      qsort(pack->sat_prn, GPGSA_SAT_COUNT, sizeof(int), cmp_int);
+      qsort(pack->sat_prn, GPGSA_SAT_COUNT, sizeof(int), comparePRN);
 
       nmea_INFO_set_present(&pack->present, SATINUSE);
       break;
@@ -274,7 +274,7 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 }
 
-int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
+int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))

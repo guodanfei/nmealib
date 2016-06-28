@@ -102,7 +102,7 @@ typedef struct _nmeaGPGSA {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPGSAparse(const char *s, const size_t sz, nmeaGPGSA *pack);
+bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPGSA packet structure
@@ -128,7 +128,7 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack);
  * @param pack The nmeaGPGSA structure
  * @return The length of the generated sentence
  */
-int nmeaGPGSAgenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
+int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

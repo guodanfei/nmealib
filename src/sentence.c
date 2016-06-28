@@ -113,7 +113,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
 
     case GPGSA: {
       nmeaGPGSA gpgsa;
-      if (nmeaGPGSAparse(s, sz, &gpgsa)) {
+      if (nmeaGPGSAParse(s, sz, &gpgsa)) {
         nmeaGPGSAToInfo(&gpgsa, info);
         return true;
       }
@@ -174,7 +174,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
     } else if (msk & GPGSA) {
       nmeaGPGSA pack;
       nmeaGPGSAFromInfo(info, &pack);
-      chars += nmeaGPGSAgenerate(&s[chars], sz - chars, &pack);
+      chars += nmeaGPGSAGenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPGSA;
     } else if (msk & GPGSV) {
       int satCount = nmea_INFO_is_present(info->present, SATINVIEWCOUNT) ? info->satinfo.inview : 0;
