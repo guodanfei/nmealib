@@ -20,6 +20,7 @@
 
 extern int contextSuiteSetup(void);
 extern int gpggaSuiteSetup(void);
+extern int gpgsaSuiteSetup(void);
 
 int main(void) {
   if (CUE_SUCCESS != CU_initialize_registry()) {
@@ -29,6 +30,7 @@ int main(void) {
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
       || (gpggaSuiteSetup() != CUE_SUCCESS) //
+      || (gpgsaSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;
   }

@@ -30,15 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * Compare 2 satellite PRNs, but put zeroes last (consider them to be 1000)
- *
- * @param p1 The first satellite PRN
- * @param p2 The second satellite PRN
- * @return 0 when both are equal, a negative value when p1 < p2, a positive
- * value otherwise
- */
-static int comparePRN(const void *p1, const void *p2) {
+int comparePRN(const void *p1, const void *p2) {
   int prn1 = *((const int *) p1);
   int prn2 = *((const int *) p2);
 
@@ -56,12 +48,10 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   int fieldCount;
   int i;
 
-  if (!pack) {
+  if (!s //
+      || !sz //
+      || !pack) {
     return false;
-  }
-
-  if (!s) {
-    goto err;
   }
 
   nmeaTraceBuffer(s, sz);
@@ -104,7 +94,8 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   if (pack->sig) {
     pack->sig = toupper(pack->sig);
-    if (!((pack->sig == 'A') || (pack->sig == 'M'))) {
+    if (!((pack->sig == 'A') //
+        || (pack->sig == 'M'))) {
       nmeaError(NMEA_PREFIX_GPGSA " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
       goto err;
     }
@@ -159,13 +150,15 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   return true;
 
-  err: memset(pack, 0, sizeof(*pack));
+err:
+  memset(pack, 0, sizeof(*pack));
   pack->fix = NMEA_FIX_BAD;
   return false;
 }
 
 void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
@@ -222,7 +215,8 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
 }
 
 void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
@@ -283,7 +277,8 @@ int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
   size_t i;
   int chars = 0;
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !pack) {
     return 0;
   }
 
