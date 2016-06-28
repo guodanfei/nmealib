@@ -88,12 +88,12 @@ typedef struct _nmeaGPGGA {
   double   longitude;
   char     ew;
   int      signal;
-  int      satellites;
+  int      satellitesInView;
   double   hdop;
-  double   elv;
-  char     elvUnit;
-  double   diff;
-  char     diffUnit;
+  double   elevation;
+  char     elevationUnit;
+  double   height;
+  char     heightUnit;
   double   dgpsAge;
   int      dgpsSid;
 } nmeaGPGGA;

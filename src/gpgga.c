@@ -47,10 +47,10 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   pack->latitude = NAN;
   pack->longitude = NAN;
   pack->signal = INT_MAX;
-  pack->satellites = INT_MAX;
+  pack->satellitesInView = INT_MAX;
   pack->hdop = NAN;
-  pack->elv = NAN;
-  pack->diff = NAN;
+  pack->elevation = NAN;
+  pack->height = NAN;
   pack->dgpsAge = NAN;
   pack->dgpsSid = INT_MAX;
 
@@ -63,12 +63,12 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       &pack->longitude, //
       &pack->ew, //
       &pack->signal, //
-      &pack->satellites, //
+      &pack->satellitesInView, //
       &pack->hdop, //
-      &pack->elv, //
-      &pack->elvUnit, //
-      &pack->diff, //
-      &pack->diffUnit, //
+      &pack->elevation, //
+      &pack->elevationUnit, //
+      &pack->height, //
+      &pack->heightUnit, //
       &pack->dgpsAge, //
       &pack->dgpsSid);
 
@@ -125,11 +125,11 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->signal = NMEA_SIG_INVALID;
   }
 
-  if (pack->satellites != INT_MAX) {
-    pack->satellites = abs(pack->satellites);
+  if (pack->satellitesInView != INT_MAX) {
+    pack->satellitesInView = abs(pack->satellitesInView);
     nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
   } else {
-    pack->satellites = 0;
+    pack->satellitesInView = 0;
   }
 
   if (!isnan(pack->hdop)) {
@@ -139,30 +139,30 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
     pack->hdop = 0.0;
   }
 
-  if (!isnan(pack->elv)) {
-    pack->elvUnit = toupper(pack->elvUnit);
-    if (pack->elvUnit != 'M') {
-      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elvUnit, s);
+  if (!isnan(pack->elevation)) {
+    pack->elevationUnit = toupper(pack->elevationUnit);
+    if (pack->elevationUnit != 'M') {
+      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elevationUnit, s);
       goto err;
     }
 
     nmea_INFO_set_present(&pack->present, ELV);
   } else {
-    pack->elv = 0.0;
-    pack->elvUnit = '\0';
+    pack->elevation = 0.0;
+    pack->elevationUnit = '\0';
   }
 
-  if (!isnan(pack->diff)) {
-    pack->diffUnit = toupper(pack->diffUnit);
-    if (pack->diffUnit != 'M') {
-      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->diffUnit, s);
+  if (!isnan(pack->height)) {
+    pack->heightUnit = toupper(pack->heightUnit);
+    if (pack->heightUnit != 'M') {
+      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->heightUnit, s);
       goto err;
     }
 
     nmea_INFO_set_present(&pack->present, HEIGHT);
   } else {
-    pack->diff = 0.0;
-    pack->diffUnit = '\0';
+    pack->height = 0.0;
+    pack->heightUnit = '\0';
   }
 
   if (!isnan(pack->dgpsAge)) {
@@ -225,7 +225,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    info->satinfo.inview = pack->satellites;
+    info->satinfo.inview = pack->satellitesInView;
     nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   }
 
@@ -235,12 +235,12 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, ELV)) {
-    info->elv = pack->elv;
+    info->elv = pack->elevation;
     nmea_INFO_set_present(&info->present, ELV);
   }
 
   if (nmea_INFO_is_present(pack->present, HEIGHT)) {
-    info->height = pack->diff;
+    info->height = pack->height;
     nmea_INFO_set_present(&info->present, HEIGHT);
   }
 
@@ -295,7 +295,7 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, SATINVIEWCOUNT)) {
-    pack->satellites = info->satinfo.inview;
+    pack->satellitesInView = info->satinfo.inview;
     nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
   }
 
@@ -305,14 +305,14 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, ELV)) {
-    pack->elv = info->elv;
-    pack->elvUnit = 'M';
+    pack->elevation = info->elv;
+    pack->elevationUnit = 'M';
     nmea_INFO_set_present(&pack->present, ELV);
   }
 
   if (nmea_INFO_is_present(info->present, HEIGHT)) {
-    pack->diff = info->height;
-    pack->diffUnit = 'M';
+    pack->height = info->height;
+    pack->heightUnit = 'M';
     nmea_INFO_set_present(&pack->present, HEIGHT);
   }
 
@@ -381,7 +381,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    chars += snprintf(dst, available, ",%02d", pack->satellites);
+    chars += snprintf(dst, available, ",%02d", pack->satellitesInView);
   } else {
     chars += snprintf(dst, available, ",");
   }
@@ -393,9 +393,9 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, ELV)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->elv);
-    if (pack->elvUnit) {
-      chars += snprintf(dst, available, ",%c", pack->elvUnit);
+    chars += snprintf(dst, available, ",%03.1f", pack->elevation);
+    if (pack->elevationUnit) {
+      chars += snprintf(dst, available, ",%c", pack->elevationUnit);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -404,9 +404,9 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, HEIGHT)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->diff);
-    if (pack->diffUnit) {
-      chars += snprintf(dst, available, ",%c", pack->diffUnit);
+    chars += snprintf(dst, available, ",%03.1f", pack->height);
+    if (pack->heightUnit) {
+      chars += snprintf(dst, available, ",%c", pack->heightUnit);
     } else {
       chars += snprintf(dst, available, ",");
     }
