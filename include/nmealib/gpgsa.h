@@ -47,16 +47,20 @@ extern "C" {
  * $GPGSA,sig,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
  * </pre>
  *
- * | Field       | Description                                      | present  |
- * | :---------: | ------------------------------------------------ | :------: |
- * | $GPGSA      | NMEA prefix                                      | -        |
- * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG      |
- * | fix         | Fix, see NMEA_FIX_* defines                      | FIX      |
- * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE |
- * | pdop        | Dilution of position                             | PDOP     |
- * | hdop        | Horizontal dilution of position                  | HDOP     |
- * | vdop        | Vertical dilution of position                    | VDOP     |
- * | checksum    | NMEA checksum                                    | -        |
+ * | Field       | Description                                      | present      |
+ * | :---------: | ------------------------------------------------ | :----------: |
+ * | $GPGSA      | NMEA prefix                                      | -            |
+ * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG          |
+ * | fix         | Fix, see NMEA_FIX_* defines                      | FIX          |
+ * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE (1) |
+ * | pdop        | Dilution of position                             | PDOP         |
+ * | hdop        | Horizontal dilution of position                  | HDOP         |
+ * | vdop        | Vertical dilution of position                    | VDOP         |
+ * | checksum    | NMEA checksum                                    | -            |
+ *
+ * (1) Also sets SATINUSECOUNT when parsing and when converting from nmeaGPGSA
+ *     to nmeaINFO. SATINUSECOUNT is <b>not</b> used when converting from
+ *     nmeaINFO to nmeaGPGSA or when generating.<br/>
  *
  * This sentence provides details on the nature of the fix. It includes the
  * numbers of the satellites being used in the current solution and the DOP.

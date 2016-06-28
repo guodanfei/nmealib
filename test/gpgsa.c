@@ -376,7 +376,154 @@ static void test_nmeaGPGSAToInfo(void) {
 }
 
 static void test_nmeaGPGSAFromInfo(void) {
-  // FIXME
+  nmeaINFO info;
+  nmeaGPGSA packEmpty;
+  nmeaGPGSA pack;
+
+  memset(&info, 0, sizeof(info));
+  memset(&packEmpty, 0, sizeof(packEmpty));
+  memset(&pack, 0, sizeof(pack));
+
+  /* invalid inputs */
+
+  nmeaGPGSAFromInfo(NULL, &pack);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  nmeaGPGSAFromInfo(&info, NULL);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  packEmpty.fix = NMEA_FIX_BAD;
+
+  /* empty */
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  /* sig */
+
+  info.sig = NMEA_SIG_ESTIMATED;
+  nmea_INFO_set_present(&info.present, SIG);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SIG);
+  CU_ASSERT_EQUAL(pack.sig, 'A');
+  memset(&info, 0, sizeof(info));
+
+  info.sig = NMEA_SIG_MANUAL;
+  nmea_INFO_set_present(&info.present, SIG);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SIG);
+  CU_ASSERT_EQUAL(pack.sig, 'M');
+  memset(&info, 0, sizeof(info));
+
+  /* fix */
+
+  info.fix = NMEA_FIX_2D;
+  nmea_INFO_set_present(&info.present, FIX);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, FIX);
+  CU_ASSERT_EQUAL(pack.fix, NMEA_FIX_2D);
+  memset(&info, 0, sizeof(info));
+
+  /* satPrn */
+
+  info.satinfo.in_use[0] = 1;
+  info.satinfo.in_use[1] = 2;
+  info.satinfo.in_use[2] = 5;
+  info.satinfo.in_use[3] = 6;
+  info.satinfo.in_use[4] = 7;
+  nmea_INFO_set_present(&info.present, SATINUSE);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SATINUSE);
+  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
+  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
+  CU_ASSERT_EQUAL(pack.satPrn[2], 5);
+  CU_ASSERT_EQUAL(pack.satPrn[3], 6);
+  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
+  CU_ASSERT_EQUAL(pack.satPrn[5], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[6], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[7], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[8], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[9], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[10], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[11], 0);
+  memset(&info, 0, sizeof(info));
+
+  info.satinfo.in_use[0] = 1;
+  info.satinfo.in_use[1] = 2;
+  info.satinfo.in_use[2] = 5;
+  info.satinfo.in_use[3] = 6;
+  info.satinfo.in_use[4] = 7;
+  info.satinfo.in_use[5] = 9;
+  info.satinfo.in_use[6] = 10;
+  info.satinfo.in_use[7] = 11;
+  info.satinfo.in_use[8] = 14;
+  info.satinfo.in_use[9] = 15;
+  info.satinfo.in_use[10] = 16;
+  info.satinfo.in_use[11] = 17;
+  info.satinfo.in_use[12] = 18;
+  info.satinfo.in_use[13] = 19;
+  nmea_INFO_set_present(&info.present, SATINUSE);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, SATINUSE);
+  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
+  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
+  CU_ASSERT_EQUAL(pack.satPrn[2], 5);
+  CU_ASSERT_EQUAL(pack.satPrn[3], 6);
+  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
+  CU_ASSERT_EQUAL(pack.satPrn[5], 9);
+  CU_ASSERT_EQUAL(pack.satPrn[6], 10);
+  CU_ASSERT_EQUAL(pack.satPrn[7], 11);
+  CU_ASSERT_EQUAL(pack.satPrn[8], 14);
+  CU_ASSERT_EQUAL(pack.satPrn[9], 15);
+  CU_ASSERT_EQUAL(pack.satPrn[10], 16);
+  CU_ASSERT_EQUAL(pack.satPrn[11], 17);
+  memset(&info, 0, sizeof(info));
+
+  /* pdop */
+
+  info.PDOP = 1232.5523;
+  nmea_INFO_set_present(&info.present, PDOP);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, PDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.pdop, 1232.5523, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
+
+  /* hdop */
+
+  info.HDOP = 1232.5523;
+  nmea_INFO_set_present(&info.present, HDOP);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, HDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 1232.5523, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
+
+  /* vdop */
+
+  info.VDOP = 1232.5523;
+  nmea_INFO_set_present(&info.present, VDOP);
+
+  nmeaGPGSAFromInfo(&info, &pack);
+  validateInfoToPack(&pack, 0, 0, false);
+  CU_ASSERT_EQUAL(pack.present, VDOP);
+  CU_ASSERT_DOUBLE_EQUAL(pack.vdop, 1232.5523, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
 }
 
 static void test_nmeaGPGSAGenerate(void) {

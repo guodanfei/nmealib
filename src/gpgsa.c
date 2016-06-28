@@ -241,8 +241,8 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, SATINUSE)) {
-    unsigned int infoIndex = 0;
-    unsigned int packIndex = 0;
+    size_t infoIndex = 0;
+    size_t packIndex = 0;
 
     for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEA_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
       int prn = info->satinfo.in_use[infoIndex];
