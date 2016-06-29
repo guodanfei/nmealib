@@ -163,6 +163,20 @@ bool nmeaValidateSignal(int * sig, const char * prefix, const char * s);
  */
 bool nmeaValidateMode(char * c, const char * prefix, const char * s);
 
+/**
+ * Validate a satellite
+ *
+ * Expects:
+ * <pre>
+ *   prn      : either zero (other condiction are not check), or non-zero (othe
+ *              conditions are checked)
+ *   elevation: in the range [-180, 180]
+ *   azimuth  : in the range [   0, 359]
+ *   signal   : in the range [   0,  99]
+ * </pre>
+ */
+bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

@@ -210,3 +210,35 @@ bool nmeaValidateMode(char * c, const char * prefix, const char * s) {
 
   return true;
 }
+
+bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s) {
+  if (!sat) {
+    return false;
+  }
+
+  if (!sat->id) {
+    return true;
+  }
+
+  if ((sat->id <= 0)) {
+    nmeaError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->id, s);
+    return false;
+  }
+
+  if ((sat->elv < -180) || (sat->elv > 180)) {
+    nmeaError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elv, s);
+    return false;
+  }
+
+  if ((sat->azimuth < 0) || (sat->azimuth > 359)) {
+    nmeaError("%s parse error: invalid satellite azimuth %d in '%s'", prefix, sat->azimuth, s);
+    return false;
+  }
+
+  if ((sat->sig < 0) || (sat->sig > 99)) {
+    nmeaError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->sig, s);
+    return false;
+  }
+
+  return true;
+}
