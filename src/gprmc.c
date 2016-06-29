@@ -32,51 +32,53 @@
 #include <string.h>
 
 bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
-  int fieldCount;
+  unsigned int fieldCount;
   char timeBuf[16];
   char dateBuf[8];
+  bool v23Saved;
 
-  if (!pack) {
+  if (!s //
+      || !sz //
+      || !pack) {
     return false;
-  }
-
-  if (!s) {
-    goto err;
   }
 
   nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(timeBuf, 0, sizeof(timeBuf));
+  memset(dateBuf, 0, sizeof(dateBuf));
   memset(pack, 0, sizeof(*pack));
-  pack->lat = NAN;
-  pack->lon = NAN;
-  pack->speed = NAN;
+  pack->latitude = NAN;
+  pack->longitude = NAN;
+  pack->speedN = NAN;
   pack->track = NAN;
-  *dateBuf = '\0';
   pack->magvar = NAN;
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
       "$GPRMC,%16s,%c,%f,%c,%f,%c,%f,%f,%8s,%f,%c,%c*", //
       timeBuf, //
-      &pack->sig, //
-      &pack->lat, //
+      &pack->sigSelection, //
+      &pack->latitude, //
       &pack->ns, //
-      &pack->lon, //
+      &pack->longitude, //
       &pack->ew, //
-      &pack->speed, //
+      &pack->speedN, //
       &pack->track, //
       dateBuf, //
       &pack->magvar, //
       &pack->magvar_ew, //
-      &pack->sigMode);
+      &pack->sig);
 
   /* see that there are enough tokens */
-  if ((fieldCount != 11) && (fieldCount != 12)) {
+  if ((fieldCount != 11) //
+      && (fieldCount != 12)) {
     nmeaError(NMEA_PREFIX_GPRMC " parse error: need 11 or 12 tokens, got %d in '%s'", fieldCount, s);
     goto err;
   }
+
+  pack->v23 = (fieldCount == 12);
 
   /* determine which fields are present and validate them */
 
@@ -94,75 +96,69 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     pack->utc.hsec = 0;
   }
 
-  if (fieldCount == 11) {
+  pack->sigSelection = toupper(pack->sigSelection);
+  if (pack->sigSelection //
+      && !((pack->sigSelection == 'A') //
+          || (pack->sigSelection == 'V'))) {
+    nmeaError(NMEA_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sigSelection, s);
+    goto err;
+  }
+
+  if (!pack->v23) {
     /* no mode */
-    if (pack->sig) {
-      pack->sig = toupper(pack->sig);
-      if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmeaError(NMEA_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sig, s);
-        goto err;
-      }
-
-      pack->sigMode = '\0';
-
+    if (pack->sigSelection) {
+      pack->sig = '\0';
       nmea_INFO_set_present(&pack->present, SIG);
     } else {
+      pack->sigSelection = '\0';
       pack->sig = '\0';
-      pack->sigMode = '\0';
     }
   } else {
     /* with mode */
-    if (pack->sig && pack->sigMode) {
-      pack->sig = toupper(pack->sig);
-      if (!((pack->sig == 'A') || (pack->sig == 'V'))) {
-        nmeaError(NMEA_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sig, s);
-        goto err;
-      }
-
-      if (!nmeaValidateMode(&pack->sigMode, NMEA_PREFIX_GPRMC, s)) {
+    if (pack->sigSelection //
+        && pack->sig) {
+      if (!nmeaValidateMode(&pack->sig, NMEA_PREFIX_GPRMC, s)) {
         goto err;
       }
 
       nmea_INFO_set_present(&pack->present, SIG);
     } else {
+      pack->sigSelection = '\0';
       pack->sig = '\0';
-      pack->sigMode = '\0';
     }
   }
 
-  if (!isnan(pack->lat) && (pack->ns)) {
+  if (!isnan(pack->latitude)) {
     if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
-    pack->lat = fabs(pack->lat);
+    pack->latitude = fabs(pack->latitude);
     nmea_INFO_set_present(&pack->present, LAT);
   } else {
-    pack->lat = 0.0;
+    pack->latitude = 0.0;
     pack->ns = '\0';
   }
 
-  if (!isnan(pack->lon) && (pack->ew)) {
+  if (!isnan(pack->longitude)) {
     if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
-    pack->lon = fabs(pack->lon);
+    pack->longitude = fabs(pack->longitude);
     nmea_INFO_set_present(&pack->present, LON);
   } else {
-    pack->lon = 0.0;
+    pack->longitude = 0.0;
     pack->ew = '\0';
   }
 
-  if (!isnan(pack->speed)) {
-    pack->speed = fabs(pack->speed);
+  if (!isnan(pack->speedN)) {
     nmea_INFO_set_present(&pack->present, SPEED);
   } else {
-    pack->speed = 0.0;
+    pack->speedN = 0.0;
   }
 
   if (!isnan(pack->track)) {
-    pack->track = fabs(pack->track);
     nmea_INFO_set_present(&pack->present, TRACK);
   } else {
     pack->track = 0.0;
@@ -181,7 +177,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     pack->utc.day = 0;
   }
 
-  if (!isnan(pack->magvar) && (pack->magvar_ew)) {
+  if (!isnan(pack->magvar)) {
     if (!nmeaValidateNSEW(&pack->magvar_ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
@@ -195,12 +191,16 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   return true;
 
-  err: memset(pack, 0, sizeof(*pack));
+err:
+  v23Saved = pack->v23;
+  memset(pack, 0, sizeof(*pack));
+  pack->v23 = v23Saved;
   return false;
 }
 
 void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
@@ -217,35 +217,41 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, SIG)) {
-    if (pack->sig != 'A') {
-      info->sig = NMEA_SIG_INVALID;
-    } else if (pack->sigMode != '\0') {
-      /* with mode */
-      info->sig = nmea_INFO_mode_to_sig(pack->sigMode);
+    if (!pack->v23) {
+      /* no mode */
+      if ((pack->sigSelection == 'A') //
+          && (info->sig == NMEA_SIG_INVALID)) {
+        info->sig = NMEA_SIG_FIX;
+        nmea_INFO_set_present(&info->present, SIG);
+      }
     } else {
-      /* without mode */
-      info->sig = NMEA_SIG_FIX;
-    }
+      /* with mode */
 
-    nmea_INFO_set_present(&info->present, SIG);
+      if (pack->sigSelection != 'A') {
+        info->sig = NMEA_SIG_INVALID;
+      } else {
+        info->sig = nmea_INFO_mode_to_sig(pack->sig);
+      }
+      nmea_INFO_set_present(&info->present, SIG);
+    }
   }
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
     info->lat = ((pack->ns == 'N') ?
-        fabs(pack->lat) :
-        -fabs(pack->lat));
+        fabs(pack->latitude) :
+        -fabs(pack->latitude));
     nmea_INFO_set_present(&info->present, LAT);
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
     info->lon = ((pack->ew == 'E') ?
-        fabs(pack->lon) :
-        -fabs(pack->lon));
+        fabs(pack->longitude) :
+        -fabs(pack->longitude));
     nmea_INFO_set_present(&info->present, LON);
   }
 
   if (nmea_INFO_is_present(pack->present, SPEED)) {
-    info->speed = pack->speed * NMEA_TUD_KNOTS;
+    info->speed = pack->speedN * NMEA_TUD_KNOTS;
     nmea_INFO_set_present(&info->present, SPEED);
   }
 
@@ -270,11 +276,14 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
 }
 
 void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
   memset(pack, 0, sizeof(*pack));
+
+  pack->v23 = true;
 
   if (nmea_INFO_is_present(info->present, UTCTIME)) {
     pack->utc.hour = info->utc.hour;
@@ -285,15 +294,15 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, SIG)) {
-    pack->sig = ((info->sig != NMEA_SIG_INVALID) ?
+    pack->sigSelection = ((info->sig != NMEA_SIG_INVALID) ?
         'A' :
         'V');
-    pack->sigMode = nmea_INFO_sig_to_mode(info->sig);
+    pack->sig = nmea_INFO_sig_to_mode(info->sig);
     nmea_INFO_set_present(&pack->present, SIG);
   }
 
   if (nmea_INFO_is_present(info->present, LAT)) {
-    pack->lat = fabs(info->lat);
+    pack->latitude = fabs(info->lat);
     pack->ns = ((info->lat >= 0.0) ?
         'N' :
         'S');
@@ -301,7 +310,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, LON)) {
-    pack->lon = fabs(info->lon);
+    pack->longitude = fabs(info->lon);
     pack->ew = ((info->lon >= 0.0) ?
         'E' :
         'W');
@@ -309,7 +318,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 
   if (nmea_INFO_is_present(info->present, SPEED)) {
-    pack->speed = info->speed / NMEA_TUD_KNOTS;
+    pack->speedN = info->speed / NMEA_TUD_KNOTS;
     nmea_INFO_set_present(&pack->present, SPEED);
   }
 
@@ -327,7 +336,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
 
   if (nmea_INFO_is_present(info->present, MAGVAR)) {
     pack->magvar = fabs(info->magvar);
-    pack->ew = ((info->magvar >= 0.0) ?
+    pack->magvar_ew = ((info->magvar >= 0.0) ?
         'E' :
         'W');
     nmea_INFO_set_present(&pack->present, MAGVAR);
@@ -341,7 +350,8 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
 
   int chars = 0;
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !pack) {
     return 0;
   }
 
@@ -358,26 +368,36 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
-    chars += snprintf(dst, available, ",%c", pack->sig);
+  if (nmea_INFO_is_present(pack->present, SIG) && pack->sigSelection) {
+    chars += snprintf(dst, available, ",%c", pack->sigSelection);
   } else {
-    chars += snprintf(dst, available, ",V");
+    chars += snprintf(dst, available, ",");
   }
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
-    chars += snprintf(dst, available, ",%09.4f,%c", pack->lat, pack->ns);
+    chars += snprintf(dst, available, ",%09.4f", pack->latitude);
+    if (pack->ns) {
+      chars += snprintf(dst, available, ",%c", pack->ns);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
-    chars += snprintf(dst, available, ",%010.4f,%c", pack->lon, pack->ew);
+    chars += snprintf(dst, available, ",%010.4f", pack->longitude);
+    if (pack->ew) {
+      chars += snprintf(dst, available, ",%c", pack->ew);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmea_INFO_is_present(pack->present, SPEED)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->speed);
+    chars += snprintf(dst, available, ",%03.1f", pack->speedN);
   } else {
     chars += snprintf(dst, available, ",");
   }
@@ -389,25 +409,35 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, UTCDATE)) {
+    int year = (pack->utc.year >= 100) //
+                ? (pack->utc.year - 100) //
+                : pack->utc.year;
     chars += snprintf(dst, available, //
         ",%02d%02d%02d", //
         pack->utc.day, //
         pack->utc.mon + 1, //
-        pack->utc.year - 100);
+        year);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
   if (nmea_INFO_is_present(pack->present, MAGVAR)) {
-    chars += snprintf(dst, available, ",%03.1f,%c", pack->magvar, pack->magvar_ew);
+    chars += snprintf(dst, available, ",%03.1f", pack->magvar);
+    if (pack->magvar_ew) {
+      chars += snprintf(dst, available, ",%c", pack->magvar_ew);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
-    chars += snprintf(dst, available, ",%c", pack->sigMode);
-  } else {
-    chars += snprintf(dst, available, ",");
+  if (pack->v23) {
+    if (nmea_INFO_is_present(pack->present, SIG) && pack->sig) {
+      chars += snprintf(dst, available, ",%c", pack->sig);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   }
 
   /* checksum */

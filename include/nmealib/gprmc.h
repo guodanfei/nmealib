@@ -37,14 +37,14 @@ extern "C" {
  * GPRMC -packet information structure (Recommended Minimum sentence C)
  *
  * <pre>
- * $GPRMC,time,selection,lat,ns,lon,ew,speed,track,date,magvar,magvar ew,mode*checksum
+ * $GPRMC,time,sig,lat,ns,lon,ew,speed,track,date,magvar,magvar ew,mode*checksum
  * </pre>
  *
  * | Field       | Description                                    | present    |
  * | :---------: | ---------------------------------------------- | :--------: |
  * | $GPRMC      | NMEA prefix                                    | -          |
  * | time        | Fix time, in the format HHMMSS.hh (UTC)        | UTCTIME    |
- * | selection   | Selection of 2D or 3D fix (A = auto, V = void) | SIG        |
+ * | sig         | Selection of 2D or 3D fix (A = auto, V = void) | SIG        |
  * | lat         | Latitude, in NDEG (DDMM.SSS)                   | LAT (1)    |
  * | ns          | North or south ('N' or 'S')                    | LAT (1)    |
  * | lon         | Longitude, in NDEG (DDDMM.SSS)                 | LON (2)    |
@@ -71,18 +71,19 @@ extern "C" {
  * </pre>
  */
 typedef struct _nmeaGPRMC {
+  bool     v23;
   uint32_t present;
   nmeaTIME utc;
-  char     sig;
-  double   lat;
+  char     sigSelection;
+  double   latitude;
   char     ns;
-  double   lon;
+  double   longitude;
   char     ew;
-  double   speed;
+  double   speedN;
   double   track;
   double   magvar;
   char     magvar_ew;
-  char     sigMode;
+  char     sig;
 } nmeaGPRMC;
 
 /**

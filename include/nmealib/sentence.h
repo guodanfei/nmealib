@@ -28,8 +28,8 @@
  * | smask                | x     | x     | x     | x     | x     |
  * | utc (date)           |       |       |       | x     |       |
  * | utc (time)           | x     |       |       | x     |       |
- * | sig                  | x     | x (1) |       | x (2) |       |
- * | fix                  |       | x     |       | x (2) |       |
+ * | sig                  | x     | x (1) |       | x (3) |       |
+ * | fix                  |       | x     |       |       |       |
  * | PDOP                 |       | x     |       |       |       |
  * | HDOP                 | x     | x     |       |       |       |
  * | VDOP                 |       | x     |       |       |       |
@@ -50,6 +50,9 @@
  *
  * (1) Only sets the nmeaINFO sig when it is not set yet.
  * (2) Not present in the sentence but the library sets it up.
+ * (3) If the sentence is a v2.3+ sentence then the nmeaINFO sig is set
+ *     normally, otherwise the nmeaINFO sig is only set when it is not
+ *     set yet.
  */
 
 #ifndef __NMEALIB_SENTENCE_H__
