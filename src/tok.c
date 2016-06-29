@@ -260,7 +260,11 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
         tokens++;
 
         arg = NULL;
-        width = (size_t) (sCharacter - sTokenStart);
+        if (*sTokenStart == '*') {
+          width = 0;
+        } else {
+          width = (size_t) (sCharacter - sTokenStart);
+        }
         if (width > widthMax) {
           width = widthMax;
         }
