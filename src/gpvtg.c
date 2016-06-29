@@ -208,7 +208,8 @@ int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
 
   int chars = 0;
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !pack) {
     return 0;
   }
 
@@ -227,7 +228,16 @@ int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, SPEED)) {
-    chars += snprintf(dst, available, ",%03.1f,%c,%03.1f,%c", pack->spn, pack->spn_n, pack->spk, pack->spk_k);
+    if (pack->spn_n) {
+      chars += snprintf(dst, available, ",%03.1f,N", pack->spn);
+    } else {
+      chars += snprintf(dst, available, ",,");
+    }
+    if (pack->spk_k) {
+      chars += snprintf(dst, available, ",%03.1f,K", pack->spk);
+    } else {
+      chars += snprintf(dst, available, ",,");
+    }
   } else {
     chars += snprintf(dst, available, ",,,,");
   }

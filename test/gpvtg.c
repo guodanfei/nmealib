@@ -319,15 +319,110 @@ static void test_nmeaGPVTGFromInfo(void) {
 }
 
 static void test_nmeaGPVTGGenerate(void) {
-  // FIXME
+  char buf[256];
+  nmeaGPVTG pack;
+  int r;
+
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* invalid inputs */
+
+  r = nmeaGPVTGGenerate(NULL, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), NULL);
+  CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty with 0 length */
+
+  r = nmeaGPVTGGenerate(buf, 0, &pack);
+  CU_ASSERT_EQUAL(r, 19);
+  CU_ASSERT_EQUAL(*buf, '\0');
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  /* empty */
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 19);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,,*52\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
 
   /* track */
 
+  pack.track = 42.6;
+  pack.track_t = 'T';
+  nmea_INFO_set_present(&pack.present, TRACK);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 24);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,42.6,T,,,,,,*18\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
   /* mtrack */
+
+  pack.mtrack = 42.6;
+  pack.mtrack_m = 'M';
+  nmea_INFO_set_present(&pack.present, MTRACK);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 24);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,42.6,M,,,,*01\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
 
   /* speed knots */
 
+  pack.spn = 42.6;
+  pack.spn_n = '\0';
+  nmea_INFO_set_present(&pack.present, SPEED);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 19);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,,*52\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.spn = 42.6;
+  pack.spn_n = 'N';
+  nmea_INFO_set_present(&pack.present, SPEED);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 24);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,42.6,N,,*02\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
   /* speed kph */
+
+  pack.spk = 42.6;
+  pack.spk_k = '\0';
+  nmea_INFO_set_present(&pack.present, SPEED);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 19);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,,*52\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.spk = 42.6;
+  pack.spk_k = 'K';
+  nmea_INFO_set_present(&pack.present, SPEED);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 24);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,42.6,K*07\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
 }
 
 /*
