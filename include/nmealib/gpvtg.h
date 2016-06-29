@@ -37,7 +37,7 @@ extern "C" {
  * GPVTG packet information structure (Track made good and ground speed)
  *
  * <pre>
- * $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*checksum
+ * $GPVTG,track,T,mtrack,M,speed,N,speedK,K*checksum
  * </pre>
  *
  * | Field       | Description                           | present   |
@@ -55,8 +55,8 @@ extern "C" {
  *
  * (1) These fields are both required for a valid track<br/>
  * (2) These fields are both required for a valid magnetic track<br/>
- * (3) These fields are both required for a valid speed<br/>
- * (4) These fields are both required for a valid speed<br/>
+ * (3) These fields are both required for a valid speed in knots<br/>
+ * (4) These fields are both required for a valid speed in kph<br/>
  *
  * Example:
  *
@@ -84,7 +84,7 @@ typedef struct _nmeaGPVTG {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPVTGparse(const char *s, const size_t sz, nmeaGPVTG *pack);
+bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPVTG packet structure
@@ -110,7 +110,7 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack);
  * @param pack The nmeaGPVTG structure
  * @return The length of the generated sentence
  */
-int nmeaGPVTGgenerate(char *s, const size_t sz, const nmeaGPVTG *pack);
+int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

@@ -143,7 +143,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
 
     case GPVTG: {
       nmeaGPVTG gpvtg;
-      if (nmeaGPVTGparse(s, sz, &gpvtg)) {
+      if (nmeaGPVTGParse(s, sz, &gpvtg)) {
         nmeaGPVTGToInfo(&gpvtg, info);
         return true;
       }
@@ -195,7 +195,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
     } else if (msk & GPVTG) {
       nmeaGPVTG pack;
       nmeaGPVTGFromInfo(info, &pack);
-      chars += nmeaGPVTGgenerate(&s[chars], sz - chars, &pack);
+      chars += nmeaGPVTGGenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPVTG;
     } else {
       /* no more known sentences to process */
