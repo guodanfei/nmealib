@@ -37,7 +37,7 @@ extern "C" {
  * GPVTG packet information structure (Track made good and ground speed)
  *
  * <pre>
- * $GPVTG,track,T,mtrack,M,speed,N,speedK,K*checksum
+ * $GPVTG,track,T,mtrack,M,speedN,N,speedK,K*checksum
  * </pre>
  *
  * | Field       | Description                           | present   |
@@ -47,7 +47,7 @@ extern "C" {
  * | T           | Track indicator (True north)          | TRACK (1) |
  * | mtrack      | Magnetic track made good              | TRACK (2) |
  * | M           | Magnetic track indicator (Made good)  | TRACK (2) |
- * | speed       | Ground speed, in knots                | SPEED (3) |
+ * | speedN      | Ground speed, in knots                | SPEED (3) |
  * | N           | Ground speed unit (kNots)             | SPEED (3) |
  * | speedk      | Ground speed, in kph                  | SPEED (4) |
  * | K           | Ground speed unit (Kph)               | SPEED (4) |
