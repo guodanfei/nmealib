@@ -17,6 +17,8 @@
 
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
+#include <nmealib/util.h>
+#include <stdlib.h>
 
 extern int contextSuiteSetup(void);
 extern int gpggaSuiteSetup(void);
@@ -24,6 +26,8 @@ extern int gpgsaSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
 
 int main(void) {
+  unsigned int failedCount = 0;
+
   if (CUE_SUCCESS != CU_initialize_registry()) {
     goto out;
   }
@@ -42,9 +46,15 @@ int main(void) {
 
   CU_basic_run_tests();
 
+  failedCount = CU_get_number_of_failures();
+
 cleanup:
   CU_cleanup_registry();
 
 out:
+  if (failedCount) {
+    exit(MIN(126,failedCount));
+  }
+
   return CU_get_error();
 }
