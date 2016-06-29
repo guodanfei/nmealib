@@ -744,7 +744,6 @@ static void test_nmeaGPGGAGenerate(void) {
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
-
   /* signal */
 
   pack.signal = NMEA_SIG_MANUAL;
