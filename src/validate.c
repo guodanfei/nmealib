@@ -195,8 +195,8 @@ bool nmeaValidateMode(char * c, const char * prefix, const char * s) {
   *c = toupper(*c);
 
   if (!( //
-  (*c == 'N') //
-  || (*c == 'A') //
+      (*c == 'N') //
+      || (*c == 'A') //
       || (*c == 'D') //
       || (*c == 'P') //
       || (*c == 'R') //
