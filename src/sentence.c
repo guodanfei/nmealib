@@ -123,7 +123,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
 
     case GPGSV: {
       nmeaGPGSV gpgsv;
-      if (nmeaGPGSVparse(s, sz, &gpgsv)) {
+      if (nmeaGPGSVParse(s, sz, &gpgsv)) {
         nmeaGPGSVToInfo(&gpgsv, info);
         return true;
       }
@@ -184,7 +184,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
 
       for (sentence = 0; (sentence < sentences) && ((sz - chars) > 0); sentence++) {
         nmeaGPGSVFromInfo(info, &pack, sentence);
-        chars += nmeaGPGSVgenerate(&s[chars], sz - chars, &pack);
+        chars += nmeaGPGSVGenerate(&s[chars], sz - chars, &pack);
       }
       msk &= ~GPGSV;
     } else if (msk & GPRMC) {

@@ -122,7 +122,7 @@ unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites);
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack);
+bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPGSV packet structure
@@ -149,7 +149,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
  * @param pack The nmeaGPGSV structure
  * @return The length of the generated sentence
  */
-int nmeaGPGSVgenerate(char *s, const size_t sz, const nmeaGPGSV *pack);
+int nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack);
 
 #ifdef  __cplusplus
 }

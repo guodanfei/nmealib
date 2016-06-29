@@ -44,7 +44,7 @@ unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites) {
   return pack_count;
 }
 
-bool nmeaGPGSVparse(const char *s, const size_t sz, nmeaGPGSV *pack) {
+bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
   int fieldCount;
   unsigned int i;
   int fieldCountMinimum;
@@ -254,7 +254,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 }
 
-int nmeaGPGSVgenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
+int nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
