@@ -121,19 +121,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
       /* no satellite PRN */
       memset(sat, 0, sizeof(*sat));
     } else {
-      /* satellite PRN */
-
-      if ((sat->id <= 0)) {
-        nmeaError(NMEA_PREFIX_GPGSV " parse error: invalid satellite PRN %d in '%s'", sat->id, s);
-        memset(sat, 0, sizeof(*sat));
-      } else if ((sat->elv < -180) || (sat->elv > 180)) {
-        nmeaError(NMEA_PREFIX_GPGSV " parse error: invalid satellite elevation %d in '%s'", sat->elv, s);
-        memset(sat, 0, sizeof(*sat));
-      } else if ((sat->azimuth < 0) || (sat->azimuth >= 360)) {
-        nmeaError(NMEA_PREFIX_GPGSV " parse error: invalid satellite azimuth %d in '%s'", sat->azimuth, s);
-        memset(sat, 0, sizeof(*sat));
-      } else if ((sat->sig < 0) || (sat->sig > 99)) {
-        nmeaError(NMEA_PREFIX_GPGSV " parse error: invalid satellite signal %d in '%s'", sat->sig, s);
+      if (!nmeaValidateSatellite(sat, NMEA_PREFIX_GPGSV, s)) {
         memset(sat, 0, sizeof(*sat));
       }
     }
