@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack) {
+bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   int fieldCount;
   char timeBuf[16];
   char dateBuf[8];
@@ -334,7 +334,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack) {
   }
 }
 
-int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
+int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))

@@ -93,7 +93,7 @@ typedef struct _nmeaGPRMC {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPRMCparse(const char *s, const size_t sz, nmeaGPRMC *pack);
+bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPRMC packet structure
@@ -119,7 +119,7 @@ void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
  * @param pack The nmeaGPRMC structure
  * @return The length of the generated sentence
  */
-int nmeaGPRMCgenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
+int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }

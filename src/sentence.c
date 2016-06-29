@@ -133,7 +133,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
 
     case GPRMC: {
       nmeaGPRMC gprmc;
-      if (nmeaGPRMCparse(s, sz, &gprmc)) {
+      if (nmeaGPRMCParse(s, sz, &gprmc)) {
         nmeaGPRMCToInfo(&gprmc, info);
         return true;
       }
@@ -190,7 +190,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
     } else if (msk & GPRMC) {
       nmeaGPRMC pack;
       nmeaGPRMCFromInfo(info, &pack);
-      chars += nmeaGPRMCgenerate(&s[chars], sz - chars, &pack);
+      chars += nmeaGPRMCGenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPRMC;
     } else if (msk & GPVTG) {
       nmeaGPVTG pack;
