@@ -203,7 +203,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
   }
 }
 
-void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_idx) {
+void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t pack_idx) {
   if (!pack || !info) {
     return;
   }
@@ -243,7 +243,7 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 }
 
-int nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
+size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
@@ -294,5 +294,5 @@ int nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
   /* checksum */
   chars += nmeaAppendChecksum(s, sz, chars);
 
-  return chars;
+  return (size_t) chars;
 }
