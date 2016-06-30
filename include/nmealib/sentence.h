@@ -126,7 +126,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
  * @param mask The bit-mask of sentences to generate
  * @return The total length of the generated sentences
  */
-int nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask);
+size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask);
 
 #ifdef  __cplusplus
 }

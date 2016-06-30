@@ -339,7 +339,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack) {
   }
 }
 
-int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
+size_t nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
@@ -436,5 +436,5 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
   /* checksum */
   chars += nmeaAppendChecksum(s, sz, chars);
 
-  return chars;
+  return (size_t) chars;
 }

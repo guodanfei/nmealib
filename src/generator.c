@@ -138,8 +138,8 @@ void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen) {
  * @param generate_mask the smask of sentences to generate
  * @return the total length of the generated sentences
  */
-int nmea_generate_from(char *s, int len, NmeaInfo *info, nmeaGENERATOR *gen, int generate_mask) {
-  int retval;
+size_t nmea_generate_from(char *s, int len, NmeaInfo *info, nmeaGENERATOR *gen, int generate_mask) {
+  size_t retval;
 
   if ((retval = nmea_gen_loop(gen, info)))
     retval = nmeaSentenceFromInfo(s, len, info, generate_mask);

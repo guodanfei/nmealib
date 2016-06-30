@@ -132,7 +132,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack);
  * @param pack The nmeaGPGSA structure
  * @return The length of the generated sentence
  */
-int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
+size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

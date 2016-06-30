@@ -120,7 +120,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack);
  * @param pack The nmeaGPRMC structure
  * @return The length of the generated sentence
  */
-int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
+size_t nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }

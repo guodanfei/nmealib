@@ -142,8 +142,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   expectedLineNr = 1;
 
   while ((inputLineCount = getline(&inputLine, &inputLineLength, inputFile)) != -1) {
-    int outputLineResult;
-    int lineCount;
+    size_t outputLineResult;
+    size_t lineCount;
 
     inputLineNr++;
 
@@ -162,7 +162,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
       // read expected
       expectedbuffer[0] = '\0';
       expectedbufferlength = 0;
-      for (expectedLineIndex = 0; expectedLineIndex < lineCount; expectedLineIndex++) {
+      for (expectedLineIndex = 0; expectedLineIndex < (ssize_t) lineCount; expectedLineIndex++) {
         if ((expectedLineCount = getline(&expectedLine, &expectedLineLength, expectedFile)) != -1) {
           linesInExpected++;
           strncpy(&expectedbuffer[expectedbufferlength], expectedLine, expectedLineCount);

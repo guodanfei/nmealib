@@ -157,9 +157,9 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
   }
 }
 
-int nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask) {
-  int chars = 0;
-  int msk = mask;
+size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask) {
+  size_t chars = 0;
+  enum NmeaSentence msk = mask;
 
   if (!s || !sz || !info || !mask) {
     return 0;

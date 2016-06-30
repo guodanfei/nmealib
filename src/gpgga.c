@@ -321,7 +321,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack) {
   }
 }
 
-int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
+size_t nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
@@ -423,5 +423,5 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   /* checksum */
   chars += nmeaAppendChecksum(s, sz, chars);
 
-  return chars;
+  return (size_t) chars;
 }

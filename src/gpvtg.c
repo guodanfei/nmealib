@@ -197,7 +197,7 @@ void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack) {
   }
 }
 
-int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
+size_t nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
@@ -241,5 +241,5 @@ int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
   /* checksum */
   chars += nmeaAppendChecksum(s, sz, chars);
 
-  return chars;
+  return (size_t) chars;
 }
