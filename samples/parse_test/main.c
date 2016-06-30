@@ -38,7 +38,7 @@ static int printInfo(char * inputLine, char * outputLine, int outputLineResult, 
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig,
       info->fix);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %04d%02d%02d %02d:%02d:%02d.%02d\n",
+  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %04u%02u%02u %02u:%02u:%02u.%02u\n",
       "utc", info->utc.year, info->utc.mon, info->utc.day, info->utc.hour, info->utc.min, info->utc.sec,
       info->utc.hsec);
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %08x\n", "smask", info->smask);

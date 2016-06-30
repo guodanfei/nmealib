@@ -102,15 +102,11 @@ bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s) {
   }
 
   if (!( //
-      (t->hour >= 0) //
-      && (t->hour <= 23) //
-      && (t->min >= 0) //
+      (t->hour <= 23) //
       && (t->min <= 59) //
-      && (t->sec >= 0) //
       && (t->sec <= 60) //
-      && (t->hsec >= 0) //
       && (t->hsec <= 99))) {
-    nmeaError("%s parse error: invalid time '%02d:%02d:%02d.%03d' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
+    nmeaError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
         t->sec, t->hsec * 10, s);
     return false;
   }
@@ -130,7 +126,7 @@ bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s) {
       && (t->mon <= 12) //
       && (t->day >= 1) //
       && (t->day <= 31))) {
-    nmeaError("%s parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
+    nmeaError("%s parse error: invalid date '%02u-%02u-%04u' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
         t->year, s);
     return false;
   }

@@ -227,13 +227,13 @@ void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
   gettimeofday(&tp, NULL);
   gmtime_r(&tp.tv_sec, &tt);
 
-  utc->year = tt.tm_year + 1900;
-  utc->mon = tt.tm_mon + 1;
-  utc->day = tt.tm_mday;
-  utc->hour = tt.tm_hour;
-  utc->min = tt.tm_min;
-  utc->sec = tt.tm_sec;
-  utc->hsec = (tp.tv_usec / 10000);
+  utc->year = (unsigned int) tt.tm_year + 1900;
+  utc->mon = (unsigned int) tt.tm_mon + 1;
+  utc->day = (unsigned int) tt.tm_mday;
+  utc->hour = (unsigned int) tt.tm_hour;
+  utc->min = (unsigned int) tt.tm_min;
+  utc->sec = (unsigned int) tt.tm_sec;
+  utc->hsec = (unsigned int) (tp.tv_usec / 10000);
   if (present) {
     nmea_INFO_set_present(present, UTCDATE | UTCTIME);
   }

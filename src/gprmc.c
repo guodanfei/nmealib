@@ -355,7 +355,7 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
     chars += snprintf(dst, available, //
-        ",%02d%02d%02d.%02d", //
+        ",%02u%02u%02u.%02u", //
         pack->utc.hour, //
         pack->utc.min, //
         pack->utc.sec, //
@@ -406,7 +406,7 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
 
   if (nmea_INFO_is_present(pack->present, UTCDATE)) {
     chars += snprintf(dst, available, //
-        ",%02d%02d%02d", //
+        ",%02u%02u%02u", //
         pack->utc.day, //
         pack->utc.mon, //
         pack->utc.year % 100);

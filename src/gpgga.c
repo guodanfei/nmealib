@@ -337,7 +337,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
 
   if (nmea_INFO_is_present(pack->present, UTCTIME)) {
     chars += snprintf(dst, available, //
-        ",%02d%02d%02d.%02d", //
+        ",%02u%02u%02u.%02u", //
         pack->time.hour, //
         pack->time.min, //
         pack->time.sec, //

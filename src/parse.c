@@ -32,11 +32,11 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
 
   if (sz == 6) { // HHMMSS
     t->hsec = 0;
-    return (3 == nmeaScanf(time, sz, "%2d%2d%2d", &t->hour, &t->min, &t->sec));
+    return (3 == nmeaScanf(time, sz, "%2u%2u%2u", &t->hour, &t->min, &t->sec));
   }
 
   if (sz == 8) { // HHMMSS.t
-    if (4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec)) {
+    if (4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec)) {
       t->hsec *= 10;
       return true;
     }
@@ -44,11 +44,11 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
   }
 
   if (sz == 9) { // HHMMSS.hh
-    return (4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec));
+    return (4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec));
   }
 
   if (sz == 10) { // HHMMSS.mmm
-    if ((4 == nmeaScanf(time, sz, "%2d%2d%2d.%d", &t->hour, &t->min, &t->sec, &t->hsec))) {
+    if ((4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec))) {
       t->hsec = (t->hsec + 5) / 10;
       return true;
     }
@@ -71,7 +71,7 @@ bool nmeaTIMEparseDate(const char *date, nmeaTIME *t) {
     return false;
   }
 
-  if (3 != nmeaScanf(date, sz, "%2d%2d%2d", &t->day, &t->mon, &t->year)) {
+  if (3 != nmeaScanf(date, sz, "%2u%2u%2u", &t->day, &t->mon, &t->year)) {
     return false;
   }
 

@@ -105,13 +105,13 @@ const char * nmea_INFO_fix_to_string(int fix);
  * Date and time data
  */
 typedef struct _nmeaTIME {
-  int year; /**< Years                    - [1900, 2089]                 */
-  int mon;  /**< Months                   - [   1,   12]                 */
-  int day;  /**< Day of the month         - [   1,   31]                 */
-  int hour; /**< Hours since midnight     - [   0,   23]                 */
-  int min;  /**< Minutes after the hour   - [   0,   59]                 */
-  int sec;  /**< Seconds after the minute - [   0,   60] (1 leap second) */
-  int hsec; /**< Hundredth part of second - [   0,   99]                 */
+  unsigned int year; /**< Years                    - [1900, 2089]                 */
+  unsigned int mon;  /**< Months                   - [   1,   12]                 */
+  unsigned int day;  /**< Day of the month         - [   1,   31]                 */
+  unsigned int hour; /**< Hours since midnight     - [   0,   23]                 */
+  unsigned int min;  /**< Minutes after the hour   - [   0,   59]                 */
+  unsigned int sec;  /**< Seconds after the minute - [   0,   60] (1 leap second) */
+  unsigned int hsec; /**< Hundredth part of second - [   0,   99]                 */
 } nmeaTIME;
 
 /**
