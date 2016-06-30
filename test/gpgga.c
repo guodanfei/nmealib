@@ -256,24 +256,24 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | LAT);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
-  memset(&pack, 0, sizeof(pack));
-  memset(&info, 0, sizeof(info));
-
-  pack.latitude = -1232.5523;
-  pack.ns = 'S';
-  nmea_INFO_set_present(&pack.present, LAT);
-
-  nmeaGPGGAToInfo(&pack, &info);
-  validatePackToInfo(&info, 0, 0, false);
-  CU_ASSERT_EQUAL(info.present, SMASK | LAT);
-  CU_ASSERT_EQUAL(info.smask, GPGGA);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.latitude = 1232.5523;
   pack.ns = 'N';
+  nmea_INFO_set_present(&pack.present, LAT);
+
+  nmeaGPGGAToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, SMASK | LAT);
+  CU_ASSERT_EQUAL(info.smask, GPGGA);
+  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
+  memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
+
+  pack.latitude = -1232.5523;
+  pack.ns = 'S';
   nmea_INFO_set_present(&pack.present, LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -306,20 +306,9 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | LON);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
-  memset(&pack, 0, sizeof(pack));
-  memset(&info, 0, sizeof(info));
-
-  pack.longitude = -1232.5523;
-  pack.ew = 'W';
-  nmea_INFO_set_present(&pack.present, LON);
-
-  nmeaGPGGAToInfo(&pack, &info);
-  validatePackToInfo(&info, 0, 0, false);
-  CU_ASSERT_EQUAL(info.present, SMASK | LON);
-  CU_ASSERT_EQUAL(info.smask, GPGGA);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
   memset(&info, 0, sizeof(info));
 
   pack.longitude = 1232.5523;
@@ -333,6 +322,17 @@ static void test_nmeaGPGGAToInfo(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
+
+  pack.longitude = -1232.5523;
+  pack.ew = 'W';
+  nmea_INFO_set_present(&pack.present, LON);
+
+  nmeaGPGGAToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, SMASK | LON);
+  CU_ASSERT_EQUAL(info.smask, GPGGA);
+  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
+  memset(&pack, 0, sizeof(pack));
 
   pack.longitude = 1232.5523;
   pack.ew = 'W';
@@ -381,7 +381,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 

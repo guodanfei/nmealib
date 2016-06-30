@@ -359,6 +359,8 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
 
   if (!nmea_INFO_is_present(nmeaInfo->present, MAGVAR)) {
     nmeaInfo->magvar = 0;
+  } else {
+    nmeaInfo->magvar = fabs(nmeaInfo->magvar);
   }
 
   if (!nmea_INFO_is_present(nmeaInfo->present, SATINUSECOUNT)) {

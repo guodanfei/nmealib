@@ -56,7 +56,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%16s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*", //
+      "$" NMEA_PREFIX_GPGGA ",%16s,%F,%C,%F,%C,%d,%d,%F,%f,%C,%f,%C,%F,%d*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -96,7 +96,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    pack->latitude = fabs(pack->latitude);
     nmea_INFO_set_present(&pack->present, LAT);
   } else {
     pack->latitude = 0.0;
@@ -108,7 +107,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    pack->longitude = fabs(pack->longitude);
     nmea_INFO_set_present(&pack->present, LON);
   } else {
     pack->longitude = 0.0;
@@ -133,7 +131,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->hdop)) {
-    pack->hdop = fabs(pack->hdop);
     nmea_INFO_set_present(&pack->present, HDOP);
   } else {
     pack->hdop = 0.0;
@@ -164,7 +161,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->dgpsAge)) {
-    pack->dgpsAge = fabs(pack->dgpsAge);
     nmea_INFO_set_present(&pack->present, DGPSAGE);
   } else {
     pack->dgpsAge = 0.0;
@@ -205,15 +201,15 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
     info->lat = ((pack->ns == 'S') ?
-        -fabs(pack->latitude) :
-        fabs(pack->latitude));
+        -pack->latitude :
+        pack->latitude);
     nmea_INFO_set_present(&info->present, LAT);
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
     info->lon = ((pack->ew == 'W') ?
-        -fabs(pack->longitude) :
-        fabs(pack->longitude));
+        -pack->longitude :
+        pack->longitude);
     nmea_INFO_set_present(&info->present, LON);
   }
 
@@ -228,7 +224,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = fabs(pack->hdop);
+    info->HDOP = pack->hdop;
     nmea_INFO_set_present(&info->present, HDOP);
   }
 

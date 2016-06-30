@@ -312,7 +312,7 @@ static void test_nmeaGPGSAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | PDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.PDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.PDOP, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -336,7 +336,7 @@ static void test_nmeaGPGSAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -360,7 +360,7 @@ static void test_nmeaGPGSAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | VDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.VDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.VDOP, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 

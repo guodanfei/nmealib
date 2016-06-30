@@ -307,6 +307,13 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             }
             break;
 
+          case 'F':
+            arg = (void *) va_arg(args, double *);
+            if (width && arg) {
+              *((double *) arg) = fabs(nmeaStringToDouble(sTokenStart, width));
+            }
+            break;
+
           case 'd':
             arg = (void *) va_arg(args, int *);
             if (width && arg) {

@@ -50,7 +50,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGSA ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
+      "$" NMEA_PREFIX_GPGSA ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%F,%F,%F*", //
       &pack->sig, //
       &pack->fix, //
       &pack->satPrn[0], //
@@ -107,21 +107,18 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   if (!isnan(pack->pdop)) {
-    pack->pdop = fabs(pack->pdop);
     nmea_INFO_set_present(&pack->present, PDOP);
   } else {
     pack->pdop = 0.0;
   }
 
   if (!isnan(pack->hdop)) {
-    pack->hdop = fabs(pack->hdop);
     nmea_INFO_set_present(&pack->present, HDOP);
   } else {
     pack->hdop = 0.0;
   }
 
   if (!isnan(pack->vdop)) {
-    pack->vdop = fabs(pack->vdop);
     nmea_INFO_set_present(&pack->present, VDOP);
   } else {
     pack->vdop = 0.0;
@@ -180,17 +177,17 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info) {
   }
 
   if (nmea_INFO_is_present(pack->present, PDOP)) {
-    info->PDOP = fabs(pack->pdop);
+    info->PDOP = pack->pdop;
     nmea_INFO_set_present(&info->present, PDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = fabs(pack->hdop);
+    info->HDOP = pack->hdop;
     nmea_INFO_set_present(&info->present, HDOP);
   }
 
   if (nmea_INFO_is_present(pack->present, VDOP)) {
-    info->VDOP = fabs(pack->vdop);
+    info->VDOP = pack->vdop;
     nmea_INFO_set_present(&info->present, VDOP);
   }
 }

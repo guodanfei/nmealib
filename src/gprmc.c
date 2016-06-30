@@ -57,7 +57,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$GPRMC,%16s,%C,%f,%C,%f,%C,%f,%f,%8s,%f,%C,%C*", //
+      "$GPRMC,%16s,%C,%F,%C,%F,%C,%f,%f,%8s,%F,%C,%C*", //
       timeBuf, //
       &pack->sigSelection, //
       &pack->latitude, //
@@ -132,7 +132,6 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
       goto err;
     }
 
-    pack->latitude = fabs(pack->latitude);
     nmea_INFO_set_present(&pack->present, LAT);
   } else {
     pack->latitude = 0.0;
@@ -144,7 +143,6 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
       goto err;
     }
 
-    pack->longitude = fabs(pack->longitude);
     nmea_INFO_set_present(&pack->present, LON);
   } else {
     pack->longitude = 0.0;
@@ -181,7 +179,6 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
       goto err;
     }
 
-    pack->magvar = fabs(pack->magvar);
     nmea_INFO_set_present(&pack->present, MAGVAR);
   } else {
     pack->magvar = 0.0;
@@ -237,15 +234,15 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
 
   if (nmea_INFO_is_present(pack->present, LAT)) {
     info->lat = ((pack->ns == 'N') ?
-        fabs(pack->latitude) :
-        -fabs(pack->latitude));
+        pack->latitude :
+        -pack->latitude);
     nmea_INFO_set_present(&info->present, LAT);
   }
 
   if (nmea_INFO_is_present(pack->present, LON)) {
     info->lon = ((pack->ew == 'E') ?
-        fabs(pack->longitude) :
-        -fabs(pack->longitude));
+        pack->longitude :
+        -pack->longitude);
     nmea_INFO_set_present(&info->present, LON);
   }
 
@@ -268,8 +265,8 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info) {
 
   if (nmea_INFO_is_present(pack->present, MAGVAR)) {
     info->magvar = ((pack->magvar_ew == 'E') ?
-        fabs(pack->magvar) :
-        -fabs(pack->magvar));
+        pack->magvar :
+        -pack->magvar);
     nmea_INFO_set_present(&info->present, MAGVAR);
   }
 }

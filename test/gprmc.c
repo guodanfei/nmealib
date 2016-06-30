@@ -371,24 +371,24 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | LAT);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
-  memset(&pack, 0, sizeof(pack));
-  memset(&info, 0, sizeof(info));
-
-  pack.latitude = -1232.5523;
-  pack.ns = 'S';
-  nmea_INFO_set_present(&pack.present, LAT);
-
-  nmeaGPRMCToInfo(&pack, &info);
-  validatePackToInfo(&info, 0, 0, false);
-  CU_ASSERT_EQUAL(info.present, SMASK | LAT);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.latitude = 1232.5523;
   pack.ns = 'N';
+  nmea_INFO_set_present(&pack.present, LAT);
+
+  nmeaGPRMCToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, SMASK | LAT);
+  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
+  memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
+
+  pack.latitude = -1232.5523;
+  pack.ns = 'S';
   nmea_INFO_set_present(&pack.present, LAT);
 
   nmeaGPRMCToInfo(&pack, &info);
@@ -421,24 +421,24 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | LON);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
-  memset(&pack, 0, sizeof(pack));
-  memset(&info, 0, sizeof(info));
-
-  pack.longitude = -1232.5523;
-  pack.ew = 'W';
-  nmea_INFO_set_present(&pack.present, LON);
-
-  nmeaGPRMCToInfo(&pack, &info);
-  validatePackToInfo(&info, 0, 0, false);
-  CU_ASSERT_EQUAL(info.present, SMASK | LON);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.longitude = 1232.5523;
   pack.ew = 'E';
+  nmea_INFO_set_present(&pack.present, LON);
+
+  nmeaGPRMCToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, SMASK | LON);
+  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
+  memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
+
+  pack.longitude = -1232.5523;
+  pack.ew = 'W';
   nmea_INFO_set_present(&pack.present, LON);
 
   nmeaGPRMCToInfo(&pack, &info);
@@ -514,24 +514,24 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | MAGVAR);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 1232.5523, DBL_EPSILON);
-  memset(&pack, 0, sizeof(pack));
-  memset(&info, 0, sizeof(info));
-
-  pack.magvar = -1232.5523;
-  pack.magvar_ew = 'W';
-  nmea_INFO_set_present(&pack.present, MAGVAR);
-
-  nmeaGPRMCToInfo(&pack, &info);
-  validatePackToInfo(&info, 0, 0, false);
-  CU_ASSERT_EQUAL(info.present, SMASK | MAGVAR);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.magvar = 1232.5523;
   pack.magvar_ew = 'E';
+  nmea_INFO_set_present(&pack.present, MAGVAR);
+
+  nmeaGPRMCToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, SMASK | MAGVAR);
+  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 1232.5523, DBL_EPSILON);
+  memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
+
+  pack.magvar = -1232.5523;
+  pack.magvar_ew = 'W';
   nmea_INFO_set_present(&pack.present, MAGVAR);
 
   nmeaGPRMCToInfo(&pack, &info);
