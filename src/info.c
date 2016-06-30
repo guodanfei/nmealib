@@ -269,8 +269,8 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   bool mtrackAdjusted = false;
   bool magvarAdjusted = false;
   nmeaTIME utc;
-  int inuseIndex;
-  int inviewIndex;
+  size_t inuseIndex;
+  size_t inviewIndex;
 
   if (!nmeaInfo) {
     return;

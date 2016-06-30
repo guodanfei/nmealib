@@ -160,8 +160,8 @@ int nmea_generate_from(char *s, int len, nmeaINFO *info, nmeaGENERATOR *gen, int
  * @return 1 (true) on success, 0 (false) otherwise
  */
 static int nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), nmeaINFO *info) {
-  int it;
-  int in_use;
+  size_t it;
+  size_t in_use;
 
   info->sig = lrint(nmea_random(1, 3));
   info->fix = lrint(nmea_random(2, 3));
@@ -193,7 +193,7 @@ static int nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), nme
   info->satinfo.inview = 0;
 
   for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-    in_use = lrint(nmea_random(0, 3));
+    in_use = labs(lrint(nmea_random(0, 3)));
     info->satinfo.in_use[it] = in_use ?
         it :
         0;

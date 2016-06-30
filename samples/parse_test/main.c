@@ -23,7 +23,7 @@ static size_t countlines(char * line) {
 }
 
 static int printInfo(char * inputLine, char * outputLine, int outputLineResult, nmeaINFO * info, char * outputbuffer, size_t outputbuffersize) {
-  unsigned int i;
+  size_t i;
   int index = 0;
   int lineCount = 0;
   int eq;
@@ -59,7 +59,7 @@ static int printInfo(char * inputLine, char * outputLine, int outputLineResult, 
   lineCount += 2;
 
   for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
-    index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02d %s = %d/%d/%d/%d/%d\n", i,
+    index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02lu %s = %d/%d/%d/%d/%d\n", (long unsigned) i,
         "in_use/id/sig/elv/azimuth", info->satinfo.in_use[i], info->satinfo.sat[i].id, info->satinfo.sat[i].sig,
         info->satinfo.sat[i].elv, info->satinfo.sat[i].azimuth);
     lineCount += 1;

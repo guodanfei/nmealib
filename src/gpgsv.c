@@ -154,7 +154,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
     return;
   }
 
-  if (pack->sentence > NMEALIB_GPGSV_MAX_SENTENCES) {
+  if (pack->sentence > (int) NMEALIB_GPGSV_MAX_SENTENCES) {
     return;
   }
 
@@ -211,9 +211,9 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   memset(pack, 0, sizeof(*pack));
 
   if (nmea_INFO_is_present(info->present, SATINVIEWCOUNT)) {
-    pack->satellites = (info->satinfo.inview < NMEALIB_MAX_SATELLITES) ?
+    pack->satellites = (info->satinfo.inview < (int) NMEALIB_MAX_SATELLITES) ?
         info->satinfo.inview :
-        NMEALIB_MAX_SATELLITES;
+        (int) NMEALIB_MAX_SATELLITES;
 
     pack->sentences = nmeaGPGSVsatellitesToSentencesCount(pack->satellites);
 
@@ -221,8 +221,8 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, unsigned int pack_
   }
 
   if (nmea_INFO_is_present(info->present, SATINVIEW)) {
-    int offset = 0;
-    int i = 0;
+    size_t offset = 0;
+    size_t i = 0;
 
     if ((int) pack_idx >= pack->sentences) {
       pack->sentence = pack->sentences;

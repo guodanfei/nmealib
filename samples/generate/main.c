@@ -27,7 +27,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaINFO info;
 	char buff[2048];
 	int gen_sz;
-	int it;
+	size_t it;
 
 	nmea_zero_INFO(&info);
 
@@ -57,14 +57,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmea_INFO_set_present(&info.present, VDOP);
 	nmea_INFO_set_present(&info.present, PDOP);
 
-	info.satinfo.inuse = NMEALIB_MAX_SATELLITES;
+	info.satinfo.inuse = (int) NMEALIB_MAX_SATELLITES;
 	nmea_INFO_set_present(&info.present, SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.in_use[it] = it + 1;
 	}
 	nmea_INFO_set_present(&info.present, SATINUSE);
 
-	info.satinfo.inview = NMEALIB_MAX_SATELLITES;
+	info.satinfo.inview = (int) NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.sat[it].id = it + 1;
 		info.satinfo.sat[it].elv = (it * 10);

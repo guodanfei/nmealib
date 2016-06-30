@@ -92,7 +92,7 @@ const char * nmea_INFO_fix_to_string(int fix);
  * Limits and defaults
  */
 
-#define NMEALIB_MAX_SATELLITES (72)
+#define NMEALIB_MAX_SATELLITES (72u)
 
 #define NMEA_DEF_LAT           (0.0)
 #define NMEA_DEF_LON           (0.0)
