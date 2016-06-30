@@ -323,16 +323,46 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo);
 void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo);
 
 /**
- * Compare 2 satellite PRNs, but put zeroes last (consider them to be 1000)
- *
- * NOTE: only here for tests, do not use
+ * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)
  *
  * @param p1 The first satellite PRN
  * @param p2 The second satellite PRN
- * @return 0 when both are equal, a negative value when p1 < p2, a positive
- * value otherwise
+ * @return 0 when both are equal, a negative value when PRN1 < PRN2, a
+ * positive value otherwise
  */
 int qsortComparePRN(const void *p1, const void *p2);
+
+/**
+ * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
+ * those to be 1000)
+ *
+ * @param p1 The first satellite PRN
+ * @param p2 The second satellite PRN
+ * @return 0 when both are non-zero or are equal, a negative value when
+ * PRN1 < PRN2, a positive value otherwise
+ */
+int qsortCompactPRN(const void *p1, const void *p2);
+
+/**
+ * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)
+ *
+ * @param s1 The first satellite
+ * @param s2 The second satellite
+ * @return 0 when both are equal, a negative value when PRN1 < PRN2, a
+ * positive value otherwise
+ */
+int qsortCompareSatellite(const void *s1, const void *s2);
+
+/**
+ * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
+ * those to be 1000)
+ *
+ * @param s1 The first satellite
+ * @param s2 The second satellite
+ * @return 0 when both are non-zero or are equal, a negative value when
+ * PRN1 < PRN2, a positive value otherwise
+ */
+int qsortCompactSatellite(const void *s1, const void *s2);
 
 #ifdef  __cplusplus
 }

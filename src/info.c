@@ -663,3 +663,28 @@ int qsortComparePRN(const void *p1, const void *p2) {
 
   return (prn1 - prn2);
 }
+
+int qsortCompactPRN(const void *p1, const void *p2) {
+  int prn1 = *((const int *) p1);
+  int prn2 = *((const int *) p2);
+
+  if (prn1 && prn2) {
+    return 0;
+  }
+
+  return qsortComparePRN(p1, p2);
+}
+
+int qsortCompareSatellite(const void *s1, const void *s2) {
+  const nmeaSATELLITE *sat1 = (const nmeaSATELLITE *) s1;
+  const nmeaSATELLITE *sat2 = (const nmeaSATELLITE *) s2;
+
+  return qsortComparePRN(&sat1->id, &sat2->id);
+}
+
+int qsortCompactSatellite(const void *s1, const void *s2) {
+  const nmeaSATELLITE *sat1 = (const nmeaSATELLITE *) s1;
+  const nmeaSATELLITE *sat2 = (const nmeaSATELLITE *) s2;
+
+  return qsortCompactPRN(&sat1->id, &sat2->id);
+}
