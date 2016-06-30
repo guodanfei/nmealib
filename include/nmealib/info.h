@@ -224,6 +224,18 @@ static INLINE bool nmea_INFO_is_present(uint32_t present, nmeaINFO_FIELD fieldNa
 }
 
 /**
+ * Determine if a 'present' bit-mask indicates presence of any of the
+ * indicated nmeaINFO_FIELD field names
+ *
+ * @param present The 'present' field
+ * @param fieldName The nmeaINFO_FIELD bit-mask to check for presence
+ * @return True when any of the nmeaINFO_FIELD field names is present
+ */
+static INLINE bool nmea_INFO_is_present_any(uint32_t present, nmeaINFO_FIELD fieldName) {
+  return ((present & fieldName) != 0);
+}
+
+/**
  * Adjust a 'present' bit-mask to indicate presence of a certain
  * nmeaINFO_FIELD
  *
