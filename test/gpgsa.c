@@ -131,22 +131,22 @@ static void test_nmeaGPGSAParse(void) {
 
   /* satPrn */
 
-  s = "$GPGSA,,,12,11,10,5,6,7,8,9,4,3,2,1,,,*";
+  s = "$GPGSA,,,12,11,10,5,,7,8,,4,3,2,1,,,*";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SATINUSE);
-  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
-  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
-  CU_ASSERT_EQUAL(pack.satPrn[2], 3);
-  CU_ASSERT_EQUAL(pack.satPrn[3], 4);
-  CU_ASSERT_EQUAL(pack.satPrn[4], 5);
-  CU_ASSERT_EQUAL(pack.satPrn[5], 6);
-  CU_ASSERT_EQUAL(pack.satPrn[6], 7);
-  CU_ASSERT_EQUAL(pack.satPrn[7], 8);
-  CU_ASSERT_EQUAL(pack.satPrn[8], 9);
-  CU_ASSERT_EQUAL(pack.satPrn[9], 10);
-  CU_ASSERT_EQUAL(pack.satPrn[10], 11);
-  CU_ASSERT_EQUAL(pack.satPrn[11], 12);
+  CU_ASSERT_EQUAL(pack.satPrn[0], 12);
+  CU_ASSERT_EQUAL(pack.satPrn[1], 11);
+  CU_ASSERT_EQUAL(pack.satPrn[2], 10);
+  CU_ASSERT_EQUAL(pack.satPrn[3], 5);
+  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
+  CU_ASSERT_EQUAL(pack.satPrn[5], 8);
+  CU_ASSERT_EQUAL(pack.satPrn[6], 4);
+  CU_ASSERT_EQUAL(pack.satPrn[7], 3);
+  CU_ASSERT_EQUAL(pack.satPrn[8], 2);
+  CU_ASSERT_EQUAL(pack.satPrn[9], 1);
+  CU_ASSERT_EQUAL(pack.satPrn[10], 0);
+  CU_ASSERT_EQUAL(pack.satPrn[11], 0);
 
   /* pdop */
 

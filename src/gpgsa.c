@@ -100,7 +100,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
     pack->fix = NMEA_FIX_BAD;
   }
 
-  qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortComparePRN);
+  qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortCompactPRN);
   if (!pack->satPrn[0]) {
     memset(pack->satPrn, 0, sizeof(pack->satPrn));
   } else {
