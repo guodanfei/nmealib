@@ -30,7 +30,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 			"$GPRMC,213925.000,A,4221.1129,N,07102.9146,W,0.00,,010207,,,A*68\r\n",
 			"$GPRMC,111609.14,A,5001.27,N,3613.06,E,11.2,0.0,261206,0.0,E*50\r\n" };
 
-	nmeaPOS pos[NUM_POINTS], pos_moved[NUM_POINTS][2];
+	NmeaPosition pos[NUM_POINTS], pos_moved[NUM_POINTS][2];
 	double dist[NUM_POINTS][2];
 	double azimuth[NUM_POINTS][2], azimuth_moved[NUM_POINTS];
 	int result[2];
@@ -40,8 +40,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmea_parser_init(&parser);
 
 	for (it = 0; it < NUM_POINTS; it++) {
-		nmeaINFO info;
-		nmea_zero_INFO(&info);
+		NmeaInfo info;
+		nmeaInfoClear(&info);
 		(void) nmea_parse(&parser, buff[it], (int) strlen(buff[it]), &info);
 		nmea_info2pos(&info, &pos[it]);
 	}

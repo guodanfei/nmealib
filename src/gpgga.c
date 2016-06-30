@@ -86,7 +86,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, UTCTIME);
+    nmeaInfoSetPresent(&pack->present, UTCTIME);
   } else {
     memset(&pack->time, 0, sizeof(pack->time));
   }
@@ -96,7 +96,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, LAT);
+    nmeaInfoSetPresent(&pack->present, LAT);
   } else {
     pack->latitude = 0.0;
     pack->ns = '\0';
@@ -107,7 +107,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, LON);
+    nmeaInfoSetPresent(&pack->present, LON);
   } else {
     pack->longitude = 0.0;
     pack->ew = '\0';
@@ -118,20 +118,20 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, SIG);
+    nmeaInfoSetPresent(&pack->present, SIG);
   } else {
     pack->signal = NMEA_SIG_INVALID;
   }
 
   if (pack->satellitesInView != INT_MAX) {
     pack->satellitesInView = abs(pack->satellitesInView);
-    nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
+    nmeaInfoSetPresent(&pack->present, SATINVIEWCOUNT);
   } else {
     pack->satellitesInView = 0;
   }
 
   if (!isnan(pack->hdop)) {
-    nmea_INFO_set_present(&pack->present, HDOP);
+    nmeaInfoSetPresent(&pack->present, HDOP);
   } else {
     pack->hdop = 0.0;
   }
@@ -142,7 +142,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, ELV);
+    nmeaInfoSetPresent(&pack->present, ELV);
   } else {
     pack->elevation = 0.0;
     pack->elevationUnit = '\0';
@@ -154,21 +154,21 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, HEIGHT);
+    nmeaInfoSetPresent(&pack->present, HEIGHT);
   } else {
     pack->height = 0.0;
     pack->heightUnit = '\0';
   }
 
   if (!isnan(pack->dgpsAge)) {
-    nmea_INFO_set_present(&pack->present, DGPSAGE);
+    nmeaInfoSetPresent(&pack->present, DGPSAGE);
   } else {
     pack->dgpsAge = 0.0;
   }
 
   if (pack->dgpsSid != INT_MAX) {
     pack->dgpsSid = abs(pack->dgpsSid);
-    nmea_INFO_set_present(&pack->present, DGPSSID);
+    nmeaInfoSetPresent(&pack->present, DGPSSID);
   } else {
     pack->dgpsSid = 0;
   }
@@ -181,75 +181,75 @@ err:
   return false;
 }
 
-void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info) {
+void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
   }
 
-  nmea_INFO_set_present(&info->present, SMASK);
+  nmeaInfoSetPresent(&info->present, SMASK);
 
   info->smask |= GPGGA;
 
-  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
+  if (nmeaInfoIsPresentAll(pack->present, UTCTIME)) {
     info->utc.hour = pack->time.hour;
     info->utc.min = pack->time.min;
     info->utc.sec = pack->time.sec;
     info->utc.hsec = pack->time.hsec;
-    nmea_INFO_set_present(&info->present, UTCTIME);
+    nmeaInfoSetPresent(&info->present, UTCTIME);
   }
 
-  if (nmea_INFO_is_present(pack->present, LAT)) {
+  if (nmeaInfoIsPresentAll(pack->present, LAT)) {
     info->lat = ((pack->ns == 'S') ?
         -pack->latitude :
         pack->latitude);
-    nmea_INFO_set_present(&info->present, LAT);
+    nmeaInfoSetPresent(&info->present, LAT);
   }
 
-  if (nmea_INFO_is_present(pack->present, LON)) {
+  if (nmeaInfoIsPresentAll(pack->present, LON)) {
     info->lon = ((pack->ew == 'W') ?
         -pack->longitude :
         pack->longitude);
-    nmea_INFO_set_present(&info->present, LON);
+    nmeaInfoSetPresent(&info->present, LON);
   }
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
+  if (nmeaInfoIsPresentAll(pack->present, SIG)) {
     info->sig = pack->signal;
-    nmea_INFO_set_present(&info->present, SIG);
+    nmeaInfoSetPresent(&info->present, SIG);
   }
 
-  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    info->satinfo.inview = pack->satellitesInView;
-    nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
+  if (nmeaInfoIsPresentAll(pack->present, SATINVIEWCOUNT)) {
+    info->satinfo.inViewCount = pack->satellitesInView;
+    nmeaInfoSetPresent(&info->present, SATINVIEWCOUNT);
   }
 
-  if (nmea_INFO_is_present(pack->present, HDOP)) {
-    info->HDOP = pack->hdop;
-    nmea_INFO_set_present(&info->present, HDOP);
+  if (nmeaInfoIsPresentAll(pack->present, HDOP)) {
+    info->hdop = pack->hdop;
+    nmeaInfoSetPresent(&info->present, HDOP);
   }
 
-  if (nmea_INFO_is_present(pack->present, ELV)) {
+  if (nmeaInfoIsPresentAll(pack->present, ELV)) {
     info->elv = pack->elevation;
-    nmea_INFO_set_present(&info->present, ELV);
+    nmeaInfoSetPresent(&info->present, ELV);
   }
 
-  if (nmea_INFO_is_present(pack->present, HEIGHT)) {
+  if (nmeaInfoIsPresentAll(pack->present, HEIGHT)) {
     info->height = pack->height;
-    nmea_INFO_set_present(&info->present, HEIGHT);
+    nmeaInfoSetPresent(&info->present, HEIGHT);
   }
 
-  if (nmea_INFO_is_present(pack->present, DGPSAGE)) {
+  if (nmeaInfoIsPresentAll(pack->present, DGPSAGE)) {
     info->dgpsAge = pack->dgpsAge;
-    nmea_INFO_set_present(&info->present, DGPSAGE);
+    nmeaInfoSetPresent(&info->present, DGPSAGE);
   }
 
-  if (nmea_INFO_is_present(pack->present, DGPSSID)) {
+  if (nmeaInfoIsPresentAll(pack->present, DGPSSID)) {
     info->dgpsSid = pack->dgpsSid;
-    nmea_INFO_set_present(&info->present, DGPSSID);
+    nmeaInfoSetPresent(&info->present, DGPSSID);
   }
 }
 
-void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
+void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack) {
   if (!pack //
       || !info) {
     return;
@@ -257,67 +257,67 @@ void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack) {
 
   memset(pack, 0, sizeof(*pack));
 
-  if (nmea_INFO_is_present(info->present, UTCTIME)) {
+  if (nmeaInfoIsPresentAll(info->present, UTCTIME)) {
     pack->time.hour = info->utc.hour;
     pack->time.min = info->utc.min;
     pack->time.sec = info->utc.sec;
     pack->time.hsec = info->utc.hsec;
-    nmea_INFO_set_present(&pack->present, UTCTIME);
+    nmeaInfoSetPresent(&pack->present, UTCTIME);
   }
 
-  if (nmea_INFO_is_present(info->present, LAT)) {
+  if (nmeaInfoIsPresentAll(info->present, LAT)) {
     pack->latitude = fabs(info->lat);
     pack->ns = ((info->lat >= 0.0) ?
         'N' :
         'S');
-    nmea_INFO_set_present(&pack->present, LAT);
+    nmeaInfoSetPresent(&pack->present, LAT);
   }
 
-  if (nmea_INFO_is_present(info->present, LON)) {
+  if (nmeaInfoIsPresentAll(info->present, LON)) {
     pack->longitude = fabs(info->lon);
     pack->ew = ((info->lon >= 0.0) ?
         'E' :
         'W');
-    nmea_INFO_set_present(&pack->present, LON);
+    nmeaInfoSetPresent(&pack->present, LON);
   }
 
-  if (nmea_INFO_is_present(info->present, SIG)) {
+  if (nmeaInfoIsPresentAll(info->present, SIG)) {
     pack->signal = info->sig;
-    nmea_INFO_set_present(&pack->present, SIG);
+    nmeaInfoSetPresent(&pack->present, SIG);
   } else {
     pack->signal = NMEA_SIG_INVALID;
   }
 
-  if (nmea_INFO_is_present(info->present, SATINVIEWCOUNT)) {
-    pack->satellitesInView = info->satinfo.inview;
-    nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
+  if (nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT)) {
+    pack->satellitesInView = info->satinfo.inViewCount;
+    nmeaInfoSetPresent(&pack->present, SATINVIEWCOUNT);
   }
 
-  if (nmea_INFO_is_present(info->present, HDOP)) {
-    pack->hdop = info->HDOP;
-    nmea_INFO_set_present(&pack->present, HDOP);
+  if (nmeaInfoIsPresentAll(info->present, HDOP)) {
+    pack->hdop = info->hdop;
+    nmeaInfoSetPresent(&pack->present, HDOP);
   }
 
-  if (nmea_INFO_is_present(info->present, ELV)) {
+  if (nmeaInfoIsPresentAll(info->present, ELV)) {
     pack->elevation = info->elv;
     pack->elevationUnit = 'M';
-    nmea_INFO_set_present(&pack->present, ELV);
+    nmeaInfoSetPresent(&pack->present, ELV);
   }
 
-  if (nmea_INFO_is_present(info->present, HEIGHT)) {
+  if (nmeaInfoIsPresentAll(info->present, HEIGHT)) {
     pack->height = info->height;
     pack->heightUnit = 'M';
-    nmea_INFO_set_present(&pack->present, HEIGHT);
+    nmeaInfoSetPresent(&pack->present, HEIGHT);
   }
 
-  if (nmea_INFO_is_present(info->present, DGPSAGE)) {
+  if (nmeaInfoIsPresentAll(info->present, DGPSAGE)) {
     pack->dgpsAge = info->dgpsAge;
-    nmea_INFO_set_present(&pack->present, DGPSAGE);
+    nmeaInfoSetPresent(&pack->present, DGPSAGE);
   }
 
-  if (nmea_INFO_is_present(info->present, DGPSSID)) {
+  if (nmeaInfoIsPresentAll(info->present, DGPSSID)) {
     pack->dgpsSid = info->dgpsSid;
-    nmea_INFO_set_present(&pack->present, DGPSSID);
+    nmeaInfoSetPresent(&pack->present, DGPSSID);
   }
 }
 
@@ -335,7 +335,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
 
   chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGGA);
 
-  if (nmea_INFO_is_present(pack->present, UTCTIME)) {
+  if (nmeaInfoIsPresentAll(pack->present, UTCTIME)) {
     chars += snprintf(dst, available, //
         ",%02u%02u%02u.%02u", //
         pack->time.hour, //
@@ -346,7 +346,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, LAT)) {
+  if (nmeaInfoIsPresentAll(pack->present, LAT)) {
     chars += snprintf(dst, available, ",%09.4f", pack->latitude);
     if (pack->ns) {
       chars += snprintf(dst, available, ",%c", pack->ns);
@@ -357,7 +357,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, LON)) {
+  if (nmeaInfoIsPresentAll(pack->present, LON)) {
     chars += snprintf(dst, available, ",%010.4f", pack->longitude);
     if (pack->ew) {
       chars += snprintf(dst, available, ",%c", pack->ew);
@@ -368,25 +368,25 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, SIG)) {
+  if (nmeaInfoIsPresentAll(pack->present, SIG)) {
     chars += snprintf(dst, available, ",%d", pack->signal);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
+  if (nmeaInfoIsPresentAll(pack->present, SATINVIEWCOUNT)) {
     chars += snprintf(dst, available, ",%02d", pack->satellitesInView);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, HDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, HDOP)) {
     chars += snprintf(dst, available, ",%03.1f", pack->hdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, ELV)) {
+  if (nmeaInfoIsPresentAll(pack->present, ELV)) {
     chars += snprintf(dst, available, ",%03.1f", pack->elevation);
     if (pack->elevationUnit) {
       chars += snprintf(dst, available, ",%c", pack->elevationUnit);
@@ -397,7 +397,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, HEIGHT)) {
+  if (nmeaInfoIsPresentAll(pack->present, HEIGHT)) {
     chars += snprintf(dst, available, ",%03.1f", pack->height);
     if (pack->heightUnit) {
       chars += snprintf(dst, available, ",%c", pack->heightUnit);
@@ -408,13 +408,13 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, DGPSAGE)) {
+  if (nmeaInfoIsPresentAll(pack->present, DGPSAGE)) {
     chars += snprintf(dst, available, ",%03.1f", pack->dgpsAge);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmea_INFO_is_present(pack->present, DGPSSID)) {
+  if (nmeaInfoIsPresentAll(pack->present, DGPSSID)) {
     chars += snprintf(dst, available, ",%d", pack->dgpsSid);
   } else {
     chars += snprintf(dst, available, ",");

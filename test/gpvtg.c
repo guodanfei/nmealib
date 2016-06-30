@@ -141,8 +141,8 @@ static void test_nmeaGPVTGParse(void) {
 
 static void test_nmeaGPVTGToInfo(void) {
   nmeaGPVTG pack;
-  nmeaINFO infoEmpty;
-  nmeaINFO info;
+  NmeaInfo infoEmpty;
+  NmeaInfo info;
 
   memset(&pack, 0, sizeof(pack));
   memset(&infoEmpty, 0, sizeof(infoEmpty));
@@ -172,7 +172,7 @@ static void test_nmeaGPVTGToInfo(void) {
   /* track */
 
   pack.track = 42.75;
-  nmea_INFO_set_present(&pack.present, TRACK);
+  nmeaInfoSetPresent(&pack.present, TRACK);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -185,7 +185,7 @@ static void test_nmeaGPVTGToInfo(void) {
   /* mtrack */
 
   pack.mtrack = 42.75;
-  nmea_INFO_set_present(&pack.present, MTRACK);
+  nmeaInfoSetPresent(&pack.present, MTRACK);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -201,7 +201,7 @@ static void test_nmeaGPVTGToInfo(void) {
   pack.spn_n = '\0';
   pack.spk = 10.0;
   pack.spk_k = '\0';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -215,7 +215,7 @@ static void test_nmeaGPVTGToInfo(void) {
   pack.spn_n = 'N';
   pack.spk = 10.0;
   pack.spk_k = '\0';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -229,7 +229,7 @@ static void test_nmeaGPVTGToInfo(void) {
   pack.spn_n = '\0';
   pack.spk = 10.0;
   pack.spk_k = 'K';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -243,7 +243,7 @@ static void test_nmeaGPVTGToInfo(void) {
   pack.spn_n = 'N';
   pack.spk = 10.0;
   pack.spk_k = 'K';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -255,7 +255,7 @@ static void test_nmeaGPVTGToInfo(void) {
 }
 
 static void test_nmeaGPVTGFromInfo(void) {
-  nmeaINFO info;
+  NmeaInfo info;
   nmeaGPVTG packEmpty;
   nmeaGPVTG pack;
 
@@ -282,7 +282,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   /* track */
 
   info.track = 1232.5523;
-  nmea_INFO_set_present(&info.present, TRACK);
+  nmeaInfoSetPresent(&info.present, TRACK);
 
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -294,7 +294,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   /* mtrack */
 
   info.mtrack = 1232.5523;
-  nmea_INFO_set_present(&info.present, MTRACK);
+  nmeaInfoSetPresent(&info.present, MTRACK);
 
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -306,7 +306,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   /* speed */
 
   info.speed = 10.0;
-  nmea_INFO_set_present(&info.present, SPEED);
+  nmeaInfoSetPresent(&info.present, SPEED);
 
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -360,7 +360,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.track = 42.6;
   pack.track_t = 'T';
-  nmea_INFO_set_present(&pack.present, TRACK);
+  nmeaInfoSetPresent(&pack.present, TRACK);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 24);
@@ -372,7 +372,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.mtrack = 42.6;
   pack.mtrack_m = 'M';
-  nmea_INFO_set_present(&pack.present, MTRACK);
+  nmeaInfoSetPresent(&pack.present, MTRACK);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 24);
@@ -384,7 +384,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.spn = 42.6;
   pack.spn_n = '\0';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 19);
@@ -394,7 +394,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.spn = 42.6;
   pack.spn_n = 'N';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 24);
@@ -406,7 +406,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.spk = 42.6;
   pack.spk_k = '\0';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 19);
@@ -416,7 +416,7 @@ static void test_nmeaGPVTGGenerate(void) {
 
   pack.spk = 42.6;
   pack.spk_k = 'K';
-  nmea_INFO_set_present(&pack.present, SPEED);
+  nmeaInfoSetPresent(&pack.present, SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 24);

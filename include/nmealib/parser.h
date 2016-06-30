@@ -70,7 +70,7 @@ typedef struct _nmeaPARSER {
 } nmeaPARSER;
 
 int nmea_parser_init(nmeaPARSER *parser);
-int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info);
+int nmea_parse(nmeaPARSER * parser, const char * s, int len, NmeaInfo * info);
 
 #ifdef  __cplusplus
 }

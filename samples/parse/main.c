@@ -32,11 +32,11 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 			"$GPVTG,217.5,T,208.8,M,000.00,N,000.01,K*4C\r\n" };
 
 	int it;
-	nmeaINFO info;
+	NmeaInfo info;
 	nmeaPARSER parser;
-	nmeaPOS dpos;
+	NmeaPosition dpos;
 
-	nmea_zero_INFO(&info);
+	nmeaInfoClear(&info);
 	nmea_parser_init(&parser);
 
 	for (it = 0; it < 6; it++) {

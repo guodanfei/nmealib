@@ -22,7 +22,7 @@ static size_t countlines(char * line) {
   return cnt;
 }
 
-static int printInfo(char * inputLine, char * outputLine, int outputLineResult, nmeaINFO * info, char * outputbuffer, size_t outputbuffersize) {
+static int printInfo(char * inputLine, char * outputLine, int outputLineResult, NmeaInfo * info, char * outputbuffer, size_t outputbuffersize) {
   size_t i;
   int index = 0;
   int lineCount = 0;
@@ -50,18 +50,18 @@ static int printInfo(char * inputLine, char * outputLine, int outputLineResult, 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "track/mtrack/magvar",
       info->track, info->mtrack, info->magvar);
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "hdop/pdop/vdop",
-      info->HDOP, info->VDOP, info->PDOP);
+      info->hdop, info->vdop, info->pdop);
   lineCount += 8;
 
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s\n", "satinfo");
   index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %s = %d/%d\n", "inuse/inview",
-      info->satinfo.inuse, info->satinfo.inview);
+      info->satinfo.inUseCount, info->satinfo.inViewCount);
   lineCount += 2;
 
   for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
     index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02lu %s = %d/%d/%d/%d/%d\n", (long unsigned) i,
-        "in_use/id/sig/elv/azimuth", info->satinfo.in_use[i], info->satinfo.sat[i].id, info->satinfo.sat[i].sig,
-        info->satinfo.sat[i].elv, info->satinfo.sat[i].azimuth);
+        "in_use/id/sig/elv/azimuth", info->satinfo.inUse[i], info->satinfo.inView[i].prn, info->satinfo.inView[i].snr,
+        info->satinfo.inView[i].elevation, info->satinfo.inView[i].azimuth);
     lineCount += 1;
   }
 
@@ -88,7 +88,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   ssize_t inputLineCount;
   const char * defaultFileName;
   const char * directoryName;
-  nmeaINFO info;
+  NmeaInfo info;
   nmeaPARSER parser;
   char expectedbuffer[65536];
   int expectedbufferlength = 0;

@@ -24,12 +24,12 @@
 #include <unistd.h>
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
-	nmeaINFO info;
+	NmeaInfo info;
 	char buff[2048];
 	int gen_sz;
 	size_t it;
 
-	nmea_zero_INFO(&info);
+	nmeaInfoClear(&info);
 
 	info.sig = 3;
 	info.fix = 3;
@@ -40,38 +40,38 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	info.track = 45;
 	info.mtrack = 55;
 	info.magvar = 55;
-	info.HDOP = 2.3;
-	info.VDOP = 1.2;
-	info.PDOP = 2.594224354;
+	info.hdop = 2.3;
+	info.vdop = 1.2;
+	info.pdop = 2.594224354;
 
-	nmea_INFO_set_present(&info.present, SIG);
-	nmea_INFO_set_present(&info.present, FIX);
-	nmea_INFO_set_present(&info.present, LAT);
-	nmea_INFO_set_present(&info.present, LON);
-	nmea_INFO_set_present(&info.present, SPEED);
-	nmea_INFO_set_present(&info.present, ELV);
-	nmea_INFO_set_present(&info.present, TRACK);
-	nmea_INFO_set_present(&info.present, MTRACK);
-	nmea_INFO_set_present(&info.present, MAGVAR);
-	nmea_INFO_set_present(&info.present, HDOP);
-	nmea_INFO_set_present(&info.present, VDOP);
-	nmea_INFO_set_present(&info.present, PDOP);
+	nmeaInfoSetPresent(&info.present, SIG);
+	nmeaInfoSetPresent(&info.present, FIX);
+	nmeaInfoSetPresent(&info.present, LAT);
+	nmeaInfoSetPresent(&info.present, LON);
+	nmeaInfoSetPresent(&info.present, SPEED);
+	nmeaInfoSetPresent(&info.present, ELV);
+	nmeaInfoSetPresent(&info.present, TRACK);
+	nmeaInfoSetPresent(&info.present, MTRACK);
+	nmeaInfoSetPresent(&info.present, MAGVAR);
+	nmeaInfoSetPresent(&info.present, HDOP);
+	nmeaInfoSetPresent(&info.present, VDOP);
+	nmeaInfoSetPresent(&info.present, PDOP);
 
-	info.satinfo.inuse = (int) NMEALIB_MAX_SATELLITES;
-	nmea_INFO_set_present(&info.present, SATINUSECOUNT);
+	info.satinfo.inUseCount = (int) NMEALIB_MAX_SATELLITES;
+	nmeaInfoSetPresent(&info.present, SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.in_use[it] = it + 1;
+		info.satinfo.inUse[it] = it + 1;
 	}
-	nmea_INFO_set_present(&info.present, SATINUSE);
+	nmeaInfoSetPresent(&info.present, SATINUSE);
 
-	info.satinfo.inview = (int) NMEALIB_MAX_SATELLITES;
+	info.satinfo.inViewCount = (int) NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.sat[it].id = it + 1;
-		info.satinfo.sat[it].elv = (it * 10);
-		info.satinfo.sat[it].azimuth = it + 1;
-		info.satinfo.sat[it].sig = 99 - it;
+		info.satinfo.inView[it].prn = it + 1;
+		info.satinfo.inView[it].elevation = (it * 10);
+		info.satinfo.inView[it].azimuth = it + 1;
+		info.satinfo.inView[it].snr = 99 - it;
 	}
-	nmea_INFO_set_present(&info.present, SATINVIEWCOUNT | SATINVIEW);
+	nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT | SATINVIEW);
 
 	for (it = 0; it < 10; it++) {
 		gen_sz = nmeaSentenceFromInfo(&buff[0], 2048, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);

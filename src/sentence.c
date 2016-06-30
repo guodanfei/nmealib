@@ -99,7 +99,7 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
   return GPNON;
 }
 
-bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
+bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
   switch (nmeaPrefixToSentence(s, sz)) {
     case GPGGA: {
       nmeaGPGGA gpgga;
@@ -157,7 +157,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, nmeaINFO *info) {
   }
 }
 
-int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const enum NmeaSentence mask) {
+int nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask) {
   int chars = 0;
   int msk = mask;
 
@@ -177,7 +177,7 @@ int nmeaSentenceFromInfo(char *s, const size_t sz, const nmeaINFO *info, const e
       chars += nmeaGPGSAGenerate(&s[chars], sz - chars, &pack);
       msk &= ~GPGSA;
     } else if (msk & GPGSV) {
-      int satCount = nmea_INFO_is_present(info->present, SATINVIEWCOUNT) ? info->satinfo.inview : 0;
+      int satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? info->satinfo.inViewCount : 0;
       nmeaGPGSV pack;
       int sentence;
       int sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);

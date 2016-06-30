@@ -45,12 +45,12 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	const char * filename = &fn[0];
 	const char * deffile;
 	const char * dn;
-	nmeaINFO info;
+	NmeaInfo info;
 	nmeaPARSER parser;
 	FILE *file;
 	char buff[2048];
 	int size, it = 0;
-	nmeaPOS dpos;
+	NmeaPosition dpos;
 
 	if (argc <= 1) {
 		dn = dirname(argv[0]);
@@ -72,7 +72,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaContextSetTraceFunction(&trace);
 	nmeaContextSetErrorFunction(&error);
 
-	nmea_zero_INFO(&info);
+	nmeaInfoClear(&info);
 	nmea_parser_init(&parser);
 
 	while (!feof(file)) {

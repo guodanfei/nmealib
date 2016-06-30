@@ -114,7 +114,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack);
  * @param pack The GPGSA packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info);
+void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
@@ -122,7 +122,7 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGSA structure
  */
-void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack);
+void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack);
 
 /**
  * Generate a GPGSA sentence from a nmeaGPGSA structure

@@ -199,8 +199,8 @@ static void test_nmeaGPGGAParse(void) {
 
 static void test_nmeaGPGGAToInfo(void) {
   nmeaGPGGA pack;
-  nmeaINFO infoEmpty;
-  nmeaINFO info;
+  NmeaInfo infoEmpty;
+  NmeaInfo info;
 
   memset(&pack, 0, sizeof(pack));
   memset(&infoEmpty, 0, sizeof(infoEmpty));
@@ -233,7 +233,7 @@ static void test_nmeaGPGGAToInfo(void) {
   pack.time.min = 42;
   pack.time.sec = 43;
   pack.time.hsec = 44;
-  nmea_INFO_set_present(&pack.present, UTCTIME);
+  nmeaInfoSetPresent(&pack.present, UTCTIME);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -250,7 +250,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.latitude = -1232.5523;
   pack.ns = 'N';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -262,7 +262,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.latitude = 1232.5523;
   pack.ns = 'N';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -274,7 +274,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.latitude = -1232.5523;
   pack.ns = 'S';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -286,7 +286,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.latitude = 1232.5523;
   pack.ns = 'S';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -300,7 +300,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.longitude = -1232.5523;
   pack.ew = 'E';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -313,7 +313,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.longitude = 1232.5523;
   pack.ew = 'E';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -325,7 +325,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.longitude = -1232.5523;
   pack.ew = 'W';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -336,7 +336,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   pack.longitude = 1232.5523;
   pack.ew = 'W';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -349,7 +349,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* signal */
 
   pack.signal = NMEA_SIG_FLOAT_RTK;
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -362,44 +362,44 @@ static void test_nmeaGPGGAToInfo(void) {
   /* satellites */
 
   pack.satellitesInView = 42;
-  nmea_INFO_set_present(&pack.present, SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&pack.present, SATINVIEWCOUNT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SATINVIEWCOUNT);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_EQUAL(info.satinfo.inview, 42);
+  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 42);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   /* hdop */
 
   pack.hdop = -1232.5523;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.hdop = 1232.5523;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   /* elv */
 
   pack.elevation = -1232.5523;
-  nmea_INFO_set_present(&pack.present, ELV);
+  nmeaInfoSetPresent(&pack.present, ELV);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -410,7 +410,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.elevation = 1232.5523;
-  nmea_INFO_set_present(&pack.present, ELV);
+  nmeaInfoSetPresent(&pack.present, ELV);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -423,7 +423,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* height */
 
   pack.height = -1232.5523;
-  nmea_INFO_set_present(&pack.present, HEIGHT);
+  nmeaInfoSetPresent(&pack.present, HEIGHT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -434,7 +434,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.height = 1232.5523;
-  nmea_INFO_set_present(&pack.present, HEIGHT);
+  nmeaInfoSetPresent(&pack.present, HEIGHT);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -447,7 +447,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* dgpsAge */
 
   pack.dgpsAge = -1232.5523;
-  nmea_INFO_set_present(&pack.present, DGPSAGE);
+  nmeaInfoSetPresent(&pack.present, DGPSAGE);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -458,7 +458,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.dgpsAge = 1232.5523;
-  nmea_INFO_set_present(&pack.present, DGPSAGE);
+  nmeaInfoSetPresent(&pack.present, DGPSAGE);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -471,7 +471,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* dgpsSid */
 
   pack.dgpsSid = 42;
-  nmea_INFO_set_present(&pack.present, DGPSSID);
+  nmeaInfoSetPresent(&pack.present, DGPSSID);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -483,7 +483,7 @@ static void test_nmeaGPGGAToInfo(void) {
 }
 
 static void test_nmeaGPGGAFromInfo(void) {
-  nmeaINFO info;
+  NmeaInfo info;
   nmeaGPGGA packEmpty;
   nmeaGPGGA pack;
 
@@ -513,7 +513,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   info.utc.min = 42;
   info.utc.sec = 43;
   info.utc.hsec = 44;
-  nmea_INFO_set_present(&info.present, UTCTIME);
+  nmeaInfoSetPresent(&info.present, UTCTIME);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -527,7 +527,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* latitude  */
 
   info.lat = -1232.5523;
-  nmea_INFO_set_present(&info.present, LAT);
+  nmeaInfoSetPresent(&info.present, LAT);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -537,7 +537,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   memset(&info, 0, sizeof(info));
 
   info.lat = 1232.5523;
-  nmea_INFO_set_present(&info.present, LAT);
+  nmeaInfoSetPresent(&info.present, LAT);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -549,7 +549,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* longitude */
 
   info.lon = -1232.5523;
-  nmea_INFO_set_present(&info.present, LON);
+  nmeaInfoSetPresent(&info.present, LON);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -559,7 +559,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   memset(&info, 0, sizeof(info));
 
   info.lon = 1232.5523;
-  nmea_INFO_set_present(&info.present, LON);
+  nmeaInfoSetPresent(&info.present, LON);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -571,7 +571,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* signal */
 
   info.sig = NMEA_SIG_MANUAL;
-  nmea_INFO_set_present(&info.present, SIG);
+  nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -581,8 +581,8 @@ static void test_nmeaGPGGAFromInfo(void) {
 
   /* satellites */
 
-  info.satinfo.inview = 42;
-  nmea_INFO_set_present(&info.present, SATINVIEWCOUNT);
+  info.satinfo.inViewCount = 42;
+  nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -592,8 +592,8 @@ static void test_nmeaGPGGAFromInfo(void) {
 
   /* hdop */
 
-  info.HDOP = 1232.5523;
-  nmea_INFO_set_present(&info.present, HDOP);
+  info.hdop = 1232.5523;
+  nmeaInfoSetPresent(&info.present, HDOP);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -604,7 +604,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* elv */
 
   info.elv = -1232.5523;
-  nmea_INFO_set_present(&info.present, ELV);
+  nmeaInfoSetPresent(&info.present, ELV);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -616,7 +616,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* height */
 
   info.height = -1232.5523;
-  nmea_INFO_set_present(&info.present, HEIGHT);
+  nmeaInfoSetPresent(&info.present, HEIGHT);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -628,7 +628,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* dgpsAge */
 
   info.dgpsAge = 1232.5523;
-  nmea_INFO_set_present(&info.present, DGPSAGE);
+  nmeaInfoSetPresent(&info.present, DGPSAGE);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -639,7 +639,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   /* dgpsSid */
 
   info.dgpsSid = 42;
-  nmea_INFO_set_present(&info.present, DGPSSID);
+  nmeaInfoSetPresent(&info.present, DGPSSID);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -692,7 +692,7 @@ static void test_nmeaGPGGAGenerate(void) {
   pack.time.min = 42;
   pack.time.sec = 43;
   pack.time.hsec = 44;
-  nmea_INFO_set_present(&pack.present, UTCTIME);
+  nmeaInfoSetPresent(&pack.present, UTCTIME);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 34);
@@ -704,7 +704,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.latitude = 1242.55;
   pack.ns = 'N';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 35);
@@ -714,7 +714,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.latitude = 1242.55;
   pack.ns = '\0';
-  nmea_INFO_set_present(&pack.present, LAT);
+  nmeaInfoSetPresent(&pack.present, LAT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 34);
@@ -726,7 +726,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.longitude = 1242.55;
   pack.ew = 'E';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 36);
@@ -736,7 +736,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.longitude = 1242.55;
   pack.ew = '\0';
-  nmea_INFO_set_present(&pack.present, LON);
+  nmeaInfoSetPresent(&pack.present, LON);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 35);
@@ -747,7 +747,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* signal */
 
   pack.signal = NMEA_SIG_MANUAL;
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 26);
@@ -758,7 +758,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* satellites */
 
   pack.satellitesInView = 42;
-  nmea_INFO_set_present(&pack.present, SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&pack.present, SATINVIEWCOUNT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 27);
@@ -769,7 +769,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* hdop */
 
   pack.hdop = 42.64;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -781,7 +781,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.elevation = 42.64;
   pack.elevationUnit = 'M';
-  nmea_INFO_set_present(&pack.present, ELV);
+  nmeaInfoSetPresent(&pack.present, ELV);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 30);
@@ -791,7 +791,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.elevation = 42.64;
   pack.elevationUnit = '\0';
-  nmea_INFO_set_present(&pack.present, ELV);
+  nmeaInfoSetPresent(&pack.present, ELV);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -803,7 +803,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.height = 42.64;
   pack.heightUnit = 'M';
-  nmea_INFO_set_present(&pack.present, HEIGHT);
+  nmeaInfoSetPresent(&pack.present, HEIGHT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 30);
@@ -813,7 +813,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   pack.height = 42.64;
   pack.heightUnit = '\0';
-  nmea_INFO_set_present(&pack.present, HEIGHT);
+  nmeaInfoSetPresent(&pack.present, HEIGHT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -824,7 +824,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* dgpsAge */
 
   pack.dgpsAge = 42.64;
-  nmea_INFO_set_present(&pack.present, DGPSAGE);
+  nmeaInfoSetPresent(&pack.present, DGPSAGE);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -835,7 +835,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* dgpsSid */
 
   pack.dgpsSid = 42;
-  nmea_INFO_set_present(&pack.present, DGPSSID);
+  nmeaInfoSetPresent(&pack.present, DGPSSID);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 27);

@@ -23,17 +23,17 @@
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
 	nmeaGENERATOR *gen;
-	nmeaINFO info;
+	NmeaInfo info;
 	char buff[2048];
 	int gen_sz;
 	int it;
 
-	nmea_zero_INFO(&info);
+	nmeaInfoClear(&info);
 
-	nmea_INFO_set_present(&info.present, PDOP);
-	nmea_INFO_set_present(&info.present, HDOP);
-	nmea_INFO_set_present(&info.present, VDOP);
-	nmea_INFO_set_present(&info.present, ELV);
+	nmeaInfoSetPresent(&info.present, PDOP);
+	nmeaInfoSetPresent(&info.present, HDOP);
+	nmeaInfoSetPresent(&info.present, VDOP);
+	nmeaInfoSetPresent(&info.present, ELV);
 
 	if (0 == (gen = nmea_create_generator(NMEA_GEN_ROTATE, &info)))
 		return -1;

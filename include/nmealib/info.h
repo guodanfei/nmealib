@@ -31,6 +31,7 @@ extern "C" {
  * SIG
  */
 
+// FIXME convert to enum
 #define NMEA_SIG_FIRST        (NMEA_SIG_INVALID)
 #define NMEA_SIG_INVALID      (0)
 #define NMEA_SIG_FIX          (1)
@@ -49,7 +50,7 @@ extern "C" {
  * @param sig The NMEA_SIG_* define
  * @return The corresponding string, or NULL when the define is unknown
  */
-const char * nmea_INFO_sig_to_string(int sig);
+const char * nmeaInfoSigToString(int sig);
 
 /**
  * Convert a mode character into the corresponding NMEA_SIG_* define
@@ -58,7 +59,7 @@ const char * nmea_INFO_sig_to_string(int sig);
  * @return The corresponding NMEA_SIG_* define, or NMEA_SIG_INVALID when the
  * mode is unknown
  */
-int nmea_INFO_mode_to_sig(char mode);
+int nmeaInfoModeToSig(char mode);
 
 /**
  * Convert a NMEA_SIG_* define into the corresponding mode character
@@ -67,12 +68,13 @@ int nmea_INFO_mode_to_sig(char mode);
  * @return The corresponding mode character, or 'N' when the NMEA_SIG_* define
  * is unknown
  */
-char nmea_INFO_sig_to_mode(int sig);
+char nmeaInfoSigToMode(int sig);
 
 /*
  * FIX
  */
 
+// FIXME convert to enum
 #define NMEA_FIX_FIRST (NMEA_FIX_BAD)
 #define NMEA_FIX_BAD   (1)
 #define NMEA_FIX_2D    (2)
@@ -86,7 +88,7 @@ char nmea_INFO_sig_to_mode(int sig);
  * @return The corresponding string, or NULL when the NMEA_FIX_* define is
  * unknown
  */
-const char * nmea_INFO_fix_to_string(int fix);
+const char * nmeaInfoFixToString(int fix);
 
 /*
  * Limits and defaults
@@ -104,7 +106,7 @@ const char * nmea_INFO_fix_to_string(int fix);
 /**
  * Date and time data
  */
-typedef struct _nmeaTIME {
+typedef struct _NmeaTime {
   unsigned int year; /**< Years                    - [1900, 2089]                 */
   unsigned int mon;  /**< Months                   - [   1,   12]                 */
   unsigned int day;  /**< Day of the month         - [   1,   31]                 */
@@ -112,74 +114,74 @@ typedef struct _nmeaTIME {
   unsigned int min;  /**< Minutes after the hour   - [   0,   59]                 */
   unsigned int sec;  /**< Seconds after the minute - [   0,   60] (1 leap second) */
   unsigned int hsec; /**< Hundredth part of second - [   0,   99]                 */
-} nmeaTIME;
+} NmeaTime;
 
 /**
  * Position data in fractional degrees or radians
  */
-typedef struct _nmeaPOS {
+typedef struct _NmeaPosition {
   double lat; /**< Latitude  */
   double lon; /**< Longitude */
-} nmeaPOS;
+} NmeaPosition;
 
 /**
  * Information about satellite
  */
-typedef struct _nmeaSATELLITE {
-  int id;      /**< Satellite PRN number             - [1, inf) */
-  int elv;     /**< Elevation, in degrees            - [0,  90] */
-  int azimuth; /**< Azimuth, degrees from true north - [0, 359] */
-  int sig;     /**< Signal                           - [0,  99] */
-} nmeaSATELLITE;
+typedef struct _NmeaSatellite {
+  int prn;       /**< Satellite PRN number             - [1, inf) */
+  int elevation; /**< Elevation, in degrees            - [0,  90] */
+  int azimuth;   /**< Azimuth, degrees from true north - [0, 359] */
+  int snr;       /**< Signal-to-Noise-Ratio            - [0,  99] */
+} NmeaSatellite;
 
 /**
  * Information about all tracked satellites
  */
-typedef struct _nmeaSATINFO {
-  int inuse;                                 /**< The number of satellites in use (not those in view) */
-  int in_use[NMEALIB_MAX_SATELLITES];        /**< The PRNs of satellites in use   (not those in view) */
-  int inview;                                /**< The number of satellites in view                    */
-  nmeaSATELLITE sat[NMEALIB_MAX_SATELLITES]; /**< Satellites information (in view)                    */
-} nmeaSATINFO;
+typedef struct _NmeaSatellites {
+  int inUseCount;                               /**< The number of satellites in use (not those in view) */
+  int inUse[NMEALIB_MAX_SATELLITES];            /**< The PRNs of satellites in use   (not those in view) */
+  int inViewCount;                              /**< The number of satellites in view                    */
+  NmeaSatellite inView[NMEALIB_MAX_SATELLITES]; /**< Satellites information (in view)                    */
+} NmeaSatellites;
 
 /**
  * Information about progress on non-atomic sentences
  */
-typedef struct _nmeaProgress {
+typedef struct _NmeaProgress {
   bool gpgsvInProgress; /**< true when gpgsv is in progress */
-} nmeaProgress;
+} NmeaProgress;
 
 /**
  * GPS information from all supported sentences, used also for generating NMEA sentences
  */
-typedef struct _nmeaINFO {
-  uint32_t    present;   /**< Bit-mask specifying which fields are present                    */
-  int         smask;     /**< Bit-mask specifying from which sentences data has been obtained */
-  nmeaTIME    utc;       /**< UTC of the position data                                        */
-  int         sig;       /**< Signal quality, see NMEA_SIG_* defines                          */
-  int         fix;       /**< Operating mode, see NMEA_FIX_* defines                          */
-  double      PDOP;      /**< Position Dilution Of Precision                                  */
-  double      HDOP;      /**< Horizontal Dilution Of Precision                                */
-  double      VDOP;      /**< Vertical Dilution Of Precision                                  */
-  double      lat;       /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
-  double      lon;       /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
-  double      elv;       /**< Elevation above/below mean sea level (geoid), in meters         */
-  double      height;    /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
-  double      speed;     /**< Speed over the ground in kph                                    */
-  double      track;     /**< Track angle in degrees true north                               */
-  double      mtrack;    /**< Magnetic Track angle in degrees true north                      */
-  double      magvar;    /**< Magnetic variation degrees                                      */
-  double      dgpsAge;   /**< Time since last DGPS update, in seconds                         */
-  int         dgpsSid;   /**< DGPS station ID number                                          */
-  nmeaSATINFO satinfo;   /**< Satellites information                                          */
-  nmeaProgress progress; /**< Progress information                                            */
-} nmeaINFO;
+typedef struct _NmeaInfo {
+  uint32_t     present;  /**< Bit-mask specifying which fields are present                    */
+  int          smask;    /**< Bit-mask specifying from which sentences data has been obtained */
+  NmeaTime     utc;      /**< UTC of the position data                                        */
+  int          sig;      /**< Signal quality, see NMEA_SIG_* defines                          */
+  int          fix;      /**< Operating mode, see NMEA_FIX_* defines                          */
+  double       pdop;     /**< Position Dilution Of Precision                                  */
+  double       hdop;     /**< Horizontal Dilution Of Precision                                */
+  double       vdop;     /**< Vertical Dilution Of Precision                                  */
+  double       lat;      /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
+  double       lon;      /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
+  double       elv;      /**< Elevation above/below mean sea level (geoid), in meters         */
+  double       height;   /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
+  double       speed;    /**< Speed over the ground in kph                                    */
+  double       track;    /**< Track angle in degrees true north                               */
+  double       mtrack;   /**< Magnetic Track angle in degrees true north                      */
+  double       magvar;   /**< Magnetic variation degrees                                      */
+  double       dgpsAge;  /**< Time since last DGPS update, in seconds                         */
+  int          dgpsSid;  /**< DGPS station ID number                                          */
+  NmeaSatellites  satinfo;  /**< Satellites information                                          */
+  NmeaProgress progress; /**< Progress information                                            */
+} NmeaInfo;
 
 /**
  * Enumeration for the fields names of a nmeaINFO structure.
  * The values are used in the 'present' bit-mask.
  */
-typedef enum _nmeaINFO_FIELD {
+typedef enum _NmeaPresence {
   SMASK          = (1u << 0),  /* 0x00000001 */
   UTCDATE        = (1u << 1),  /* 0x00000002 */
   UTCTIME        = (1u << 2),  /* 0x00000004 */
@@ -209,7 +211,7 @@ typedef enum _nmeaINFO_FIELD {
   DGPSSID        = (1u << 21), /* 0x00200000 */
 
   _nmeaINFO_FIELD_LAST = DGPSSID
-} nmeaINFO_FIELD;
+} NmeaPresence;
 
 /** The bit-mask of all supported field name bits */
 #define NMEA_INFO_PRESENT_MASK ((_nmeaINFO_FIELD_LAST << 1) - 1)
@@ -221,7 +223,7 @@ typedef enum _nmeaINFO_FIELD {
  * @return The corresponding string, or NULL when the nmeaINFO_FIELD is
  * unknown
  */
-const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field);
+const char * nmeaInfoFieldToString(NmeaPresence field);
 
 /**
  * Determine if a 'present' bit-mask indicates presence of a certain
@@ -231,7 +233,7 @@ const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field);
  * @param fieldName The nmeaINFO_FIELD to check for presence
  * @return True when the nmeaINFO_FIELD is present
  */
-static INLINE bool nmea_INFO_is_present(uint32_t present, nmeaINFO_FIELD fieldName) {
+static INLINE bool nmeaInfoIsPresentAll(uint32_t present, NmeaPresence fieldName) {
   return ((present & fieldName) == fieldName);
 }
 
@@ -243,7 +245,7 @@ static INLINE bool nmea_INFO_is_present(uint32_t present, nmeaINFO_FIELD fieldNa
  * @param fieldName The nmeaINFO_FIELD bit-mask to check for presence
  * @return True when any of the nmeaINFO_FIELD field names is present
  */
-static INLINE bool nmea_INFO_is_present_any(uint32_t present, nmeaINFO_FIELD fieldName) {
+static INLINE bool nmeaInfoIsPresentAny(uint32_t present, NmeaPresence fieldName) {
   return ((present & fieldName) != 0);
 }
 
@@ -254,7 +256,7 @@ static INLINE bool nmea_INFO_is_present_any(uint32_t present, nmeaINFO_FIELD fie
  * @param present The 'present' field
  * @param fieldName The nmeaINFO_FIELD to indicate presence of
  */
-static INLINE void nmea_INFO_set_present(uint32_t * present, nmeaINFO_FIELD fieldName) {
+static INLINE void nmeaInfoSetPresent(uint32_t * present, NmeaPresence fieldName) {
   if (present) {
     *present |= fieldName;
   }
@@ -266,7 +268,7 @@ static INLINE void nmea_INFO_set_present(uint32_t * present, nmeaINFO_FIELD fiel
  * @param present The 'present' field
  * @param fieldName The nmeaINFO_FIELD to absence presence of
  */
-static INLINE void nmea_INFO_unset_present(uint32_t * present, nmeaINFO_FIELD fieldName) {
+static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldName) {
   if (present) {
     *present &= ~fieldName;
   }
@@ -279,7 +281,7 @@ static INLINE void nmea_INFO_unset_present(uint32_t * present, nmeaINFO_FIELD fi
  * @param present The 'present' field (when non-NULL then the UTCDATE and
  * UTCTIME flags are set in it)
  */
-void nmea_time_now(nmeaTIME *utc, uint32_t * present);
+void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present);
 
 /**
  * Clear an info structure.
@@ -291,7 +293,7 @@ void nmea_time_now(nmeaTIME *utc, uint32_t * present);
  *
  * @param info The info structure
  */
-void nmea_zero_INFO(nmeaINFO *info);
+void nmeaInfoClear(NmeaInfo *info);
 
 /**
  * Sanitise the NMEA info, make sure that:
@@ -320,7 +322,7 @@ void nmea_zero_INFO(nmeaINFO *info);
  * @param nmeaInfo
  * the NMEA info structure to sanitise
  */
-void nmea_INFO_sanitise(nmeaINFO *nmeaInfo);
+void nmeaInfoSanitise(NmeaInfo *nmeaInfo);
 
 /**
  * Converts the position fields to degrees and DOP fields to meters so that
@@ -328,7 +330,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo);
  *
  * @param nmeaInfo The info structure
  */
-void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo);
+void nmeaInfoUnitConversion(NmeaInfo * nmeaInfo);
 
 /**
  * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)

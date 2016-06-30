@@ -176,8 +176,8 @@ static void test_nmeaGPGSAParse(void) {
 static void test_nmeaGPGSAToInfo(void) {
   size_t i;
   nmeaGPGSA pack;
-  nmeaINFO infoEmpty;
-  nmeaINFO info;
+  NmeaInfo infoEmpty;
+  NmeaInfo info;
 
   memset(&pack, 0, sizeof(pack));
   memset(&infoEmpty, 0, sizeof(infoEmpty));
@@ -207,7 +207,7 @@ static void test_nmeaGPGSAToInfo(void) {
   /* sig */
 
   pack.sig = '!';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
   info.sig = NMEA_SIG_FLOAT_RTK;
 
   nmeaGPGSAToInfo(&pack, &info);
@@ -218,7 +218,7 @@ static void test_nmeaGPGSAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.sig = '!';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
   info.sig = NMEA_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
@@ -230,7 +230,7 @@ static void test_nmeaGPGSAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.sig = 'A';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
   info.sig = NMEA_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
@@ -242,7 +242,7 @@ static void test_nmeaGPGSAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.sig = 'M';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
   info.sig = NMEA_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
@@ -256,7 +256,7 @@ static void test_nmeaGPGSAToInfo(void) {
   /* fix */
 
   pack.fix = NMEA_FIX_3D;
-  nmea_INFO_set_present(&pack.present, FIX);
+  nmeaInfoSetPresent(&pack.present, FIX);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -280,24 +280,24 @@ static void test_nmeaGPGSAToInfo(void) {
   pack.satPrn[9] = 10;
   pack.satPrn[10] = 11;
   pack.satPrn[11] = 12;
-  nmea_INFO_set_present(&pack.present, SATINUSE);
+  nmeaInfoSetPresent(&pack.present, SATINUSE);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SATINUSECOUNT | SATINUSE);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
 
-  CU_ASSERT_EQUAL(info.satinfo.in_use[0], 1);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[1], 2);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[2], 5);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[3], 6);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[4], 7);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[5], 8);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[6], 10);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[7], 11);
-  CU_ASSERT_EQUAL(info.satinfo.in_use[8], 12);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[0], 1);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[1], 2);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[2], 5);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[3], 6);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[4], 7);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[5], 8);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[6], 10);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[7], 11);
+  CU_ASSERT_EQUAL(info.satinfo.inUse[8], 12);
   for (i = 9; i < NMEALIB_MAX_SATELLITES; i++) {
-    CU_ASSERT_EQUAL(info.satinfo.in_use[i], 0);
+    CU_ASSERT_EQUAL(info.satinfo.inUse[i], 0);
   }
 
   memset(&pack, 0, sizeof(pack));
@@ -306,78 +306,78 @@ static void test_nmeaGPGSAToInfo(void) {
   /* pdop */
 
   pack.pdop = -1232.5523;
-  nmea_INFO_set_present(&pack.present, PDOP);
+  nmeaInfoSetPresent(&pack.present, PDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | PDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.PDOP, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.pdop = 1232.5523;
-  nmea_INFO_set_present(&pack.present, PDOP);
+  nmeaInfoSetPresent(&pack.present, PDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | PDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.PDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   /* hdop */
 
   pack.hdop = -1232.5523;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.hdop = 1232.5523;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | HDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.HDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   /* vdop */
 
   pack.vdop = -1232.5523;
-  nmea_INFO_set_present(&pack.present, VDOP);
+  nmeaInfoSetPresent(&pack.present, VDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | VDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.VDOP, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.vdop = 1232.5523;
-  nmea_INFO_set_present(&pack.present, VDOP);
+  nmeaInfoSetPresent(&pack.present, VDOP);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | VDOP);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_DOUBLE_EQUAL(info.VDOP, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 }
 
 static void test_nmeaGPGSAFromInfo(void) {
-  nmeaINFO info;
+  NmeaInfo info;
   nmeaGPGSA packEmpty;
   nmeaGPGSA pack;
 
@@ -406,7 +406,7 @@ static void test_nmeaGPGSAFromInfo(void) {
   /* sig */
 
   info.sig = NMEA_SIG_ESTIMATED;
-  nmea_INFO_set_present(&info.present, SIG);
+  nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -415,7 +415,7 @@ static void test_nmeaGPGSAFromInfo(void) {
   memset(&info, 0, sizeof(info));
 
   info.sig = NMEA_SIG_MANUAL;
-  nmea_INFO_set_present(&info.present, SIG);
+  nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -426,7 +426,7 @@ static void test_nmeaGPGSAFromInfo(void) {
   /* fix */
 
   info.fix = NMEA_FIX_2D;
-  nmea_INFO_set_present(&info.present, FIX);
+  nmeaInfoSetPresent(&info.present, FIX);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -436,12 +436,12 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* satPrn */
 
-  info.satinfo.in_use[0] = 1;
-  info.satinfo.in_use[1] = 2;
-  info.satinfo.in_use[2] = 5;
-  info.satinfo.in_use[3] = 6;
-  info.satinfo.in_use[4] = 7;
-  nmea_INFO_set_present(&info.present, SATINUSE);
+  info.satinfo.inUse[0] = 1;
+  info.satinfo.inUse[1] = 2;
+  info.satinfo.inUse[2] = 5;
+  info.satinfo.inUse[3] = 6;
+  info.satinfo.inUse[4] = 7;
+  nmeaInfoSetPresent(&info.present, SATINUSE);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -460,21 +460,21 @@ static void test_nmeaGPGSAFromInfo(void) {
   CU_ASSERT_EQUAL(pack.satPrn[11], 0);
   memset(&info, 0, sizeof(info));
 
-  info.satinfo.in_use[0] = 1;
-  info.satinfo.in_use[1] = 2;
-  info.satinfo.in_use[2] = 5;
-  info.satinfo.in_use[3] = 6;
-  info.satinfo.in_use[4] = 7;
-  info.satinfo.in_use[5] = 9;
-  info.satinfo.in_use[6] = 10;
-  info.satinfo.in_use[7] = 11;
-  info.satinfo.in_use[8] = 14;
-  info.satinfo.in_use[9] = 15;
-  info.satinfo.in_use[10] = 16;
-  info.satinfo.in_use[11] = 17;
-  info.satinfo.in_use[12] = 18;
-  info.satinfo.in_use[13] = 19;
-  nmea_INFO_set_present(&info.present, SATINUSE);
+  info.satinfo.inUse[0] = 1;
+  info.satinfo.inUse[1] = 2;
+  info.satinfo.inUse[2] = 5;
+  info.satinfo.inUse[3] = 6;
+  info.satinfo.inUse[4] = 7;
+  info.satinfo.inUse[5] = 9;
+  info.satinfo.inUse[6] = 10;
+  info.satinfo.inUse[7] = 11;
+  info.satinfo.inUse[8] = 14;
+  info.satinfo.inUse[9] = 15;
+  info.satinfo.inUse[10] = 16;
+  info.satinfo.inUse[11] = 17;
+  info.satinfo.inUse[12] = 18;
+  info.satinfo.inUse[13] = 19;
+  nmeaInfoSetPresent(&info.present, SATINUSE);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -495,8 +495,8 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* pdop */
 
-  info.PDOP = 1232.5523;
-  nmea_INFO_set_present(&info.present, PDOP);
+  info.pdop = 1232.5523;
+  nmeaInfoSetPresent(&info.present, PDOP);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -506,8 +506,8 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* hdop */
 
-  info.HDOP = 1232.5523;
-  nmea_INFO_set_present(&info.present, HDOP);
+  info.hdop = 1232.5523;
+  nmeaInfoSetPresent(&info.present, HDOP);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -517,8 +517,8 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* vdop */
 
-  info.VDOP = 1232.5523;
-  nmea_INFO_set_present(&info.present, VDOP);
+  info.vdop = 1232.5523;
+  nmeaInfoSetPresent(&info.present, VDOP);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
@@ -568,7 +568,7 @@ static void test_nmeaGPGSAGenerate(void) {
   /* sig */
 
   pack.sig = 'A';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -577,7 +577,7 @@ static void test_nmeaGPGSAGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.sig = '\0';
-  nmea_INFO_set_present(&pack.present, SIG);
+  nmeaInfoSetPresent(&pack.present, SIG);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 28);
@@ -588,7 +588,7 @@ static void test_nmeaGPGSAGenerate(void) {
   /* fix */
 
   pack.fix = NMEA_FIX_3D;
-  nmea_INFO_set_present(&pack.present, FIX);
+  nmeaInfoSetPresent(&pack.present, FIX);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 29);
@@ -607,7 +607,7 @@ static void test_nmeaGPGSAGenerate(void) {
   pack.satPrn[9] = 10;
   pack.satPrn[10] = 11;
   pack.satPrn[11] = 12;
-  nmea_INFO_set_present(&pack.present, SATINUSE);
+  nmeaInfoSetPresent(&pack.present, SATINUSE);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 40);
@@ -618,7 +618,7 @@ static void test_nmeaGPGSAGenerate(void) {
   /* pdop */
 
   pack.pdop = 42.64;
-  nmea_INFO_set_present(&pack.present, PDOP);
+  nmeaInfoSetPresent(&pack.present, PDOP);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 32);
@@ -629,7 +629,7 @@ static void test_nmeaGPGSAGenerate(void) {
   /* hdop */
 
   pack.hdop = 42.64;
-  nmea_INFO_set_present(&pack.present, HDOP);
+  nmeaInfoSetPresent(&pack.present, HDOP);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 32);
@@ -640,7 +640,7 @@ static void test_nmeaGPGSAGenerate(void) {
   /* vdop */
 
   pack.vdop = 42.64;
-  nmea_INFO_set_present(&pack.present, VDOP);
+  nmeaInfoSetPresent(&pack.present, VDOP);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 32);

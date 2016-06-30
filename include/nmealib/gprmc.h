@@ -73,7 +73,7 @@ extern "C" {
 typedef struct _nmeaGPRMC {
   bool     v23;
   uint32_t present;
-  nmeaTIME utc;
+  NmeaTime utc;
   char     sigSelection;
   double   latitude;
   char     ns;
@@ -102,7 +102,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack);
  * @param pack The GPRMC packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info);
+void nmeaGPRMCToInfo(const nmeaGPRMC *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
@@ -110,7 +110,7 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPRMC structure
  */
-void nmeaGPRMCFromInfo(const nmeaINFO *info, nmeaGPRMC *pack);
+void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack);
 
 /**
  * Generate a GPRMC sentence from a nmeaGPRMC structure

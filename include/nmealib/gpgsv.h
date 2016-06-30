@@ -108,7 +108,7 @@ typedef struct _nmeaGPGSV {
   unsigned int  sentences;
   unsigned int  sentence;
   unsigned int  satellites;
-  nmeaSATELLITE satellite[NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE];
+  NmeaSatellite satellite[NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE];
 } nmeaGPGSV;
 
 /**
@@ -136,7 +136,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack);
  * @param pack The GPGSV packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info);
+void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
@@ -145,7 +145,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info);
  * @param pack The nmeaGPGSV structure
  * @param sentence The sentence index of the nmeaGPGSV structure (zero based)
  */
-void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t sentence);
+void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence);
 
 /**
  * Generate a GPGSV sentence from a nmeaGPGSV structure

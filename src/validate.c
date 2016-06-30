@@ -96,7 +96,7 @@ const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char
   return NULL;
 }
 
-bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s) {
+bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
@@ -114,7 +114,7 @@ bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s) {
   return true;
 }
 
-bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s) {
+bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
@@ -207,19 +207,19 @@ bool nmeaValidateMode(char c, const char *prefix, const char *s) {
   return true;
 }
 
-bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s) {
+bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s) {
   if (!sat) {
     return false;
   }
 
-  if ((sat->id < 0)) {
-    nmeaError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->id, s);
+  if ((sat->prn < 0)) {
+    nmeaError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->prn, s);
     return false;
   }
 
-  if ((sat->elv < -180) //
-      || (sat->elv > 180)) {
-    nmeaError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elv, s);
+  if ((sat->elevation < -180) //
+      || (sat->elevation > 180)) {
+    nmeaError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elevation, s);
     return false;
   }
 
@@ -229,9 +229,9 @@ bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s
     return false;
   }
 
-  if ((sat->sig < 0) //
-      || (sat->sig > 99)) {
-    nmeaError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->sig, s);
+  if ((sat->snr < 0) //
+      || (sat->snr > 99)) {
+    nmeaError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->snr, s);
     return false;
   }
 

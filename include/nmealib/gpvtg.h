@@ -92,7 +92,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack);
  * @param pack The GPVTG packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info);
+void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
@@ -100,7 +100,7 @@ void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPVTG structure
  */
-void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack);
+void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack);
 
 /**
  * Generate a GPVTG sentence from a nmeaGPVTG structure

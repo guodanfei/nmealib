@@ -122,7 +122,7 @@ double nmea_meters2dop(const double meters) {
  * @param to_pos a pointer to the to position (in radians)
  * @return distance in meters
  */
-double nmea_distance(const nmeaPOS *from_pos, const nmeaPOS *to_pos) {
+double nmea_distance(const NmeaPosition *from_pos, const NmeaPosition *to_pos) {
   return ((double) NMEA_EARTHRADIUS_M)
       * acos(
           sin(to_pos->lat) * sin(from_pos->lat)
@@ -141,7 +141,7 @@ double nmea_distance(const nmeaPOS *from_pos, const nmeaPOS *to_pos) {
  * @param to_azimuth a pointer to the azimuth at "to" position (in radians) (output)
  * @return distance in meters
  */
-double nmea_distance_ellipsoid(const nmeaPOS *from_pos, const nmeaPOS *to_pos, double *from_azimuth, double *to_azimuth) {
+double nmea_distance_ellipsoid(const NmeaPosition *from_pos, const NmeaPosition *to_pos, double *from_azimuth, double *to_azimuth) {
   /* All variables */
   double f, a, b, sqr_a, sqr_b;
   double L, phi1, phi2, U1, U2, sin_U1, sin_U2, cos_U1, cos_U2;
@@ -256,8 +256,8 @@ double nmea_distance_ellipsoid(const nmeaPOS *from_pos, const nmeaPOS *to_pos, d
  * @param distance the distance (in km)
  * @return 1 (true) on success, 0 (false) on failure
  */
-int nmea_move_horz(const nmeaPOS *start_pos, nmeaPOS *end_pos, double azimuth, double distance) {
-  nmeaPOS p1 = *start_pos;
+int nmea_move_horz(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance) {
+  NmeaPosition p1 = *start_pos;
   int RetVal = 1;
 
   distance /= NMEA_EARTHRADIUS_KM; /* Angular distance covered on earth's surface */
@@ -289,7 +289,7 @@ int nmea_move_horz(const nmeaPOS *start_pos, nmeaPOS *end_pos, double azimuth, d
  * @param end_azimuth azimuth at end position (in radians) (output)
  * @return 1 (true) on success, 0 (false) on failure
  */
-int nmea_move_horz_ellipsoid(const nmeaPOS *start_pos, nmeaPOS *end_pos, double azimuth, double distance,
+int nmea_move_horz_ellipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance,
     double *end_azimuth) {
   /* Variables */
   double f, a, b, sqr_a, sqr_b;
@@ -384,13 +384,13 @@ int nmea_move_horz_ellipsoid(const nmeaPOS *start_pos, nmeaPOS *end_pos, double 
  * @param info a pointer to the INFO position
  * @param pos a pointer to the radians position (output)
  */
-void nmea_info2pos(const nmeaINFO *info, nmeaPOS *pos) {
-  if (nmea_INFO_is_present(info->present, LAT))
+void nmea_info2pos(const NmeaInfo *info, NmeaPosition *pos) {
+  if (nmeaInfoIsPresentAll(info->present, LAT))
     pos->lat = nmea_ndeg2radian(info->lat);
   else
     pos->lat = NMEA_DEF_LAT;
 
-  if (nmea_INFO_is_present(info->present, LON))
+  if (nmeaInfoIsPresentAll(info->present, LON))
     pos->lon = nmea_ndeg2radian(info->lon);
   else
     pos->lon = NMEA_DEF_LON;
@@ -402,9 +402,9 @@ void nmea_info2pos(const nmeaINFO *info, nmeaPOS *pos) {
  * @param pos a pointer to the radians position
  * @param info a pointer to the INFO position (output)
  */
-void nmea_pos2info(const nmeaPOS *pos, nmeaINFO *info) {
+void nmea_pos2info(const NmeaPosition *pos, NmeaInfo *info) {
   info->lat = nmea_radian2ndeg(pos->lat);
   info->lon = nmea_radian2ndeg(pos->lon);
-  nmea_INFO_set_present(&info->present, LAT);
-  nmea_INFO_set_present(&info->present, LON);
+  nmeaInfoSetPresent(&info->present, LAT);
+  nmeaInfoSetPresent(&info->present, LON);
 }

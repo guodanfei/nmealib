@@ -35,7 +35,7 @@ extern "C" {
  * @param t The structure in which to store the parsed time
  * @return True on success
  */
-bool nmeaTIMEparseTime(const char *time, nmeaTIME *t);
+bool nmeaTIMEparseTime(const char *time, NmeaTime *t);
 
 /**
  * Parse a NMEA date into a nmeaTIME structure (date only, no time).
@@ -48,7 +48,7 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t);
  * @param t The structure in which to store the parsed date
  * @return True on success
  */
-bool nmeaTIMEparseDate(const char *date, nmeaTIME *t);
+bool nmeaTIMEparseDate(const char *date, NmeaTime *t);
 
 #ifdef  __cplusplus
 }

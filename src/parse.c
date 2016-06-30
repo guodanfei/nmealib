@@ -21,7 +21,7 @@
 #include <nmealib/tok.h>
 #include <string.h>
 
-bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
+bool nmeaTIMEparseTime(const char *time, NmeaTime *t) {
   size_t sz;
 
   if (!time || !t) {
@@ -58,7 +58,7 @@ bool nmeaTIMEparseTime(const char *time, nmeaTIME *t) {
   return false;
 }
 
-bool nmeaTIMEparseDate(const char *date, nmeaTIME *t) {
+bool nmeaTIMEparseDate(const char *date, NmeaTime *t) {
   size_t sz;
 
   if (!date || !t) {

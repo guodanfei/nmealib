@@ -72,7 +72,7 @@ const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s);
+bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s);
 
 /**
  * Validate the date fields in an nmeaTIME structure.
@@ -89,7 +89,7 @@ bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s);
  * @param s The NMEA sentence
  * @return true when valid, false otherwise
  */
-bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s);
+bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s);
 
 /**
  * Validate north/south or east/west and upper-case it.
@@ -175,7 +175,7 @@ bool nmeaValidateMode(char c, const char *prefix, const char *s);
  *   signal   : in the range [   0,  99]
  * </pre>
  */
-bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s);
+bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s);
 
 #ifdef  __cplusplus
 }

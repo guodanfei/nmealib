@@ -77,7 +77,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, TRACK);
+    nmeaInfoSetPresent(&pack->present, TRACK);
   } else {
     pack->track = 0.0;
     pack->track_t = '\0';
@@ -89,7 +89,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
       goto err;
     }
 
-    nmea_INFO_set_present(&pack->present, MTRACK);
+    nmeaInfoSetPresent(&pack->present, MTRACK);
   } else {
     pack->mtrack = 0.0;
     pack->mtrack_m = '\0';
@@ -102,7 +102,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
     }
 
     speedN = true;
-    nmea_INFO_set_present(&pack->present, SPEED);
+    nmeaInfoSetPresent(&pack->present, SPEED);
   } else {
     pack->spn = 0.0;
     pack->spn_n = '\0';
@@ -115,7 +115,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
     }
 
     speedK = true;
-    nmea_INFO_set_present(&pack->present, SPEED);
+    nmeaInfoSetPresent(&pack->present, SPEED);
   } else {
     pack->spk = 0.0;
     pack->spk_k = '\0';
@@ -136,27 +136,27 @@ err:
   return false;
 }
 
-void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info) {
+void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
   }
 
-  nmea_INFO_set_present(&info->present, SMASK);
+  nmeaInfoSetPresent(&info->present, SMASK);
 
   info->smask |= GPVTG;
 
-  if (nmea_INFO_is_present(pack->present, TRACK)) {
+  if (nmeaInfoIsPresentAll(pack->present, TRACK)) {
     info->track = pack->track;
-    nmea_INFO_set_present(&info->present, TRACK);
+    nmeaInfoSetPresent(&info->present, TRACK);
   }
 
-  if (nmea_INFO_is_present(pack->present, MTRACK)) {
+  if (nmeaInfoIsPresentAll(pack->present, MTRACK)) {
     info->mtrack = pack->mtrack;
-    nmea_INFO_set_present(&info->present, MTRACK);
+    nmeaInfoSetPresent(&info->present, MTRACK);
   }
 
-  if (nmea_INFO_is_present(pack->present, SPEED)) {
+  if (nmeaInfoIsPresentAll(pack->present, SPEED)) {
     double speed;
     if (pack->spk_k) {
       speed = pack->spk;
@@ -164,11 +164,11 @@ void nmeaGPVTGToInfo(const nmeaGPVTG *pack, nmeaINFO *info) {
       speed = pack->spn * NMEA_TUD_KNOTS;
     }
     info->speed = speed;
-    nmea_INFO_set_present(&info->present, SPEED);
+    nmeaInfoSetPresent(&info->present, SPEED);
   }
 }
 
-void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
+void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack) {
   if (!pack //
       || !info) {
     return;
@@ -176,24 +176,24 @@ void nmeaGPVTGFromInfo(const nmeaINFO *info, nmeaGPVTG *pack) {
 
   memset(pack, 0, sizeof(*pack));
 
-  if (nmea_INFO_is_present(info->present, TRACK)) {
+  if (nmeaInfoIsPresentAll(info->present, TRACK)) {
     pack->track = info->track;
     pack->track_t = 'T';
-    nmea_INFO_set_present(&pack->present, TRACK);
+    nmeaInfoSetPresent(&pack->present, TRACK);
   }
 
-  if (nmea_INFO_is_present(info->present, MTRACK)) {
+  if (nmeaInfoIsPresentAll(info->present, MTRACK)) {
     pack->mtrack = info->mtrack;
     pack->mtrack_m = 'M';
-    nmea_INFO_set_present(&pack->present, MTRACK);
+    nmeaInfoSetPresent(&pack->present, MTRACK);
   }
 
-  if (nmea_INFO_is_present(info->present, SPEED)) {
+  if (nmeaInfoIsPresentAll(info->present, SPEED)) {
     pack->spn = info->speed / NMEA_TUD_KNOTS;
     pack->spn_n = 'N';
     pack->spk = info->speed;
     pack->spk_k = 'K';
-    nmea_INFO_set_present(&pack->present, SPEED);
+    nmeaInfoSetPresent(&pack->present, SPEED);
   }
 }
 
@@ -211,19 +211,19 @@ int nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
 
   chars += snprintf(dst, available, "$" NMEA_PREFIX_GPVTG);
 
-  if (nmea_INFO_is_present(pack->present, TRACK)) {
+  if (nmeaInfoIsPresentAll(pack->present, TRACK)) {
     chars += snprintf(dst, available, ",%03.1f,%c", pack->track, pack->track_t);
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, MTRACK)) {
+  if (nmeaInfoIsPresentAll(pack->present, MTRACK)) {
     chars += snprintf(dst, available, ",%03.1f,%c", pack->mtrack, pack->mtrack_m);
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
-  if (nmea_INFO_is_present(pack->present, SPEED)) {
+  if (nmeaInfoIsPresentAll(pack->present, SPEED)) {
     if (pack->spn_n) {
       chars += snprintf(dst, available, ",%03.1f,N", pack->spn);
     } else {

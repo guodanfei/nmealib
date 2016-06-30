@@ -27,7 +27,7 @@
 #include <sys/time.h>
 #include <assert.h>
 
-const char * nmea_INFO_sig_to_string(int sig) {
+const char * nmeaInfoSigToString(int sig) {
   switch (sig) {
     case NMEA_SIG_INVALID:
       return "INVALID";
@@ -61,7 +61,7 @@ const char * nmea_INFO_sig_to_string(int sig) {
   }
 }
 
-int nmea_INFO_mode_to_sig(char mode) {
+int nmeaInfoModeToSig(char mode) {
   switch (mode) {
     case 'N':
       return NMEA_SIG_INVALID;
@@ -95,7 +95,7 @@ int nmea_INFO_mode_to_sig(char mode) {
   }
 }
 
-char nmea_INFO_sig_to_mode(int sig) {
+char nmeaInfoSigToMode(int sig) {
   switch (sig) {
     case NMEA_SIG_INVALID:
       return 'N';
@@ -129,7 +129,7 @@ char nmea_INFO_sig_to_mode(int sig) {
   }
 }
 
-const char * nmea_INFO_fix_to_string(int fix) {
+const char * nmeaInfoFixToString(int fix) {
   switch (fix) {
     case NMEA_FIX_BAD:
       return "BAD";
@@ -145,7 +145,7 @@ const char * nmea_INFO_fix_to_string(int fix) {
   }
 }
 
-const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field) {
+const char * nmeaInfoFieldToString(NmeaPresence field) {
   switch (field) {
     case SMASK:
       return "SMASK";
@@ -218,7 +218,7 @@ const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field) {
   }
 }
 
-void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
+void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present) {
   struct timeval tp;
   struct tm tt;
 
@@ -235,27 +235,27 @@ void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
   utc->sec = (unsigned int) tt.tm_sec;
   utc->hsec = (unsigned int) (tp.tv_usec / 10000);
   if (present) {
-    nmea_INFO_set_present(present, UTCDATE | UTCTIME);
+    nmeaInfoSetPresent(present, UTCDATE | UTCTIME);
   }
 }
 
-void nmea_zero_INFO(nmeaINFO *info) {
+void nmeaInfoClear(NmeaInfo *info) {
   if (!info) {
     return;
   }
 
-  memset(info, 0, sizeof(nmeaINFO));
+  memset(info, 0, sizeof(NmeaInfo));
 
-  nmea_time_now(&info->utc, &info->present);
+  nmeaInfoTimeSetNow(&info->utc, &info->present);
 
   info->sig = NMEA_SIG_INVALID;
-  nmea_INFO_set_present(&info->present, SIG);
+  nmeaInfoSetPresent(&info->present, SIG);
 
   info->fix = NMEA_FIX_BAD;
-  nmea_INFO_set_present(&info->present, FIX);
+  nmeaInfoSetPresent(&info->present, FIX);
 }
 
-void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
+void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
   double lat = 0;
   double lon = 0;
   double speed = 0;
@@ -268,7 +268,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
   bool trackAdjusted = false;
   bool mtrackAdjusted = false;
   bool magvarAdjusted = false;
-  nmeaTIME utc;
+  NmeaTime utc;
   size_t inuseIndex;
   size_t inviewIndex;
 
@@ -278,28 +278,28 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
 
   nmeaInfo->present = nmeaInfo->present & NMEA_INFO_PRESENT_MASK;
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, SMASK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SMASK)) {
     nmeaInfo->smask = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, UTCDATE) || !nmea_INFO_is_present(nmeaInfo->present, UTCTIME)) {
-    nmea_time_now(&utc, NULL);
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE) || !nmeaInfoIsPresentAll(nmeaInfo->present, UTCTIME)) {
+    nmeaInfoTimeSetNow(&utc, NULL);
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, UTCDATE)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE)) {
     nmeaInfo->utc.year = utc.year;
     nmeaInfo->utc.mon = utc.mon;
     nmeaInfo->utc.day = utc.day;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, UTCTIME)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCTIME)) {
     nmeaInfo->utc.hour = utc.hour;
     nmeaInfo->utc.min = utc.min;
     nmeaInfo->utc.sec = utc.sec;
     nmeaInfo->utc.hsec = utc.hsec;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, SIG)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SIG)) {
     nmeaInfo->sig = NMEA_SIG_INVALID;
   } else {
     if ((nmeaInfo->sig < NMEA_SIG_FIRST) || (nmeaInfo->sig > NMEA_SIG_LAST)) {
@@ -307,7 +307,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
     }
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, FIX)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, FIX)) {
     nmeaInfo->fix = NMEA_FIX_BAD;
   } else {
     if ((nmeaInfo->fix < NMEA_FIX_FIRST) || (nmeaInfo->fix > NMEA_FIX_LAST)) {
@@ -315,65 +315,65 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
     }
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, PDOP)) {
-    nmeaInfo->PDOP = 0;
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, PDOP)) {
+    nmeaInfo->pdop = 0;
   } else {
-    nmeaInfo->PDOP = fabs(nmeaInfo->PDOP);
+    nmeaInfo->pdop = fabs(nmeaInfo->pdop);
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, HDOP)) {
-    nmeaInfo->HDOP = 0;
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, HDOP)) {
+    nmeaInfo->hdop = 0;
   } else {
-    nmeaInfo->HDOP = fabs(nmeaInfo->HDOP);
+    nmeaInfo->hdop = fabs(nmeaInfo->hdop);
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, VDOP)) {
-    nmeaInfo->VDOP = 0;
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, VDOP)) {
+    nmeaInfo->vdop = 0;
   } else {
-    nmeaInfo->VDOP = fabs(nmeaInfo->VDOP);
+    nmeaInfo->vdop = fabs(nmeaInfo->vdop);
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, LAT)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, LAT)) {
     nmeaInfo->lat = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, LON)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, LON)) {
     nmeaInfo->lon = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, ELV)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, ELV)) {
     nmeaInfo->elv = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, SPEED)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SPEED)) {
     nmeaInfo->speed = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, TRACK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, TRACK)) {
     nmeaInfo->track = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, MTRACK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, MTRACK)) {
     nmeaInfo->mtrack = 0;
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, MAGVAR)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, MAGVAR)) {
     nmeaInfo->magvar = 0;
   } else {
     nmeaInfo->magvar = fabs(nmeaInfo->magvar);
   }
 
-  if (!nmea_INFO_is_present(nmeaInfo->present, SATINUSECOUNT)) {
-    nmeaInfo->satinfo.inuse = 0;
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINUSECOUNT)) {
+    nmeaInfo->satinfo.inUseCount = 0;
   }
-  if (!nmea_INFO_is_present(nmeaInfo->present, SATINUSE)) {
-    memset(&nmeaInfo->satinfo.in_use, 0, sizeof(nmeaInfo->satinfo.in_use));
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINUSE)) {
+    memset(&nmeaInfo->satinfo.inUse, 0, sizeof(nmeaInfo->satinfo.inUse));
   }
-  if (!nmea_INFO_is_present(nmeaInfo->present, SATINVIEWCOUNT)) {
-    nmeaInfo->satinfo.inview = 0;
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINVIEWCOUNT)) {
+    nmeaInfo->satinfo.inViewCount = 0;
   }
-  if (!nmea_INFO_is_present(nmeaInfo->present, SATINVIEW)) {
-    memset(&nmeaInfo->satinfo.sat, 0, sizeof(nmeaInfo->satinfo.sat));
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINVIEW)) {
+    memset(&nmeaInfo->satinfo.inView, 0, sizeof(nmeaInfo->satinfo.inView));
   }
 
   /*
@@ -526,69 +526,69 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
    * satinfo
    */
 
-  nmeaInfo->satinfo.inuse = 0;
+  nmeaInfo->satinfo.inUseCount = 0;
   for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
-    if (nmeaInfo->satinfo.in_use[inuseIndex])
-      nmeaInfo->satinfo.inuse++;
+    if (nmeaInfo->satinfo.inUse[inuseIndex])
+      nmeaInfo->satinfo.inUseCount++;
   }
 
-  nmeaInfo->satinfo.inview = 0;
+  nmeaInfo->satinfo.inViewCount = 0;
   for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
-    if (nmeaInfo->satinfo.sat[inviewIndex].id) {
-      nmeaInfo->satinfo.inview++;
+    if (nmeaInfo->satinfo.inView[inviewIndex].prn) {
+      nmeaInfo->satinfo.inViewCount++;
 
       /* force elv in [-180, 180] */
-      while (nmeaInfo->satinfo.sat[inviewIndex].elv < -180) {
-        nmeaInfo->satinfo.sat[inviewIndex].elv += 360;
+      while (nmeaInfo->satinfo.inView[inviewIndex].elevation < -180) {
+        nmeaInfo->satinfo.inView[inviewIndex].elevation += 360;
       }
-      while (nmeaInfo->satinfo.sat[inviewIndex].elv > 180) {
-        nmeaInfo->satinfo.sat[inviewIndex].elv -= 360;
+      while (nmeaInfo->satinfo.inView[inviewIndex].elevation > 180) {
+        nmeaInfo->satinfo.inView[inviewIndex].elevation -= 360;
       }
 
       /* elv is now in [-180, 180] */
 
       /* force elv from <90, 180] in [90, 0] */
-      if (nmeaInfo->satinfo.sat[inviewIndex].elv > 90) {
-        nmeaInfo->satinfo.sat[inviewIndex].elv = 180 - nmeaInfo->satinfo.sat[inviewIndex].elv;
+      if (nmeaInfo->satinfo.inView[inviewIndex].elevation > 90) {
+        nmeaInfo->satinfo.inView[inviewIndex].elevation = 180 - nmeaInfo->satinfo.inView[inviewIndex].elevation;
       }
 
       /* force elv from [-180, -90> in [0, -90] */
-      if (nmeaInfo->satinfo.sat[inviewIndex].elv < -90) {
-        nmeaInfo->satinfo.sat[inviewIndex].elv = -180 - nmeaInfo->satinfo.sat[inviewIndex].elv;
+      if (nmeaInfo->satinfo.inView[inviewIndex].elevation < -90) {
+        nmeaInfo->satinfo.inView[inviewIndex].elevation = -180 - nmeaInfo->satinfo.inView[inviewIndex].elevation;
       }
 
       /* elv is now in [-90, 90] */
 
-      if (nmeaInfo->satinfo.sat[inviewIndex].elv < 0) {
-        nmeaInfo->satinfo.sat[inviewIndex].elv = -nmeaInfo->satinfo.sat[inviewIndex].elv;
+      if (nmeaInfo->satinfo.inView[inviewIndex].elevation < 0) {
+        nmeaInfo->satinfo.inView[inviewIndex].elevation = -nmeaInfo->satinfo.inView[inviewIndex].elevation;
       }
 
       /* elv is now in [0, 90] */
 
       /* force azimuth in [0, 360> */
-      while (nmeaInfo->satinfo.sat[inviewIndex].azimuth < 0) {
-        nmeaInfo->satinfo.sat[inviewIndex].azimuth += 360;
+      while (nmeaInfo->satinfo.inView[inviewIndex].azimuth < 0) {
+        nmeaInfo->satinfo.inView[inviewIndex].azimuth += 360;
       }
-      while (nmeaInfo->satinfo.sat[inviewIndex].azimuth >= 360) {
-        nmeaInfo->satinfo.sat[inviewIndex].azimuth -= 360;
+      while (nmeaInfo->satinfo.inView[inviewIndex].azimuth >= 360) {
+        nmeaInfo->satinfo.inView[inviewIndex].azimuth -= 360;
       }
       /* azimuth is now in [0, 360> */
 
       /* force sig in [0, 99] */
-      if (nmeaInfo->satinfo.sat[inviewIndex].sig < 0)
-        nmeaInfo->satinfo.sat[inviewIndex].sig = 0;
-      if (nmeaInfo->satinfo.sat[inviewIndex].sig > 99)
-        nmeaInfo->satinfo.sat[inviewIndex].sig = 99;
+      if (nmeaInfo->satinfo.inView[inviewIndex].snr < 0)
+        nmeaInfo->satinfo.inView[inviewIndex].snr = 0;
+      if (nmeaInfo->satinfo.inView[inviewIndex].snr > 99)
+        nmeaInfo->satinfo.inView[inviewIndex].snr = 99;
     }
   }
 
   /* make sure the in_use IDs map to sat IDs */
   for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
-    int inuseID = nmeaInfo->satinfo.in_use[inuseIndex];
+    int inuseID = nmeaInfo->satinfo.inUse[inuseIndex];
     if (inuseID) {
       bool found = false;
       for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
-        int inviewID = nmeaInfo->satinfo.sat[inviewIndex].id;
+        int inviewID = nmeaInfo->satinfo.inView[inviewIndex].prn;
         if (inuseID == inviewID) {
           found = true;
           break;
@@ -596,9 +596,9 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
       }
       if (!found) {
         /* clear the id, did not find it */
-        nmeaInfo->satinfo.in_use[inuseIndex] = 0;
-        if (nmeaInfo->satinfo.inuse)
-          nmeaInfo->satinfo.inuse--;
+        nmeaInfo->satinfo.inUse[inuseIndex] = 0;
+        if (nmeaInfo->satinfo.inUseCount)
+          nmeaInfo->satinfo.inUseCount--;
       }
     }
   }
@@ -611,7 +611,7 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo) {
  * @param nmeaInfo
  * the nmeaINFO
  */
-void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo) {
+void nmeaInfoUnitConversion(NmeaInfo * nmeaInfo) {
   if (!nmeaInfo) {
     return;
   }
@@ -623,23 +623,23 @@ void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo) {
   /* sig (already in correct format) */
   /* fix (already in correct format) */
 
-  if (nmea_INFO_is_present(nmeaInfo->present, PDOP)) {
-    nmeaInfo->PDOP = nmea_dop2meters(nmeaInfo->PDOP);
+  if (nmeaInfoIsPresentAll(nmeaInfo->present, PDOP)) {
+    nmeaInfo->pdop = nmea_dop2meters(nmeaInfo->pdop);
   }
 
-  if (nmea_INFO_is_present(nmeaInfo->present, HDOP)) {
-    nmeaInfo->HDOP = nmea_dop2meters(nmeaInfo->HDOP);
+  if (nmeaInfoIsPresentAll(nmeaInfo->present, HDOP)) {
+    nmeaInfo->hdop = nmea_dop2meters(nmeaInfo->hdop);
   }
 
-  if (nmea_INFO_is_present(nmeaInfo->present, VDOP)) {
-    nmeaInfo->VDOP = nmea_dop2meters(nmeaInfo->VDOP);
+  if (nmeaInfoIsPresentAll(nmeaInfo->present, VDOP)) {
+    nmeaInfo->vdop = nmea_dop2meters(nmeaInfo->vdop);
   }
 
-  if (nmea_INFO_is_present(nmeaInfo->present, LAT)) {
+  if (nmeaInfoIsPresentAll(nmeaInfo->present, LAT)) {
     nmeaInfo->lat = nmea_ndeg2degree(nmeaInfo->lat);
   }
 
-  if (nmea_INFO_is_present(nmeaInfo->present, LON)) {
+  if (nmeaInfoIsPresentAll(nmeaInfo->present, LON)) {
     nmeaInfo->lon = nmea_ndeg2degree(nmeaInfo->lon);
   }
 
@@ -678,15 +678,15 @@ int qsortCompactPRN(const void *p1, const void *p2) {
 }
 
 int qsortCompareSatellite(const void *s1, const void *s2) {
-  const nmeaSATELLITE *sat1 = (const nmeaSATELLITE *) s1;
-  const nmeaSATELLITE *sat2 = (const nmeaSATELLITE *) s2;
+  const NmeaSatellite *sat1 = (const NmeaSatellite *) s1;
+  const NmeaSatellite *sat2 = (const NmeaSatellite *) s2;
 
-  return qsortComparePRN(&sat1->id, &sat2->id);
+  return qsortComparePRN(&sat1->prn, &sat2->prn);
 }
 
 int qsortCompactSatellite(const void *s1, const void *s2) {
-  const nmeaSATELLITE *sat1 = (const nmeaSATELLITE *) s1;
-  const nmeaSATELLITE *sat2 = (const nmeaSATELLITE *) s2;
+  const NmeaSatellite *sat1 = (const NmeaSatellite *) s1;
+  const NmeaSatellite *sat2 = (const NmeaSatellite *) s2;
 
-  return qsortCompactPRN(&sat1->id, &sat2->id);
+  return qsortCompactPRN(&sat1->prn, &sat2->prn);
 }

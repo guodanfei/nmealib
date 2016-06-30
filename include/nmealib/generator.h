@@ -40,8 +40,8 @@ enum nmeaGENTYPE {
   NMEA_GEN_LAST
 };
 
-struct _nmeaGENERATOR * nmea_create_generator(const int type, nmeaINFO *info);
-int nmea_generate_from(char *buff, int buff_sz, nmeaINFO *info, struct _nmeaGENERATOR *gen, int generate_mask);
+struct _nmeaGENERATOR * nmea_create_generator(const int type, NmeaInfo *info);
+int nmea_generate_from(char *buff, int buff_sz, NmeaInfo *info, struct _nmeaGENERATOR *gen, int generate_mask);
 
 /**
  * Generator initialiser function definition.
@@ -50,7 +50,7 @@ int nmea_generate_from(char *buff, int buff_sz, nmeaINFO *info, struct _nmeaGENE
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return 1 (true) on success, 0 (false) otherwise
  */
-typedef int (*nmeaNMEA_GEN_INIT)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
+typedef int (*nmeaNMEA_GEN_INIT)(struct _nmeaGENERATOR *gen, NmeaInfo *info);
 
 /**
  * Generator loop function definition.
@@ -59,7 +59,7 @@ typedef int (*nmeaNMEA_GEN_INIT)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return 1 (true) on success, 0 (false) otherwise
  */
-typedef int (*nmeaNMEA_GEN_LOOP)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
+typedef int (*nmeaNMEA_GEN_LOOP)(struct _nmeaGENERATOR *gen, NmeaInfo *info);
 
 /**
  * Generator reset function definition.
@@ -68,7 +68,7 @@ typedef int (*nmeaNMEA_GEN_LOOP)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return 1 (true) on success, 0 (false) otherwise
  */
-typedef int (*nmeaNMEA_GEN_RESET)(struct _nmeaGENERATOR *gen, nmeaINFO *info);
+typedef int (*nmeaNMEA_GEN_RESET)(struct _nmeaGENERATOR *gen, NmeaInfo *info);
 
 /**
  * Generator destroy function definition.
@@ -89,9 +89,9 @@ typedef struct _nmeaGENERATOR {
     struct _nmeaGENERATOR *next; /**< the next generator */
 } nmeaGENERATOR;
 
-int nmea_gen_init(nmeaGENERATOR *gen, nmeaINFO *info);
-int nmea_gen_loop(nmeaGENERATOR *gen, nmeaINFO *info);
-int nmea_gen_reset(nmeaGENERATOR *gen, nmeaINFO *info);
+int nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info);
+int nmea_gen_loop(nmeaGENERATOR *gen, NmeaInfo *info);
+int nmea_gen_reset(nmeaGENERATOR *gen, NmeaInfo *info);
 void nmea_gen_destroy(nmeaGENERATOR *gen);
 void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen);
 

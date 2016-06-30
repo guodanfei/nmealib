@@ -66,17 +66,17 @@ double nmea_meters2dop(const double meters);
  * positions work
  */
 
-void nmea_info2pos(const nmeaINFO *info, nmeaPOS *pos);
-void nmea_pos2info(const nmeaPOS *pos, nmeaINFO *info);
+void nmea_info2pos(const NmeaInfo *info, NmeaPosition *pos);
+void nmea_pos2info(const NmeaPosition *pos, NmeaInfo *info);
 
-double nmea_distance(const nmeaPOS *from_pos, const nmeaPOS *to_pos);
+double nmea_distance(const NmeaPosition *from_pos, const NmeaPosition *to_pos);
 
-double nmea_distance_ellipsoid(const nmeaPOS *from_pos, const nmeaPOS *to_pos, double *from_azimuth,
+double nmea_distance_ellipsoid(const NmeaPosition *from_pos, const NmeaPosition *to_pos, double *from_azimuth,
     double *to_azimuth);
 
-int nmea_move_horz(const nmeaPOS *start_pos, nmeaPOS *end_pos, double azimuth, double distance);
+int nmea_move_horz(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance);
 
-int nmea_move_horz_ellipsoid(const nmeaPOS *start_pos, nmeaPOS *end_pos, double azimuth, double distance,
+int nmea_move_horz_ellipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance,
     double *end_azimuth);
 
 #ifdef  __cplusplus

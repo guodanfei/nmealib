@@ -203,7 +203,7 @@ static bool nmea_parse_sentence_character(nmeaPARSER *parser, const char * c) {
  * @param info The nmeaINFO structure in which to store the information
  * @return The number of sentences that were parsed
  */
-int nmea_parse(nmeaPARSER * parser, const char * s, int len, nmeaINFO * info) {
+int nmea_parse(nmeaPARSER * parser, const char * s, int len, NmeaInfo * info) {
   int sentences_count = 0;
   int charIndex = 0;
 

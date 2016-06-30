@@ -82,7 +82,7 @@ extern "C" {
  */
 typedef struct _nmeaGPGGA {
   uint32_t present;
-  nmeaTIME time;
+  NmeaTime time;
   double   latitude;
   char     ns;
   double   longitude;
@@ -114,7 +114,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack);
  * @param pack The GPGGA packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info);
+void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
@@ -122,7 +122,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, nmeaINFO *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGGA structure
  */
-void nmeaGPGGAFromInfo(const nmeaINFO *info, nmeaGPGGA *pack);
+void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack);
 
 /**
  * Generate a GPGGA sentence from a nmeaGPGGA structure
