@@ -210,11 +210,11 @@ typedef enum _NmeaPresence {
   DGPSAGE        = (1u << 20), /* 0x00100000 */
   DGPSSID        = (1u << 21), /* 0x00200000 */
 
-  _nmeaINFO_FIELD_LAST = DGPSSID
+  _NmeaPresenceLast = DGPSSID
 } NmeaPresence;
 
 /** The bit-mask of all supported field name bits */
-#define NMEALIB_INFO_PRESENT_MASK ((_nmeaINFO_FIELD_LAST << 1) - 1)
+#define NMEALIB_INFO_PRESENT_MASK ((_NmeaPresenceLast << 1) - 1)
 
 /**
  * Convert a nmeaINFO_FIELD into a string
