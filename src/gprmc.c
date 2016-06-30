@@ -116,7 +116,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     /* with mode */
     if (pack->sigSelection //
         && pack->sig) {
-      if (!nmeaValidateMode(&pack->sig, NMEA_PREFIX_GPRMC, s)) {
+      if (!nmeaValidateMode(pack->sig, NMEA_PREFIX_GPRMC, s)) {
         goto err;
       }
 
@@ -128,7 +128,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->ns, true, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -140,7 +140,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 
@@ -177,7 +177,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar)) {
-    if (!nmeaValidateNSEW(&pack->magvar_ew, false, NMEA_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->magvar_ew, false, NMEA_PREFIX_GPRMC, s)) {
       goto err;
     }
 

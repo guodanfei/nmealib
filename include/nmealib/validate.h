@@ -42,7 +42,7 @@ typedef struct {
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c);
+const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
 
 /**
  * Determine whether the specified string contains characters that are not
@@ -54,7 +54,7 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c);
  * @return The invalid character name/description when the string has invalid
  * characters, NULL otherwise
  */
-const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char * s, const size_t sz);
+const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz);
 
 /**
  * Validate the time fields in an nmeaTIME structure.
@@ -72,7 +72,7 @@ const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s);
+bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s);
 
 /**
  * Validate the date fields in an nmeaTIME structure.
@@ -89,24 +89,24 @@ bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return true when valid, false otherwise
  */
-bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s);
+bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s);
 
 /**
  * Validate north/south or east/west and upper-case it.
  *
  * Expects:
  * <pre>
- *   c in { n, N, s, S } (for north/south)
- *   c in { e, E, w, W } (for east/west)
+ *   c in { N, S } (for north/south)
+ *   c in { E, W } (for east/west)
  * </pre>
  *
- * @param c The character, will also be converted to upper-case.
+ * @param c The character
  * @param ns Evaluate north/south when true, evaluate east/west otherwise
  * @param prefix The NMEA prefix
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char * s);
+bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s);
 
 /**
  * Validate a fix.
@@ -121,7 +121,7 @@ bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char *
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateFix(int * fix, const char * prefix, const char * s);
+bool nmeaValidateFix(int fix, const char *prefix, const char *s);
 
 /**
  * Validate a signal.
@@ -136,7 +136,7 @@ bool nmeaValidateFix(int * fix, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateSignal(int * sig, const char * prefix, const char * s);
+bool nmeaValidateSignal(int sig, const char *prefix, const char *s);
 
 /**
  * Validate and upper-case the mode.
@@ -161,7 +161,7 @@ bool nmeaValidateSignal(int * sig, const char * prefix, const char * s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateMode(char * c, const char * prefix, const char * s);
+bool nmeaValidateMode(char c, const char *prefix, const char *s);
 
 /**
  * Validate a satellite

@@ -58,17 +58,12 @@ static const NmeaInvalidCharacter invalidCharacters[] = {
     }//
 };
 
-const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c) {
+const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c) {
   size_t i = 0;
-  char ch;
+  char ch = c;
 
-  if (!c) {
-    return NULL;
-  }
-
-  ch = *c;
-
-  if ((ch < 32) || (ch > 126)) {
+  if ((ch < 32) //
+      || (ch > 126)) {
     return &invalidNonAsciiCharsName;
   }
 
@@ -83,15 +78,16 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char * c) {
   return NULL;
 }
 
-const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char * s, const size_t sz) {
+const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz) {
   size_t i = 0;
 
-  if (!s || !sz) {
+  if (!s //
+      || !sz) {
     return NULL;
   }
 
   for (i = 0; i < sz; i++) {
-    const NmeaInvalidCharacter * invalid = nmeaValidateIsInvalidCharacter(&s[i]);
+    const NmeaInvalidCharacter *invalid = nmeaValidateIsInvalidCharacter(s[i]);
     if (invalid) {
       return invalid;
     }
@@ -100,16 +96,20 @@ const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char
   return NULL;
 }
 
-bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s) {
+bool nmeaValidateTime(const nmeaTIME *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
 
   if (!( //
-  (t->hour >= 0) && (t->hour <= 23) //
-      && (t->min >= 0) && (t->min <= 59) //
-      && (t->sec >= 0) && (t->sec <= 60) //
-      && (t->hsec >= 0) && (t->hsec <= 99))) {
+      (t->hour >= 0) //
+      && (t->hour <= 23) //
+      && (t->min >= 0) //
+      && (t->min <= 59) //
+      && (t->sec >= 0) //
+      && (t->sec <= 60) //
+      && (t->hsec >= 0) //
+      && (t->hsec <= 99))) {
     nmeaError("%s parse error: invalid time '%02d:%02d:%02d.%03d' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
         t->sec, t->hsec * 10, s);
     return false;
@@ -118,15 +118,18 @@ bool nmeaValidateTime(const nmeaTIME * t, const char * prefix, const char * s) {
   return true;
 }
 
-bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s) {
+bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s) {
   if (!t) {
     return false;
   }
 
   if (!( //
-  (t->year >= 90) && (t->year <= 189) //
-      && (t->mon >= 0) && (t->mon <= 11) //
-      && (t->day >= 1) && (t->day <= 31))) {
+      (t->year >= 90) //
+      && (t->year <= 189) //
+      && (t->mon >= 0) //
+      && (t->mon <= 11) //
+      && (t->day >= 1) //
+      && (t->day <= 31))) {
     nmeaError("%s parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
         t->year + 1900, s);
     return false;
@@ -135,29 +138,27 @@ bool nmeaValidateDate(const nmeaTIME * t, const char * prefix, const char * s) {
   return true;
 }
 
-bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char * s) {
+bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) {
   char cu[3];
-
-  if (!c) {
-    return false;
-  }
 
   cu[1] = '\0';
   cu[2] = '\0';
-  if (*c) {
-    cu[0] = *c;
+  if (c) {
+    cu[0] = c;
   } else {
     cu[0] = '\\';
     cu[1] = '0';
   }
 
   if (ns) {
-    if (!((*c == 'N') || (*c == 'S'))) {
+    if (!((c == 'N') //
+        || (c == 'S'))) {
       nmeaError("%s parse error: invalid North/South '%s' in '%s'", prefix, cu, s);
       return false;
     }
   } else {
-    if (!((*c == 'E') || (*c == 'W'))) {
+    if (!((c == 'E') //
+        || (c == 'W'))) {
       nmeaError("%s parse error: invalid East/West '%s' in '%s'", prefix, cu, s);
       return false;
     }
@@ -166,9 +167,10 @@ bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char *
   return true;
 }
 
-bool nmeaValidateFix(int * fix, const char * prefix, const char * s) {
-  if ((*fix < NMEA_FIX_FIRST) || (*fix > NMEA_FIX_LAST)) {
-    nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, *fix, NMEA_FIX_FIRST, NMEA_FIX_LAST,
+bool nmeaValidateFix(int fix, const char *prefix, const char *s) {
+  if ((fix < NMEA_FIX_FIRST) //
+      || (fix > NMEA_FIX_LAST)) {
+    nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEA_FIX_FIRST, NMEA_FIX_LAST,
         s);
     return false;
   }
@@ -176,9 +178,10 @@ bool nmeaValidateFix(int * fix, const char * prefix, const char * s) {
   return true;
 }
 
-bool nmeaValidateSignal(int * sig, const char * prefix, const char * s) {
-  if ((*sig < NMEA_SIG_FIRST) || (*sig > NMEA_SIG_LAST)) {
-    nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, *sig, NMEA_SIG_FIRST,
+bool nmeaValidateSignal(int sig, const char *prefix, const char *s) {
+  if ((sig < NMEA_SIG_FIRST) //
+      || (sig > NMEA_SIG_LAST)) {
+    nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEA_SIG_FIRST,
     NMEA_SIG_LAST, s);
     return false;
   }
@@ -186,22 +189,22 @@ bool nmeaValidateSignal(int * sig, const char * prefix, const char * s) {
   return true;
 }
 
-bool nmeaValidateMode(char * c, const char * prefix, const char * s) {
+bool nmeaValidateMode(char c, const char *prefix, const char *s) {
   if (!c) {
     return false;
   }
 
   if (!( //
-      (*c == 'N') //
-      || (*c == 'A') //
-      || (*c == 'D') //
-      || (*c == 'P') //
-      || (*c == 'R') //
-      || (*c == 'F') //
-      || (*c == 'E') //
-      || (*c == 'M') //
-      || (*c == 'S'))) {
-    nmeaError("%s parse error: invalid mode '%c' in '%s'", prefix, *c, s);
+      (c == 'N') //
+      || (c == 'A') //
+      || (c == 'D') //
+      || (c == 'P') //
+      || (c == 'R') //
+      || (c == 'F') //
+      || (c == 'E') //
+      || (c == 'M') //
+      || (c == 'S'))) {
+    nmeaError("%s parse error: invalid mode '%c' in '%s'", prefix, c, s);
     return false;
   }
 
@@ -218,17 +221,20 @@ bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s
     return false;
   }
 
-  if ((sat->elv < -180) || (sat->elv > 180)) {
+  if ((sat->elv < -180) //
+      || (sat->elv > 180)) {
     nmeaError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elv, s);
     return false;
   }
 
-  if ((sat->azimuth < 0) || (sat->azimuth > 359)) {
+  if ((sat->azimuth < 0) //
+      || (sat->azimuth > 359)) {
     nmeaError("%s parse error: invalid satellite azimuth %d in '%s'", prefix, sat->azimuth, s);
     return false;
   }
 
-  if ((sat->sig < 0) || (sat->sig > 99)) {
+  if ((sat->sig < 0) //
+      || (sat->sig > 99)) {
     nmeaError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->sig, s);
     return false;
   }

@@ -90,7 +90,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   }
 
   if (pack->fix != INT_MAX) {
-    if (!nmeaValidateFix(&pack->fix, NMEA_PREFIX_GPGSA, s)) {
+    if (!nmeaValidateFix(pack->fix, NMEA_PREFIX_GPGSA, s)) {
       goto err;
     }
 

@@ -92,7 +92,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(&pack->ns, true, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateNSEW(pack->ns, true, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -104,7 +104,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(&pack->ew, false, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateNSEW(pack->ew, false, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -116,7 +116,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (pack->signal != INT_MAX) {
-    if (!nmeaValidateSignal(&pack->signal, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateSignal(pack->signal, NMEA_PREFIX_GPGGA, s)) {
       goto err;
     }
 
