@@ -124,14 +124,14 @@ bool nmeaValidateDate(const nmeaTIME *t, const char *prefix, const char *s) {
   }
 
   if (!( //
-      (t->year >= 90) //
-      && (t->year <= 189) //
-      && (t->mon >= 0) //
-      && (t->mon <= 11) //
+      (t->year >= 1900) //
+      && (t->year <= 2089) //
+      && (t->mon >= 1) //
+      && (t->mon <= 12) //
       && (t->day >= 1) //
       && (t->day <= 31))) {
     nmeaError("%s parse error: invalid date '%02d-%02d-%04d' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
-        t->year + 1900, s);
+        t->year, s);
     return false;
   }
 

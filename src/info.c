@@ -227,8 +227,8 @@ void nmea_time_now(nmeaTIME *utc, uint32_t * present) {
   gettimeofday(&tp, NULL);
   gmtime_r(&tp.tv_sec, &tt);
 
-  utc->year = tt.tm_year;
-  utc->mon = tt.tm_mon;
+  utc->year = tt.tm_year + 1900;
+  utc->mon = tt.tm_mon + 1;
   utc->day = tt.tm_mday;
   utc->hour = tt.tm_hour;
   utc->min = tt.tm_min;

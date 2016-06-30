@@ -224,8 +224,8 @@ static void test_nmeaGPRMCParse(void) {
   CU_ASSERT_EQUAL(pack.v23, true);
   CU_ASSERT_EQUAL(pack.present, UTCDATE);
   CU_ASSERT_EQUAL(pack.utc.day, 10);
-  CU_ASSERT_EQUAL(pack.utc.mon, 4);
-  CU_ASSERT_EQUAL(pack.utc.year, 116);
+  CU_ASSERT_EQUAL(pack.utc.mon, 5);
+  CU_ASSERT_EQUAL(pack.utc.year, 2016);
 
   /* magvar */
 
@@ -491,7 +491,7 @@ static void test_nmeaGPRMCToInfo(void) {
 
   pack.utc.day = 12;
   pack.utc.mon = 5;
-  pack.utc.year = 116;
+  pack.utc.year = 2016;
   nmea_INFO_set_present(&pack.present, UTCDATE);
 
   nmeaGPRMCToInfo(&pack, &info);
@@ -500,7 +500,7 @@ static void test_nmeaGPRMCToInfo(void) {
   CU_ASSERT_EQUAL(info.smask, GPRMC);
   CU_ASSERT_EQUAL(info.utc.day, 12);
   CU_ASSERT_EQUAL(info.utc.mon, 5);
-  CU_ASSERT_EQUAL(info.utc.year, 116);
+  CU_ASSERT_EQUAL(info.utc.year, 2016);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -699,7 +699,7 @@ static void test_nmeaGPRMCFromInfo(void) {
 
   info.utc.day = 12;
   info.utc.mon = 5;
-  info.utc.year = 116;
+  info.utc.year = 2016;
   nmea_INFO_set_present(&info.present, UTCDATE);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -708,7 +708,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   CU_ASSERT_EQUAL(pack.present, UTCDATE);
   CU_ASSERT_EQUAL(pack.utc.day, 12);
   CU_ASSERT_EQUAL(pack.utc.mon, 5);
-  CU_ASSERT_EQUAL(pack.utc.year, 116);
+  CU_ASSERT_EQUAL(pack.utc.year, 2016);
   memset(&info, 0, sizeof(info));
 
   /* magvar */
@@ -1019,8 +1019,8 @@ static void test_nmeaGPRMCGenerate(void) {
   /* date */
 
   pack.utc.day = 12;
-  pack.utc.mon = 5;
-  pack.utc.year = 90;
+  pack.utc.mon = 6;
+  pack.utc.year = 1990;
   nmea_INFO_set_present(&pack.present, UTCDATE);
 
   pack.v23 = false;
@@ -1031,8 +1031,8 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.utc.day = 12;
-  pack.utc.mon = 5;
-  pack.utc.year = 116;
+  pack.utc.mon = 6;
+  pack.utc.year = 2016;
   nmea_INFO_set_present(&pack.present, UTCDATE);
 
   pack.v23 = false;
@@ -1043,8 +1043,8 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.utc.day = 12;
-  pack.utc.mon = 5;
-  pack.utc.year = 90;
+  pack.utc.mon = 6;
+  pack.utc.year = 1990;
   nmea_INFO_set_present(&pack.present, UTCDATE);
 
   pack.v23 = true;
@@ -1055,8 +1055,8 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.utc.day = 12;
-  pack.utc.mon = 5;
-  pack.utc.year = 116;
+  pack.utc.mon = 6;
+  pack.utc.year = 2016;
   nmea_INFO_set_present(&pack.present, UTCDATE);
 
   pack.v23 = true;

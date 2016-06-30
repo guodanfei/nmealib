@@ -75,12 +75,10 @@ bool nmeaTIMEparseDate(const char *date, nmeaTIME *t) {
     return false;
   }
 
-  if (t->mon > 0) {
-    t->mon--;
-  }
-
-  if (t->year < 90) {
-    t->year += 100;
+  if (t->year > 90) {
+    t->year += 1900;
+  } else {
+    t->year += 2000;
   }
 
   return true;

@@ -405,14 +405,11 @@ int nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
   }
 
   if (nmea_INFO_is_present(pack->present, UTCDATE)) {
-    int year = (pack->utc.year >= 100) //
-                ? (pack->utc.year - 100) //
-                : pack->utc.year;
     chars += snprintf(dst, available, //
         ",%02d%02d%02d", //
         pack->utc.day, //
-        pack->utc.mon + 1, //
-        year);
+        pack->utc.mon, //
+        pack->utc.year % 100);
   } else {
     chars += snprintf(dst, available, ",");
   }
