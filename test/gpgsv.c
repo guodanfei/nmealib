@@ -52,7 +52,7 @@ int gpgsvSuiteSetup(void);
  */
 
 static void test_nmeaGPGSVsatellitesToSentencesCount(void) {
-  unsigned int r;
+  size_t r;
 
   r = nmeaGPGSVsatellitesToSentencesCount(0);
   CU_ASSERT_EQUAL(r, 1);
@@ -654,7 +654,7 @@ static void test_nmeaGPGSVFromInfo(void) {
 static void test_nmeaGPGSVGenerate(void) {
   char buf[256];
   nmeaGPGSV pack;
-  int r;
+  size_t r;
 
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));

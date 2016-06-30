@@ -651,7 +651,7 @@ static void test_nmeaGPGGAFromInfo(void) {
 static void test_nmeaGPGGAGenerate(void) {
   char buf[256];
   nmeaGPGGA pack;
-  int r;
+  size_t r;
 
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));

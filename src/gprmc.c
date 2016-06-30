@@ -434,7 +434,7 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
   }
 
   /* checksum */
-  chars += nmeaAppendChecksum(s, sz, chars);
+  chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
 }

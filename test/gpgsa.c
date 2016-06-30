@@ -530,7 +530,7 @@ static void test_nmeaGPGSAFromInfo(void) {
 static void test_nmeaGPGSAGenerate(void) {
   char buf[256];
   nmeaGPGSA pack;
-  int r;
+  size_t r;
 
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));

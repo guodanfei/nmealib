@@ -321,7 +321,7 @@ static void test_nmeaGPVTGFromInfo(void) {
 static void test_nmeaGPVTGGenerate(void) {
   char buf[256];
   nmeaGPVTG pack;
-  int r;
+  size_t r;
 
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));

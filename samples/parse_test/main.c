@@ -22,44 +22,48 @@ static size_t countlines(char * line) {
   return cnt;
 }
 
-static int printInfo(char * inputLine, char * outputLine, int outputLineResult, NmeaInfo * info, char * outputbuffer, size_t outputbuffersize) {
+static size_t printInfo(char * inputLine, char * outputLine, size_t outputLineResult, NmeaInfo * info, char * outputbuffer, size_t outputbuffersize) {
+
+#define dst       (&outputbuffer[index])
+#define available ((size_t) MAX((long) outputbuffersize - index - 1, 0))
+
   size_t i;
   int index = 0;
-  int lineCount = 0;
+  size_t lineCount = 0;
   int eq;
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "\n%-5s%-8lu: %s\n", "", (unsigned long) strlen(inputLine), inputLine);
+  index += snprintf(dst, available, "\n%-5s%-8lu: %s\n", "", (unsigned long) strlen(inputLine), inputLine);
   lineCount += 3;
 
   eq = !strcmp(inputLine, outputLine);
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "%-5s%-8d: %s\n", eq ? "EQ" : "NEQ", outputLineResult, outputLine);
+  index += snprintf(dst, available, "%-5s%-8lu: %s\n", eq ? "EQ" : "NEQ", (unsigned long) outputLineResult, outputLine);
   lineCount += 1 + countlines(outputLine);
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %d/%d\n", "sig/fix", info->sig,
+  index += snprintf(dst, available, "  %s = %d/%d\n", "sig/fix", info->sig,
       info->fix);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %04u%02u%02u %02u:%02u:%02u.%02u\n",
+  index += snprintf(dst, available, "  %s = %04u%02u%02u %02u:%02u:%02u.%02u\n",
       "utc", info->utc.year, info->utc.mon, info->utc.day, info->utc.hour, info->utc.min, info->utc.sec,
       info->utc.hsec);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %08x\n", "smask", info->smask);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %08x\n", "present", info->present);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "lat/lon", info->lat,
+  index += snprintf(dst, available, "  %s = %08x\n", "smask", info->smask);
+  index += snprintf(dst, available, "  %s = %08x\n", "present", info->present);
+  index += snprintf(dst, available, "  %s = %f/%f\n", "lat/lon", info->lat,
       info->lon);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f\n", "speed/elv", info->speed,
+  index += snprintf(dst, available, "  %s = %f/%f\n", "speed/elv", info->speed,
       info->elv);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "track/mtrack/magvar",
+  index += snprintf(dst, available, "  %s = %f/%f/%f\n", "track/mtrack/magvar",
       info->track, info->mtrack, info->magvar);
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s = %f/%f/%f\n", "hdop/pdop/vdop",
+  index += snprintf(dst, available, "  %s = %f/%f/%f\n", "hdop/pdop/vdop",
       info->hdop, info->vdop, info->pdop);
   lineCount += 8;
 
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "  %s\n", "satinfo");
-  index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %s = %d/%d\n", "inuse/inview",
+  index += snprintf(dst, available, "  %s\n", "satinfo");
+  index += snprintf(dst, available, "    %s = %d/%d\n", "inuse/inview",
       info->satinfo.inUseCount, info->satinfo.inViewCount);
   lineCount += 2;
 
   for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
-    index += snprintf(&outputbuffer[index], outputbuffersize - index - 1, "    %02lu %s = %d/%d/%d/%d/%d\n", (long unsigned) i,
+    index += snprintf(dst, available, "    %02lu %s = %d/%d/%d/%d/%d\n", (long unsigned) i,
         "in_use/id/sig/elv/azimuth", info->satinfo.inUse[i], info->satinfo.inView[i].prn, info->satinfo.inView[i].snr,
         info->satinfo.inView[i].elevation, info->satinfo.inView[i].azimuth);
     lineCount += 1;
@@ -91,9 +95,9 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   NmeaInfo info;
   nmeaPARSER parser;
   char expectedbuffer[65536];
-  int expectedbufferlength = 0;
+  size_t expectedbufferlength = 0;
   char outputbuffer[65536];
-  int expectedLineIndex = 0;
+  size_t expectedLineIndex = 0;
   bool dooutput = false;
   long inputLineNr = 0;
   long expectedLineNr = 1;
@@ -149,7 +153,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
     memset(&info, 0, sizeof(info));
 
-    nmea_parse(&parser, inputLine, inputLineCount, &info);
+    nmea_parse(&parser, inputLine, (size_t) inputLineCount, &info);
 
     outputLineResult = nmeaSentenceFromInfo(outputLine, outputLineLength, &info, info.smask);
 
@@ -162,11 +166,11 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
       // read expected
       expectedbuffer[0] = '\0';
       expectedbufferlength = 0;
-      for (expectedLineIndex = 0; expectedLineIndex < (ssize_t) lineCount; expectedLineIndex++) {
+      for (expectedLineIndex = 0; expectedLineIndex < lineCount; expectedLineIndex++) {
         if ((expectedLineCount = getline(&expectedLine, &expectedLineLength, expectedFile)) != -1) {
           linesInExpected++;
-          strncpy(&expectedbuffer[expectedbufferlength], expectedLine, expectedLineCount);
-          expectedbufferlength += expectedLineCount;
+          strncpy(&expectedbuffer[expectedbufferlength], expectedLine, (size_t) expectedLineCount);
+          expectedbufferlength += (size_t) expectedLineCount;
         }
       }
       expectedbuffer[expectedbufferlength] = '\0';

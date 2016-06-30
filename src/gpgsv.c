@@ -254,8 +254,8 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info) {
 }
 
 void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence) {
-  unsigned int satellites;
-  unsigned int sentences;
+  size_t satellites;
+  size_t sentences;
 
   if (!pack) {
     return;
@@ -269,22 +269,22 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence) {
     return;
   }
 
-  satellites = (unsigned int) info->satinfo.inViewCount;
+  satellites = (size_t) info->satinfo.inViewCount;
   sentences = nmeaGPGSVsatellitesToSentencesCount(satellites);
 
   if (sentence >= sentences) {
     return;
   }
 
-  pack->satellites = satellites;
-  pack->sentences = sentences;
+  pack->satellites = (unsigned int) satellites;
+  pack->sentences =  (unsigned int) sentences;
   nmeaInfoSetPresent(&pack->present, SATINVIEWCOUNT);
 
   if (nmeaInfoIsPresentAll(info->present, SATINVIEW)) {
     size_t infoIndex;
     size_t packIndex;
 
-    pack->sentence = sentence + 1;
+    pack->sentence = (unsigned int) sentence + 1;
 
     /* now skip the first ((pack->pack_index - 1) * NMEALIB_SATINPACK) in view sats */
     infoIndex = sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
@@ -349,7 +349,7 @@ size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
   }
 
   /* checksum */
-  chars += nmeaAppendChecksum(s, sz, chars);
+  chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
 }

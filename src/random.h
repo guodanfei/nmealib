@@ -3,16 +3,17 @@
 
 #include <nmealib/util.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
-#define NMEALIB_RANDOM_MAX INT32_MAX
+#define NMEALIB_RANDOM_MAX LONG_MAX
 
-static INLINE long int nmea_random(const double min, const double max) {
-  int32_t value;
+static INLINE double nmea_random(const double min, const double max) {
+  long value;
   int randomFile;
   double range = fabs(max - min);
 
@@ -34,11 +35,11 @@ static INLINE long int nmea_random(const double min, const double max) {
   }
 #endif /* _WIN32 */
 
-  return min + ((abs(value) * range) / NMEALIB_RANDOM_MAX);
+  return min + ((fabs((double) value) * range) / (double) NMEALIB_RANDOM_MAX);
 }
 
 static INLINE void nmea_init_random(void) {
-  srandom(time(NULL));
+  srandom((unsigned int) time(NULL));
 }
 
 #endif /* _NMEALIB_RANDOM_H */

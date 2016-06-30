@@ -42,7 +42,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	for (it = 0; it < NUM_POINTS; it++) {
 		NmeaInfo info;
 		nmeaInfoClear(&info);
-		(void) nmea_parse(&parser, buff[it], (int) strlen(buff[it]), &info);
+		(void) nmea_parse(&parser, buff[it], strlen(buff[it]), &info);
 		nmea_info2pos(&info, &pos[it]);
 	}
 

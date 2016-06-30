@@ -168,7 +168,7 @@ int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
     goto out;
   }
 
-  addedChars = nmeaAppendChecksum(s, sz, chars);
+  addedChars = nmeaAppendChecksum(s, sz, (size_t) chars);
   if (addedChars < 0) {
     chars = addedChars;
     goto out;
@@ -241,11 +241,11 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
         }
 
         if (!width) {
-          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
+          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) (sEnd - sCharacter))))) {
             sCharacter = sEnd;
           }
         } else if ('s' == *formatCharacter) {
-          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
+          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) (sEnd - sCharacter))))) {
             sCharacter = sEnd;
           }
         } else {
@@ -284,7 +284,7 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           case 'C':
             arg = (void *) va_arg(args, char *);
             if (width && arg) {
-              *((char *) arg) = toupper(*sTokenStart);
+              *((char *) arg) = (char) toupper(*sTokenStart);
             }
             break;
 

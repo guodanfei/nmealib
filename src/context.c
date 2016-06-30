@@ -78,7 +78,7 @@ void nmeaTrace(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      bufSize = chars + 1;
+      bufSize = (size_t) chars + 1;
       if (!realloc(buf, bufSize)) {
         /* can't be covered in a test */
         goto out;
@@ -89,7 +89,7 @@ void nmeaTrace(const char *s, ...) {
 
     buf[bufSize - 1] = '\0';
 
-    (*func)(buf, chars);
+    (*func)(buf, (size_t) chars);
 
 out:
     va_end(args2);
@@ -122,7 +122,7 @@ void nmeaError(const char *s, ...) {
       goto out;
     }
     if ((size_t) chars >= bufSize) {
-      bufSize = chars + 1;
+      bufSize = (size_t) chars + 1;
       if (!realloc(buf, bufSize)) {
         /* can't be covered in a test */
         goto out;
@@ -133,7 +133,7 @@ void nmeaError(const char *s, ...) {
 
     buf[bufSize - 1] = '\0';
 
-    (*func)(buf, chars);
+    (*func)(buf, (size_t) chars);
 
 out:
     va_end(args2);

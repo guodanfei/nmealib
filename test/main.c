@@ -57,7 +57,7 @@ cleanup:
 
 out:
   if (failedCount) {
-    exit(MIN(126,failedCount));
+    exit(MIN(126,(int) failedCount));
   }
 
   return CU_get_error();

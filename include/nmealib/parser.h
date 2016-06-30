@@ -50,7 +50,7 @@ typedef struct _sentencePARSER {
     char sentence_checksum_chars[2];
     char sentence_checksum_chars_count;
 
-    char sentence_eol_chars_count;
+    unsigned char sentence_eol_chars_count;
 
     bool has_checksum;
 
@@ -62,7 +62,7 @@ typedef struct _sentencePARSER {
  */
 typedef struct _nmeaPARSER {
     struct {
-        unsigned int length;
+        size_t length;
         char buffer[SENTENCE_SIZE];
     } buffer;
 
@@ -70,7 +70,7 @@ typedef struct _nmeaPARSER {
 } nmeaPARSER;
 
 int nmea_parser_init(nmeaPARSER *parser);
-int nmea_parse(nmeaPARSER * parser, const char * s, int len, NmeaInfo * info);
+size_t nmea_parse(nmeaPARSER * parser, const char * s, size_t len, NmeaInfo * info);
 
 #ifdef  __cplusplus
 }

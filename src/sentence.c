@@ -158,6 +158,10 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
 }
 
 size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask) {
+
+#define dst       (&s[chars])
+#define available ((size_t) MAX((long) sz - 1 - (long) chars, 0))
+
   size_t chars = 0;
   enum NmeaSentence msk = mask;
 
@@ -169,34 +173,34 @@ size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, cons
     if (msk & GPGGA) {
       nmeaGPGGA pack;
       nmeaGPGGAFromInfo(info, &pack);
-      chars += nmeaGPGGAGenerate(&s[chars], sz - chars, &pack);
-      msk &= ~GPGGA;
+      chars += nmeaGPGGAGenerate(dst, available, &pack);
+      msk &= (enum NmeaSentence) ~GPGGA;
     } else if (msk & GPGSA) {
       nmeaGPGSA pack;
       nmeaGPGSAFromInfo(info, &pack);
-      chars += nmeaGPGSAGenerate(&s[chars], sz - chars, &pack);
-      msk &= ~GPGSA;
+      chars += nmeaGPGSAGenerate(dst, available, &pack);
+      msk &= (enum NmeaSentence) ~GPGSA;
     } else if (msk & GPGSV) {
-      int satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? info->satinfo.inViewCount : 0;
+      size_t satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
       nmeaGPGSV pack;
-      int sentence;
-      int sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);
+      size_t sentence;
+      size_t sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);
 
-      for (sentence = 0; (sentence < sentences) && ((sz - chars) > 0); sentence++) {
+      for (sentence = 0; sentence < sentences; sentence++) {
         nmeaGPGSVFromInfo(info, &pack, sentence);
-        chars += nmeaGPGSVGenerate(&s[chars], sz - chars, &pack);
+        chars += nmeaGPGSVGenerate(dst, available, &pack);
       }
-      msk &= ~GPGSV;
+      msk &= (enum NmeaSentence) ~GPGSV;
     } else if (msk & GPRMC) {
       nmeaGPRMC pack;
       nmeaGPRMCFromInfo(info, &pack);
-      chars += nmeaGPRMCGenerate(&s[chars], sz - chars, &pack);
-      msk &= ~GPRMC;
+      chars += nmeaGPRMCGenerate(dst, available, &pack);
+      msk &= (enum NmeaSentence) ~GPRMC;
     } else if (msk & GPVTG) {
       nmeaGPVTG pack;
       nmeaGPVTGFromInfo(info, &pack);
-      chars += nmeaGPVTGGenerate(&s[chars], sz - chars, &pack);
-      msk &= ~GPVTG;
+      chars += nmeaGPVTGGenerate(dst, available, &pack);
+      msk &= (enum NmeaSentence) ~GPVTG;
     } else {
       /* no more known sentences to process */
       break;

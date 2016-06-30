@@ -72,7 +72,7 @@ extern "C" {
  * Supported NMEA sentences
  */
 enum NmeaSentence {
-  GPNON = 0,
+  GPNON = 0u,
   GPGGA = (1u << 0),
   GPGSA = (1u << 1),
   GPGSV = (1u << 2),

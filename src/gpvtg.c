@@ -239,7 +239,7 @@ size_t nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
   }
 
   /* checksum */
-  chars += nmeaAppendChecksum(s, sz, chars);
+  chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
 }

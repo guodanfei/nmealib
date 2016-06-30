@@ -421,7 +421,7 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
   }
 
   /* checksum */
-  chars += nmeaAppendChecksum(s, sz, chars);
+  chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
 }
