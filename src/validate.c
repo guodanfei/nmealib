@@ -216,11 +216,7 @@ bool nmeaValidateSatellite(nmeaSATELLITE *sat, const char *prefix, const char *s
     return false;
   }
 
-  if (!sat->id) {
-    return true;
-  }
-
-  if ((sat->id <= 0)) {
+  if ((sat->id < 0)) {
     nmeaError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->id, s);
     return false;
   }
