@@ -33,11 +33,17 @@ extern "C" {
 /** The NMEA prefix */
 #define NMEA_PREFIX_GPGSV "GPGSV"
 
-/** The maximum number of satellites per sentence */
-#define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4)
+/** The maximum number of satellites per sentence, must be a power of 2 */
+#define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4u)
+
+/** The maximum number of satellites per sentence, expressed as shift */
+#define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT (2u)
+
+/** The maximum number of satellites per sentence mod mask */
+#define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_MOD_MASK (NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - 1)
 
 /** The maximum number of GPGSV sentences (depends on the maximum number of satellites tracked) */
-#define NMEALIB_GPGSV_MAX_SENTENCES (NMEALIB_MAX_SATELLITES / NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE)
+#define NMEALIB_GPGSV_MAX_SENTENCES (NMEALIB_MAX_SATELLITES >> NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT)
 
 /**
  * GPGSV packet information structure (Satellites in view)
