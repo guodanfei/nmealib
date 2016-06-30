@@ -31,23 +31,23 @@ typedef struct {
  */
 static const SentencePrefixToType sentencePrefixToType[] = {
     {
-        .prefix = NMEA_PREFIX_GPGGA, //
+        .prefix = NMEALIB_PREFIX_GPGGA, //
         .sentence = GPGGA //
     },
     {
-        .prefix = NMEA_PREFIX_GPGSA, //
+        .prefix = NMEALIB_PREFIX_GPGSA, //
         .sentence = GPGSA //
     },
     {
-        .prefix = NMEA_PREFIX_GPGSV, //
+        .prefix = NMEALIB_PREFIX_GPGSV, //
         .sentence = GPGSV //
     },
     {
-        .prefix = NMEA_PREFIX_GPRMC, //
+        .prefix = NMEALIB_PREFIX_GPRMC, //
         .sentence = GPRMC //
     },
     {
-        .prefix = NMEA_PREFIX_GPVTG, //
+        .prefix = NMEALIB_PREFIX_GPVTG, //
         .sentence = GPVTG //
     },
     {
@@ -84,12 +84,12 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
     size--;
   }
 
-  if (size < NMEA_PREFIX_LENGTH) {
+  if (size < NMEALIB_PREFIX_LENGTH) {
     return GPNON;
   }
 
   while (sentencePrefixToType[i].prefix) {
-    if (!strncmp(str, sentencePrefixToType[i].prefix, NMEA_PREFIX_LENGTH)) {
+    if (!strncmp(str, sentencePrefixToType[i].prefix, NMEALIB_PREFIX_LENGTH)) {
       return sentencePrefixToType[i].sentence;
     }
 

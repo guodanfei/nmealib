@@ -33,7 +33,7 @@ extern "C" {
 #endif /* __cplusplus */
 
   /** The NMEA prefix */
-#define NMEA_PREFIX_GPGGA "GPGGA"
+#define NMEALIB_PREFIX_GPGGA "GPGGA"
 
 /**
  * GPGGA packet information structure (Global Positioning System Fix Data)
@@ -52,7 +52,7 @@ extern "C" {
  * | ns          | North or South ('N' or 'S')                            | LAT (1)        |
  * | longitude   | Longitude, in NDEG (DDDMM.SSS)                         | LON (2)        |
  * | ew          | East or West ('E' or 'W')                              | LON (2)        |
- * | signal      | Signal quality (see the NMEA_SIG_* defines)            | SIG            |
+ * | signal      | Signal quality (see the NMEALIB_SIG_* defines)         | SIG            |
  * | satellites  | Number of satellites being tracked                     | SATINVIEWCOUNT |
  * | hdop        | Horizontal dilution of position                        | HDOP           |
  * | elv         | Altitude above mean sea level, in meters               | ELV (3)        |

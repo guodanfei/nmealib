@@ -82,10 +82,10 @@ enum NmeaSentence {
 };
 
 /** The bit-mask with all NmeaSentence entries */
-#define NMEA_SENTENCE_MASK (_NmeaSentenceLast - 1)
+#define NMEALIB_SENTENCE_MASK (_NmeaSentenceLast - 1)
 
 /** The fixed length of a NMEA prefix */
-#define NMEA_PREFIX_LENGTH 5
+#define NMEALIB_PREFIX_LENGTH 5
 
 /**
  * Determine the NMEA prefix from the sentence type.

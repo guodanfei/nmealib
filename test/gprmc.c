@@ -309,7 +309,7 @@ static void test_nmeaGPRMCToInfo(void) {
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
-  info.sig = NMEA_SIG_ESTIMATED;
+  info.sig = NMEALIB_SIG_ESTIMATED;
   pack.v23 = false;
   pack.sigSelection = 'A';
   pack.sig = 'M';
@@ -331,7 +331,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_FIX);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_FIX);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -344,7 +344,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_INVALID);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -357,7 +357,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_MANUAL);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_MANUAL);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -470,7 +470,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SPEED);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -601,7 +601,7 @@ static void test_nmeaGPRMCFromInfo(void) {
 
   /* sig & mode */
 
-  info.sig = NMEA_SIG_INVALID;
+  info.sig = NMEALIB_SIG_INVALID;
   nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -612,7 +612,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   CU_ASSERT_EQUAL(pack.sig, 'N');
   memset(&info, 0, sizeof(info));
 
-  info.sig = NMEA_SIG_MANUAL;
+  info.sig = NMEALIB_SIG_MANUAL;
   nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -680,7 +680,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
   CU_ASSERT_EQUAL(pack.present, SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.speedN, (42.55 / NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.speedN, (42.55 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&info, 0, sizeof(info));
 
   /* track */

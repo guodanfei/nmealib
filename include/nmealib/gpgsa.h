@@ -33,10 +33,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 /** The NMEA prefix */
-#define NMEA_PREFIX_GPGSA "GPGSA"
+#define NMEALIB_PREFIX_GPGSA "GPGSA"
 
 /** The number of satellite PRNs in the sentence */
-#define NMEA_GPGSA_SATS_IN_SENTENCE (12)
+#define NMEALIB_GPGSA_SATS_IN_SENTENCE (12)
 
 /**
  * GPGSA packet information structure (Satellite status)
@@ -51,7 +51,7 @@ extern "C" {
  * | :---------: | ------------------------------------------------ | :----------: |
  * | $GPGSA      | NMEA prefix                                      | -            |
  * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG          |
- * | fix         | Fix, see NMEA_FIX_* defines                      | FIX          |
+ * | fix         | Fix, see NMEALIB_FIX_* defines                   | FIX          |
  * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE (1) |
  * | pdop        | Dilution of position                             | PDOP         |
  * | hdop        | Horizontal dilution of position                  | HDOP         |
@@ -92,7 +92,7 @@ typedef struct _nmeaGPGSA {
   uint32_t present;
   char     sig;
   int      fix;
-  int      satPrn[NMEA_GPGSA_SATS_IN_SENTENCE];
+  int      satPrn[NMEALIB_GPGSA_SATS_IN_SENTENCE];
   double   pdop;
   double   hdop;
   double   vdop;

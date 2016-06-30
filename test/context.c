@@ -91,9 +91,9 @@ static void test_nmeaTrace(void) {
 
   /* very large string*/
 
-  buf = malloc(2 * NMEA_BUFFER_CHUNK_SIZE);
-  memset(buf, 'A', 2 * NMEA_BUFFER_CHUNK_SIZE);
-  buf[(2 * NMEA_BUFFER_CHUNK_SIZE) - 1] = '\0';
+  buf = malloc(2 * NMEALIB_BUFFER_CHUNK_SIZE);
+  memset(buf, 'A', 2 * NMEALIB_BUFFER_CHUNK_SIZE);
+  buf[(2 * NMEALIB_BUFFER_CHUNK_SIZE) - 1] = '\0';
 
   nmeaTrace("%s", buf);
   validateContext(1, 0);
@@ -132,9 +132,9 @@ static void test_nmeaError(void) {
 
   /* very large string*/
 
-  buf = malloc(2 * NMEA_BUFFER_CHUNK_SIZE);
-  memset(buf, 'A', 2 * NMEA_BUFFER_CHUNK_SIZE);
-  buf[(2 * NMEA_BUFFER_CHUNK_SIZE) - 1] = '\0';
+  buf = malloc(2 * NMEALIB_BUFFER_CHUNK_SIZE);
+  memset(buf, 'A', 2 * NMEALIB_BUFFER_CHUNK_SIZE);
+  buf[(2 * NMEALIB_BUFFER_CHUNK_SIZE) - 1] = '\0';
 
   nmeaError("%s", buf);
   validateContext(0, 1);

@@ -86,7 +86,7 @@ static void test_nmeaGPGSAParse(void) {
   r = nmeaGPGSAParse(s, strlen(s), NULL);
   validateParsePack(&pack, r, false, 0, 0, true);
 
-  packEmpty.fix = NMEA_FIX_BAD;
+  packEmpty.fix = NMEALIB_FIX_BAD;
 
   /* invalid sentence / not enough fields */
 
@@ -127,7 +127,7 @@ static void test_nmeaGPGSAParse(void) {
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, FIX);
-  CU_ASSERT_EQUAL(pack.fix, NMEA_FIX_3D);
+  CU_ASSERT_EQUAL(pack.fix, NMEALIB_FIX_3D);
 
   /* satPrn */
 
@@ -208,7 +208,7 @@ static void test_nmeaGPGSAToInfo(void) {
 
   pack.sig = '!';
   nmeaInfoSetPresent(&pack.present, SIG);
-  info.sig = NMEA_SIG_FLOAT_RTK;
+  info.sig = NMEALIB_SIG_FLOAT_RTK;
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -219,50 +219,50 @@ static void test_nmeaGPGSAToInfo(void) {
 
   pack.sig = '!';
   nmeaInfoSetPresent(&pack.present, SIG);
-  info.sig = NMEA_SIG_INVALID;
+  info.sig = NMEALIB_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_FIX);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_FIX);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.sig = 'A';
   nmeaInfoSetPresent(&pack.present, SIG);
-  info.sig = NMEA_SIG_INVALID;
+  info.sig = NMEALIB_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_FIX);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_FIX);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   pack.sig = 'M';
   nmeaInfoSetPresent(&pack.present, SIG);
-  info.sig = NMEA_SIG_INVALID;
+  info.sig = NMEALIB_SIG_INVALID;
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_MANUAL);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_MANUAL);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
   /* fix */
 
-  pack.fix = NMEA_FIX_3D;
+  pack.fix = NMEALIB_FIX_3D;
   nmeaInfoSetPresent(&pack.present, FIX);
 
   nmeaGPGSAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | FIX);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
-  CU_ASSERT_EQUAL(info.fix, NMEA_FIX_3D);
+  CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -395,7 +395,7 @@ static void test_nmeaGPGSAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, true);
   memset(&info, 0, sizeof(info));
 
-  packEmpty.fix = NMEA_FIX_BAD;
+  packEmpty.fix = NMEALIB_FIX_BAD;
 
   /* empty */
 
@@ -405,7 +405,7 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* sig */
 
-  info.sig = NMEA_SIG_ESTIMATED;
+  info.sig = NMEALIB_SIG_ESTIMATED;
   nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGSAFromInfo(&info, &pack);
@@ -414,7 +414,7 @@ static void test_nmeaGPGSAFromInfo(void) {
   CU_ASSERT_EQUAL(pack.sig, 'A');
   memset(&info, 0, sizeof(info));
 
-  info.sig = NMEA_SIG_MANUAL;
+  info.sig = NMEALIB_SIG_MANUAL;
   nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGSAFromInfo(&info, &pack);
@@ -425,13 +425,13 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* fix */
 
-  info.fix = NMEA_FIX_2D;
+  info.fix = NMEALIB_FIX_2D;
   nmeaInfoSetPresent(&info.present, FIX);
 
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, FIX);
-  CU_ASSERT_EQUAL(pack.fix, NMEA_FIX_2D);
+  CU_ASSERT_EQUAL(pack.fix, NMEALIB_FIX_2D);
   memset(&info, 0, sizeof(info));
 
   /* satPrn */
@@ -587,7 +587,7 @@ static void test_nmeaGPGSAGenerate(void) {
 
   /* fix */
 
-  pack.fix = NMEA_FIX_3D;
+  pack.fix = NMEALIB_FIX_3D;
   nmeaInfoSetPresent(&pack.present, FIX);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);

@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 /** The power-of-2 chunk size of a buffer allocation */
-#define NMEA_BUFFER_CHUNK_SIZE (4096UL)
+#define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
 
 #ifdef  __cplusplus
 }

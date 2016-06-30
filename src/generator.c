@@ -48,8 +48,8 @@ int nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   info->smask = smask;
   nmeaInfoSetPresent(&info->present, SMASK);
 
-  info->lat = NMEA_DEF_LAT;
-  info->lon = NMEA_DEF_LON;
+  info->lat = NMEALIB_DEF_LAT;
+  info->lon = NMEALIB_DEF_LON;
   nmeaInfoSetPresent(&info->present, LAT);
   nmeaInfoSetPresent(&info->present, LON);
 
@@ -476,7 +476,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
   nmeaGENERATOR *gen = 0;
 
   switch (type) {
-    case NMEA_GEN_NOISE:
+    case NMEALIB_GEN_NOISE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
@@ -484,8 +484,8 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
         gen->loop_call = &nmea_igen_noise_loop;
       }
       break;
-    case NMEA_GEN_STATIC:
-    case NMEA_GEN_SAT_STATIC:
+    case NMEALIB_GEN_STATIC:
+    case NMEALIB_GEN_SAT_STATIC:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
@@ -495,7 +495,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
         gen->reset_call = &nmea_igen_static_reset;
       }
       break;
-    case NMEA_GEN_SAT_ROTATE:
+    case NMEALIB_GEN_SAT_ROTATE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
@@ -505,7 +505,7 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
         gen->reset_call = &nmea_igen_rotate_reset;
       }
       break;
-    case NMEA_GEN_POS_RANDMOVE:
+    case NMEALIB_GEN_POS_RANDMOVE:
       if (!(gen = malloc(sizeof(nmeaGENERATOR))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
@@ -515,9 +515,9 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
       }
       break;
     default:
-      /* case NMEA_GEN_ROTATE: */
-      gen = __nmea_create_generator(NMEA_GEN_SAT_ROTATE, info);
-      nmea_gen_add(gen, __nmea_create_generator(NMEA_GEN_POS_RANDMOVE, info));
+      /* case NMEALIB_GEN_ROTATE: */
+      gen = __nmea_create_generator(NMEALIB_GEN_SAT_ROTATE, info);
+      nmea_gen_add(gen, __nmea_create_generator(NMEALIB_GEN_POS_RANDMOVE, info));
       break;
   };
 

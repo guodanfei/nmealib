@@ -27,7 +27,7 @@
  * @return radians
  */
 double nmea_degree2radian(const double val) {
-  return (val * NMEA_PI180);
+  return (val * NMEALIB_PI180);
 }
 
 /**
@@ -37,7 +37,7 @@ double nmea_degree2radian(const double val) {
  * @return degrees
  */
 double nmea_radian2degree(const double val) {
-  return (val / NMEA_PI180);
+  return (val / NMEALIB_PI180);
 }
 
 /**
@@ -96,23 +96,23 @@ double nmea_calc_pdop(const double hdop, const double vdop) {
 }
 
 /**
- * Convert DOP to meters, using the NMEA_DOP_FACTOR factor
+ * Convert DOP to meters, using the NMEALIB_DOP_FACTOR factor
  *
  * @param dop the DOP
  * @return the DOP in meters
  */
 double nmea_dop2meters(const double dop) {
-  return (dop * NMEA_DOP_FACTOR);
+  return (dop * NMEALIB_DOP_FACTOR);
 }
 
 /**
- * Convert DOP in meters to plain DOP, using the NMEA_DOP_FACTOR factor
+ * Convert DOP in meters to plain DOP, using the NMEALIB_DOP_FACTOR factor
  *
  * @param meters the DOP in meters
  * @return the plain DOP
  */
 double nmea_meters2dop(const double meters) {
-  return (meters / NMEA_DOP_FACTOR);
+  return (meters / NMEALIB_DOP_FACTOR);
 }
 
 /**
@@ -123,7 +123,7 @@ double nmea_meters2dop(const double meters) {
  * @return distance in meters
  */
 double nmea_distance(const NmeaPosition *from_pos, const NmeaPosition *to_pos) {
-  return ((double) NMEA_EARTHRADIUS_M)
+  return ((double) NMEALIB_EARTHRADIUS_M)
       * acos(
           sin(to_pos->lat) * sin(from_pos->lat)
               + cos(to_pos->lat) * cos(from_pos->lat) * cos(to_pos->lon - from_pos->lon));
@@ -163,8 +163,8 @@ double nmea_distance_ellipsoid(const NmeaPosition *from_pos, const NmeaPosition 
   } /* Identical points */
 
   /* Earth geometry */
-  f = NMEA_EARTH_FLATTENING;
-  a = NMEA_EARTH_SEMIMAJORAXIS_M;
+  f = NMEALIB_EARTH_FLATTENING;
+  a = NMEALIB_EARTH_SEMIMAJORAXIS_M;
   b = (1 - f) * a;
   sqr_a = a * a;
   sqr_b = b * b;
@@ -190,7 +190,7 @@ double nmea_distance_ellipsoid(const NmeaPosition *from_pos, const NmeaPosition 
   lambda = L;
   sin_lambda = sin(lambda);
   cos_lambda = cos(lambda);
-  lambda_prev = (double) 2.0 * (double) NMEA_PI;
+  lambda_prev = (double) 2.0 * (double) NMEALIB_PI;
   delta_lambda = lambda_prev - lambda;
   if (delta_lambda < 0)
     delta_lambda = -delta_lambda;
@@ -260,7 +260,7 @@ int nmea_move_horz(const NmeaPosition *start_pos, NmeaPosition *end_pos, double 
   NmeaPosition p1 = *start_pos;
   int RetVal = 1;
 
-  distance /= NMEA_EARTHRADIUS_KM; /* Angular distance covered on earth's surface */
+  distance /= NMEALIB_EARTHRADIUS_KM; /* Angular distance covered on earth's surface */
   azimuth = nmea_degree2radian(azimuth);
 
   end_pos->lat = asin(sin(p1.lat) * cos(distance) + cos(p1.lat) * sin(distance) * cos(azimuth));
@@ -311,8 +311,8 @@ int nmea_move_horz_ellipsoid(const NmeaPosition *start_pos, NmeaPosition *end_po
   } /* No move */
 
   /* Earth geometry */
-  f = NMEA_EARTH_FLATTENING;
-  a = NMEA_EARTH_SEMIMAJORAXIS_M;
+  f = NMEALIB_EARTH_FLATTENING;
+  a = NMEALIB_EARTH_SEMIMAJORAXIS_M;
   b = (1 - f) * a;
   sqr_a = a * a;
   sqr_b = b * b;
@@ -341,7 +341,7 @@ int nmea_move_horz_ellipsoid(const NmeaPosition *start_pos, NmeaPosition *end_po
   cos_2_sigmam = cos(2 * sigma1 + sigma);
   sqr_cos_2_sigmam = cos_2_sigmam * cos_2_sigmam;
   delta_sigma = 0;
-  sigma_prev = 2 * NMEA_PI;
+  sigma_prev = 2 * NMEALIB_PI;
   remaining_steps = 20;
 
   while ((fabs(sigma - sigma_prev) > 1e-12) && (remaining_steps > 0)) { /* Iterate */
@@ -388,12 +388,12 @@ void nmea_info2pos(const NmeaInfo *info, NmeaPosition *pos) {
   if (nmeaInfoIsPresentAll(info->present, LAT))
     pos->lat = nmea_ndeg2radian(info->lat);
   else
-    pos->lat = NMEA_DEF_LAT;
+    pos->lat = NMEALIB_DEF_LAT;
 
   if (nmeaInfoIsPresentAll(info->present, LON))
     pos->lon = nmea_ndeg2radian(info->lon);
   else
-    pos->lon = NMEA_DEF_LON;
+    pos->lon = NMEALIB_DEF_LON;
 }
 
 /**

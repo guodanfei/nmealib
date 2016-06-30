@@ -1,5 +1,5 @@
-#ifndef _NMEA_RANDOM_H
-#define _NMEA_RANDOM_H
+#ifndef _NMEALIB_RANDOM_H
+#define _NMEALIB_RANDOM_H
 
 #include <nmealib/util.h>
 #include <fcntl.h>
@@ -9,7 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define NMEA_RANDOM_MAX INT32_MAX
+#define NMEALIB_RANDOM_MAX INT32_MAX
 
 static INLINE long int nmea_random(const double min, const double max) {
   int32_t value;
@@ -34,11 +34,11 @@ static INLINE long int nmea_random(const double min, const double max) {
   }
 #endif /* _WIN32 */
 
-  return min + ((abs(value) * range) / NMEA_RANDOM_MAX);
+  return min + ((abs(value) * range) / NMEALIB_RANDOM_MAX);
 }
 
 static INLINE void nmea_init_random(void) {
   srandom(time(NULL));
 }
 
-#endif /* _NMEA_RANDOM_H */
+#endif /* _NMEALIB_RANDOM_H */

@@ -31,7 +31,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /** The NMEA prefix */
-#define NMEA_PREFIX_GPRMC "GPRMC"
+#define NMEALIB_PREFIX_GPRMC "GPRMC"
 
 /**
  * GPRMC -packet information structure (Recommended Minimum sentence C)

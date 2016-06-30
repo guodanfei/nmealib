@@ -32,40 +32,40 @@ extern "C" {
  */
 
 // FIXME convert to enum
-#define NMEA_SIG_FIRST        (NMEA_SIG_INVALID)
-#define NMEA_SIG_INVALID      (0)
-#define NMEA_SIG_FIX          (1)
-#define NMEA_SIG_DIFFERENTIAL (2)
-#define NMEA_SIG_SENSITIVE    (3)
-#define NMEA_SIG_RTKIN        (4)
-#define NMEA_SIG_FLOAT_RTK    (5)
-#define NMEA_SIG_ESTIMATED    (6)
-#define NMEA_SIG_MANUAL       (7)
-#define NMEA_SIG_SIMULATION   (8)
-#define NMEA_SIG_LAST         (NMEA_SIG_SIMULATION)
+#define NMEALIB_SIG_FIRST        (NMEALIB_SIG_INVALID)
+#define NMEALIB_SIG_INVALID      (0)
+#define NMEALIB_SIG_FIX          (1)
+#define NMEALIB_SIG_DIFFERENTIAL (2)
+#define NMEALIB_SIG_SENSITIVE    (3)
+#define NMEALIB_SIG_RTKIN        (4)
+#define NMEALIB_SIG_FLOAT_RTK    (5)
+#define NMEALIB_SIG_ESTIMATED    (6)
+#define NMEALIB_SIG_MANUAL       (7)
+#define NMEALIB_SIG_SIMULATION   (8)
+#define NMEALIB_SIG_LAST         (NMEALIB_SIG_SIMULATION)
 
 /**
- * Convert a NMEA_SIG_* define into a string
+ * Convert a NMEALIB_SIG_* define into a string
  *
- * @param sig The NMEA_SIG_* define
+ * @param sig The NMEALIB_SIG_* define
  * @return The corresponding string, or NULL when the define is unknown
  */
 const char * nmeaInfoSigToString(int sig);
 
 /**
- * Convert a mode character into the corresponding NMEA_SIG_* define
+ * Convert a mode character into the corresponding NMEALIB_SIG_* define
  *
  * @param mode The mode character
- * @return The corresponding NMEA_SIG_* define, or NMEA_SIG_INVALID when the
+ * @return The corresponding NMEALIB_SIG_* define, or NMEALIB_SIG_INVALID when the
  * mode is unknown
  */
 int nmeaInfoModeToSig(char mode);
 
 /**
- * Convert a NMEA_SIG_* define into the corresponding mode character
+ * Convert a NMEALIB_SIG_* define into the corresponding mode character
  *
- * @param sig The NMEA_SIG_* define
- * @return The corresponding mode character, or 'N' when the NMEA_SIG_* define
+ * @param sig The NMEALIB_SIG_* define
+ * @return The corresponding mode character, or 'N' when the NMEALIB_SIG_* define
  * is unknown
  */
 char nmeaInfoSigToMode(int sig);
@@ -75,17 +75,17 @@ char nmeaInfoSigToMode(int sig);
  */
 
 // FIXME convert to enum
-#define NMEA_FIX_FIRST (NMEA_FIX_BAD)
-#define NMEA_FIX_BAD   (1)
-#define NMEA_FIX_2D    (2)
-#define NMEA_FIX_3D    (3)
-#define NMEA_FIX_LAST  (NMEA_FIX_3D)
+#define NMEALIB_FIX_FIRST (NMEALIB_FIX_BAD)
+#define NMEALIB_FIX_BAD   (1)
+#define NMEALIB_FIX_2D    (2)
+#define NMEALIB_FIX_3D    (3)
+#define NMEALIB_FIX_LAST  (NMEALIB_FIX_3D)
 
 /**
- * Convert a NMEA_FIX_* define into a string
+ * Convert a NMEALIB_FIX_* define into a string
  *
- * @param fix The NMEA_FIX_* define
- * @return The corresponding string, or NULL when the NMEA_FIX_* define is
+ * @param fix The NMEALIB_FIX_* define
+ * @return The corresponding string, or NULL when the NMEALIB_FIX_* define is
  * unknown
  */
 const char * nmeaInfoFixToString(int fix);
@@ -98,10 +98,10 @@ const char * nmeaInfoFixToString(int fix);
 #define NMEALIB_MAX_SATELLITES (72u)
 
 /** The default latitude */
-#define NMEA_DEF_LAT           (0.0)
+#define NMEALIB_DEF_LAT           (0.0)
 
 /** The default longitude */
-#define NMEA_DEF_LON           (0.0)
+#define NMEALIB_DEF_LON           (0.0)
 
 /**
  * Date and time data
@@ -155,26 +155,26 @@ typedef struct _NmeaProgress {
  * GPS information from all supported sentences, used also for generating NMEA sentences
  */
 typedef struct _NmeaInfo {
-  uint32_t     present;  /**< Bit-mask specifying which fields are present                    */
-  int          smask;    /**< Bit-mask specifying from which sentences data has been obtained */
-  NmeaTime     utc;      /**< UTC of the position data                                        */
-  int          sig;      /**< Signal quality, see NMEA_SIG_* defines                          */
-  int          fix;      /**< Operating mode, see NMEA_FIX_* defines                          */
-  double       pdop;     /**< Position Dilution Of Precision                                  */
-  double       hdop;     /**< Horizontal Dilution Of Precision                                */
-  double       vdop;     /**< Vertical Dilution Of Precision                                  */
-  double       lat;      /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
-  double       lon;      /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
-  double       elv;      /**< Elevation above/below mean sea level (geoid), in meters         */
-  double       height;   /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
-  double       speed;    /**< Speed over the ground in kph                                    */
-  double       track;    /**< Track angle in degrees true north                               */
-  double       mtrack;   /**< Magnetic Track angle in degrees true north                      */
-  double       magvar;   /**< Magnetic variation degrees                                      */
-  double       dgpsAge;  /**< Time since last DGPS update, in seconds                         */
-  int          dgpsSid;  /**< DGPS station ID number                                          */
-  NmeaSatellites  satinfo;  /**< Satellites information                                          */
-  NmeaProgress progress; /**< Progress information                                            */
+  uint32_t     present;    /**< Bit-mask specifying which fields are present                    */
+  int          smask;      /**< Bit-mask specifying from which sentences data has been obtained */
+  NmeaTime     utc;        /**< UTC of the position data                                        */
+  int          sig;        /**< Signal quality, see NMEALIB_SIG_* defines                       */
+  int          fix;        /**< Operating mode, see NMEALIB_FIX_* defines                       */
+  double       pdop;       /**< Position Dilution Of Precision                                  */
+  double       hdop;       /**< Horizontal Dilution Of Precision                                */
+  double       vdop;       /**< Vertical Dilution Of Precision                                  */
+  double       lat;        /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
+  double       lon;        /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
+  double       elv;        /**< Elevation above/below mean sea level (geoid), in meters         */
+  double       height;     /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
+  double       speed;      /**< Speed over the ground in kph                                    */
+  double       track;      /**< Track angle in degrees true north                               */
+  double       mtrack;     /**< Magnetic Track angle in degrees true north                      */
+  double       magvar;     /**< Magnetic variation degrees                                      */
+  double       dgpsAge;    /**< Time since last DGPS update, in seconds                         */
+  int          dgpsSid;    /**< DGPS station ID number                                          */
+  NmeaSatellites  satinfo; /**< Satellites information                                          */
+  NmeaProgress progress;   /**< Progress information                                            */
 } NmeaInfo;
 
 /**
@@ -214,7 +214,7 @@ typedef enum _NmeaPresence {
 } NmeaPresence;
 
 /** The bit-mask of all supported field name bits */
-#define NMEA_INFO_PRESENT_MASK ((_nmeaINFO_FIELD_LAST << 1) - 1)
+#define NMEALIB_INFO_PRESENT_MASK ((_nmeaINFO_FIELD_LAST << 1) - 1)
 
 /**
  * Convert a nmeaINFO_FIELD into a string
@@ -286,8 +286,8 @@ void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present);
 /**
  * Clear an info structure.
  *
- * Resets the time to now, sets up the signal as NMEA_SIG_INVALID, the FIX as
- * NMEA_FIX_BAD, and signals presence of these fields.
+ * Resets the time to now, sets up the signal as NMEALIB_SIG_INVALID, the FIX as
+ * NMEALIB_FIX_BAD, and signals presence of these fields.
  *
  * Resets all other fields to 0.
  *
@@ -297,10 +297,10 @@ void nmeaInfoClear(NmeaInfo *info);
 
 /**
  * Sanitise the NMEA info, make sure that:
- * - sig is in the range [NMEA_SIG_FIRST, NMEA_SIG_LAST],
- *   if this is not the case then sig is set to NMEA_SIG_INVALID
- * - fix is in the range [NMEA_FIX_FIRST, NMEA_FIX_LAST],
- *   if this is not the case then fix is set to NMEA_FIX_BAD
+ * - sig is in the range [NMEALIB_SIG_FIRST, NMEALIB_SIG_LAST],
+ *   if this is not the case then sig is set to NMEALIB_SIG_INVALID
+ * - fix is in the range [NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST],
+ *   if this is not the case then fix is set to NMEALIB_FIX_BAD
  * - DOPs are positive,
  * - latitude is in the range [-9000, 9000],
  * - longitude is in the range [-18000, 18000],

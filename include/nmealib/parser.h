@@ -25,9 +25,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef NMEA_MAX_SENTENCE_LENGTH
+#ifdef NMEALIB_MAX_SENTENCE_LENGTH
   /* override the default maximum sentence length */
-#define SENTENCE_SIZE (NMEA_MAX_SENTENCE_LENGTH)
+#define SENTENCE_SIZE (NMEALIB_MAX_SENTENCE_LENGTH)
 #else
   /* we need to be able to parse much longer sentences than specified in the (original) specification */
 #define SENTENCE_SIZE (4096 * 1)

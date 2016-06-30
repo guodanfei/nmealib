@@ -58,7 +58,7 @@ void nmeaTrace(const char *s, ...) {
   nmeaPrintFunction func = context.traceFunction;
   if (s && func) {
     char *buf;
-    size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
+    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     va_list args;
     va_list args2;
     int chars;
@@ -102,7 +102,7 @@ void nmeaError(const char *s, ...) {
   nmeaPrintFunction func = context.errorFunction;
   if (s && func) {
     char *buf;
-    size_t bufSize = NMEA_BUFFER_CHUNK_SIZE;
+    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     va_list args;
     va_list args2;
     int chars;

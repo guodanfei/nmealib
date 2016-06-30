@@ -164,9 +164,9 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
 }
 
 bool nmeaValidateFix(int fix, const char *prefix, const char *s) {
-  if ((fix < NMEA_FIX_FIRST) //
-      || (fix > NMEA_FIX_LAST)) {
-    nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEA_FIX_FIRST, NMEA_FIX_LAST,
+  if ((fix < NMEALIB_FIX_FIRST) //
+      || (fix > NMEALIB_FIX_LAST)) {
+    nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST,
         s);
     return false;
   }
@@ -175,10 +175,10 @@ bool nmeaValidateFix(int fix, const char *prefix, const char *s) {
 }
 
 bool nmeaValidateSignal(int sig, const char *prefix, const char *s) {
-  if ((sig < NMEA_SIG_FIRST) //
-      || (sig > NMEA_SIG_LAST)) {
-    nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEA_SIG_FIRST,
-    NMEA_SIG_LAST, s);
+  if ((sig < NMEALIB_SIG_FIRST) //
+      || (sig > NMEALIB_SIG_LAST)) {
+    nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEALIB_SIG_FIRST,
+    NMEALIB_SIG_LAST, s);
     return false;
   }
 

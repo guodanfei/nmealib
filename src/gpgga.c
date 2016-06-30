@@ -56,7 +56,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%16s,%F,%C,%F,%C,%d,%d,%F,%f,%C,%f,%C,%F,%d*", //
+      "$" NMEALIB_PREFIX_GPGGA ",%16s,%F,%C,%F,%C,%d,%d,%F,%f,%C,%f,%C,%F,%d*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -74,7 +74,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmeaError(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaError(NMEALIB_PREFIX_GPGGA " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 
@@ -82,7 +82,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (*timeBuf) {
     if (!nmeaTIMEparseTime(timeBuf, &pack->time) //
-        || !nmeaValidateTime(&pack->time, NMEA_PREFIX_GPGGA, s)) {
+        || !nmeaValidateTime(&pack->time, NMEALIB_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -92,7 +92,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(pack->ns, true, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateNSEW(pack->ns, true, NMEALIB_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -103,7 +103,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(pack->ew, false, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateNSEW(pack->ew, false, NMEALIB_PREFIX_GPGGA, s)) {
       goto err;
     }
 
@@ -114,13 +114,13 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (pack->signal != INT_MAX) {
-    if (!nmeaValidateSignal(pack->signal, NMEA_PREFIX_GPGGA, s)) {
+    if (!nmeaValidateSignal(pack->signal, NMEALIB_PREFIX_GPGGA, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, SIG);
   } else {
-    pack->signal = NMEA_SIG_INVALID;
+    pack->signal = NMEALIB_SIG_INVALID;
   }
 
   if (pack->satellitesInView != INT_MAX) {
@@ -138,7 +138,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->elevation)) {
     if (pack->elevationUnit != 'M') {
-      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elevationUnit, s);
+      nmeaError(NMEALIB_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elevationUnit, s);
       goto err;
     }
 
@@ -150,7 +150,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   if (!isnan(pack->height)) {
     if (pack->heightUnit != 'M') {
-      nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->heightUnit, s);
+      nmeaError(NMEALIB_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->heightUnit, s);
       goto err;
     }
 
@@ -177,7 +177,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
 err:
   memset(pack, 0, sizeof(*pack));
-  pack->signal = NMEA_SIG_INVALID;
+  pack->signal = NMEALIB_SIG_INVALID;
   return false;
 }
 
@@ -285,7 +285,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack) {
     pack->signal = info->sig;
     nmeaInfoSetPresent(&pack->present, SIG);
   } else {
-    pack->signal = NMEA_SIG_INVALID;
+    pack->signal = NMEALIB_SIG_INVALID;
   }
 
   if (nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT)) {
@@ -333,7 +333,7 @@ int nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
     return 0;
   }
 
-  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGGA);
+  chars += snprintf(dst, available, "$" NMEALIB_PREFIX_GPGGA);
 
   if (nmeaInfoIsPresentAll(pack->present, UTCTIME)) {
     chars += snprintf(dst, available, //

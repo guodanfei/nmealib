@@ -113,7 +113,7 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s);
  *
  * Expects:
  * <pre>
- *   fix in [NMEA_FIX_FIRST, NMEA_FIX_LAST]
+ *   fix in [NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST]
  * </pre>
  *
  * @param fix The fix
@@ -128,7 +128,7 @@ bool nmeaValidateFix(int fix, const char *prefix, const char *s);
  *
  * Expects:
  * <pre>
- *   sig in [NMEA_SIG_FIRST, NMEA_SIG_LAST]
+ *   sig in [NMEALIB_SIG_FIRST, NMEALIB_SIG_LAST]
  * </pre>
  *
  * @param sig The signal

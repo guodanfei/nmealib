@@ -35,7 +35,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoSetPresent(&info.present, VDOP);
 	nmeaInfoSetPresent(&info.present, ELV);
 
-	if (0 == (gen = nmea_create_generator(NMEA_GEN_ROTATE, &info)))
+	if (0 == (gen = nmea_create_generator(NMEALIB_GEN_ROTATE, &info)))
 		return -1;
 
 	for (it = 0; it < 10000; it++) {

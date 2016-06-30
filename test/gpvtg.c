@@ -116,7 +116,7 @@ static void test_nmeaGPVTGParse(void) {
   CU_ASSERT_EQUAL(pack.present, SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spn, 4.25, DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spn_n, 'N');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spk_k, 'K');
 
   /* speed kph */
@@ -135,7 +135,7 @@ static void test_nmeaGPVTGParse(void) {
   CU_ASSERT_EQUAL(pack.present, SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 4.25, DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spk_k, 'K');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spn_n, 'N');
 }
 
@@ -207,7 +207,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SPEED);
   CU_ASSERT_EQUAL(info.smask, GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -221,7 +221,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SPEED);
   CU_ASSERT_EQUAL(info.smask, GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -311,7 +311,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEA_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spn_n, 'N');
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 10.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(pack.spk_k, 'K');

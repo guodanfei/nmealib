@@ -29,31 +29,31 @@
 
 const char * nmeaInfoSigToString(int sig) {
   switch (sig) {
-    case NMEA_SIG_INVALID:
+    case NMEALIB_SIG_INVALID:
       return "INVALID";
 
-    case NMEA_SIG_FIX:
+    case NMEALIB_SIG_FIX:
       return "FIX";
 
-    case NMEA_SIG_DIFFERENTIAL:
+    case NMEALIB_SIG_DIFFERENTIAL:
       return "DIFFERENTIAL";
 
-    case NMEA_SIG_SENSITIVE:
+    case NMEALIB_SIG_SENSITIVE:
       return "SENSITIVE";
 
-    case NMEA_SIG_RTKIN:
+    case NMEALIB_SIG_RTKIN:
       return "REAL TIME KINEMATIC";
 
-    case NMEA_SIG_FLOAT_RTK:
+    case NMEALIB_SIG_FLOAT_RTK:
       return "FLOAT RTK";
 
-    case NMEA_SIG_ESTIMATED:
+    case NMEALIB_SIG_ESTIMATED:
       return "ESTIMATED (DEAD RECKONING)";
 
-    case NMEA_SIG_MANUAL:
+    case NMEALIB_SIG_MANUAL:
       return "MANUAL INPUT";
 
-    case NMEA_SIG_SIMULATION:
+    case NMEALIB_SIG_SIMULATION:
       return "SIMULATION";
 
     default:
@@ -64,64 +64,64 @@ const char * nmeaInfoSigToString(int sig) {
 int nmeaInfoModeToSig(char mode) {
   switch (mode) {
     case 'N':
-      return NMEA_SIG_INVALID;
+      return NMEALIB_SIG_INVALID;
 
     case 'A':
-      return NMEA_SIG_FIX;
+      return NMEALIB_SIG_FIX;
 
     case 'D':
-      return NMEA_SIG_DIFFERENTIAL;
+      return NMEALIB_SIG_DIFFERENTIAL;
 
     case 'P':
-      return NMEA_SIG_SENSITIVE;
+      return NMEALIB_SIG_SENSITIVE;
 
     case 'R':
-      return NMEA_SIG_RTKIN;
+      return NMEALIB_SIG_RTKIN;
 
     case 'F':
-      return NMEA_SIG_FLOAT_RTK;
+      return NMEALIB_SIG_FLOAT_RTK;
 
     case 'E':
-      return NMEA_SIG_ESTIMATED;
+      return NMEALIB_SIG_ESTIMATED;
 
     case 'M':
-      return NMEA_SIG_MANUAL;
+      return NMEALIB_SIG_MANUAL;
 
     case 'S':
-      return NMEA_SIG_SIMULATION;
+      return NMEALIB_SIG_SIMULATION;
 
     default:
-      return NMEA_SIG_INVALID;
+      return NMEALIB_SIG_INVALID;
   }
 }
 
 char nmeaInfoSigToMode(int sig) {
   switch (sig) {
-    case NMEA_SIG_INVALID:
+    case NMEALIB_SIG_INVALID:
       return 'N';
 
-    case NMEA_SIG_FIX:
+    case NMEALIB_SIG_FIX:
       return 'A';
 
-    case NMEA_SIG_DIFFERENTIAL:
+    case NMEALIB_SIG_DIFFERENTIAL:
       return 'D';
 
-    case NMEA_SIG_SENSITIVE:
+    case NMEALIB_SIG_SENSITIVE:
       return 'P';
 
-    case NMEA_SIG_RTKIN:
+    case NMEALIB_SIG_RTKIN:
       return 'R';
 
-    case NMEA_SIG_FLOAT_RTK:
+    case NMEALIB_SIG_FLOAT_RTK:
       return 'F';
 
-    case NMEA_SIG_ESTIMATED:
+    case NMEALIB_SIG_ESTIMATED:
       return 'E';
 
-    case NMEA_SIG_MANUAL:
+    case NMEALIB_SIG_MANUAL:
       return 'M';
 
-    case NMEA_SIG_SIMULATION:
+    case NMEALIB_SIG_SIMULATION:
       return 'S';
 
     default:
@@ -131,13 +131,13 @@ char nmeaInfoSigToMode(int sig) {
 
 const char * nmeaInfoFixToString(int fix) {
   switch (fix) {
-    case NMEA_FIX_BAD:
+    case NMEALIB_FIX_BAD:
       return "BAD";
 
-    case NMEA_FIX_2D:
+    case NMEALIB_FIX_2D:
       return "2D";
 
-    case NMEA_FIX_3D:
+    case NMEALIB_FIX_3D:
       return "3D";
 
     default:
@@ -248,10 +248,10 @@ void nmeaInfoClear(NmeaInfo *info) {
 
   nmeaInfoTimeSetNow(&info->utc, &info->present);
 
-  info->sig = NMEA_SIG_INVALID;
+  info->sig = NMEALIB_SIG_INVALID;
   nmeaInfoSetPresent(&info->present, SIG);
 
-  info->fix = NMEA_FIX_BAD;
+  info->fix = NMEALIB_FIX_BAD;
   nmeaInfoSetPresent(&info->present, FIX);
 }
 
@@ -276,7 +276,7 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
     return;
   }
 
-  nmeaInfo->present = nmeaInfo->present & NMEA_INFO_PRESENT_MASK;
+  nmeaInfo->present = nmeaInfo->present & NMEALIB_INFO_PRESENT_MASK;
 
   if (!nmeaInfoIsPresentAll(nmeaInfo->present, SMASK)) {
     nmeaInfo->smask = 0;
@@ -300,18 +300,18 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
   }
 
   if (!nmeaInfoIsPresentAll(nmeaInfo->present, SIG)) {
-    nmeaInfo->sig = NMEA_SIG_INVALID;
+    nmeaInfo->sig = NMEALIB_SIG_INVALID;
   } else {
-    if ((nmeaInfo->sig < NMEA_SIG_FIRST) || (nmeaInfo->sig > NMEA_SIG_LAST)) {
-      nmeaInfo->sig = NMEA_SIG_INVALID;
+    if ((nmeaInfo->sig < NMEALIB_SIG_FIRST) || (nmeaInfo->sig > NMEALIB_SIG_LAST)) {
+      nmeaInfo->sig = NMEALIB_SIG_INVALID;
     }
   }
 
   if (!nmeaInfoIsPresentAll(nmeaInfo->present, FIX)) {
-    nmeaInfo->fix = NMEA_FIX_BAD;
+    nmeaInfo->fix = NMEALIB_FIX_BAD;
   } else {
-    if ((nmeaInfo->fix < NMEA_FIX_FIRST) || (nmeaInfo->fix > NMEA_FIX_LAST)) {
-      nmeaInfo->fix = NMEA_FIX_BAD;
+    if ((nmeaInfo->fix < NMEALIB_FIX_FIRST) || (nmeaInfo->fix > NMEALIB_FIX_LAST)) {
+      nmeaInfo->fix = NMEALIB_FIX_BAD;
     }
   }
 

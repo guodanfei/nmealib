@@ -348,14 +348,14 @@ static void test_nmeaGPGGAToInfo(void) {
 
   /* signal */
 
-  pack.signal = NMEA_SIG_FLOAT_RTK;
+  pack.signal = NMEALIB_SIG_FLOAT_RTK;
   nmeaInfoSetPresent(&pack.present, SIG);
 
   nmeaGPGGAToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, SMASK | SIG);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
-  CU_ASSERT_EQUAL(info.sig, NMEA_SIG_FLOAT_RTK);
+  CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_FLOAT_RTK);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -570,13 +570,13 @@ static void test_nmeaGPGGAFromInfo(void) {
 
   /* signal */
 
-  info.sig = NMEA_SIG_MANUAL;
+  info.sig = NMEALIB_SIG_MANUAL;
   nmeaInfoSetPresent(&info.present, SIG);
 
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, SIG);
-  CU_ASSERT_EQUAL(pack.signal, NMEA_SIG_MANUAL);
+  CU_ASSERT_EQUAL(pack.signal, NMEALIB_SIG_MANUAL);
   memset(&info, 0, sizeof(info));
 
   /* satellites */
@@ -746,7 +746,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   /* signal */
 
-  pack.signal = NMEA_SIG_MANUAL;
+  pack.signal = NMEALIB_SIG_MANUAL;
   nmeaInfoSetPresent(&pack.present, SIG);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);

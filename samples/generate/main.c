@@ -35,7 +35,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	info.fix = 3;
 	info.lat = 5000.0;
 	info.lon = 3600.0;
-	info.speed = 2.14 * NMEA_TUS_MS;
+	info.speed = 2.14 * NMEALIB_TUS_MS;
 	info.elv = 10.86;
 	info.track = 45;
 	info.mtrack = 55;

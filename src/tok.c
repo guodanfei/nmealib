@@ -29,7 +29,7 @@
 #include <string.h>
 
 /** The maximum size of a string-to-number conversion buffer*/
-#define NMEA_CONVSTR_BUF    64
+#define NMEALIB_CONVSTR_BUF    64
 
 unsigned int nmeaCalculateCRC(const char *s, const size_t sz) {
   size_t i = 0;
@@ -71,11 +71,11 @@ unsigned int nmeaStringToUnsignedInteger(const char *s, size_t sz, int radix) {
 }
 
 long nmeaStringToLong(const char *s, size_t sz, int radix) {
-  char buf[NMEA_CONVSTR_BUF];
+  char buf[NMEALIB_CONVSTR_BUF];
   char * endPtr = NULL;
   long value;
 
-  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF) || (radix < 1)) {
+  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF) || (radix < 1)) {
     return 0;
   }
 
@@ -95,11 +95,11 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
 }
 
 unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
-  char buf[NMEA_CONVSTR_BUF];
+  char buf[NMEALIB_CONVSTR_BUF];
   char * endPtr = NULL;
   unsigned long value;
 
-  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF) || (radix < 1)) {
+  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF) || (radix < 1)) {
     return 0;
   }
 
@@ -119,11 +119,11 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
 }
 
 double nmeaStringToDouble(const char *s, const size_t sz) {
-  char buf[NMEA_CONVSTR_BUF];
+  char buf[NMEALIB_CONVSTR_BUF];
   char * endPtr = NULL;
   double value;
 
-  if (!s || !sz || (sz >= NMEA_CONVSTR_BUF)) {
+  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF)) {
     return 0.0;
   }
 
@@ -183,11 +183,11 @@ out:
 
 size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
 
-#define NMEA_SCANF_COMPARE   1u
-#define NMEA_SCANF_TOKEN     2u
+#define NMEALIB_SCANF_COMPARE   1u
+#define NMEALIB_SCANF_TOKEN     2u
 
   size_t tokens = 0;
-  unsigned char state = NMEA_SCANF_COMPARE;
+  unsigned char state = NMEALIB_SCANF_COMPARE;
 
   const char *sCharacter = s;
   const char *sEnd = &s[sz];
@@ -207,19 +207,19 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
 
   for (formatCharacter = format; *formatCharacter && (sCharacter < sEnd); formatCharacter++) {
     switch (state) {
-      case NMEA_SCANF_COMPARE:
+      case NMEALIB_SCANF_COMPARE:
         if (*formatCharacter == '%') {
           /* start of format */
           formatStart = &formatCharacter[1];
           widthCount = 0;
-          state = NMEA_SCANF_TOKEN;
+          state = NMEALIB_SCANF_TOKEN;
         } else if (*sCharacter++ != *formatCharacter) {
           /* compare regular character between s and format */
           goto out;
         }
         break;
 
-      case NMEA_SCANF_TOKEN:
+      case NMEALIB_SCANF_TOKEN:
         if (isdigit(*formatCharacter)) {
           widthCount++;
           break;
@@ -260,7 +260,7 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           goto out;
         }
 
-        state = NMEA_SCANF_COMPARE;
+        state = NMEALIB_SCANF_COMPARE;
         tokens++;
 
         arg = NULL;
