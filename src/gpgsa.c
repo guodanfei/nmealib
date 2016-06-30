@@ -50,7 +50,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGSA ",%c,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
+      "$" NMEA_PREFIX_GPGSA ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%f,%f,%f*", //
       &pack->sig, //
       &pack->fix, //
       &pack->satPrn[0], //
@@ -78,7 +78,6 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   /* determine which fields are present and validate them */
 
   if (pack->sig) {
-    pack->sig = toupper(pack->sig);
     if (!((pack->sig == 'A') //
         || (pack->sig == 'M'))) {
       nmeaError(NMEA_PREFIX_GPGSA " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);

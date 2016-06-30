@@ -145,7 +145,6 @@ bool nmeaValidateNSEW(char * c, const bool ns, const char * prefix, const char *
   cu[1] = '\0';
   cu[2] = '\0';
   if (*c) {
-    *c = toupper(*c);
     cu[0] = *c;
   } else {
     cu[0] = '\\';
@@ -191,8 +190,6 @@ bool nmeaValidateMode(char * c, const char * prefix, const char * s) {
   if (!c) {
     return false;
   }
-
-  *c = toupper(*c);
 
   if (!( //
       (*c == 'N') //

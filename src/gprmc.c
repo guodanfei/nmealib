@@ -57,7 +57,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$GPRMC,%16s,%c,%f,%c,%f,%c,%f,%f,%8s,%f,%c,%c*", //
+      "$GPRMC,%16s,%C,%f,%C,%f,%C,%f,%f,%8s,%f,%C,%C*", //
       timeBuf, //
       &pack->sigSelection, //
       &pack->latitude, //
@@ -96,7 +96,6 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
     pack->utc.hsec = 0;
   }
 
-  pack->sigSelection = toupper(pack->sigSelection);
   if (pack->sigSelection //
       && !((pack->sigSelection == 'A') //
           || (pack->sigSelection == 'V'))) {

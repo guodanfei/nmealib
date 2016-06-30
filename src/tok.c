@@ -244,7 +244,7 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
             sCharacter = sEnd;
           }
-        } else if ('S' == toupper(*formatCharacter)) {
+        } else if ('s' == *formatCharacter) {
           if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], sEnd - sCharacter)))) {
             sCharacter = sEnd;
           }
@@ -278,6 +278,13 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             arg = (void *) va_arg(args, char *);
             if (width && arg) {
               *((char *) arg) = *sTokenStart;
+            }
+            break;
+
+          case 'C':
+            arg = (void *) va_arg(args, char *);
+            if (width && arg) {
+              *((char *) arg) = toupper(*sTokenStart);
             }
             break;
 

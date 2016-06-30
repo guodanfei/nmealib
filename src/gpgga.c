@@ -56,7 +56,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGGA ",%16s,%f,%c,%f,%c,%d,%d,%f,%f,%c,%f,%c,%f,%d*", //
+      "$" NMEA_PREFIX_GPGGA ",%16s,%f,%C,%f,%C,%d,%d,%f,%f,%C,%f,%C,%f,%d*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -140,7 +140,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->elevation)) {
-    pack->elevationUnit = toupper(pack->elevationUnit);
     if (pack->elevationUnit != 'M') {
       nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid elevation unit '%c' in '%s'", pack->elevationUnit, s);
       goto err;
@@ -153,7 +152,6 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->height)) {
-    pack->heightUnit = toupper(pack->heightUnit);
     if (pack->heightUnit != 'M') {
       nmeaError(NMEA_PREFIX_GPGGA " parse error: invalid height unit '%c' in '%s'", pack->heightUnit, s);
       goto err;
