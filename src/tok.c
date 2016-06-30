@@ -271,7 +271,6 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
 
         switch (*formatCharacter) {
           case 'c':
-          case 'C':
             arg = (void *) va_arg(args, char *);
             if (width && arg) {
               *((char *) arg) = *sTokenStart;
@@ -279,7 +278,6 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             break;
 
           case 's':
-          case 'S':
             arg = (void *) va_arg(args, char *);
             if (width && arg) {
               memcpy(arg, sTokenStart, width);
@@ -292,10 +290,6 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             break;
 
           case 'f':
-          case 'g':
-          case 'G':
-          case 'e':
-          case 'E':
             arg = (void *) va_arg(args, double *);
             if (width && arg) {
               *((double *) arg) = nmeaStringToDouble(sTokenStart, width);
@@ -303,7 +297,6 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             break;
 
           case 'd':
-          case 'i':
             arg = (void *) va_arg(args, int *);
             if (width && arg) {
               *((int *) arg) = nmeaStringToInteger(sTokenStart, width, 10);
@@ -321,21 +314,6 @@ unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             arg = (void *) va_arg(args, long *);
             if (width && arg) {
               *((long *) arg) = nmeaStringToLong(sTokenStart, width, 10);
-            }
-            break;
-
-          case 'x':
-          case 'X':
-            arg = (void *) va_arg(args, unsigned int *);
-            if (width && arg) {
-              *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 16);
-            }
-            break;
-
-          case 'o':
-            arg = (void *) va_arg(args, unsigned int *);
-            if (width && arg) {
-              *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 8);
             }
             break;
 
