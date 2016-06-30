@@ -220,7 +220,7 @@ const char * nmea_INFO_field_to_string(nmeaINFO_FIELD field);
  * @return True when the nmeaINFO_FIELD is present
  */
 static INLINE bool nmea_INFO_is_present(uint32_t present, nmeaINFO_FIELD fieldName) {
-  return ((present & fieldName) != 0);
+  return ((present & fieldName) == fieldName);
 }
 
 /**
