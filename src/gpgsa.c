@@ -32,7 +32,6 @@
 
 bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   size_t fieldCount;
-  size_t i;
 
   if (!s //
       || !sz //
@@ -101,16 +100,11 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
     pack->fix = NMEA_FIX_BAD;
   }
 
-  for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
-    if (pack->satPrn[i]) {
-      qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortComparePRN);
-
-      nmea_INFO_set_present(&pack->present, SATINUSE);
-      break;
-    }
-  }
-  if (!nmea_INFO_is_present(pack->present, SATINUSE)) {
+  qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortComparePRN);
+  if (!pack->satPrn[0]) {
     memset(pack->satPrn, 0, sizeof(pack->satPrn));
+  } else {
+    nmea_INFO_set_present(&pack->present, SATINUSE);
   }
 
   if (!isnan(pack->pdop)) {
