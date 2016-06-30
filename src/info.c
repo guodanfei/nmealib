@@ -649,3 +649,17 @@ void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo) {
 
   /* satinfo (already in correct format) */
 }
+
+int qsortComparePRN(const void *p1, const void *p2) {
+  int prn1 = *((const int *) p1);
+  int prn2 = *((const int *) p2);
+
+  if (!prn1) {
+    prn1 += 1000;
+  }
+  if (!prn2) {
+    prn2 += 1000;
+  }
+
+  return (prn1 - prn2);
+}

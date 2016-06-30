@@ -30,20 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int comparePRN(const void *p1, const void *p2) {
-  int prn1 = *((const int *) p1);
-  int prn2 = *((const int *) p2);
-
-  if (!prn1) {
-    prn1 += 1000;
-  }
-  if (!prn2) {
-    prn2 += 1000;
-  }
-
-  return (prn1 - prn2);
-}
-
 bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   size_t fieldCount;
   size_t i;
@@ -117,7 +103,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   for (i = 0; i < NMEA_GPGSA_SATS_IN_SENTENCE; i++) {
     if (pack->satPrn[i]) {
-      qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), comparePRN);
+      qsort(pack->satPrn, NMEA_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortComparePRN);
 
       nmea_INFO_set_present(&pack->present, SATINUSE);
       break;

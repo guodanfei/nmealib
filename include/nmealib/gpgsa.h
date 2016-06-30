@@ -134,18 +134,6 @@ void nmeaGPGSAFromInfo(const nmeaINFO *info, nmeaGPGSA *pack);
  */
 int nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
 
-/**
- * Compare 2 satellite PRNs, but put zeroes last (consider them to be 1000)
- *
- * NOTE: only here for tests, do not use
- *
- * @param p1 The first satellite PRN
- * @param p2 The second satellite PRN
- * @return 0 when both are equal, a negative value when p1 < p2, a positive
- * value otherwise
- */
-int comparePRN(const void *p1, const void *p2);
-
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

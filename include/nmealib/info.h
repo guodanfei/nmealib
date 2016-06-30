@@ -318,6 +318,18 @@ void nmea_INFO_sanitise(nmeaINFO *nmeaInfo);
  */
 void nmea_INFO_unit_conversion(nmeaINFO * nmeaInfo);
 
+/**
+ * Compare 2 satellite PRNs, but put zeroes last (consider them to be 1000)
+ *
+ * NOTE: only here for tests, do not use
+ *
+ * @param p1 The first satellite PRN
+ * @param p2 The second satellite PRN
+ * @return 0 when both are equal, a negative value when p1 < p2, a positive
+ * value otherwise
+ */
+int qsortComparePRN(const void *p1, const void *p2);
+
 #ifdef  __cplusplus
 }
 #endif /* __cplusplus */

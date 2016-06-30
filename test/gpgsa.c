@@ -34,34 +34,35 @@ int gpgsaSuiteSetup(void);
  * Tests
  */
 
-static void test_comparePRN(void) {
+// FIXME move this to info.c tests
+static void test_qsortComparePRN(void) {
   int p1;
   int p2;
   int r;
 
   p1 = 1;
   p2 = 1;
-  r = comparePRN(&p1, &p2);
+  r = qsortComparePRN(&p1, &p2);
   CU_ASSERT_EQUAL(r, 0);
 
   p1 = 1;
   p2 = 2;
-  r = comparePRN(&p1, &p2);
+  r = qsortComparePRN(&p1, &p2);
   CU_ASSERT_TRUE(r < 0);
 
   p1 = 2;
   p2 = 1;
-  r = comparePRN(&p1, &p2);
+  r = qsortComparePRN(&p1, &p2);
   CU_ASSERT_TRUE(r > 0);
 
   p1 = 0;
   p2 = 1;
-  r = comparePRN(&p1, &p2);
+  r = qsortComparePRN(&p1, &p2);
   CU_ASSERT_TRUE(r > 0);
 
   p1 = 1;
   p2 = 0;
-  r = comparePRN(&p1, &p2);
+  r = qsortComparePRN(&p1, &p2);
   CU_ASSERT_TRUE(r < 0);
 }
 
@@ -681,7 +682,7 @@ int gpgsaSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "comparePRN", test_comparePRN)) //
+      (!CU_add_test(pSuite, "qsortComparePRN", test_qsortComparePRN)) //
       || (!CU_add_test(pSuite, "nmeaGPGSAParse", test_nmeaGPGSAParse)) //
       || (!CU_add_test(pSuite, "nmeaGPGSAToInfo", test_nmeaGPGSAToInfo)) //
       || (!CU_add_test(pSuite, "nmeaGPGSAFromInfo", test_nmeaGPGSAFromInfo)) //
