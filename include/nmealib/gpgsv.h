@@ -61,19 +61,19 @@ extern "C" {
  * | prn1        | Satellite PRN number                             | SATINVIEW      |
  * | elevation1  | Elevation, in degrees                            | SATINVIEW      |
  * | azimuth1    | Azimuth, in degrees                              | SATINVIEW      |
- * | snr1        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | snr1        | Signal-Noise-Ratio, in dB                        | SATINVIEW      |
  * | prn2        | Satellite PRN number                             | SATINVIEW      |
  * | elevation2  | Elevation, in degrees                            | SATINVIEW      |
  * | azimuth2    | Azimuth, in degrees                              | SATINVIEW      |
- * | snr2        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | snr2        | Signal-Noise-Ratio, in dB                        | SATINVIEW      |
  * | prn3        | Satellite PRN number                             | SATINVIEW      |
  * | elevation3  | Elevation, in degrees                            | SATINVIEW      |
  * | azimuth3    | Azimuth, in degrees                              | SATINVIEW      |
- * | snr3        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | snr3        | Signal-Noise-Ratio, in dB                        | SATINVIEW      |
  * | prn4        | Satellite PRN number                             | SATINVIEW      |
  * | elevation4  | Elevation, in degrees                            | SATINVIEW      |
  * | azimuth4    | Azimuth, in degrees                              | SATINVIEW      |
- * | snr4        | Signal-Noise-Ration, in dB                       | SATINVIEW      |
+ * | snr4        | Signal-Noise-Ratio, in dB                        | SATINVIEW      |
  * | checksum    | NMEA checksum                                    | -              |
  *
  * Shows data about the satellites that the unit might be able to find based on
