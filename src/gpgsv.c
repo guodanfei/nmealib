@@ -203,7 +203,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
   }
 }
 
-void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t pack_idx) {
+void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t sentence) {
   if (!pack || !info) {
     return;
   }
@@ -224,10 +224,10 @@ void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t pack_idx) {
     size_t offset = 0;
     size_t i = 0;
 
-    if ((int) pack_idx >= pack->sentences) {
+    if ((int) sentence >= pack->sentences) {
       pack->sentence = pack->sentences;
     } else {
-      pack->sentence = pack_idx + 1;
+      pack->sentence = sentence + 1;
     }
 
     /* now skip the first ((pack->pack_index - 1) * NMEA_SATINPACK) in view sats */

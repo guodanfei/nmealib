@@ -143,9 +143,9 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info);
  *
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGSV structure
- * @param pack_idx The index of the nmeaGPGSV structure (zero based)
+ * @param sentence The sentence index of the nmeaGPGSV structure (zero based)
  */
-void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t pack_idx);
+void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t sentence);
 
 /**
  * Generate a GPGSV sentence from a nmeaGPGSV structure
