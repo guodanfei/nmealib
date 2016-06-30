@@ -30,8 +30,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites) {
-  unsigned int pack_count = satellites >> NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
+size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites) {
+  size_t pack_count = satellites >> NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
   if (satellites & NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_MOD_MASK) {
     pack_count++;

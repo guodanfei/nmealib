@@ -118,7 +118,7 @@ typedef struct _nmeaGPGSV {
  * @param satellites The number of satellites
  * @return The number of GPGSV sentences needed (at least 1)
  */
-unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites);
+size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites);
 
 /**
  * Parse a GPGSV sentence
