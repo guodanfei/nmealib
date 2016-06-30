@@ -32,7 +32,7 @@
 #include <string.h>
 
 bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
-  unsigned int fieldCount;
+  size_t fieldCount;
   bool speedK = false;
   bool speedN = false;
 
@@ -65,7 +65,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 8) {
-    nmeaError(NMEA_PREFIX_GPVTG " parse error: need 8 tokens, got %d in '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPVTG " parse error: need 8 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 

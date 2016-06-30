@@ -30,7 +30,7 @@
 #include <string.h>
 
 bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
-  unsigned int fieldCount;
+  size_t fieldCount;
   char timeBuf[16];
 
   if (!s //
@@ -74,7 +74,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmeaError(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %d in '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGGA " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 

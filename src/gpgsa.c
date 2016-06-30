@@ -45,7 +45,7 @@ int comparePRN(const void *p1, const void *p2) {
 }
 
 bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
-  unsigned int fieldCount;
+  size_t fieldCount;
   size_t i;
 
   if (!s //
@@ -86,7 +86,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmeaError(NMEA_PREFIX_GPGSA " parse error: need 17 tokens, got %d in '%s'", fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGSA " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 

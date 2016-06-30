@@ -45,9 +45,9 @@ unsigned int nmeaGPGSVsatellitesToSentencesCount(unsigned int satellites) {
 }
 
 bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
-  int fieldCount;
+  size_t fieldCount;
+  size_t fieldCountMinimum;
   unsigned int i;
-  int fieldCountMinimum;
 
   if (!pack) {
     return false;
@@ -110,7 +110,8 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
             ((pack->sentences * NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) - pack->satellites)));
   }
   if ((fieldCount != fieldCountMinimum) && (fieldCount != 19)) {
-    nmeaError(NMEA_PREFIX_GPGSV " parse error: need %d (or 19) tokens, got %d in '%s'", fieldCountMinimum, fieldCount, s);
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: need %lu (or 19) tokens, got %lu in '%s'",
+        (long unsigned) fieldCountMinimum, (long unsigned) fieldCount, s);
     goto err;
   }
 

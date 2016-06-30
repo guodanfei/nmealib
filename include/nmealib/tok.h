@@ -111,9 +111,9 @@ int nmeaPrintf(char *s, size_t sz, const char *format, ...) __attribute__ ((form
  * @param s the string
  * @param sz the length of the string
  * @param format the string format to use
- * @return the number of scanned characters
+ * @return the number of scanned tokens
  */
-unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...);
+size_t nmeaScanf(const char *s, size_t sz, const char *format, ...);
 
 #ifdef  __cplusplus
 }

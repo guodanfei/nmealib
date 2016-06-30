@@ -177,12 +177,12 @@ out:
   return chars;
 }
 
-unsigned int nmeaScanf(const char *s, size_t sz, const char *format, ...) {
+size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
 
 #define NMEA_SCANF_COMPARE   1u
 #define NMEA_SCANF_TOKEN     2u
 
-  unsigned int tokens = 0;
+  size_t tokens = 0;
   unsigned char state = NMEA_SCANF_COMPARE;
 
   const char *sCharacter = s;
