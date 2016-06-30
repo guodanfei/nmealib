@@ -143,28 +143,36 @@ typedef struct _nmeaSATINFO {
 } nmeaSATINFO;
 
 /**
+ * Information about progress on non-atomic sentences
+ */
+typedef struct _nmeaProgress {
+  bool gpgsvInProgress; /**< true when gpgsv is in progress */
+} nmeaProgress;
+
+/**
  * GPS information from all supported sentences, used also for generating NMEA sentences
  */
 typedef struct _nmeaINFO {
-  uint32_t    present; /**< Bit-mask specifying which fields are present                    */
-  int         smask;   /**< Bit-mask specifying from which sentences data has been obtained */
-  nmeaTIME    utc;     /**< UTC of the position data                                        */
-  int         sig;     /**< Signal quality, see NMEA_SIG_* defines                          */
-  int         fix;     /**< Operating mode, see NMEA_FIX_* defines                          */
-  double      PDOP;    /**< Position Dilution Of Precision                                  */
-  double      HDOP;    /**< Horizontal Dilution Of Precision                                */
-  double      VDOP;    /**< Vertical Dilution Of Precision                                  */
-  double      lat;     /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
-  double      lon;     /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
-  double      elv;     /**< Elevation above/below mean sea level (geoid), in meters         */
-  double      height;  /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
-  double      speed;   /**< Speed over the ground in kph                                    */
-  double      track;   /**< Track angle in degrees true north                               */
-  double      mtrack;  /**< Magnetic Track angle in degrees true north                      */
-  double      magvar;  /**< Magnetic variation degrees                                      */
-  double      dgpsAge; /**< Time since last DGPS update, in seconds                         */
-  int         dgpsSid; /**< DGPS station ID number                                          */
-  nmeaSATINFO satinfo; /**< Satellites information */
+  uint32_t    present;   /**< Bit-mask specifying which fields are present                    */
+  int         smask;     /**< Bit-mask specifying from which sentences data has been obtained */
+  nmeaTIME    utc;       /**< UTC of the position data                                        */
+  int         sig;       /**< Signal quality, see NMEA_SIG_* defines                          */
+  int         fix;       /**< Operating mode, see NMEA_FIX_* defines                          */
+  double      PDOP;      /**< Position Dilution Of Precision                                  */
+  double      HDOP;      /**< Horizontal Dilution Of Precision                                */
+  double      VDOP;      /**< Vertical Dilution Of Precision                                  */
+  double      lat;       /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
+  double      lon;       /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
+  double      elv;       /**< Elevation above/below mean sea level (geoid), in meters         */
+  double      height;    /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
+  double      speed;     /**< Speed over the ground in kph                                    */
+  double      track;     /**< Track angle in degrees true north                               */
+  double      mtrack;    /**< Magnetic Track angle in degrees true north                      */
+  double      magvar;    /**< Magnetic variation degrees                                      */
+  double      dgpsAge;   /**< Time since last DGPS update, in seconds                         */
+  int         dgpsSid;   /**< DGPS station ID number                                          */
+  nmeaSATINFO satinfo;   /**< Satellites information                                          */
+  nmeaProgress progress; /**< Progress information                                            */
 } nmeaINFO;
 
 /**

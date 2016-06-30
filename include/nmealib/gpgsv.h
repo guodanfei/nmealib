@@ -105,9 +105,9 @@ extern "C" {
  */
 typedef struct _nmeaGPGSV {
   uint32_t      present;
-  int           sentences;
-  int           sentence;
-  int           satellites;
+  unsigned int  sentences;
+  unsigned int  sentence;
+  unsigned int  satellites;
   nmeaSATELLITE satellite[NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE];
 } nmeaGPGSV;
 

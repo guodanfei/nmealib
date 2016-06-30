@@ -31,13 +31,15 @@
 #include <string.h>
 
 size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites) {
-  size_t pack_count = satellites >> NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
+  size_t pack_count;
 
-  if (satellites & NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_MOD_MASK) {
-    pack_count++;
+  if (!satellites) {
+    return 1;
   }
 
-  if (!pack_count) {
+  pack_count = satellites >> NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
+
+  if (satellites & NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_MOD_MASK) {
     pack_count++;
   }
 
@@ -45,87 +47,124 @@ size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites) {
 }
 
 bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
+
+#define pSat0 pack->satellite[0]
+#define pSat1 pack->satellite[1]
+#define pSat2 pack->satellite[2]
+#define pSat3 pack->satellite[3]
+
   size_t fieldCount;
-  size_t fieldCountMinimum;
-  unsigned int i;
+  size_t fieldCountExpected;
+  size_t satellitesInSentence;
+  size_t satCount;
+  size_t i;
 
   if (!pack) {
     return false;
   }
 
-  if (!s) {
-    goto err;
+  memset(pack, 0, sizeof(*pack));
+
+  if (!s //
+      || !sz) {
+    return false;
   }
 
   nmeaTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
-  memset(pack, 0, sizeof(*pack));
-  pack->sentences = INT_MAX;
-  pack->sentence = INT_MAX;
-  pack->satellites = INT_MAX;
+  pack->sentences = UINT_MAX;
+  pack->sentence = UINT_MAX;
+  pack->satellites = UINT_MAX;
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEA_PREFIX_GPGSV ",%d,%d,%d" //
+      "$" NMEA_PREFIX_GPGSV ",%u,%u,%u" //
       ",%d,%d,%d,%d"//
       ",%d,%d,%d,%d"//
       ",%d,%d,%d,%d"//
       ",%d,%d,%d,%d*",//
       &pack->sentences, &pack->sentence, &pack->satellites, //
-      &pack->satellite[0].id, &pack->satellite[0].elv, &pack->satellite[0].azimuth, &pack->satellite[0].sig, //
-      &pack->satellite[1].id, &pack->satellite[1].elv, &pack->satellite[1].azimuth, &pack->satellite[1].sig, //
-      &pack->satellite[2].id, &pack->satellite[2].elv, &pack->satellite[2].azimuth, &pack->satellite[2].sig, //
-      &pack->satellite[3].id, &pack->satellite[3].elv, &pack->satellite[3].azimuth, &pack->satellite[3].sig);
+      &pSat0.id, &pSat0.elv, &pSat0.azimuth, &pSat0.sig, //
+      &pSat1.id, &pSat1.elv, &pSat1.azimuth, &pSat1.sig, //
+      &pSat2.id, &pSat2.elv, &pSat2.azimuth, &pSat2.sig, //
+      &pSat3.id, &pSat3.elv, &pSat3.azimuth, &pSat3.sig);
 
-  if ((pack->sentences == INT_MAX) //
-      || (pack->sentence == INT_MAX) //
-      || (pack->satellites == INT_MAX)) {
-    goto clear;
+  if ((pack->sentences == UINT_MAX) //
+      || (pack->sentence == UINT_MAX) //
+      || (pack->satellites == UINT_MAX)) {
+    goto err;
   }
 
   /* check data */
-  if (pack->sentence <= 0) {
-    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentence index %d is invalid", pack->sentence);
+
+  if (pack->satellites > NMEALIB_MAX_SATELLITES) {
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: can't handle %u satellites (maximum is %u)", pack->satellites,
+    NMEALIB_MAX_SATELLITES);
     goto err;
   }
+
+  if (!pack->sentences) {
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentences count %u is invalid in '%s'", pack->sentences, s);
+    goto err;
+  }
+
+  if (pack->sentences > NMEALIB_GPGSV_MAX_SENTENCES) {
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: can't handle %u sentences (maximum is %u)", pack->sentences,
+        NMEALIB_GPGSV_MAX_SENTENCES);
+    goto err;
+  }
+
+  if (pack->sentences != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentences count %u does not correspond to satellite count %u in '%s'",
+        pack->sentences, pack->satellites, s);
+    goto err;
+  }
+
+  if (!pack->sentence) {
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentence index %u is invalid in '%s'", pack->sentence, s);
+    goto err;
+  }
+
   if (pack->sentence > pack->sentences) {
-    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentence index %d is larger than the number of sentences %d",
-        pack->sentence, pack->sentences);
-    goto err;
-  }
-  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT))
-      != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
-    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentence count %d does not correspond to satellite count %d",
-        pack->sentences, pack->satellites);
+    nmeaError(NMEA_PREFIX_GPGSV " parse error: sentence index %u is beyond the number of sentences (%u) in '%s'",
+        pack->sentence, pack->sentences, s);
     goto err;
   }
 
   /* see that there are enough tokens */
   if (pack->sentence != pack->sentences) {
-    fieldCountMinimum = 19;
+    satellitesInSentence = NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE;
   } else {
-    fieldCountMinimum = 3 + (4 * //
-        (NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - //
-            ((pack->sentences << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT) - pack->satellites)));
+    satellitesInSentence = pack->satellites - ((pack->sentences - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT);
   }
-  if ((fieldCount != fieldCountMinimum) && (fieldCount != 19)) {
+
+  fieldCountExpected = 3 + (4 * satellitesInSentence); /* 4 fields per satellite */
+
+  if ((fieldCount != fieldCountExpected) //
+      && (fieldCount != 19)) {
     nmeaError(NMEA_PREFIX_GPGSV " parse error: need %lu (or 19) tokens, got %lu in '%s'",
-        (long unsigned) fieldCountMinimum, (long unsigned) fieldCount, s);
+        (long unsigned) fieldCountExpected, (long unsigned) fieldCount, s);
     goto err;
   }
 
+  /* compact satellites */
+  qsort(pack->satellite, NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE, sizeof(pack->satellite[0]), qsortCompactSatellite);
+
   /* validate all satellite settings and count the number of satellites in the sentence */
+  satCount = 0;
   for (i = 0; i < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE; i++) {
     nmeaSATELLITE *sat = &pack->satellite[i];
-    if (!sat->id) {
-      /* no satellite PRN */
-      memset(sat, 0, sizeof(*sat));
-    } else {
-      if (!nmeaValidateSatellite(sat, NMEA_PREFIX_GPGSV, s)) {
-        memset(sat, 0, sizeof(*sat));
-      }
+    if (!nmeaValidateSatellite(sat, NMEA_PREFIX_GPGSV, s)) {
+      goto err;
     }
+    if (sat->id) {
+      satCount++;
+    }
+  }
+
+  if (!satCount) {
+    goto err;
   }
 
   nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT | SATINVIEW);
@@ -135,107 +174,124 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
 err:
   memset(pack, 0, sizeof(*pack));
   return false;
-
-clear:
-  memset(pack, 0, sizeof(*pack));
-  return true;
 }
 
 void nmeaGPGSVToInfo(const nmeaGPGSV *pack, nmeaINFO *info) {
-  if (!pack || !info) {
+  if (!pack //
+      || !info) {
     return;
   }
 
-  if (pack->sentence < 1) {
+  if (nmea_INFO_is_present_any(pack->present, SATINVIEWCOUNT | SATINVIEW) //
+      && (pack->satellites > NMEALIB_MAX_SATELLITES)) {
+    nmeaError("%s error: can't handle %u satellites (maximum is %u)", __FUNCTION__, pack->satellites,
+    NMEALIB_MAX_SATELLITES);
     return;
-  }
-
-  if (pack->sentence > pack->sentences) {
-    return;
-  }
-
-  if (pack->sentence > (int) NMEALIB_GPGSV_MAX_SENTENCES) {
-    return;
-  }
-
-  if (nmeaGPGSVsatellitesToSentencesCount((pack->sentences << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT))
-      != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
-    return;
-  }
-
-  nmea_INFO_set_present(&info->present, SMASK);
-
-  info->smask |= GPGSV;
-
-  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    info->satinfo.inview = pack->satellites;
-    nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
   }
 
   if (nmea_INFO_is_present(pack->present, SATINVIEW)) {
-    int i;
-    int offset;
-    int max;
+    size_t infoIndex;
+    size_t packIndex;
+
+    if (!pack->sentences) {
+      nmeaError("%s parse error: sentences count %u is invalid", __FUNCTION__, pack->sentences);
+      return;
+    }
+
+    if (pack->sentences > NMEALIB_GPGSV_MAX_SENTENCES) {
+      nmeaError("%s error: can't handle %u sentences (maximum is %u)", __FUNCTION__, pack->sentences,
+          NMEALIB_GPGSV_MAX_SENTENCES);
+      return;
+    }
+
+    if (pack->sentences != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
+      nmeaError("%s parse error: sentences count %u does not correspond to satellite count %u",
+          __FUNCTION__, pack->sentences, pack->satellites);
+      return;
+    }
+
+    if (!pack->sentence) {
+      nmeaError("%s error: sentence index %u is invalid", __FUNCTION__, pack->sentence);
+      return;
+    }
+
+    if (pack->sentence > pack->sentences) {
+      nmeaError("%s error: sentence %u is beyond the number of sentences (%u)", __FUNCTION__, pack->sentence,
+          pack->sentences);
+      return;
+    }
 
     if (pack->sentence == 1) {
       /* first sentence; clear info satellites */
       memset(info->satinfo.sat, 0, sizeof(info->satinfo.sat));
     }
 
-    /* index of 1st sat in pack */
-    offset = (pack->sentence - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
+    info->progress.gpgsvInProgress = (pack->sentence != pack->sentences);
 
-    if (pack->sentence != pack->sentences) {
-      max = NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE;
-    } else {
-      max = pack->satellites - offset;
-    }
+    infoIndex = (pack->sentence - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
-    for (i = 0; i < max; i++) {
-      const nmeaSATELLITE *src = &pack->satellite[i];
-      nmeaSATELLITE *dst = &info->satinfo.sat[offset + i];
-      if (src->id) {
-        *dst = *src;
+    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
+      const nmeaSATELLITE *src = &pack->satellite[packIndex];
+      if (!src->id) {
+        memset(&info->satinfo.sat[infoIndex], 0, sizeof(info->satinfo.sat[infoIndex]));
+      } else {
+        info->satinfo.sat[infoIndex] = *src;
       }
     }
 
     nmea_INFO_set_present(&info->present, SATINVIEW);
   }
+
+  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
+    info->satinfo.inview = (int) pack->satellites;
+    nmea_INFO_set_present(&info->present, SATINVIEWCOUNT);
+  }
+
+
+  nmea_INFO_set_present(&info->present, SMASK);
+
+  info->smask |= GPGSV;
 }
 
 void nmeaGPGSVFromInfo(const nmeaINFO *info, nmeaGPGSV *pack, size_t sentence) {
-  if (!pack || !info) {
+  unsigned int satellites;
+  unsigned int sentences;
+
+  if (!pack) {
     return;
   }
 
   memset(pack, 0, sizeof(*pack));
 
-  if (nmea_INFO_is_present(info->present, SATINVIEWCOUNT)) {
-    pack->satellites = (info->satinfo.inview < (int) NMEALIB_MAX_SATELLITES) ?
-        info->satinfo.inview :
-        (int) NMEALIB_MAX_SATELLITES;
-
-    pack->sentences = nmeaGPGSVsatellitesToSentencesCount(pack->satellites);
-
-    nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
+  if (!info //
+      || !nmea_INFO_is_present(info->present, SATINVIEWCOUNT) //
+      || !info->satinfo.inview) {
+    return;
   }
 
-  if (nmea_INFO_is_present(info->present, SATINVIEW)) {
-    size_t offset = 0;
-    size_t i = 0;
+  satellites = (unsigned int) info->satinfo.inview;
+  sentences = nmeaGPGSVsatellitesToSentencesCount(satellites);
 
-    if ((int) sentence >= pack->sentences) {
-      pack->sentence = pack->sentences;
-    } else {
-      pack->sentence = sentence + 1;
-    }
+  if (sentence >= sentences) {
+    return;
+  }
+
+  pack->satellites = satellites;
+  pack->sentences = sentences;
+  nmea_INFO_set_present(&pack->present, SATINVIEWCOUNT);
+
+  if (nmea_INFO_is_present(info->present, SATINVIEW)) {
+    size_t infoIndex;
+    size_t packIndex;
+
+    pack->sentence = sentence + 1;
 
     /* now skip the first ((pack->pack_index - 1) * NMEA_SATINPACK) in view sats */
-    offset = ((pack->sentence - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT);
+    infoIndex = sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
-    for (i = 0; (i < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (offset < NMEALIB_MAX_SATELLITES); i++, offset++) {
-      if (info->satinfo.sat[offset].id) {
-        pack->satellite[i] = info->satinfo.sat[offset];
+    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
+      if (info->satinfo.sat[infoIndex].id) {
+        pack->satellite[packIndex] = info->satinfo.sat[infoIndex];
       }
     }
 
@@ -248,40 +304,41 @@ size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - chars, 0))
 
-  int satCount = 0;
-  int i = 0;
   int chars = 0;
-  int max = 0;
+  size_t satellites = 0;
+  size_t sentences = 0;
+  size_t sentence = 0;
+  size_t satellitesInSentence = 0;
+  size_t i = 0;
 
-  if (!s || !sz || !pack) {
+  if (!s //
+      || !pack) {
     return 0;
   }
 
   if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    satCount = pack->satellites;
-  }
-
-  if (satCount <= 0) {
-    return 0;
-  }
-
-  chars += snprintf(dst, available, "$" NMEA_PREFIX_GPGSV ",%d,%d", pack->sentences, pack->sentence);
-
-  if (nmea_INFO_is_present(pack->present, SATINVIEWCOUNT)) {
-    chars += snprintf(dst, available, ",%d", pack->satellites);
-  } else {
-    chars += snprintf(dst, available, ",");
-  }
-
-  if (pack->sentence != pack->sentences) {
-    max = NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE;
-  } else {
-    max = NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE
-        - ((pack->sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT) - pack->satellites);
+    satellites = pack->satellites;
+    sentences = pack->sentences;
   }
 
   if (nmea_INFO_is_present(pack->present, SATINVIEW)) {
-    for (i = 0; i < max; i++) {
+    sentence = pack->sentence;
+  }
+
+  chars += snprintf(dst, available, //
+      "$" NMEA_PREFIX_GPGSV ",%lu,%lu,%lu", //
+      (long unsigned) sentences, //
+      (long unsigned) sentence, //
+      (long unsigned) satellites);
+
+  if (pack->sentence != pack->sentences) {
+    satellitesInSentence = NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE;
+  } else {
+    satellitesInSentence = satellites - ((pack->sentences - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT);
+  }
+
+  if (nmea_INFO_is_present(pack->present, SATINVIEW)) {
+    for (i = 0; i < satellitesInSentence; i++) {
       const nmeaSATELLITE *sat = &pack->satellite[i];
       if (sat->id) {
         chars += snprintf(dst, available, ",%d,%d,%d,%d", sat->id, sat->elv, sat->azimuth, sat->sig);
