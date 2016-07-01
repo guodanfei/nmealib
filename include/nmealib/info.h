@@ -286,7 +286,7 @@ void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present);
 /**
  * Clear an info structure.
  *
- * Resets the time to now, sets up the signal as NMEALIB_SIG_INVALID, the FIX as
+ * Sets up the signal as NMEALIB_SIG_INVALID, the FIX as
  * NMEALIB_FIX_BAD, and signals presence of these fields.
  *
  * Resets all other fields to 0.

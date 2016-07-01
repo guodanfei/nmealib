@@ -44,6 +44,8 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   nmea_init_random();
 
   nmeaInfoClear(info);
+  nmeaInfoTimeSetNow(&info->utc, &info->present);
+
   info->present = present;
   info->smask = smask;
   nmeaInfoSetPresent(&info->present, SMASK);

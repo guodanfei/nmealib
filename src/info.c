@@ -246,8 +246,6 @@ void nmeaInfoClear(NmeaInfo *info) {
 
   memset(info, 0, sizeof(NmeaInfo));
 
-  nmeaInfoTimeSetNow(&info->utc, &info->present);
-
   info->sig = NMEALIB_SIG_INVALID;
   nmeaInfoSetPresent(&info->present, SIG);
 

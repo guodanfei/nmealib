@@ -28,6 +28,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	size_t it;
 
 	nmeaInfoClear(&info);
+	nmeaInfoTimeSetNow(&info.utc, &info.present);
 
 	nmeaInfoSetPresent(&info.present, PDOP);
 	nmeaInfoSetPresent(&info.present, HDOP);
