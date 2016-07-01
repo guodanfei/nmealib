@@ -156,26 +156,27 @@ typedef struct _NmeaProgress {
  * GPS information from all supported sentences, used also for generating NMEA sentences
  */
 typedef struct _NmeaInfo {
-  uint32_t     present;    /**< Bit-mask specifying which fields are present                    */
-  int          smask;      /**< Bit-mask specifying from which sentences data has been obtained */
-  NmeaTime     utc;        /**< UTC of the position data                                        */
-  int          sig;        /**< Signal quality, see NMEALIB_SIG_* defines                       */
-  int          fix;        /**< Operating mode, see NMEALIB_FIX_* defines                       */
-  double       pdop;       /**< Position Dilution Of Precision                                  */
-  double       hdop;       /**< Horizontal Dilution Of Precision                                */
-  double       vdop;       /**< Vertical Dilution Of Precision                                  */
-  double       lat;        /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
-  double       lon;        /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
-  double       elv;        /**< Elevation above/below mean sea level (geoid), in meters         */
-  double       height;     /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
-  double       speed;      /**< Speed over the ground in kph                                    */
-  double       track;      /**< Track angle in degrees true north                               */
-  double       mtrack;     /**< Magnetic Track angle in degrees true north                      */
-  double       magvar;     /**< Magnetic variation degrees                                      */
-  double       dgpsAge;    /**< Time since last DGPS update, in seconds                         */
-  int          dgpsSid;    /**< DGPS station ID number                                          */
-  NmeaSatellites  satinfo; /**< Satellites information                                          */
-  NmeaProgress progress;   /**< Progress information                                            */
+  uint32_t       present;  /**< Bit-mask specifying which fields are present                    */
+  int            smask;    /**< Bit-mask specifying from which sentences data has been obtained */
+  NmeaTime       utc;      /**< UTC of the position data                                        */
+  int            sig;      /**< Signal quality, see NMEALIB_SIG_* defines                       */
+  int            fix;      /**< Operating mode, see NMEALIB_FIX_* defines                       */
+  double         pdop;     /**< Position Dilution Of Precision                                  */
+  double         hdop;     /**< Horizontal Dilution Of Precision                                */
+  double         vdop;     /**< Vertical Dilution Of Precision                                  */
+  double         lat;      /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
+  double         lon;      /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
+  double         elv;      /**< Elevation above/below mean sea level (geoid), in meters         */
+  double         height;   /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
+  double         speed;    /**< Speed over the ground in kph                                    */
+  double         track;    /**< Track angle in degrees true north                               */
+  double         mtrack;   /**< Magnetic Track angle in degrees true north                      */
+  double         magvar;   /**< Magnetic variation degrees                                      */
+  double         dgpsAge;  /**< Time since last DGPS update, in seconds                         */
+  int            dgpsSid;  /**< DGPS station ID number                                          */
+  NmeaSatellites satinfo;  /**< Satellites information                                          */
+  NmeaProgress   progress; /**< Progress information                                            */
+  bool           metric;   /**< When true then units are metric                                 */
 } NmeaInfo;
 
 /**
@@ -328,11 +329,13 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo);
 
 /**
  * Converts the position fields to degrees and DOP fields to meters so that
- * all fields use normal metric units.
+ * all fields use normal metric units or original units.
  *
- * @param nmeaInfo The info structure
+ * @param info The nmeaINFO
+ * @param toMetric Convert to metric units (from original units) when true,
+ * convert to original units (from metric units) when false
  */
-void nmeaInfoUnitConversion(NmeaInfo * nmeaInfo);
+void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric);
 
 /**
  * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)

@@ -607,17 +607,16 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
   }
 }
 
-/**
- * Converts the position fields to degrees and DOP fields to meters so that
- * all fields use normal metric units.
- *
- * @param nmeaInfo
- * the nmeaINFO
- */
-void nmeaInfoUnitConversion(NmeaInfo * nmeaInfo) {
-  if (!nmeaInfo) {
+void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
+  if (!info) {
     return;
   }
+
+  if (info->metric == toMetric) {
+    return;
+  }
+
+  info->metric = toMetric;
 
   /* smask (already in correct format) */
 
@@ -626,24 +625,44 @@ void nmeaInfoUnitConversion(NmeaInfo * nmeaInfo) {
   /* sig (already in correct format) */
   /* fix (already in correct format) */
 
-  if (nmeaInfoIsPresentAll(nmeaInfo->present, PDOP)) {
-    nmeaInfo->pdop = nmea_dop2meters(nmeaInfo->pdop);
+  if (nmeaInfoIsPresentAll(info->present, PDOP)) {
+    if (toMetric) {
+      info->pdop = nmea_dop2meters(info->pdop);
+    } else {
+      info->pdop = nmea_meters2dop(info->pdop);
+    }
   }
 
-  if (nmeaInfoIsPresentAll(nmeaInfo->present, HDOP)) {
-    nmeaInfo->hdop = nmea_dop2meters(nmeaInfo->hdop);
+  if (nmeaInfoIsPresentAll(info->present, HDOP)) {
+    if (toMetric) {
+      info->hdop = nmea_dop2meters(info->hdop);
+    } else {
+      info->hdop = nmea_meters2dop(info->hdop);
+    }
   }
 
-  if (nmeaInfoIsPresentAll(nmeaInfo->present, VDOP)) {
-    nmeaInfo->vdop = nmea_dop2meters(nmeaInfo->vdop);
+  if (nmeaInfoIsPresentAll(info->present, VDOP)) {
+    if (toMetric) {
+      info->vdop = nmea_dop2meters(info->vdop);
+    } else {
+      info->vdop = nmea_meters2dop(info->vdop);
+    }
   }
 
-  if (nmeaInfoIsPresentAll(nmeaInfo->present, LAT)) {
-    nmeaInfo->lat = nmea_ndeg2degree(nmeaInfo->lat);
+  if (nmeaInfoIsPresentAll(info->present, LAT)) {
+    if (toMetric) {
+      info->lat = nmea_ndeg2degree(info->lat);
+    } else {
+      info->lat = nmea_degree2ndeg(info->lat);
+    }
   }
 
-  if (nmeaInfoIsPresentAll(nmeaInfo->present, LON)) {
-    nmeaInfo->lon = nmea_ndeg2degree(nmeaInfo->lon);
+  if (nmeaInfoIsPresentAll(info->present, LON)) {
+    if (toMetric) {
+      info->lon = nmea_ndeg2degree(info->lon);
+    } else {
+      info->lon = nmea_degree2ndeg(info->lon);
+    }
   }
 
   /* elv (already in correct format) */
