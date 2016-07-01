@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <sys/time.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -280,8 +281,9 @@ static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldNa
  * @param utc The time
  * @param present The 'present' field (when non-NULL then the UTCDATE and
  * UTCTIME flags are set in it)
+ * @param timeval If non-NULL then use this provided time, otherwise use 'gettimeofday'
  */
-void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present);
+void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval);
 
 /**
  * Clear an info structure.

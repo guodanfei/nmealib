@@ -218,13 +218,18 @@ const char * nmeaInfoFieldToString(NmeaPresence field) {
   }
 }
 
-void nmeaInfoTimeSetNow(NmeaTime *utc, uint32_t * present) {
+void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
   struct timeval tp;
   struct tm tt;
 
   assert(utc);
 
-  gettimeofday(&tp, NULL);
+  if (timeval) {
+    gettimeofday(timeval, NULL);
+  } else {
+    gettimeofday(&tp, NULL);
+  }
+
   gmtime_r(&tp.tv_sec, &tt);
 
   utc->year = (unsigned int) tt.tm_year + 1900;
@@ -281,7 +286,7 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
   }
 
   if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE) || !nmeaInfoIsPresentAll(nmeaInfo->present, UTCTIME)) {
-    nmeaInfoTimeSetNow(&utc, NULL);
+    nmeaTimeSet(&utc, NULL, NULL);
   }
 
   if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE)) {

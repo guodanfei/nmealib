@@ -44,7 +44,7 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   nmea_init_random();
 
   nmeaInfoClear(info);
-  nmeaInfoTimeSetNow(&info->utc, &info->present);
+  nmeaTimeSet(&info->utc, &info->present, NULL);
 
   info->present = present;
   info->smask = smask;
@@ -233,7 +233,7 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
  * @return true on success, false otherwise
  */
 static bool nmea_igen_static_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
-  nmeaInfoTimeSetNow(&info->utc, &info->present);
+  nmeaTimeSet(&info->utc, &info->present, NULL);
   return true;
 }
 
@@ -322,7 +322,7 @@ static bool nmea_igen_rotate_loop(nmeaGENERATOR *gen __attribute__ ((unused)), N
       (info->satinfo.inView[0].azimuth) :
       0) + 5;
 
-  nmeaInfoTimeSetNow(&info->utc, &info->present);
+  nmeaTimeSet(&info->utc, &info->present, NULL);
 
   for (it = 0; it < count; it++) {
     info->satinfo.inView[it].azimuth = (int) ((srt >= 360) ?
