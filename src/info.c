@@ -45,13 +45,13 @@ const char * nmeaInfoSigToString(int sig) {
       return "REAL TIME KINEMATIC";
 
     case NMEALIB_SIG_FLOAT_RTK:
-      return "FLOAT RTK";
+      return "FLOAT REAL TIME KINEMATIC";
 
     case NMEALIB_SIG_ESTIMATED:
       return "ESTIMATED (DEAD RECKONING)";
 
     case NMEALIB_SIG_MANUAL:
-      return "MANUAL INPUT";
+      return "MANUAL";
 
     case NMEALIB_SIG_SIMULATION:
       return "SIMULATION";

@@ -21,6 +21,7 @@
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);
+extern int infoSuiteSetup(void);
 extern int gpggaSuiteSetup(void);
 extern int gpgsaSuiteSetup(void);
 extern int gpgsvSuiteSetup(void);
@@ -36,6 +37,7 @@ int main(void) {
 
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
+      || (infoSuiteSetup() != CUE_SUCCESS) //
       || (gpggaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsvSuiteSetup() != CUE_SUCCESS) //
