@@ -18,7 +18,7 @@
 #include "testHelpers.h"
 
 #include <nmealib/context.h>
-#include "../src/random.h"
+#include <nmealib/random.h>
 
 #include <CUnit/Basic.h>
 #include <float.h>

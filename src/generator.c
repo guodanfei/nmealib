@@ -19,9 +19,8 @@
 
 #include <nmealib/context.h>
 #include <nmealib/gmath.h>
+#include <nmealib/random.h>
 #include <nmealib/sentence.h>
-
-#include "random.h"
 
 #include <stdlib.h>
 #include <string.h>
