@@ -83,7 +83,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   /* determine which fields are present and validate them */
 
   if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->utc) //
+    if (!nmeaTimeParseTime(timeBuf, &pack->utc) //
         || !nmeaValidateTime(&pack->utc, NMEALIB_PREFIX_GPRMC, s)) {
       goto err;
     }
@@ -162,7 +162,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
   }
 
   if (*dateBuf) {
-    if (!nmeaTIMEparseDate(dateBuf, &pack->utc) //
+    if (!nmeaTimeParseDate(dateBuf, &pack->utc) //
         || !nmeaValidateDate(&pack->utc, NMEALIB_PREFIX_GPRMC, s)) {
       goto err;
     }

@@ -27,6 +27,7 @@ extern int gpgsaSuiteSetup(void);
 extern int gpgsvSuiteSetup(void);
 extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
+extern int parseSuiteSetup(void);
 
 int main(void) {
   unsigned int failedCount = 0;
@@ -43,6 +44,7 @@ int main(void) {
       || (gpgsvSuiteSetup() != CUE_SUCCESS) //
       || (gprmcSuiteSetup() != CUE_SUCCESS) //
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
+      || (parseSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;
   }

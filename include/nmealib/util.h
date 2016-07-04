@@ -18,7 +18,10 @@
 #ifndef __NMEALIB_UTIL_H__
 #define __NMEALIB_UTIL_H__
 
+#include <ctype.h>
+#include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -38,6 +41,60 @@ extern "C" {
 
 /** The power-of-2 chunk size of a buffer allocation */
 #define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
+
+/**
+ * Trim a string of whitespace
+ *
+ * @param s The location of the string variable
+ * @return The length of the trimmed string
+ */
+static INLINE size_t nmeaStringTrim(const char **s) {
+  const char *str;
+  size_t sz;
+
+  if (!s //
+      || !*s) {
+    return 0;
+  }
+
+  str = *s;
+
+  while (isspace(*str)) {
+    str++;
+  }
+
+  sz = strlen(str);
+
+  while (sz && isspace(str[sz - 1])) {
+    sz--;
+  }
+
+  *s = str;
+  return sz;
+}
+
+/**
+ * @param s The string to check for whitespace
+ * @param sz The length of the string
+ * @return True when the string contains whitespace
+ */
+static INLINE bool nmeaStringContainsWhitespace(const char *s, size_t sz) {
+  size_t i = 0;
+
+  if (!s) {
+    return false;
+  }
+
+  while ((i < sz) && s[i]) {
+    if (isspace(s[i])) {
+      return true;
+    }
+    i++;
+  }
+
+  return false;
+}
+
 
 #ifdef  __cplusplus
 }

@@ -19,37 +19,45 @@
 
 #include <nmealib/context.h>
 #include <nmealib/tok.h>
+#include <ctype.h>
 #include <string.h>
 
-bool nmeaTIMEparseTime(const char *time, NmeaTime *t) {
+bool nmeaTimeParseTime(const char *s, NmeaTime *time) {
+  const char *tm;
   size_t sz;
 
-  if (!time || !t) {
+  if (!s //
+      || !time) {
     return false;
   }
 
-  sz = strlen(time);
+  tm = s;
+  sz = nmeaStringTrim(&tm);
+
+  if (nmeaStringContainsWhitespace(tm, sz)) {
+    return false;
+  }
 
   if (sz == 6) { // HHMMSS
-    t->hsec = 0;
-    return (3 == nmeaScanf(time, sz, "%2u%2u%2u", &t->hour, &t->min, &t->sec));
+    time->hsec = 0;
+    return (3 == nmeaScanf(tm, sz, "%2u%2u%2u", &time->hour, &time->min, &time->sec));
   }
 
   if (sz == 8) { // HHMMSS.t
-    if (4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec)) {
-      t->hsec *= 10;
+    if (4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec)) {
+      time->hsec *= 10;
       return true;
     }
     return false;
   }
 
   if (sz == 9) { // HHMMSS.hh
-    return (4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec));
+    return (4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec));
   }
 
   if (sz == 10) { // HHMMSS.mmm
-    if ((4 == nmeaScanf(time, sz, "%2u%2u%2u.%u", &t->hour, &t->min, &t->sec, &t->hsec))) {
-      t->hsec = (t->hsec + 5) / 10;
+    if ((4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec))) {
+      time->hsec = (time->hsec + 5) / 10;
       return true;
     }
     return false;
@@ -58,27 +66,34 @@ bool nmeaTIMEparseTime(const char *time, NmeaTime *t) {
   return false;
 }
 
-bool nmeaTIMEparseDate(const char *date, NmeaTime *t) {
+bool nmeaTimeParseDate(const char *s, NmeaTime *date) {
   size_t sz;
+  const char * d;
 
-  if (!date || !t) {
+  if (!s //
+      || !date) {
     return false;
   }
 
-  sz = strlen(date);
+  d = s;
+  sz = nmeaStringTrim(&d);
+
+  if (nmeaStringContainsWhitespace(d, sz)) {
+    return false;
+  }
 
   if (sz != 6) {
     return false;
   }
 
-  if (3 != nmeaScanf(date, sz, "%2u%2u%2u", &t->day, &t->mon, &t->year)) {
+  if (3 != nmeaScanf(d, sz, "%2u%2u%2u", &date->day, &date->mon, &date->year)) {
     return false;
   }
 
-  if (t->year > 90) {
-    t->year += 1900;
+  if (date->year > 90) {
+    date->year += 1900;
   } else {
-    t->year += 2000;
+    date->year += 2000;
   }
 
   return true;

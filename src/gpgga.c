@@ -81,7 +81,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
   /* determine which fields are present and validate them */
 
   if (*timeBuf) {
-    if (!nmeaTIMEparseTime(timeBuf, &pack->time) //
+    if (!nmeaTimeParseTime(timeBuf, &pack->time) //
         || !nmeaValidateTime(&pack->time, NMEALIB_PREFIX_GPGGA, s)) {
       goto err;
     }

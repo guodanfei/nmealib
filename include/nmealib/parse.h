@@ -31,11 +31,11 @@ extern "C" {
  * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
  * determined by the length of the string.
  *
- * @param time The time
- * @param t The structure in which to store the parsed time
+ * @param s The time
+ * @param time The structure in which to store the parsed time
  * @return True on success
  */
-bool nmeaTIMEparseTime(const char *time, NmeaTime *t);
+bool nmeaTimeParseTime(const char *s, NmeaTime *time);
 
 /**
  * Parse a NMEA date into a nmeaTIME structure (date only, no time).
@@ -44,11 +44,11 @@ bool nmeaTIMEparseTime(const char *time, NmeaTime *t);
  * range of [0, 11]. The year is adjusted (incremented by 100) for years
  * before 90 to comply with the nmeaTIME year range of [90, 189].
  *
- * @param date The date (DDMMYY)
- * @param t The structure in which to store the parsed date
+ * @param s The date (DDMMYY)
+ * @param date The structure in which to store the parsed date
  * @return True on success
  */
-bool nmeaTIMEparseDate(const char *date, NmeaTime *t);
+bool nmeaTimeParseDate(const char *s, NmeaTime *date);
 
 #ifdef  __cplusplus
 }
