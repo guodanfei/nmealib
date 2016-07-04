@@ -12,7 +12,7 @@
 
 #define NMEALIB_RANDOM_MAX LONG_MAX
 
-static INLINE void nmeaInitRandom(void) {
+static INLINE void nmeaRandomInit(void) {
   srandom((unsigned int) time(NULL));
 }
 
@@ -20,10 +20,6 @@ static INLINE double nmeaRandom(const double min, const double max) {
   long value;
   int randomFile;
   double range = fabs(max - min);
-
-#ifdef _WIN32
-  value = random();
-#else
 
   randomFile = open("/dev/urandom", O_RDONLY);
   if (randomFile == -1) {
@@ -40,7 +36,6 @@ static INLINE double nmeaRandom(const double min, const double max) {
   if (randomFile != -1) {
     close(randomFile);
   }
-#endif /* _WIN32 */
 
   return min + ((fabs((double) value) * range) / (double) NMEALIB_RANDOM_MAX);
 }

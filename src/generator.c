@@ -41,7 +41,7 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   int smask = info->smask;
   nmeaGENERATOR *igen = gen;
 
-  nmeaInitRandom();
+  nmeaRandomInit();
 
   nmeaInfoClear(info);
   nmeaTimeSet(&info->utc, &info->present, NULL);
