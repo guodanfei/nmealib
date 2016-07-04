@@ -88,7 +88,7 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
   if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to a long integer", buf);
-    return 0;
+    return LONG_MAX;
   }
 
   return value;
@@ -112,7 +112,7 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
   if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to an unsigned long integer", buf);
-    return 0;
+    return ULONG_MAX;
   }
 
   return value;
@@ -136,7 +136,7 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
   if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to a double", buf);
-    return 0.0;
+    return NAN;
   }
 
   return value;
@@ -303,27 +303,47 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           case 'f':
             arg = (void *) va_arg(args, double *);
             if (width && arg) {
-              *((double *) arg) = nmeaStringToDouble(sTokenStart, width);
+              double v = nmeaStringToDouble(sTokenStart, width);
+              if (isnan(v)) {
+                tokens = 0;
+                goto out;
+              }
+              *((double *) arg) = v;
             }
             break;
 
           case 'F':
             arg = (void *) va_arg(args, double *);
             if (width && arg) {
-              *((double *) arg) = fabs(nmeaStringToDouble(sTokenStart, width));
+              double v = nmeaStringToDouble(sTokenStart, width);
+              if (isnan(v)) {
+                tokens = 0;
+                goto out;
+              }
+              *((double *) arg) = fabs(v);
             }
             break;
 
           case 'd':
             arg = (void *) va_arg(args, int *);
             if (width && arg) {
-              *((int *) arg) = nmeaStringToInteger(sTokenStart, width, 10);
+              int v = nmeaStringToInteger(sTokenStart, width, 10);
+              if (v == INT_MAX) {
+                tokens = 0;
+                goto out;
+              }
+              *((int *) arg) = v;
             }
             break;
 
           case 'u':
             arg = (void *) va_arg(args, unsigned int *);
             if (width && arg) {
+              unsigned int v = nmeaStringToUnsignedInteger(sTokenStart, width, 10);
+              if (v == UINT_MAX) {
+                tokens = 0;
+                goto out;
+              }
               *((unsigned int *) arg) = nmeaStringToUnsignedInteger(sTokenStart, width, 10);
             }
             break;
@@ -331,7 +351,12 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
           case 'l':
             arg = (void *) va_arg(args, long *);
             if (width && arg) {
-              *((long *) arg) = nmeaStringToLong(sTokenStart, width, 10);
+              long v = nmeaStringToLong(sTokenStart, width, 10);
+              if (v == LONG_MAX) {
+                tokens = 0;
+                goto out;
+              }
+              *((long *) arg) = v;
             }
             break;
 
