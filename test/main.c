@@ -29,6 +29,7 @@ extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
 extern int parseSuiteSetup(void);
 extern int randomSuiteSetup(void);
+extern int sentenceSuiteSetup(void);
 extern int utilSuiteSetup(void);
 
 int main(void) {
@@ -48,6 +49,7 @@ int main(void) {
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
       || (parseSuiteSetup() != CUE_SUCCESS) //
       || (randomSuiteSetup() != CUE_SUCCESS) //
+      || (sentenceSuiteSetup() != CUE_SUCCESS) //
       || (utilSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;

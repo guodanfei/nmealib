@@ -75,7 +75,8 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
   size_t size = sz;
   size_t i = 0;
 
-  if (!str || !size) {
+  if (!str //
+      || !size) {
     return GPNON;
   }
 
