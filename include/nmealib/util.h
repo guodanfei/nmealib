@@ -74,6 +74,8 @@ static INLINE size_t nmeaStringTrim(const char **s) {
 }
 
 /**
+ * Determine whether a string contains whitespace
+ *
  * @param s The string to check for whitespace
  * @param sz The length of the string
  * @return True when the string contains whitespace
