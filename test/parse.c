@@ -41,32 +41,32 @@ static void test_nmeaTIMEparseTime(void) {
   /* invalid inputs */
 
   r = nmeaTimeParseTime(NULL, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   time = "invalid";
   r = nmeaTimeParseTime(time, NULL);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* internal whitespace */
 
   memset(&t, 0xff, sizeof(t));
   time = "12 456";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 5 */
 
   memset(&t, 0xff, sizeof(t));
   time = " 12345";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 6 with external whitespace */
 
   memset(&t, 0xff, sizeof(t));
   time = " 123456 ";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(t.hour, 12);
   CU_ASSERT_EQUAL(t.min, 34);
   CU_ASSERT_EQUAL(t.sec, 56);
@@ -75,21 +75,21 @@ static void test_nmeaTIMEparseTime(void) {
   memset(&t, 0xff, sizeof(t));
   time = " 12qq56 ";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 7 */
 
   memset(&t, 0xff, sizeof(t));
   time = " 123456.";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 8 */
 
   memset(&t, 0xff, sizeof(t));
   time = "123456.7";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(t.hour, 12);
   CU_ASSERT_EQUAL(t.min, 34);
   CU_ASSERT_EQUAL(t.sec, 56);
@@ -98,14 +98,14 @@ static void test_nmeaTIMEparseTime(void) {
   memset(&t, 0xff, sizeof(t));
   time = "12q456.7";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 9 */
 
   memset(&t, 0xff, sizeof(t));
   time = "123456.78";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(t.hour, 12);
   CU_ASSERT_EQUAL(t.min, 34);
   CU_ASSERT_EQUAL(t.sec, 56);
@@ -114,14 +114,14 @@ static void test_nmeaTIMEparseTime(void) {
   memset(&t, 0xff, sizeof(t));
   time = "123456.q8";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 10 */
 
   memset(&t, 0xff, sizeof(t));
   time = "123456.789";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(t.hour, 12);
   CU_ASSERT_EQUAL(t.min, 34);
   CU_ASSERT_EQUAL(t.sec, 56);
@@ -130,14 +130,14 @@ static void test_nmeaTIMEparseTime(void) {
   memset(&t, 0xff, sizeof(t));
   time = "123456.q89";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 11 */
 
   memset(&t, 0xff, sizeof(t));
   time = "123456.7891";
   r = nmeaTimeParseTime(time, &t);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 }
 
 static void test_nmeaTIMEparseDate(void) {
@@ -148,32 +148,32 @@ static void test_nmeaTIMEparseDate(void) {
   /* invalid inputs */
 
   r = nmeaTimeParseDate(NULL, &d);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   date = "invalid";
   r = nmeaTimeParseDate(date, NULL);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* internal whitespace */
 
   memset(&d, 0xff, sizeof(d));
   date = "12 456";
   r = nmeaTimeParseDate(date, &d);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 5 */
 
   memset(&d, 0xff, sizeof(d));
   date = " 12345";
   r = nmeaTimeParseDate(date, &d);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 
   /* length 6 with external whitespace */
 
   memset(&d, 0xff, sizeof(d));
   date = " 123456 ";
   r = nmeaTimeParseDate(date, &d);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(d.day, 12);
   CU_ASSERT_EQUAL(d.mon, 34);
   CU_ASSERT_EQUAL(d.year, 2056);
@@ -181,7 +181,7 @@ static void test_nmeaTIMEparseDate(void) {
   memset(&d, 0xff, sizeof(d));
   date = " 123492 ";
   r = nmeaTimeParseDate(date, &d);
-  CU_ASSERT_TRUE(r);
+  CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(d.day, 12);
   CU_ASSERT_EQUAL(d.mon, 34);
   CU_ASSERT_EQUAL(d.year, 1992);
@@ -189,7 +189,7 @@ static void test_nmeaTIMEparseDate(void) {
   memset(&d, 0xff, sizeof(d));
   date = " 12qq56 ";
   r = nmeaTimeParseDate(date, &d);
-  CU_ASSERT_FALSE(r);
+  CU_ASSERT_EQUAL(r, false);
 }
 
 /*

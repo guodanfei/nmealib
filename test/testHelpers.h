@@ -25,9 +25,9 @@
    CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
    CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
    if (empty) { \
-     CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) == 0); \
+     CU_ASSERT_EQUAL(memcmp(pack, &packEmpty, sizeof(*pack)), 0); \
    } else { \
-     CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) != 0); \
+     CU_ASSERT_NOT_EQUAL(memcmp(pack, &packEmpty, sizeof(*pack)), 0); \
    } \
    mockContextReset();}
 
@@ -35,9 +35,9 @@
    {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
     CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
     if (empty) { \
-      CU_ASSERT_TRUE(memcmp(info, &infoEmpty, sizeof(*info)) == 0); \
+      CU_ASSERT_EQUAL(memcmp(info, &infoEmpty, sizeof(*info)), 0); \
     } else { \
-      CU_ASSERT_TRUE(memcmp(info, &infoEmpty, sizeof(*info)) != 0); \
+      CU_ASSERT_NOT_EQUAL(memcmp(info, &infoEmpty, sizeof(*info)), 0); \
     } \
 	mockContextReset();}
 
@@ -45,9 +45,9 @@
    {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
     CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
     if (empty) { \
-      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) == 0); \
+      CU_ASSERT_EQUAL(memcmp(pack, &packEmpty, sizeof(*pack)), 0); \
     } else { \
-      CU_ASSERT_TRUE(memcmp(pack, &packEmpty, sizeof(*pack)) != 0); \
+      CU_ASSERT_NOT_EQUAL(memcmp(pack, &packEmpty, sizeof(*pack)), 0); \
     } \
 	mockContextReset();}
 
