@@ -41,7 +41,7 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   int smask = info->smask;
   nmeaGENERATOR *igen = gen;
 
-  nmea_init_random();
+  nmeaInitRandom();
 
   nmeaInfoClear(info);
   nmeaTimeSet(&info->utc, &info->present, NULL);
@@ -165,18 +165,18 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
   size_t it;
   size_t in_use;
 
-  info->sig = (int) lrint(nmea_random(1, 3));
-  info->fix = (int) lrint(nmea_random(2, 3));
-  info->pdop = nmea_random(0, 9);
-  info->hdop = nmea_random(0, 9);
-  info->vdop = nmea_random(0, 9);
-  info->lat = nmea_random(0, 100);
-  info->lon = nmea_random(0, 100);
-  info->elv = nmea_random(-100, 100);
-  info->speed = nmea_random(0, 100);
-  info->track = nmea_random(0, 360);
-  info->mtrack = nmea_random(0, 360);
-  info->magvar = nmea_random(0, 360);
+  info->sig = (int) lrint(nmeaRandom(1, 3));
+  info->fix = (int) lrint(nmeaRandom(2, 3));
+  info->pdop = nmeaRandom(0, 9);
+  info->hdop = nmeaRandom(0, 9);
+  info->vdop = nmeaRandom(0, 9);
+  info->lat = nmeaRandom(0, 100);
+  info->lon = nmeaRandom(0, 100);
+  info->elv = nmeaRandom(-100, 100);
+  info->speed = nmeaRandom(0, 100);
+  info->track = nmeaRandom(0, 360);
+  info->mtrack = nmeaRandom(0, 360);
+  info->magvar = nmeaRandom(0, 360);
 
   nmeaInfoSetPresent(&info->present, SIG);
   nmeaInfoSetPresent(&info->present, FIX);
@@ -195,16 +195,16 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
   info->satinfo.inViewCount = 0;
 
   for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-    in_use = (size_t) labs(lrint(nmea_random(0, 3)));
+    in_use = (size_t) labs(lrint(nmeaRandom(0, 3)));
     info->satinfo.inUse[it] = in_use ?
         (int) it :
         0;
     info->satinfo.inView[it].prn = (int) it;
-    info->satinfo.inView[it].elevation = (int) lrint(nmea_random(0, 90));
-    info->satinfo.inView[it].azimuth = (int) lrint(nmea_random(0, 359));
+    info->satinfo.inView[it].elevation = (int) lrint(nmeaRandom(0, 90));
+    info->satinfo.inView[it].azimuth = (int) lrint(nmeaRandom(0, 359));
     info->satinfo.inView[it].snr = in_use ?
-        (int) lrint(nmea_random(40, 99)) :
-        (int) lrint(nmea_random(0, 40));
+        (int) lrint(nmeaRandom(40, 99)) :
+        (int) lrint(nmeaRandom(0, 40));
 
     if (in_use)
       info->satinfo.inUseCount++;
@@ -429,9 +429,9 @@ static bool nmea_igen_pos_rmove_init(nmeaGENERATOR *gen __attribute__ ((unused))
 static bool nmea_igen_pos_rmove_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
   NmeaPosition crd;
 
-  info->track += nmea_random(-10, 10);
-  info->mtrack += nmea_random(-10, 10);
-  info->speed += nmea_random(-2, 3);
+  info->track += nmeaRandom(-10, 10);
+  info->mtrack += nmeaRandom(-10, 10);
+  info->speed += nmeaRandom(-2, 3);
 
   if (info->track < 0) {
     info->track = 359 + info->track;
