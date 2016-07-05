@@ -166,7 +166,10 @@ size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, cons
   size_t chars = 0;
   enum NmeaSentence msk = mask;
 
-  if (!s || !sz || !info || !mask) {
+  if (!s //
+      || !sz //
+      || !info //
+      || !mask) {
     return 0;
   }
 
@@ -212,7 +215,7 @@ size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, cons
     }
   }
 
-  s[sz - 1] = '\0';
+  s[chars] = '\0';
 
   return chars;
 }
