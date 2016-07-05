@@ -209,12 +209,14 @@ static int suiteInit(void) {
     return CUE_SINIT_FAILED;
   }
 
+  mockContextReset();
   return CUE_SUCCESS;
 }
 
 static int suiteClean(void) {
   nmeaContextSetErrorFunction(NULL);
   nmeaContextSetTraceFunction(NULL);
+  mockContextReset();
   return CUE_SUCCESS;
 }
 

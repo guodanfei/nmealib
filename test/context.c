@@ -157,12 +157,16 @@ static int suiteInit(void) {
     return CUE_SINIT_FAILED;
   }
 
+  nmeaTraceCalls = 0;
+  nmeaErrorCalls = 0;
   return CUE_SUCCESS;
 }
 
 static int suiteClean(void) {
   nmeaContextSetErrorFunction(NULL);
   nmeaContextSetTraceFunction(NULL);
+  nmeaTraceCalls = 0;
+  nmeaErrorCalls = 0;
   return CUE_SUCCESS;
 }
 
