@@ -163,15 +163,15 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - (long) chars, 0))
-#define generateSentence(ev) { \
-		addedChars = ev; \
+#define generateSentence(expression) { \
+		addedChars = expression; \
     while (addedChars > available) { \
       sz += NMEALIB_BUFFER_CHUNK_SIZE; \
       s = realloc(s, sz); \
       if (!s) { \
         return 0; \
       } \
-      addedChars = ev; \
+      addedChars = expression; \
     } \
   }
 
