@@ -51,4 +51,16 @@
     } \
 	mockContextReset();}
 
+#define checkSatellitesEmpty(satellites, istart, iend, v) \
+    { \
+      size_t i; \
+      for (i = istart; i <= iend; i++) { \
+        NmeaSatellite *satellite = &satellites[i]; \
+        CU_ASSERT_EQUAL(satellite->prn, v); \
+        CU_ASSERT_EQUAL(satellite->elevation, v); \
+        CU_ASSERT_EQUAL(satellite->azimuth, v); \
+        CU_ASSERT_EQUAL(satellite->snr, v); \
+      } \
+    }
+
 #endif /* __NMEALIB_TEST_HELPERS_H_ */
