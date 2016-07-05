@@ -31,6 +31,5 @@ void traceFunction(const char *s __attribute__((unused)), size_t sz __attribute_
 }
 
 void errorFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
-//  printf("\n***ERROR*** %s\n", s);
   nmeaErrorCalls++;
 }
