@@ -20,6 +20,11 @@
 
 #include "mockContext.h"
 
+#define validateContext(traces, errors) \
+  {CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \
+   CU_ASSERT_EQUAL(nmeaErrorCalls, errors); \
+   mockContextReset();}
+
 #define validateParsePack(pack, r, rexp, traces, errors, empty) \
   {CU_ASSERT_EQUAL(r, rexp); \
    CU_ASSERT_EQUAL(nmeaTraceCalls, traces); \

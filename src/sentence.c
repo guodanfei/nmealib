@@ -163,17 +163,19 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - (long) chars, 0))
+
 #define generateSentence(expression) { \
-		addedChars = expression; \
-    while (addedChars > available) { \
-      sz += NMEALIB_BUFFER_CHUNK_SIZE; \
-      s = realloc(s, sz); \
-      if (!s) { \
-        return 0; \
-      } \
-      addedChars = expression; \
+  size_t addedChars = expression; \
+  while (addedChars >= available) { \
+    sz += NMEALIB_BUFFER_CHUNK_SIZE; \
+    s = realloc(s, sz); \
+    if (!s) { \
+      return 0; \
     } \
-  }
+    addedChars = expression; \
+  } \
+  chars += addedChars; \
+}
 
   char *s;
   size_t sz;
@@ -202,18 +204,15 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
   msk = mask;
 
   while (msk) {
-    size_t addedChars;
     if (msk & GPGGA) {
       nmeaGPGGA pack;
       nmeaGPGGAFromInfo(info, &pack);
       generateSentence(nmeaGPGGAGenerate(dst, available, &pack));
-      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPGGA;
     } else if (msk & GPGSA) {
       nmeaGPGSA pack;
       nmeaGPGSAFromInfo(info, &pack);
       generateSentence(nmeaGPGSAGenerate(dst, available, &pack));
-      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPGSA;
     } else if (msk & GPGSV) {
       size_t satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
@@ -224,32 +223,31 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
       for (sentence = 0; sentence < sentences; sentence++) {
         nmeaGPGSVFromInfo(info, &pack, sentence);
         generateSentence(nmeaGPGSVGenerate(dst, available, &pack));
-        chars += addedChars;
       }
       msk &= (enum NmeaSentence) ~GPGSV;
     } else if (msk & GPRMC) {
       nmeaGPRMC pack;
       nmeaGPRMCFromInfo(info, &pack);
       generateSentence(nmeaGPRMCGenerate(dst, available, &pack));
-      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPRMC;
     } else if (msk & GPVTG) {
       nmeaGPVTG pack;
       nmeaGPVTGFromInfo(info, &pack);
       generateSentence(nmeaGPVTGGenerate(dst, available, &pack));
-      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPVTG;
     } else {
       /* no more known sentences to process */
       break;
     }
-
-    if ((sz - chars) <= 0) {
-      break;
-    }
   }
 
-  s[chars] = '\0';
+  if (!chars) {
+    free(s);
+    s = NULL;
+  } else {
+    s[chars] = '\0';
+  }
+
   *buf = s;
 
   return chars;

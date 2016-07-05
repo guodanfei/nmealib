@@ -253,7 +253,100 @@ static void test_nmeaSentenceToInfo(void) {
 }
 
 static void test_nmeaSentenceFromInfo(void) {
-  //
+  size_t r;
+  NmeaInfo infoEmpty;
+  NmeaInfo info;
+  char *buf;
+
+  memset(&infoEmpty, 0, sizeof(infoEmpty));
+  memset(&info, 0, sizeof(info));
+
+  /* invalid inputs */
+
+  r = nmeaSentenceFromInfo(NULL, &info, GPGGA);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  buf = (void *)&info;
+  r = nmeaSentenceFromInfo(&buf, NULL, GPGGA);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  CU_ASSERT_PTR_NULL(buf);
+  memset(&info, 0, sizeof(info));
+
+  buf = (void *)&info;
+  r = nmeaSentenceFromInfo(&buf, &info, 0);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  CU_ASSERT_PTR_NULL(buf);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGGA */
+
+  info.utc.hour = 12;
+  info.utc.min = 22;
+  info.utc.sec = 32;
+  info.utc.hsec = 42;
+  nmeaInfoSetPresent(&info.present, UTCTIME);
+  r = nmeaSentenceFromInfo(&buf, &info, GPGGA);
+  CU_ASSERT_EQUAL(r, 34);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGSA */
+
+  info.fix = NMEALIB_FIX_3D;
+  nmeaInfoSetPresent(&info.present, FIX);
+  r = nmeaSentenceFromInfo(&buf, &info, GPGSA);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGSV */
+
+  info.satinfo.inViewCount = 5;
+  nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT | SATINVIEW);
+  r = nmeaSentenceFromInfo(&buf, &info, GPGSV);
+  CU_ASSERT_EQUAL(r, 54);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* GPRMC */
+
+  info.utc.hour = 12;
+  info.utc.min = 22;
+  info.utc.sec = 32;
+  info.utc.hsec = 42;
+  nmeaInfoSetPresent(&info.present, UTCTIME);
+  r = nmeaSentenceFromInfo(&buf, &info, GPRMC);
+  CU_ASSERT_EQUAL(r, 32);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* GPVTG */
+
+  info.speed = 42.43;
+  nmeaInfoSetPresent(&info.present, SPEED);
+  r = nmeaSentenceFromInfo(&buf, &info, GPVTG);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* invalid mask */
+
+  info.speed = 42.43;
+  nmeaInfoSetPresent(&info.present, SPEED);
+  r = nmeaSentenceFromInfo(&buf, &info, _NmeaSentenceLast << 1);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  CU_ASSERT_PTR_NULL(buf);
+  memset(&info, 0, sizeof(info));
 }
 
 /*
