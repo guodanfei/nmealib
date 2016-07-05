@@ -33,14 +33,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
 	int it;
 	NmeaInfo info;
-	nmeaPARSER parser;
+	NmeaParser parser;
 	NmeaPosition dpos;
 
 	nmeaInfoClear(&info);
-	nmea_parser_init(&parser);
+	nmeaParserInit(&parser);
 
 	for (it = 0; it < 6; it++) {
-		nmea_parse(&parser, buff[it], strlen(buff[it]), &info);
+		nmeaParserParse(&parser, buff[it], strlen(buff[it]), &info);
 
 		nmea_info2pos(&info, &dpos);
 		printf("%03d, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", it, dpos.lat, dpos.lon, info.sig, info.fix);

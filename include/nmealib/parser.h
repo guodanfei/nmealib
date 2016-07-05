@@ -27,50 +27,64 @@ extern "C" {
 
 #ifdef NMEALIB_MAX_SENTENCE_LENGTH
   /* override the default maximum sentence length */
-#define SENTENCE_SIZE (NMEALIB_MAX_SENTENCE_LENGTH)
+#define NMEALIB_PARSER_SENTENCE_SIZE (NMEALIB_MAX_SENTENCE_LENGTH)
 #else
   /* we need to be able to parse much longer sentences than specified in the (original) specification */
-#define SENTENCE_SIZE (4096 * 1)
+#define NMEALIB_PARSER_SENTENCE_SIZE (4096 * 1)
 #endif
 
-typedef enum _sentence_parser_state {
+typedef enum _NmeaParserSentenceState {
   SKIP_UNTIL_START,
   READ_SENTENCE,
   READ_CHECKSUM,
   READ_EOL
-} sentence_parser_state;
+} NmeaParserSentenceState;
 
 /**
  * NMEA frame parser structure
  */
-typedef struct _sentencePARSER {
-    int sentence_checksum;
-    int calculated_checksum;
+typedef struct _NmeaParserSentence {
+    NmeaParserSentenceState state;
 
-    char sentence_checksum_chars[2];
-    char sentence_checksum_chars_count;
+    bool checksumPresent;
 
-    unsigned char sentence_eol_chars_count;
+    char checksumCharacters[2];
+    char checksumCharactersCount;
 
-    bool has_checksum;
+    int checksumRead;
+    int checksumCalculated;
 
-    sentence_parser_state state;
-} sentencePARSER;
+    unsigned char eolCharactersCount;
+} NmeaParserSentence;
 
 /**
  * parsed NMEA data and frame parser state
  */
-typedef struct _nmeaPARSER {
-    struct {
-        size_t length;
-        char buffer[SENTENCE_SIZE];
-    } buffer;
+typedef struct _NmeaParser {
+    NmeaParserSentence sentence;
+    size_t bufferLength;
+    char buffer[NMEALIB_PARSER_SENTENCE_SIZE];
+} NmeaParser;
 
-    sentencePARSER sentence_parser;
-} nmeaPARSER;
+/**
+ * Initialise the parser.
+ *
+ * @param parser The parser
+ * @return True on success
+ */
+bool nmeaParserInit(NmeaParser *parser);
 
-int nmea_parser_init(nmeaPARSER *parser);
-size_t nmea_parse(nmeaPARSER * parser, const char * s, size_t len, NmeaInfo * info);
+/**
+ * Parse NMEA sentences from a (string) buffer and store the results in the
+ * info structure
+ *
+ * @param parser The parser
+ * @param s The (string) buffer
+ * @param sz The length of the string in the buffer
+ * @param info The info structure in which to store the information
+ * @return The number of sentences that were parsed
+ */
+size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t sz, NmeaInfo * info);
 
 #ifdef  __cplusplus
 }

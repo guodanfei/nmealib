@@ -94,7 +94,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   const char * defaultFileName;
   const char * directoryName;
   NmeaInfo info;
-  nmeaPARSER parser;
+  NmeaParser parser;
   char expectedbuffer[65536];
   size_t expectedbufferlength = 0;
   char outputbuffer[65536];
@@ -139,7 +139,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
   nmeaContextSetErrorFunction(nmeaErrorLocal);
 
-  nmea_parser_init(&parser);
+  nmeaParserInit(&parser);
 
   inputLineNr = 0;
   expectedLineNr = 1;
@@ -152,7 +152,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
     memset(&info, 0, sizeof(info));
 
-    nmea_parse(&parser, inputLine, (size_t) inputLineCount, &info);
+    nmeaParserParse(&parser, inputLine, (size_t) inputLineCount, &info);
 
     outputLineResult = nmeaSentenceFromInfo(&outputLine, &info, info.smask);
     if (!outputLine) {

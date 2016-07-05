@@ -36,13 +36,13 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	int result[2];
 	int it = 0;
 
-	nmeaPARSER parser;
-	nmea_parser_init(&parser);
+	NmeaParser parser;
+	nmeaParserInit(&parser);
 
 	for (it = 0; it < NUM_POINTS; it++) {
 		NmeaInfo info;
 		nmeaInfoClear(&info);
-		(void) nmea_parse(&parser, buff[it], strlen(buff[it]), &info);
+		(void) nmeaParserParse(&parser, buff[it], strlen(buff[it]), &info);
 		nmea_info2pos(&info, &pos[it]);
 	}
 

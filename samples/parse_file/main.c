@@ -46,7 +46,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	const char * deffile;
 	const char * dn;
 	NmeaInfo info;
-	nmeaPARSER parser;
+	NmeaParser parser;
 	FILE *file;
 	char buff[2048];
 	size_t it = 0;
@@ -73,12 +73,12 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaContextSetErrorFunction(&error);
 
 	nmeaInfoClear(&info);
-	nmea_parser_init(&parser);
+	nmeaParserInit(&parser);
 
 	while (!feof(file)) {
 	  size_t size = fread(&buff[0], 1, 100, file);
 
-		nmea_parse(&parser, &buff[0], size, &info);
+		nmeaParserParse(&parser, &buff[0], size, &info);
 		nmea_info2pos(&info, &dpos);
 
 		printf("*** %03lu, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", (unsigned long) it++, dpos.lat, dpos.lon, info.sig, info.fix);
