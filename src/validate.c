@@ -101,11 +101,10 @@ bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s) {
     return false;
   }
 
-  if (!( //
-      (t->hour <= 23) //
-      && (t->min <= 59) //
-      && (t->sec <= 60) //
-      && (t->hsec <= 99))) {
+  if ((t->hour > 23) //
+      || (t->min > 59) //
+      || (t->sec > 60) //
+      || (t->hsec > 99)) {
     nmeaError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
         t->sec, t->hsec * 10, s);
     return false;
@@ -119,13 +118,12 @@ bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s) {
     return false;
   }
 
-  if (!( //
-      (t->year >= 1900) //
-      && (t->year <= 2089) //
-      && (t->mon >= 1) //
-      && (t->mon <= 12) //
-      && (t->day >= 1) //
-      && (t->day <= 31))) {
+  if ((t->year < 1900) //
+      || (t->year > 2089) //
+      || (t->mon < 1) //
+      || (t->mon > 12) //
+      || (t->day < 1) //
+      || (t->day > 31)) {
     nmeaError("%s parse error: invalid date '%02u-%02u-%04u' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
         t->year, s);
     return false;
@@ -135,10 +133,8 @@ bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s) {
 }
 
 bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) {
-  char cu[3];
+  char cu[] = { 0, 0, 0 };
 
-  cu[1] = '\0';
-  cu[2] = '\0';
   if (c) {
     cu[0] = c;
   } else {
@@ -147,14 +143,14 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
   }
 
   if (ns) {
-    if (!((c == 'N') //
-        || (c == 'S'))) {
+    if ((c != 'N') //
+        && (c != 'S')) {
       nmeaError("%s parse error: invalid North/South '%s' in '%s'", prefix, cu, s);
       return false;
     }
   } else {
-    if (!((c == 'E') //
-        || (c == 'W'))) {
+    if ((c != 'E') //
+        && (c != 'W')) {
       nmeaError("%s parse error: invalid East/West '%s' in '%s'", prefix, cu, s);
       return false;
     }
@@ -190,16 +186,15 @@ bool nmeaValidateMode(char c, const char *prefix, const char *s) {
     return false;
   }
 
-  if (!( //
-      (c == 'N') //
-      || (c == 'A') //
-      || (c == 'D') //
-      || (c == 'P') //
-      || (c == 'R') //
-      || (c == 'F') //
-      || (c == 'E') //
-      || (c == 'M') //
-      || (c == 'S'))) {
+  if ((c != 'N') //
+      && (c != 'A') //
+      && (c != 'D') //
+      && (c != 'P') //
+      && (c != 'R') //
+      && (c != 'F') //
+      && (c != 'E') //
+      && (c != 'M') //
+      && (c != 'S')) {
     nmeaError("%s parse error: invalid mode '%c' in '%s'", prefix, c, s);
     return false;
   }
