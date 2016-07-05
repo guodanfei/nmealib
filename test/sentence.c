@@ -128,7 +128,130 @@ static void test_nmeaPrefixToSentence(void) {
 }
 
 static void test_nmeaSentenceToInfo(void) {
-  //
+  NmeaInfo infoEmpty;
+  NmeaInfo info;
+  const char *s;
+  bool r;
+
+  memset(&infoEmpty, 0, sizeof(infoEmpty));
+  memset(&info, 0, sizeof(info));
+
+  mockContextReset();
+
+  /* NULL sentence */
+
+  r = nmeaSentenceToInfo(NULL, 1, &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  /* invalid sentence */
+
+  s = "$GPXXX,blah";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 0, 0, true);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGGA */
+
+  s = "$GPGGA,invalid";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 1, 1, true);
+  memset(&info, 0, sizeof(info));
+
+  s = "$GPGGA,104559.64,,,,,,,,,,,,,*";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, true);
+  validatePackToInfo(&info, 1, 0, false);
+  CU_ASSERT_EQUAL(info.present, UTCTIME | SMASK);
+  CU_ASSERT_EQUAL(info.smask, GPGGA);
+  CU_ASSERT_EQUAL(info.utc.hour, 10);
+  CU_ASSERT_EQUAL(info.utc.min, 45);
+  CU_ASSERT_EQUAL(info.utc.sec, 59);
+  CU_ASSERT_EQUAL(info.utc.hsec, 64);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGSA */
+
+  s = "$GPGSA,invalid";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 1, 1, true);
+  memset(&info, 0, sizeof(info));
+
+  s = "$GPGSA,,3,,,,,,,,,,,,,,,*";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, true);
+  validatePackToInfo(&info, 1, 0, false);
+  CU_ASSERT_EQUAL(info.present, FIX | SMASK);
+  CU_ASSERT_EQUAL(info.smask, GPGSA);
+  CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
+  memset(&info, 0, sizeof(info));
+
+  /* GPGSV */
+
+  s = "$GPGSV,invalid";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 1, 1, true);
+  memset(&info, 0, sizeof(info));
+
+  s = "$GPGSV,1,1,4,11,,,45,,,,,12,13,,,,,,*";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, true);
+  validatePackToInfo(&info, 1, 0, false);
+  CU_ASSERT_EQUAL(info.present, SATINVIEWCOUNT | SATINVIEW | SMASK);
+  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
+  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 11);
+  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 0);
+  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 45);
+  CU_ASSERT_EQUAL(info.satinfo.inView[1].prn, 12);
+  CU_ASSERT_EQUAL(info.satinfo.inView[1].elevation, 13);
+  CU_ASSERT_EQUAL(info.satinfo.inView[1].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satinfo.inView[1].snr, 0);
+  checkSatellitesEmpty(info.satinfo.inView, 2, 3, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* GPRMC */
+
+  s = "$GPRMC,invalid";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 1, 1, true);
+  memset(&info, 0, sizeof(info));
+
+  s = "$GPRMC,104559.64,,,,,,,,,,,*";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, true);
+  validatePackToInfo(&info, 1, 0, false);
+  CU_ASSERT_EQUAL(info.present, UTCTIME | SMASK);
+  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.utc.hour, 10);
+  CU_ASSERT_EQUAL(info.utc.min, 45);
+  CU_ASSERT_EQUAL(info.utc.sec, 59);
+  CU_ASSERT_EQUAL(info.utc.hsec, 64);
+  memset(&info, 0, sizeof(info));
+
+  /* GPVTG */
+
+  s = "$GPVTG,1,q";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, false);
+  validatePackToInfo(&info, 1, 1, true);
+  memset(&info, 0, sizeof(info));
+
+  s = "$GPVTG,,,,,,,4.25,k*";
+  r = nmeaSentenceToInfo(s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, true);
+  validatePackToInfo(&info, 1, 0, false);
+  CU_ASSERT_EQUAL(info.present, SPEED | SMASK);
+  CU_ASSERT_EQUAL(info.smask, GPVTG);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 4.25, DBL_EPSILON);
+  memset(&info, 0, sizeof(info));
 }
 
 static void test_nmeaSentenceFromInfo(void) {
