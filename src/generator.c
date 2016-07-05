@@ -133,17 +133,16 @@ void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen) {
  * Run a new generation loop on the generator
  *
  * @param s a pointer to the string buffer in which to generate
- * @param len the size of the buffer
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @param gen a pointer to the generator
  * @param generate_mask the smask of sentences to generate
  * @return the total length of the generated sentences
  */
-size_t nmea_generate_from(char *s, size_t len, NmeaInfo *info, nmeaGENERATOR *gen, int generate_mask) {
+size_t nmea_generate_from(char **s, NmeaInfo *info, nmeaGENERATOR *gen, int generate_mask) {
   size_t retval;
 
   if ((retval = nmea_gen_loop(gen, info)))
-    retval = nmeaSentenceFromInfo(s, len, info, generate_mask);
+    retval = nmeaSentenceFromInfo(s, info, generate_mask);
 
   return retval;
 }

@@ -41,7 +41,7 @@ enum nmeaGENTYPE {
 };
 
 struct _nmeaGENERATOR * nmea_create_generator(const int type, NmeaInfo *info);
-size_t nmea_generate_from(char *buff, size_t buff_sz, NmeaInfo *info, struct _nmeaGENERATOR *gen, int generate_mask);
+size_t nmea_generate_from(char **buf, NmeaInfo *info, struct _nmeaGENERATOR *gen, int generate_mask);
 
 /**
  * Generator initialiser function definition.

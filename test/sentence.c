@@ -136,8 +136,6 @@ static void test_nmeaSentenceToInfo(void) {
   memset(&infoEmpty, 0, sizeof(infoEmpty));
   memset(&info, 0, sizeof(info));
 
-  mockContextReset();
-
   /* NULL sentence */
 
   r = nmeaSentenceToInfo(NULL, 1, &info);
@@ -275,12 +273,14 @@ static int suiteInit(void) {
     return CUE_SINIT_FAILED;
   }
 
+  mockContextReset();
   return CUE_SUCCESS;
 }
 
 static int suiteClean(void) {
   nmeaContextSetErrorFunction(NULL);
   nmeaContextSetTraceFunction(NULL);
+  mockContextReset();
   return CUE_SUCCESS;
 }
 

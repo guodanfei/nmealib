@@ -16,6 +16,7 @@
  */
 
 #include <nmealib/sentence.h>
+#include <stdlib.h>
 #include <string.h>
 
 /**
@@ -158,31 +159,61 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
   }
 }
 
-size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask) {
+size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSentence mask) {
 
 #define dst       (&s[chars])
 #define available ((size_t) MAX((long) sz - 1 - (long) chars, 0))
+#define generateSentence(ev) { \
+		addedChars = ev; \
+    while (addedChars > available) { \
+      sz += NMEALIB_BUFFER_CHUNK_SIZE; \
+      s = realloc(s, sz); \
+      if (!s) { \
+        return 0; \
+      } \
+      addedChars = ev; \
+    } \
+  }
 
-  size_t chars = 0;
-  enum NmeaSentence msk = mask;
+  char *s;
+  size_t sz;
+  size_t chars;
+  enum NmeaSentence msk;
 
-  if (!s //
-      || !sz //
-      || !info //
+  if (!buf) {
+    return 0;
+  }
+
+  *buf = NULL;
+
+  if (!info //
       || !mask) {
     return 0;
   }
 
+  sz = NMEALIB_BUFFER_CHUNK_SIZE;
+  s = malloc(sz);
+  if (!s) {
+    /* can't be covered in a test */
+    return 0;
+  }
+
+  chars = 0;
+  msk = mask;
+
   while (msk) {
+    size_t addedChars;
     if (msk & GPGGA) {
       nmeaGPGGA pack;
       nmeaGPGGAFromInfo(info, &pack);
-      chars += nmeaGPGGAGenerate(dst, available, &pack);
+      generateSentence(nmeaGPGGAGenerate(dst, available, &pack));
+      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPGGA;
     } else if (msk & GPGSA) {
       nmeaGPGSA pack;
       nmeaGPGSAFromInfo(info, &pack);
-      chars += nmeaGPGSAGenerate(dst, available, &pack);
+      generateSentence(nmeaGPGSAGenerate(dst, available, &pack));
+      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPGSA;
     } else if (msk & GPGSV) {
       size_t satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
@@ -192,18 +223,21 @@ size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, cons
 
       for (sentence = 0; sentence < sentences; sentence++) {
         nmeaGPGSVFromInfo(info, &pack, sentence);
-        chars += nmeaGPGSVGenerate(dst, available, &pack);
+        generateSentence(nmeaGPGSVGenerate(dst, available, &pack));
+        chars += addedChars;
       }
       msk &= (enum NmeaSentence) ~GPGSV;
     } else if (msk & GPRMC) {
       nmeaGPRMC pack;
       nmeaGPRMCFromInfo(info, &pack);
-      chars += nmeaGPRMCGenerate(dst, available, &pack);
+      generateSentence(nmeaGPRMCGenerate(dst, available, &pack));
+      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPRMC;
     } else if (msk & GPVTG) {
       nmeaGPVTG pack;
       nmeaGPVTGFromInfo(info, &pack);
-      chars += nmeaGPVTGGenerate(dst, available, &pack);
+      generateSentence(nmeaGPVTGGenerate(dst, available, &pack));
+      chars += addedChars;
       msk &= (enum NmeaSentence) ~GPVTG;
     } else {
       /* no more known sentences to process */
@@ -216,6 +250,7 @@ size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, cons
   }
 
   s[chars] = '\0';
+  *buf = s;
 
   return chars;
 }

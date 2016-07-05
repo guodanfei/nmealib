@@ -21,11 +21,12 @@
 #include <nmealib/sentence.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
 	NmeaInfo info;
-	char buff[2048];
+	char *buff;
 	size_t it;
 
 	nmeaInfoClear(&info);
@@ -73,16 +74,16 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	}
 	nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT | SATINVIEW);
 
-	for (it = 0; it < 10; it++) {
-		size_t gen_sz = nmeaSentenceFromInfo(&buff[0], 2048, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
-
-		buff[gen_sz] = 0;
-		printf("%s\n", &buff[0]);
-
-		usleep(500000);
-
-		info.speed += .1;
-	}
+  for (it = 0; it < 10; it++) {
+    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
+    if (gen_sz && buff) {
+      printf("%s\n", buff);
+      free(buff);
+      buff = NULL;
+      usleep(500000);
+      info.speed += .1;
+    }
+  }
 
 	return 0;
 }

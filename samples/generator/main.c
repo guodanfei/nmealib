@@ -19,12 +19,13 @@
 #include <nmealib/sentence.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
 	nmeaGENERATOR *gen;
 	NmeaInfo info;
-	char buff[2048];
+	char *buff;
 	size_t it;
 
 	nmeaInfoClear(&info);
@@ -38,14 +39,15 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	if (0 == (gen = nmea_create_generator(NMEALIB_GEN_ROTATE, &info)))
 		return -1;
 
-	for (it = 0; it < 10000; it++) {
-	  size_t gen_sz = nmea_generate_from(&buff[0], 2048, &info, gen, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
-
-		buff[gen_sz] = 0;
-		printf("%s\n", &buff[0]);
-
-		usleep(500000);
-	}
+  for (it = 0; it < 10000; it++) {
+    size_t gen_sz = nmea_generate_from(&buff, &info, gen, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
+    if (gen_sz && buff) {
+      printf("%s\n", buff);
+      free(buff);
+      buff = NULL;
+      usleep(500000);
+    }
+  }
 
 	nmea_gen_destroy(gen);
 

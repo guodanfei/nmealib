@@ -76,6 +76,8 @@ static void nmeaErrorLocal(const char *s, size_t sz __attribute__((unused))) {
   fprintf(stderr, "ERROR: %s\n", s);
 }
 
+static char empty[] = { '\0' };
+
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
   int exitCode = EXIT_SUCCESS;
   char expectedFileName[2048];
@@ -87,7 +89,6 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   char * outputLine = NULL;
   size_t expectedLineLength = 0;
   size_t inputLineLength = 0;
-  size_t outputLineLength = 0;
   ssize_t expectedLineCount;
   ssize_t inputLineCount;
   const char * defaultFileName;
@@ -103,10 +104,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   long expectedLineNr = 1;
 
   inputLineLength = 4096;
-  outputLineLength = 4096;
   inputLine = malloc(inputLineLength);
-  outputLine = malloc(outputLineLength);
-  if (!inputLine || !outputLine) {
+  if (!inputLine) {
     exitCode = EXIT_FAILURE;
     goto out;
   }
@@ -155,9 +154,17 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
     nmea_parse(&parser, inputLine, (size_t) inputLineCount, &info);
 
-    outputLineResult = nmeaSentenceFromInfo(outputLine, outputLineLength, &info, info.smask);
+    outputLineResult = nmeaSentenceFromInfo(&outputLine, &info, info.smask);
+    if (!outputLine) {
+      outputLine = empty;
+    }
 
     lineCount = printInfo(inputLine, outputLine, outputLineResult, &info, outputbuffer, sizeof(outputbuffer));
+
+    if (outputLine != empty) {
+      free(outputLine);
+      outputLine = NULL;
+    }
 
     if (dooutput) {
       printf("%s", outputbuffer);
@@ -202,6 +209,5 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
 out:
   free(inputLine);
-  free(outputLine);
   exit(exitCode);
 }

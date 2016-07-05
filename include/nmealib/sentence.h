@@ -120,13 +120,15 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
 /**
  * Generate NMEA sentences from a (sanitised) nmeaINFO structure.
  *
- * @param s The buffer in which to generate the sentences
- * @param sz The size of the buffer
+ * Allocates buffer memory as needed.
+ *
+ * @param buf The location where to store the pointer to the allocated buffer.
+ * Will be null when there is no output.
  * @param info The (sanitised) nmeaINFO structure
  * @param mask The bit-mask of sentences to generate
  * @return The total length of the generated sentences
  */
-size_t nmeaSentenceFromInfo(char *s, const size_t sz, const NmeaInfo *info, const enum NmeaSentence mask);
+size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSentence mask);
 
 #ifdef  __cplusplus
 }
