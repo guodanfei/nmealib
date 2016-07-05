@@ -449,9 +449,9 @@ static bool nmea_igen_pos_rmove_loop(nmeaGENERATOR *gen __attribute__ ((unused))
   if (info->speed < 1)
     info->speed = 1;
 
-  nmea_info2pos(info, &crd);
-  nmea_move_horz(&crd, &crd, info->track, info->speed / 3600);
-  nmea_pos2info(&crd, info);
+  nmeaInfoToPosition(info, &crd);
+  nmeaMoveFlat(&crd, &crd, info->track, info->speed / 3600);
+  nmeaPositionToInfo(&crd, info);
 
   info->magvar = info->track;
 
