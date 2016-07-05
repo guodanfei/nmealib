@@ -28,4 +28,7 @@ void mockContextReset(void);
 void traceFunction(const char *s, size_t sz);
 void errorFunction(const char *s, size_t sz);
 
+int mockContextSuiteInit(void);
+int mockContextSuiteClean(void);
+
 #endif /* __NMEALIB_TEST_MOCK_CONTEXT_H_ */

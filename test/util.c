@@ -130,39 +130,15 @@ static void test_nmeaStringContainsWhitespace(void) {
  * Setup
  */
 
-static int suiteInit(void) {
-  nmeaPrintFunction prev;
-
-  prev = nmeaContextSetTraceFunction(traceFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  prev = nmeaContextSetErrorFunction(errorFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
-static int suiteClean(void) {
-  nmeaContextSetErrorFunction(NULL);
-  nmeaContextSetTraceFunction(NULL);
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
 int utilSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("util", suiteInit, suiteClean);
+  CU_pSuite pSuite = CU_add_suite("util", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }
 
   if ( //
-  (!CU_add_test(pSuite, "MIN", test_Min)) //
-  || (!CU_add_test(pSuite, "MAX", test_Max)) //
+      (!CU_add_test(pSuite, "MIN", test_Min)) //
+      || (!CU_add_test(pSuite, "MAX", test_Max)) //
       || (!CU_add_test(pSuite, "nmeaStringTrim", test_nmeaStringTrim)) //
       || (!CU_add_test(pSuite, "nmeaStringContainsWhitespace", test_nmeaStringContainsWhitespace)) //
       ) {

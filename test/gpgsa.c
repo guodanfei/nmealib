@@ -621,32 +621,8 @@ static void test_nmeaGPGSAGenerate(void) {
  * Setup
  */
 
-static int suiteInit(void) {
-  nmeaPrintFunction prev;
-
-  prev = nmeaContextSetTraceFunction(traceFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  prev = nmeaContextSetErrorFunction(errorFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
-static int suiteClean(void) {
-  nmeaContextSetErrorFunction(NULL);
-  nmeaContextSetTraceFunction(NULL);
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
 int gpgsaSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("gpgsa", suiteInit, suiteClean);
+  CU_pSuite pSuite = CU_add_suite("gpgsa", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }

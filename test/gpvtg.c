@@ -429,32 +429,8 @@ static void test_nmeaGPVTGGenerate(void) {
  * Setup
  */
 
-static int suiteInit(void) {
-  nmeaPrintFunction prev;
-
-  prev = nmeaContextSetTraceFunction(traceFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  prev = nmeaContextSetErrorFunction(errorFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
-static int suiteClean(void) {
-  nmeaContextSetErrorFunction(NULL);
-  nmeaContextSetTraceFunction(NULL);
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
 int gpvtgSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("gpvtg", suiteInit, suiteClean);
+  CU_pSuite pSuite = CU_add_suite("gpvtg", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }

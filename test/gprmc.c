@@ -1117,32 +1117,8 @@ static void test_nmeaGPRMCGenerate(void) {
  * Setup
  */
 
-static int suiteInit(void) {
-  nmeaPrintFunction prev;
-
-  prev = nmeaContextSetTraceFunction(traceFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  prev = nmeaContextSetErrorFunction(errorFunction);
-  if (prev) {
-    return CUE_SINIT_FAILED;
-  }
-
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
-static int suiteClean(void) {
-  nmeaContextSetErrorFunction(NULL);
-  nmeaContextSetTraceFunction(NULL);
-  mockContextReset();
-  return CUE_SUCCESS;
-}
-
 int gprmcSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("gprmc", suiteInit, suiteClean);
+  CU_pSuite pSuite = CU_add_suite("gprmc", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }

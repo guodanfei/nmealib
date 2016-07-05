@@ -16,6 +16,10 @@
  */
 
 #include "mockContext.h"
+
+#include <nmealib/context.h>
+
+#include <CUnit/Basic.h>
 #include <stdio.h>
 
 int nmeaTraceCalls = 0;
@@ -32,4 +36,28 @@ void traceFunction(const char *s __attribute__((unused)), size_t sz __attribute_
 
 void errorFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
   nmeaErrorCalls++;
+}
+
+int mockContextSuiteInit(void) {
+  nmeaPrintFunction prev;
+
+  prev = nmeaContextSetTraceFunction(traceFunction);
+  if (prev) {
+    return CUE_SINIT_FAILED;
+  }
+
+  prev = nmeaContextSetErrorFunction(errorFunction);
+  if (prev) {
+    return CUE_SINIT_FAILED;
+  }
+
+  mockContextReset();
+  return CUE_SUCCESS;
+}
+
+int mockContextSuiteClean(void) {
+  nmeaContextSetErrorFunction(NULL);
+  nmeaContextSetTraceFunction(NULL);
+  mockContextReset();
+  return CUE_SUCCESS;
 }
