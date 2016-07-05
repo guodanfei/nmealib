@@ -21,15 +21,17 @@
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);
-extern int infoSuiteSetup(void);
 extern int gpggaSuiteSetup(void);
 extern int gpgsaSuiteSetup(void);
 extern int gpgsvSuiteSetup(void);
 extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
+extern int infoSuiteSetup(void);
 extern int parseSuiteSetup(void);
+extern int parserSuiteSetup(void);
 extern int randomSuiteSetup(void);
 extern int sentenceSuiteSetup(void);
+extern int tokSuiteSetup(void);
 extern int utilSuiteSetup(void);
 extern int validateSuiteSetup(void);
 
@@ -42,15 +44,19 @@ int main(void) {
 
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
-      || (infoSuiteSetup() != CUE_SUCCESS) //
+      // FIXME generator
+      // FIXME gmath
       || (gpggaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsvSuiteSetup() != CUE_SUCCESS) //
       || (gprmcSuiteSetup() != CUE_SUCCESS) //
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
+      || (infoSuiteSetup() != CUE_SUCCESS) //
       || (parseSuiteSetup() != CUE_SUCCESS) //
+      || (parserSuiteSetup() != CUE_SUCCESS) //
       || (randomSuiteSetup() != CUE_SUCCESS) //
       || (sentenceSuiteSetup() != CUE_SUCCESS) //
+      || (tokSuiteSetup() != CUE_SUCCESS) //
       || (utilSuiteSetup() != CUE_SUCCESS) //
       || (validateSuiteSetup() != CUE_SUCCESS) //
       ) {
