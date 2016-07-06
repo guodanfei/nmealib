@@ -59,21 +59,24 @@ ifeq ($(strip $(VERSION)),)
 VERSION=0.0.0
 endif
 
-COMMONCFLAGS := -Werror -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-prototypes -Wstrict-prototypes \
-             -Wmissing-declarations -Wsign-compare -Waggregate-return -Wmissing-noreturn -Wmissing-format-attribute \
-             -Wno-multichar -Wno-deprecated-declarations -Wendif-labels -Wwrite-strings -Wbad-function-cast \
-             -Wpointer-arith -Wcast-qual -Wshadow -Wformat -Wsequence-point -Wcast-align -Wnested-externs \
-             -Winline -Wdisabled-optimization -funit-at-a-time -fPIC -ggdb -Wformat=2 -Winit-self -Wmissing-include-dirs \
-             -Wswitch-default -Wswitch-enum -Wconversion -Wdouble-promotion -Werror=format-security -Wformat-security \
-             -Wformat-y2k -Wredundant-decls -Wundef -Wunreachable-code -Wunused-parameter
-GCCCFLAGS := $(COMMONCFLAGS) -fearly-inlining -finline-functions-called-once -finline-limit=350 -Wtrampolines -Wsync-nand \
-             -Wlogical-op -Wjump-misses-init
+GCCVERSIONGTEQ6 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 6)
 
-# gcc 6 & clang
-# -Wnull-dereference -Wshift-negative-value -Wshift-overflow -Wtautological-compare
+COMMONCFLAGS += -Werror -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-prototypes \
+                -Wstrict-prototypes -Wmissing-declarations -Wsign-compare -Waggregate-return -Wmissing-noreturn \
+                -Wmissing-format-attribute -Wno-multichar -Wno-deprecated-declarations -Wendif-labels -Wwrite-strings \
+                -Wbad-function-cast -Wpointer-arith -Wcast-qual -Wshadow -Wformat -Wsequence-point -Wcast-align \
+                -Wnested-externs -Winline -Wdisabled-optimization -funit-at-a-time -fPIC -ggdb -Wformat=2 -Winit-self \
+                -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wconversion -Wdouble-promotion \
+                -Werror=format-security -Wformat-security -Wformat-y2k -Wredundant-decls -Wundef -Wunreachable-code \
+                -Wunused-parameter
 
-# gcc 6
-# -Wmisleading-indentation -Wduplicated-cond
+GCCCFLAGS    += $(COMMONCFLAGS) -fearly-inlining -finline-functions-called-once -finline-limit=350 -Wtrampolines \
+                -Wsync-nand -Wlogical-op -Wjump-misses-init
+
+ifeq "$(GCCVERSIONGTEQ6)" "1"
+GCCCFLAGS   += -Wnull-dereference -Wshift-negative-value -Wshift-overflow -Wtautological-compare
+GCCCFLAGS   += -Wmisleading-indentation -Wduplicated-cond
+endif
 
 CLANGCFLAGS := $(COMMONCFLAGS)
 
