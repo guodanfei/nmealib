@@ -23,13 +23,13 @@ static INLINE double nmeaRandom(const double min, const double max) {
 
   randomFile = open("/dev/urandom", O_RDONLY);
   if (randomFile == -1) {
-    /* can't be tested */
+    /* can't be covered in a test */
     randomFile = open("/dev/random", O_RDONLY);
   }
 
   if ((randomFile == -1) //
       || (read(randomFile, &value, sizeof(value)) != sizeof(value))) {
-    /* can't be tested */
+    /* can't be covered in a test */
     value = random();
   }
 
