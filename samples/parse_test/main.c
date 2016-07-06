@@ -70,6 +70,10 @@ static size_t printInfo(char * inputLine, char * outputLine, size_t outputLineRe
   }
 
   return lineCount;
+
+#undef available
+#undef dst
+
 }
 
 static void nmeaErrorLocal(const char *s, size_t sz __attribute__((unused))) {

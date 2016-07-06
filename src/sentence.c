@@ -251,4 +251,9 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
   *buf = s;
 
   return chars;
+
+#undef generateSentence
+#undef available
+#undef dst
+
 }

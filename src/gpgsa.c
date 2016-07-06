@@ -307,4 +307,8 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
   chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
+
+#undef available
+#undef dst
+
 }

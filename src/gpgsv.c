@@ -174,6 +174,12 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
 err:
   memset(pack, 0, sizeof(*pack));
   return false;
+
+#undef pSat3
+#undef pSat2
+#undef pSat1
+#undef pSat0
+
 }
 
 void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info) {
@@ -352,4 +358,8 @@ size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
   chars += nmeaAppendChecksum(s, sz, (size_t) chars);
 
   return (size_t) chars;
+
+#undef available
+#undef dst
+
 }
