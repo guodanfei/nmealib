@@ -162,7 +162,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
 size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSentence mask) {
 
 #define dst       (&s[chars])
-#define available ((size_t) MAX((long) sz - 1 - (long) chars, 0))
+#define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))
 
 #define generateSentence(expression) { \
   size_t addedChars = expression; \

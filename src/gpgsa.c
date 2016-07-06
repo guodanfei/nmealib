@@ -249,7 +249,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack) {
 size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
 
 #define dst       (&s[chars])
-#define available ((size_t) MAX((long) sz - 1 - chars, 0))
+#define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))
 
   int chars = 0;
   bool satInUse;

@@ -302,7 +302,7 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence) {
 size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
 
 #define dst       (&s[chars])
-#define available ((size_t) MAX((long) sz - 1 - chars, 0))
+#define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))
 
   int chars = 0;
   size_t satellites = 0;

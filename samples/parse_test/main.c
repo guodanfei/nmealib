@@ -25,7 +25,7 @@ static size_t countlines(char * line) {
 static size_t printInfo(char * inputLine, char * outputLine, size_t outputLineResult, NmeaInfo * info, char * outputbuffer, size_t outputbuffersize) {
 
 #define dst       (&outputbuffer[index])
-#define available ((size_t) MAX((long) outputbuffersize - index - 1, 0))
+#define available ((outputbuffersize <= (size_t) index) ? 0 : (outputbuffersize - (size_t) index))
 
   size_t i;
   int index = 0;
