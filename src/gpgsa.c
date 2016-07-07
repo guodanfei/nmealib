@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
+bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   size_t fieldCount;
 
   if (!s //
@@ -132,7 +132,7 @@ err:
   return false;
 }
 
-void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info) {
+void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
@@ -192,7 +192,7 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info) {
   }
 }
 
-void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack) {
+void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
   if (!pack //
       || !info) {
     return;
@@ -246,7 +246,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack) {
   }
 }
 
-size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
+size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))

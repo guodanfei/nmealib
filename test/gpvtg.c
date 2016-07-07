@@ -37,8 +37,8 @@ int gpvtgSuiteSetup(void);
 
 static void test_nmeaGPVTGParse(void) {
   const char * s = "some string";
-  nmeaGPVTG packEmpty;
-  nmeaGPVTG pack;
+  NmeaGPVTG packEmpty;
+  NmeaGPVTG pack;
   bool r;
 
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -140,7 +140,7 @@ static void test_nmeaGPVTGParse(void) {
 }
 
 static void test_nmeaGPVTGToInfo(void) {
-  nmeaGPVTG pack;
+  NmeaGPVTG pack;
   NmeaInfo infoEmpty;
   NmeaInfo info;
 
@@ -256,8 +256,8 @@ static void test_nmeaGPVTGToInfo(void) {
 
 static void test_nmeaGPVTGFromInfo(void) {
   NmeaInfo info;
-  nmeaGPVTG packEmpty;
-  nmeaGPVTG pack;
+  NmeaGPVTG packEmpty;
+  NmeaGPVTG pack;
 
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -320,7 +320,7 @@ static void test_nmeaGPVTGFromInfo(void) {
 
 static void test_nmeaGPVTGGenerate(void) {
   char buf[256];
-  nmeaGPVTG pack;
+  NmeaGPVTG pack;
   size_t r;
 
   memset(buf, 0, sizeof(buf));

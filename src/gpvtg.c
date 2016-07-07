@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack) {
+bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
   size_t fieldCount;
   bool speedK = false;
   bool speedN = false;
@@ -136,7 +136,7 @@ err:
   return false;
 }
 
-void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info) {
+void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
@@ -168,7 +168,7 @@ void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info) {
   }
 }
 
-void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack) {
+void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack) {
   if (!pack //
       || !info) {
     return;
@@ -197,7 +197,7 @@ void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack) {
   }
 }
 
-size_t nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack) {
+size_t nmeaGPVTGGenerate(char *s, const size_t sz, const NmeaGPVTG *pack) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))

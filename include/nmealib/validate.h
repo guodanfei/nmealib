@@ -29,7 +29,7 @@ extern "C" {
 /**
  * The type definition for an invalid NMEA character/description
  */
-typedef struct {
+typedef struct _NmeaInvalidCharacter {
   const char character;
   const char * description;
 } NmeaInvalidCharacter;

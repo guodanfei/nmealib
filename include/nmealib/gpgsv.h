@@ -103,13 +103,13 @@ extern "C" {
  * $GPGSV,2,1,08,01,40,083,46,02,17,308,41,12,07,344,39,14,22,228,45*75
  * </pre>
  */
-typedef struct _nmeaGPGSV {
+typedef struct _NmeaGPGSV {
   uint32_t      present;
   unsigned int  sentences;
   unsigned int  sentence;
   unsigned int  satellites;
   NmeaSatellite satellite[NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE];
-} nmeaGPGSV;
+} NmeaGPGSV;
 
 /**
  * Determine the number of GPGSV sentences needed for the specified number of
@@ -128,7 +128,7 @@ size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites);
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack);
+bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPGSV packet structure
@@ -136,7 +136,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack);
  * @param pack The GPGSV packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info);
+void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
@@ -145,7 +145,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info);
  * @param pack The nmeaGPGSV structure
  * @param sentence The sentence index of the nmeaGPGSV structure (zero based)
  */
-void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence);
+void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence);
 
 /**
  * Generate a GPGSV sentence from a nmeaGPGSV structure
@@ -155,7 +155,7 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence);
  * @param pack The nmeaGPGSV structure
  * @return The length of the generated sentence
  */
-size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack);
+size_t nmeaGPGSVGenerate(char *s, const size_t sz, const NmeaGPGSV *pack);
 
 #ifdef  __cplusplus
 }

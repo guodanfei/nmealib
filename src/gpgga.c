@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack) {
+bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   size_t fieldCount;
   char timeBuf[16];
 
@@ -181,7 +181,7 @@ err:
   return false;
 }
 
-void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info) {
+void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
@@ -249,7 +249,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info) {
   }
 }
 
-void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack) {
+void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
   if (!pack //
       || !info) {
     return;
@@ -321,7 +321,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack) {
   }
 }
 
-size_t nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack) {
+size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))

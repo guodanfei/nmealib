@@ -36,8 +36,8 @@ int gpgsaSuiteSetup(void);
 
 static void test_nmeaGPGSAParse(void) {
   const char * s = "some string";
-  nmeaGPGSA packEmpty;
-  nmeaGPGSA pack;
+  NmeaGPGSA packEmpty;
+  NmeaGPGSA pack;
   bool r;
 
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -143,7 +143,7 @@ static void test_nmeaGPGSAParse(void) {
 
 static void test_nmeaGPGSAToInfo(void) {
   size_t i;
-  nmeaGPGSA pack;
+  NmeaGPGSA pack;
   NmeaInfo infoEmpty;
   NmeaInfo info;
 
@@ -346,8 +346,8 @@ static void test_nmeaGPGSAToInfo(void) {
 
 static void test_nmeaGPGSAFromInfo(void) {
   NmeaInfo info;
-  nmeaGPGSA packEmpty;
-  nmeaGPGSA pack;
+  NmeaGPGSA packEmpty;
+  NmeaGPGSA pack;
 
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -497,7 +497,7 @@ static void test_nmeaGPGSAFromInfo(void) {
 
 static void test_nmeaGPGSAGenerate(void) {
   char buf[256];
-  nmeaGPGSA pack;
+  NmeaGPGSA pack;
   size_t r;
 
   memset(buf, 0, sizeof(buf));

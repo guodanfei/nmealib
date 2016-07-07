@@ -64,7 +64,7 @@ extern "C" {
  * $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
  * </pre>
  */
-typedef struct _nmeaGPVTG {
+typedef struct _NmeaGPVTG {
   uint32_t present;
   double   track;
   char     track_t;
@@ -74,7 +74,7 @@ typedef struct _nmeaGPVTG {
   char     spn_n;
   double   spk;
   char     spk_k;
-} nmeaGPVTG;
+} NmeaGPVTG;
 
 /**
  * Parse a GPVTG sentence
@@ -84,7 +84,7 @@ typedef struct _nmeaGPVTG {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack);
+bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPVTG packet structure
@@ -92,7 +92,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, nmeaGPVTG *pack);
  * @param pack The GPVTG packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info);
+void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
@@ -100,7 +100,7 @@ void nmeaGPVTGToInfo(const nmeaGPVTG *pack, NmeaInfo *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPVTG structure
  */
-void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack);
+void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack);
 
 /**
  * Generate a GPVTG sentence from a nmeaGPVTG structure
@@ -110,7 +110,7 @@ void nmeaGPVTGFromInfo(const NmeaInfo *info, nmeaGPVTG *pack);
  * @param pack The nmeaGPVTG structure
  * @return The length of the generated sentence
  */
-size_t nmeaGPVTGGenerate(char *s, const size_t sz, const nmeaGPVTG *pack);
+size_t nmeaGPVTGGenerate(char *s, const size_t sz, const NmeaGPVTG *pack);
 
 #ifdef  __cplusplus
 }

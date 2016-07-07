@@ -46,7 +46,7 @@ size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites) {
   return pack_count;
 }
 
-bool nmeaGPGSVParse(const char *s, const size_t sz, nmeaGPGSV *pack) {
+bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
 
 #define pSat0 pack->satellite[0]
 #define pSat1 pack->satellite[1]
@@ -182,7 +182,7 @@ err:
 
 }
 
-void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info) {
+void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
@@ -259,7 +259,7 @@ void nmeaGPGSVToInfo(const nmeaGPGSV *pack, NmeaInfo *info) {
   info->smask |= GPGSV;
 }
 
-void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence) {
+void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
   size_t satellites;
   size_t sentences;
 
@@ -305,7 +305,7 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, nmeaGPGSV *pack, size_t sentence) {
   }
 }
 
-size_t nmeaGPGSVGenerate(char *s, const size_t sz, const nmeaGPGSV *pack) {
+size_t nmeaGPGSVGenerate(char *s, const size_t sz, const NmeaGPGSV *pack) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))

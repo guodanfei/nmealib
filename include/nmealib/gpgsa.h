@@ -88,7 +88,7 @@ extern "C" {
  * $GPGSA,A,3,04,05,,09,12,,,24,,,,,2.5,1.3,2.1*39
  * </pre>
  */
-typedef struct _nmeaGPGSA {
+typedef struct _NmeaGPGSA {
   uint32_t present;
   char     sig;
   NmeaFix  fix;
@@ -96,7 +96,7 @@ typedef struct _nmeaGPGSA {
   double   pdop;
   double   hdop;
   double   vdop;
-} nmeaGPGSA;
+} NmeaGPGSA;
 
 /**
  * Parse a GPGSA sentence
@@ -106,7 +106,7 @@ typedef struct _nmeaGPGSA {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack);
+bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPGSA packet structure
@@ -114,7 +114,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack);
  * @param pack The GPGSA packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info);
+void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
@@ -122,7 +122,7 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGSA structure
  */
-void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack);
+void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack);
 
 /**
  * Generate a GPGSA sentence from a nmeaGPGSA structure
@@ -132,7 +132,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack);
  * @param pack The nmeaGPGSA structure
  * @return The length of the generated sentence
  */
-size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack);
+size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack);
 
 #ifdef  __cplusplus
 }

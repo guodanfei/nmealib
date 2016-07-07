@@ -34,11 +34,11 @@
  * (present and smask are preserved, other fields are reset before generation starts)
  * @return true on success, false otherwise
  */
-bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
+bool nmea_gen_init(NmeaGenerator *gen, NmeaInfo *info) {
   bool retval = true;
   uint32_t present = info->present;
   uint32_t smask = info->smask;
-  nmeaGENERATOR *igen = gen;
+  NmeaGenerator *igen = gen;
 
   nmeaRandomInit();
 
@@ -70,7 +70,7 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-bool nmea_gen_loop(nmeaGENERATOR *gen, NmeaInfo *info) {
+bool nmea_gen_loop(NmeaGenerator *gen, NmeaInfo *info) {
   bool retVal = true;
 
   if (gen->loop_call)
@@ -89,7 +89,7 @@ bool nmea_gen_loop(nmeaGENERATOR *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-bool nmea_gen_reset(nmeaGENERATOR *gen, NmeaInfo *info) {
+bool nmea_gen_reset(NmeaGenerator *gen, NmeaInfo *info) {
   bool RetVal = 1;
 
   if (gen->reset_call)
@@ -103,7 +103,7 @@ bool nmea_gen_reset(nmeaGENERATOR *gen, NmeaInfo *info) {
  *
  * @param gen a pointer to the generator
  */
-void nmea_gen_destroy(nmeaGENERATOR *gen) {
+void nmea_gen_destroy(NmeaGenerator *gen) {
   if (gen->next) {
     nmea_gen_destroy(gen->next);
     gen->next = 0;
@@ -121,8 +121,8 @@ void nmea_gen_destroy(nmeaGENERATOR *gen) {
  * @param to the generators to add to
  * @param gen the generator to add
  */
-void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen) {
-  nmeaGENERATOR * next = to;
+void nmea_gen_add(NmeaGenerator *to, NmeaGenerator *gen) {
+  NmeaGenerator * next = to;
   while (next->next)
     next = to->next;
 
@@ -138,7 +138,7 @@ void nmea_gen_add(nmeaGENERATOR *to, nmeaGENERATOR *gen) {
  * @param generate_mask the smask of sentences to generate
  * @return the total length of the generated sentences
  */
-size_t nmea_generate_from(char **s, NmeaInfo *info, nmeaGENERATOR *gen, int generate_mask) {
+size_t nmea_generate_from(char **s, NmeaInfo *info, NmeaGenerator *gen, int generate_mask) {
   size_t retval;
 
   if ((retval = nmea_gen_loop(gen, info)))
@@ -159,7 +159,7 @@ size_t nmea_generate_from(char **s, NmeaInfo *info, nmeaGENERATOR *gen, int gene
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_noise_loop(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   size_t it;
   size_t in_use;
 
@@ -230,7 +230,7 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_static_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_static_loop(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   nmeaTimeSet(&info->utc, &info->present, NULL);
   return true;
 }
@@ -243,7 +243,7 @@ static bool nmea_igen_static_loop(nmeaGENERATOR *gen __attribute__ ((unused)), N
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_static_reset(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_static_reset(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   info->satinfo.inUseCount = 4;
   info->satinfo.inViewCount = 4;
 
@@ -287,7 +287,7 @@ static bool nmea_igen_static_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_static_init(nmeaGENERATOR *gen, NmeaInfo *info) {
+static bool nmea_igen_static_init(NmeaGenerator *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
@@ -310,7 +310,7 @@ static bool nmea_igen_static_init(nmeaGENERATOR *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_rotate_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_rotate_loop(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   int it;
   int count = info->satinfo.inViewCount;
   double deg = 360.0 / (count ?
@@ -342,7 +342,7 @@ static bool nmea_igen_rotate_loop(nmeaGENERATOR *gen __attribute__ ((unused)), N
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_rotate_reset(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_rotate_reset(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   int it;
   double deg = 360 / 8;
   double srt = 0;
@@ -375,7 +375,7 @@ static bool nmea_igen_rotate_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_rotate_init(nmeaGENERATOR *gen, NmeaInfo *info) {
+static bool nmea_igen_rotate_init(NmeaGenerator *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
@@ -399,7 +399,7 @@ static bool nmea_igen_rotate_init(nmeaGENERATOR *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_pos_rmove_init(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_pos_rmove_init(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
   info->speed = 20;
@@ -424,7 +424,7 @@ static bool nmea_igen_pos_rmove_init(nmeaGENERATOR *gen __attribute__ ((unused))
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmea_igen_pos_rmove_loop(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
+static bool nmea_igen_pos_rmove_loop(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   NmeaPosition crd;
 
   info->track += nmeaRandom(-10, 10);
@@ -472,44 +472,44 @@ static bool nmea_igen_pos_rmove_loop(nmeaGENERATOR *gen __attribute__ ((unused))
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return the generator
  */
-static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
-  nmeaGENERATOR *gen = 0;
+static NmeaGenerator * __nmea_create_generator(const int type, NmeaInfo *info) {
+  NmeaGenerator *gen = 0;
 
   switch (type) {
     case NMEALIB_GEN_NOISE:
-      if (!(gen = malloc(sizeof(nmeaGENERATOR))))
+      if (!(gen = malloc(sizeof(NmeaGenerator))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
-        memset(gen, 0, sizeof(nmeaGENERATOR));
+        memset(gen, 0, sizeof(NmeaGenerator));
         gen->loop_call = &nmea_igen_noise_loop;
       }
       break;
     case NMEALIB_GEN_STATIC:
     case NMEALIB_GEN_SAT_STATIC:
-      if (!(gen = malloc(sizeof(nmeaGENERATOR))))
+      if (!(gen = malloc(sizeof(NmeaGenerator))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
-        memset(gen, 0, sizeof(nmeaGENERATOR));
+        memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmea_igen_static_init;
         gen->loop_call = &nmea_igen_static_loop;
         gen->reset_call = &nmea_igen_static_reset;
       }
       break;
     case NMEALIB_GEN_SAT_ROTATE:
-      if (!(gen = malloc(sizeof(nmeaGENERATOR))))
+      if (!(gen = malloc(sizeof(NmeaGenerator))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
-        memset(gen, 0, sizeof(nmeaGENERATOR));
+        memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmea_igen_rotate_init;
         gen->loop_call = &nmea_igen_rotate_loop;
         gen->reset_call = &nmea_igen_rotate_reset;
       }
       break;
     case NMEALIB_GEN_POS_RANDMOVE:
-      if (!(gen = malloc(sizeof(nmeaGENERATOR))))
+      if (!(gen = malloc(sizeof(NmeaGenerator))))
         nmeaError("%s: insufficient memory!", __FUNCTION__);
       else {
-        memset(gen, 0, sizeof(nmeaGENERATOR));
+        memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmea_igen_pos_rmove_init;
         gen->loop_call = &nmea_igen_pos_rmove_loop;
       }
@@ -531,8 +531,8 @@ static nmeaGENERATOR * __nmea_create_generator(const int type, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return the generator
  */
-nmeaGENERATOR * nmea_create_generator(const int type, NmeaInfo *info) {
-  nmeaGENERATOR *gen = __nmea_create_generator(type, info);
+NmeaGenerator * nmea_create_generator(const int type, NmeaInfo *info) {
+  NmeaGenerator *gen = __nmea_create_generator(type, info);
 
   if (gen)
     nmea_gen_init(gen, info);

@@ -22,15 +22,15 @@
 /**
  * The type definition for an entry mapping a NMEA sentence prefix to a sentence type
  */
-typedef struct {
+typedef struct _NmeaSentencePrefixToType {
   const char * prefix;
   const enum NmeaSentence sentence;
-} SentencePrefixToType;
+} NmeaSentencePrefixToType;
 
 /**
  * The map from NMEA sentence prefix to sentence type
  */
-static const SentencePrefixToType sentencePrefixToType[] = {
+static const NmeaSentencePrefixToType sentencePrefixToType[] = {
     {
         .prefix = NMEALIB_PREFIX_GPGGA, //
         .sentence = GPGGA //
@@ -104,7 +104,7 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
 bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
   switch (nmeaPrefixToSentence(s, sz)) {
     case GPGGA: {
-      nmeaGPGGA gpgga;
+      NmeaGPGGA gpgga;
       if (nmeaGPGGAParse(s, sz, &gpgga)) {
         nmeaGPGGAToInfo(&gpgga, info);
         return true;
@@ -114,7 +114,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
     }
 
     case GPGSA: {
-      nmeaGPGSA gpgsa;
+      NmeaGPGSA gpgsa;
       if (nmeaGPGSAParse(s, sz, &gpgsa)) {
         nmeaGPGSAToInfo(&gpgsa, info);
         return true;
@@ -124,7 +124,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
     }
 
     case GPGSV: {
-      nmeaGPGSV gpgsv;
+      NmeaGPGSV gpgsv;
       if (nmeaGPGSVParse(s, sz, &gpgsv)) {
         nmeaGPGSVToInfo(&gpgsv, info);
         return true;
@@ -134,7 +134,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
     }
 
     case GPRMC: {
-      nmeaGPRMC gprmc;
+      NmeaGPRMC gprmc;
       if (nmeaGPRMCParse(s, sz, &gprmc)) {
         nmeaGPRMCToInfo(&gprmc, info);
         return true;
@@ -144,7 +144,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
     }
 
     case GPVTG: {
-      nmeaGPVTG gpvtg;
+      NmeaGPVTG gpvtg;
       if (nmeaGPVTGParse(s, sz, &gpvtg)) {
         nmeaGPVTGToInfo(&gpvtg, info);
         return true;
@@ -205,18 +205,18 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
 
   while (msk) {
     if (msk & GPGGA) {
-      nmeaGPGGA pack;
+      NmeaGPGGA pack;
       nmeaGPGGAFromInfo(info, &pack);
       generateSentence(nmeaGPGGAGenerate(dst, available, &pack));
       msk &= (enum NmeaSentence) ~GPGGA;
     } else if (msk & GPGSA) {
-      nmeaGPGSA pack;
+      NmeaGPGSA pack;
       nmeaGPGSAFromInfo(info, &pack);
       generateSentence(nmeaGPGSAGenerate(dst, available, &pack));
       msk &= (enum NmeaSentence) ~GPGSA;
     } else if (msk & GPGSV) {
       size_t satCount = nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
-      nmeaGPGSV pack;
+      NmeaGPGSV pack;
       size_t sentence;
       size_t sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);
 
@@ -226,12 +226,12 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
       }
       msk &= (enum NmeaSentence) ~GPGSV;
     } else if (msk & GPRMC) {
-      nmeaGPRMC pack;
+      NmeaGPRMC pack;
       nmeaGPRMCFromInfo(info, &pack);
       generateSentence(nmeaGPRMCGenerate(dst, available, &pack));
       msk &= (enum NmeaSentence) ~GPRMC;
     } else if (msk & GPVTG) {
-      nmeaGPVTG pack;
+      NmeaGPVTG pack;
       nmeaGPVTGFromInfo(info, &pack);
       generateSentence(nmeaGPVTGGenerate(dst, available, &pack));
       msk &= (enum NmeaSentence) ~GPVTG;

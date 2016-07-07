@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack) {
+bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   size_t fieldCount;
   char timeBuf[16];
   char dateBuf[8];
@@ -194,7 +194,7 @@ err:
   return false;
 }
 
-void nmeaGPRMCToInfo(const nmeaGPRMC *pack, NmeaInfo *info) {
+void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   if (!pack //
       || !info) {
     return;
@@ -271,7 +271,7 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, NmeaInfo *info) {
   }
 }
 
-void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack) {
+void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
   if (!pack //
       || !info) {
     return;
@@ -339,7 +339,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack) {
   }
 }
 
-size_t nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack) {
+size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))

@@ -80,7 +80,7 @@ extern "C" {
  * the ellipsoid rather than geoid altitude. Some units do not report negative
  * altitudes at all. This is the only sentence that reports altitude.
  */
-typedef struct _nmeaGPGGA {
+typedef struct _NmeaGPGGA {
   uint32_t   present;
   NmeaTime   time;
   double     latitude;
@@ -96,7 +96,7 @@ typedef struct _nmeaGPGGA {
   char       heightUnit;
   double     dgpsAge;
   int        dgpsSid;
-} nmeaGPGGA;
+} NmeaGPGGA;
 
 /**
  * Parse a GPGGA sentence
@@ -106,7 +106,7 @@ typedef struct _nmeaGPGGA {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack);
+bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPGGA packet structure
@@ -114,7 +114,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, nmeaGPGGA *pack);
  * @param pack The GPGGA packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info);
+void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
@@ -122,7 +122,7 @@ void nmeaGPGGAToInfo(const nmeaGPGGA *pack, NmeaInfo *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPGGA structure
  */
-void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack);
+void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack);
 
 /**
  * Generate a GPGGA sentence from a nmeaGPGGA structure
@@ -132,7 +132,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, nmeaGPGGA *pack);
  * @param pack The nmeaGPGGA structure
  * @return The length of the generated sentence
  */
-size_t nmeaGPGGAGenerate(char *s, const size_t sz, const nmeaGPGGA *pack);
+size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack);
 
 #ifdef  __cplusplus
 }

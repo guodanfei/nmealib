@@ -37,8 +37,8 @@ int gprmcSuiteSetup(void);
 
 static void test_nmeaGPRMCParse(void) {
   const char * s = "some string";
-  nmeaGPRMC packEmpty;
-  nmeaGPRMC pack;
+  NmeaGPRMC packEmpty;
+  NmeaGPRMC pack;
   bool r;
 
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -247,7 +247,7 @@ static void test_nmeaGPRMCParse(void) {
 }
 
 static void test_nmeaGPRMCToInfo(void) {
-  nmeaGPRMC pack;
+  NmeaGPRMC pack;
   NmeaInfo infoEmpty;
   NmeaInfo info;
 
@@ -557,8 +557,8 @@ static void test_nmeaGPRMCToInfo(void) {
 
 static void test_nmeaGPRMCFromInfo(void) {
   NmeaInfo info;
-  nmeaGPRMC packEmpty;
-  nmeaGPRMC pack;
+  NmeaGPRMC packEmpty;
+  NmeaGPRMC pack;
 
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -738,7 +738,7 @@ static void test_nmeaGPRMCFromInfo(void) {
 
 static void test_nmeaGPRMCGenerate(void) {
   char buf[256];
-  nmeaGPRMC pack;
+  NmeaGPRMC pack;
   size_t r;
 
   memset(buf, 0, sizeof(buf));

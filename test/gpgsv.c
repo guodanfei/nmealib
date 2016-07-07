@@ -58,8 +58,8 @@ static void test_nmeaGPGSVsatellitesToSentencesCount(void) {
 
 static void test_nmeaGPGSVParse(void) {
   const char * s = "some string";
-  nmeaGPGSV packEmpty;
-  nmeaGPGSV pack;
+  NmeaGPGSV packEmpty;
+  NmeaGPGSV pack;
   bool r;
 
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -180,7 +180,7 @@ static void test_nmeaGPGSVParse(void) {
 }
 
 static void test_nmeaGPGSVToInfo(void) {
-  nmeaGPGSV pack;
+  NmeaGPGSV pack;
   NmeaInfo infoEmpty;
   NmeaInfo info;
 
@@ -451,8 +451,8 @@ static void test_nmeaGPGSVToInfo(void) {
 
 static void test_nmeaGPGSVFromInfo(void) {
   NmeaInfo info;
-  nmeaGPGSV packEmpty;
-  nmeaGPGSV pack;
+  NmeaGPGSV packEmpty;
+  NmeaGPGSV pack;
 
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -636,7 +636,7 @@ static void test_nmeaGPGSVFromInfo(void) {
 
 static void test_nmeaGPGSVGenerate(void) {
   char buf[256];
-  nmeaGPGSV pack;
+  NmeaGPGSV pack;
   size_t r;
 
   memset(buf, 0, sizeof(buf));

@@ -36,8 +36,8 @@ int gpggaSuiteSetup(void);
 
 static void test_nmeaGPGGAParse(void) {
   const char * s = "some string";
-  nmeaGPGGA packEmpty;
-  nmeaGPGGA pack;
+  NmeaGPGGA packEmpty;
+  NmeaGPGGA pack;
   bool r;
 
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -198,7 +198,7 @@ static void test_nmeaGPGGAParse(void) {
 }
 
 static void test_nmeaGPGGAToInfo(void) {
-  nmeaGPGGA pack;
+  NmeaGPGGA pack;
   NmeaInfo infoEmpty;
   NmeaInfo info;
 
@@ -484,8 +484,8 @@ static void test_nmeaGPGGAToInfo(void) {
 
 static void test_nmeaGPGGAFromInfo(void) {
   NmeaInfo info;
-  nmeaGPGGA packEmpty;
-  nmeaGPGGA pack;
+  NmeaGPGGA packEmpty;
+  NmeaGPGGA pack;
 
   memset(&info, 0, sizeof(info));
   memset(&packEmpty, 0, sizeof(packEmpty));
@@ -650,7 +650,7 @@ static void test_nmeaGPGGAFromInfo(void) {
 
 static void test_nmeaGPGGAGenerate(void) {
   char buf[256];
-  nmeaGPGGA pack;
+  NmeaGPGGA pack;
   size_t r;
 
   memset(buf, 0, sizeof(buf));

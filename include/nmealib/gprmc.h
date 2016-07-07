@@ -70,7 +70,7 @@ extern "C" {
  * $GPRMC,123519,A,4807.038,N,01131.000,E,022.4,084.4,230394,003.1,W,A*6A (v2.3)
  * </pre>
  */
-typedef struct _nmeaGPRMC {
+typedef struct _NmeaGPRMC {
   bool     v23;
   uint32_t present;
   NmeaTime utc;
@@ -84,7 +84,7 @@ typedef struct _nmeaGPRMC {
   double   magvar;
   char     magvar_ew;
   char     sig;
-} nmeaGPRMC;
+} NmeaGPRMC;
 
 /**
  * Parse a GPRMC sentence
@@ -94,7 +94,7 @@ typedef struct _nmeaGPRMC {
  * @param pack Where the result should be stored
  * @return True on success
  */
-bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack);
+bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack);
 
 /**
  * Update an unsanitised nmeaINFO structure from a GPRMC packet structure
@@ -102,7 +102,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, nmeaGPRMC *pack);
  * @param pack The GPRMC packet structure
  * @param info The nmeaINFO structure
  */
-void nmeaGPRMCToInfo(const nmeaGPRMC *pack, NmeaInfo *info);
+void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info);
 
 /**
  * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
@@ -110,7 +110,7 @@ void nmeaGPRMCToInfo(const nmeaGPRMC *pack, NmeaInfo *info);
  * @param info The nmeaINFO structure
  * @param pack The nmeaGPRMC structure
  */
-void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack);
+void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack);
 
 /**
  * Generate a GPRMC sentence from a nmeaGPRMC structure
@@ -120,7 +120,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, nmeaGPRMC *pack);
  * @param pack The nmeaGPRMC structure
  * @return The length of the generated sentence
  */
-size_t nmeaGPRMCGenerate(char *s, const size_t sz, const nmeaGPRMC *pack);
+size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack);
 
 #ifdef  __cplusplus
 }
