@@ -147,70 +147,70 @@ const char * nmeaInfoFixToString(NmeaFix fix) {
 
 const char * nmeaInfoFieldToString(NmeaPresence field) {
   switch (field) {
-    case SMASK:
+    case NMEALIB_PRESENT_SMASK:
       return "SMASK";
 
-    case UTCDATE:
+    case NMEALIB_PRESENT_UTCDATE:
       return "UTCDATE";
 
-    case UTCTIME:
+    case NMEALIB_PRESENT_UTCTIME:
       return "UTCTIME";
 
-    case SIG:
+    case NMEALIB_PRESENT_SIG:
       return "SIG";
 
-    case FIX:
+    case NMEALIB_PRESENT_FIX:
       return "FIX";
 
-    case PDOP:
+    case NMEALIB_PRESENT_PDOP:
       return "PDOP";
 
-    case HDOP:
+    case NMEALIB_PRESENT_HDOP:
       return "HDOP";
 
-    case VDOP:
+    case NMEALIB_PRESENT_VDOP:
       return "VDOP";
 
-    case LAT:
+    case NMEALIB_PRESENT_LAT:
       return "LAT";
 
-    case LON:
+    case NMEALIB_PRESENT_LON:
       return "LON";
 
-    case ELV:
+    case NMEALIB_PRESENT_ELV:
       return "ELV";
 
-    case HEIGHT:
+    case NMEALIB_PRESENT_HEIGHT:
       return "HEIGHT";
 
-    case SPEED:
+    case NMEALIB_PRESENT_SPEED:
       return "SPEED";
 
-    case TRACK:
+    case NMEALIB_PRESENT_TRACK:
       return "TRACK";
 
-    case MTRACK:
+    case NMEALIB_PRESENT_MTRACK:
       return "MTRACK";
 
-    case MAGVAR:
+    case NMEALIB_PRESENT_MAGVAR:
       return "MAGVAR";
 
-    case SATINUSECOUNT:
+    case NMEALIB_PRESENT_SATINUSECOUNT:
       return "SATINUSECOUNT";
 
-    case SATINUSE:
+    case NMEALIB_PRESENT_SATINUSE:
       return "SATINUSE";
 
-    case SATINVIEWCOUNT:
+    case NMEALIB_PRESENT_SATINVIEWCOUNT:
       return "SATINVIEWCOUNT";
 
-    case SATINVIEW:
+    case NMEALIB_PRESENT_SATINVIEW:
       return "SATINVIEW";
 
-    case DGPSAGE:
+    case NMEALIB_PRESENT_DGPSAGE:
       return "DGPSAGE";
 
-    case DGPSSID:
+    case NMEALIB_PRESENT_DGPSSID:
       return "DGPSSID";
 
     default:
@@ -240,7 +240,7 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
   utc->sec = (unsigned int) tt.tm_sec;
   utc->hsec = (unsigned int) (tp.tv_usec / 10000);
   if (present) {
-    nmeaInfoSetPresent(present, UTCDATE | UTCTIME);
+    nmeaInfoSetPresent(present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
   }
 }
 
@@ -252,10 +252,10 @@ void nmeaInfoClear(NmeaInfo *info) {
   memset(info, 0, sizeof(NmeaInfo));
 
   info->sig = NMEALIB_SIG_INVALID;
-  nmeaInfoSetPresent(&info->present, SIG);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
 
   info->fix = NMEALIB_FIX_BAD;
-  nmeaInfoSetPresent(&info->present, FIX);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
 }
 
 void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
@@ -281,28 +281,28 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
 
   nmeaInfo->present = nmeaInfo->present & NMEALIB_INFO_PRESENT_MASK;
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SMASK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SMASK)) {
     nmeaInfo->smask = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE) || !nmeaInfoIsPresentAll(nmeaInfo->present, UTCTIME)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCDATE) || !nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCTIME)) {
     nmeaTimeSet(&utc, NULL, NULL);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCDATE)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCDATE)) {
     nmeaInfo->utc.year = utc.year;
     nmeaInfo->utc.mon = utc.mon;
     nmeaInfo->utc.day = utc.day;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, UTCTIME)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCTIME)) {
     nmeaInfo->utc.hour = utc.hour;
     nmeaInfo->utc.min = utc.min;
     nmeaInfo->utc.sec = utc.sec;
     nmeaInfo->utc.hsec = utc.hsec;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SIG)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SIG)) {
     nmeaInfo->sig = NMEALIB_SIG_INVALID;
   } else {
     if ((nmeaInfo->sig < NMEALIB_SIG_FIRST) || (nmeaInfo->sig > NMEALIB_SIG_LAST)) {
@@ -310,7 +310,7 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
     }
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, FIX)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_FIX)) {
     nmeaInfo->fix = NMEALIB_FIX_BAD;
   } else {
     if ((nmeaInfo->fix < NMEALIB_FIX_FIRST) || (nmeaInfo->fix > NMEALIB_FIX_LAST)) {
@@ -318,64 +318,64 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
     }
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, PDOP)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_PDOP)) {
     nmeaInfo->pdop = 0;
   } else {
     nmeaInfo->pdop = fabs(nmeaInfo->pdop);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, HDOP)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_HDOP)) {
     nmeaInfo->hdop = 0;
   } else {
     nmeaInfo->hdop = fabs(nmeaInfo->hdop);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, VDOP)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_VDOP)) {
     nmeaInfo->vdop = 0;
   } else {
     nmeaInfo->vdop = fabs(nmeaInfo->vdop);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, LAT)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_LAT)) {
     nmeaInfo->lat = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, LON)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_LON)) {
     nmeaInfo->lon = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, ELV)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_ELV)) {
     nmeaInfo->elv = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SPEED)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SPEED)) {
     nmeaInfo->speed = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, TRACK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_TRACK)) {
     nmeaInfo->track = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, MTRACK)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_MTRACK)) {
     nmeaInfo->mtrack = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, MAGVAR)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_MAGVAR)) {
     nmeaInfo->magvar = 0;
   } else {
     nmeaInfo->magvar = fabs(nmeaInfo->magvar);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINUSECOUNT)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
     nmeaInfo->satinfo.inUseCount = 0;
   }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINUSE)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINUSE)) {
     memset(&nmeaInfo->satinfo.inUse, 0, sizeof(nmeaInfo->satinfo.inUse));
   }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINVIEWCOUNT)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
     nmeaInfo->satinfo.inViewCount = 0;
   }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, SATINVIEW)) {
+  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINVIEW)) {
     memset(&nmeaInfo->satinfo.inView, 0, sizeof(nmeaInfo->satinfo.inView));
   }
 
@@ -625,7 +625,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
   /* sig (already in correct format) */
   /* fix (already in correct format) */
 
-  if (nmeaInfoIsPresentAll(info->present, PDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_PDOP)) {
     if (toMetric) {
       info->pdop = nmeaDopToMeters(info->pdop);
     } else {
@@ -633,7 +633,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
     }
   }
 
-  if (nmeaInfoIsPresentAll(info->present, HDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HDOP)) {
     if (toMetric) {
       info->hdop = nmeaDopToMeters(info->hdop);
     } else {
@@ -641,7 +641,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
     }
   }
 
-  if (nmeaInfoIsPresentAll(info->present, VDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_VDOP)) {
     if (toMetric) {
       info->vdop = nmeaDopToMeters(info->vdop);
     } else {
@@ -649,7 +649,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
     }
   }
 
-  if (nmeaInfoIsPresentAll(info->present, LAT)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     if (toMetric) {
       info->lat = nmeaNdegToDegree(info->lat);
     } else {
@@ -657,7 +657,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
     }
   }
 
-  if (nmeaInfoIsPresentAll(info->present, LON)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
     if (toMetric) {
       info->lon = nmeaNdegToDegree(info->lon);
     } else {

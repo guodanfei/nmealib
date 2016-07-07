@@ -163,7 +163,7 @@ static void test_nmeaSentenceToInfo(void) {
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
-  CU_ASSERT_EQUAL(info.present, UTCTIME | SMASK);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, GPGGA);
   CU_ASSERT_EQUAL(info.utc.hour, 10);
   CU_ASSERT_EQUAL(info.utc.min, 45);
@@ -183,7 +183,7 @@ static void test_nmeaSentenceToInfo(void) {
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
-  CU_ASSERT_EQUAL(info.present, FIX | SMASK);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_FIX | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, GPGSA);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
   memset(&info, 0, sizeof(info));
@@ -200,7 +200,7 @@ static void test_nmeaSentenceToInfo(void) {
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
-  CU_ASSERT_EQUAL(info.present, SATINVIEWCOUNT | SATINVIEW | SMASK);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, GPGSV);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 11);
@@ -226,7 +226,7 @@ static void test_nmeaSentenceToInfo(void) {
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
-  CU_ASSERT_EQUAL(info.present, UTCTIME | SMASK);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, GPRMC);
   CU_ASSERT_EQUAL(info.utc.hour, 10);
   CU_ASSERT_EQUAL(info.utc.min, 45);
@@ -246,7 +246,7 @@ static void test_nmeaSentenceToInfo(void) {
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
-  CU_ASSERT_EQUAL(info.present, SPEED | SMASK);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, GPVTG);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 4.25, DBL_EPSILON);
   memset(&info, 0, sizeof(info));
@@ -288,7 +288,7 @@ static void test_nmeaSentenceFromInfo(void) {
   info.utc.min = 22;
   info.utc.sec = 32;
   info.utc.hsec = 42;
-  nmeaInfoSetPresent(&info.present, UTCTIME);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
   r = nmeaSentenceFromInfo(&buf, &info, GPGGA);
   CU_ASSERT_EQUAL(r, 34);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
@@ -298,7 +298,7 @@ static void test_nmeaSentenceFromInfo(void) {
   /* GPGSA */
 
   info.fix = NMEALIB_FIX_3D;
-  nmeaInfoSetPresent(&info.present, FIX);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
   r = nmeaSentenceFromInfo(&buf, &info, GPGSA);
   CU_ASSERT_EQUAL(r, 29);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
@@ -308,7 +308,7 @@ static void test_nmeaSentenceFromInfo(void) {
   /* GPGSV */
 
   info.satinfo.inViewCount = 5;
-  nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT | SATINVIEW);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
   r = nmeaSentenceFromInfo(&buf, &info, GPGSV);
   CU_ASSERT_EQUAL(r, 54);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
@@ -321,7 +321,7 @@ static void test_nmeaSentenceFromInfo(void) {
   info.utc.min = 22;
   info.utc.sec = 32;
   info.utc.hsec = 42;
-  nmeaInfoSetPresent(&info.present, UTCTIME);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
   r = nmeaSentenceFromInfo(&buf, &info, GPRMC);
   CU_ASSERT_EQUAL(r, 32);
   CU_ASSERT_STRING_EQUAL(buf, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
@@ -331,7 +331,7 @@ static void test_nmeaSentenceFromInfo(void) {
   /* GPVTG */
 
   info.speed = 42.43;
-  nmeaInfoSetPresent(&info.present, SPEED);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
   r = nmeaSentenceFromInfo(&buf, &info, GPVTG);
   CU_ASSERT_EQUAL(r, 29);
   CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
@@ -341,7 +341,7 @@ static void test_nmeaSentenceFromInfo(void) {
   /* invalid mask */
 
   info.speed = 42.43;
-  nmeaInfoSetPresent(&info.present, SPEED);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
   r = nmeaSentenceFromInfo(&buf, &info, _NmeaSentenceLast << 1);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);

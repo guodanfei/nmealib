@@ -31,10 +31,10 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoClear(&info);
 	nmeaTimeSet(&info.utc, &info.present, NULL);
 
-	nmeaInfoSetPresent(&info.present, PDOP);
-	nmeaInfoSetPresent(&info.present, HDOP);
-	nmeaInfoSetPresent(&info.present, VDOP);
-	nmeaInfoSetPresent(&info.present, ELV);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_HDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
 
 	if (0 == (gen = nmea_create_generator(NMEALIB_GEN_ROTATE, &info)))
 		return -1;

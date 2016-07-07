@@ -190,35 +190,35 @@ typedef struct _NmeaInfo {
  * The values are used in the 'present' bit-mask.
  */
 typedef enum _NmeaPresence {
-  SMASK          = (1u << 0),  /* 0x00000001 */
-  UTCDATE        = (1u << 1),  /* 0x00000002 */
-  UTCTIME        = (1u << 2),  /* 0x00000004 */
-  SIG            = (1u << 3),  /* 0x00000008 */
+  NMEALIB_PRESENT_SMASK          = (1u << 0),  /* 0x00000001 */
+  NMEALIB_PRESENT_UTCDATE        = (1u << 1),  /* 0x00000002 */
+  NMEALIB_PRESENT_UTCTIME        = (1u << 2),  /* 0x00000004 */
+  NMEALIB_PRESENT_SIG            = (1u << 3),  /* 0x00000008 */
 
-  FIX            = (1u << 4),  /* 0x00000010 */
-  PDOP           = (1u << 5),  /* 0x00000020 */
-  HDOP           = (1u << 6),  /* 0x00000040 */
-  VDOP           = (1u << 7),  /* 0x00000080 */
+  NMEALIB_PRESENT_FIX            = (1u << 4),  /* 0x00000010 */
+  NMEALIB_PRESENT_PDOP           = (1u << 5),  /* 0x00000020 */
+  NMEALIB_PRESENT_HDOP           = (1u << 6),  /* 0x00000040 */
+  NMEALIB_PRESENT_VDOP           = (1u << 7),  /* 0x00000080 */
 
-  LAT            = (1u << 8),  /* 0x00000100 */
-  LON            = (1u << 9),  /* 0x00000200 */
-  ELV            = (1u << 10), /* 0x00000400 */
-  SPEED          = (1u << 11), /* 0x00000800 */
+  NMEALIB_PRESENT_LAT            = (1u << 8),  /* 0x00000100 */
+  NMEALIB_PRESENT_LON            = (1u << 9),  /* 0x00000200 */
+  NMEALIB_PRESENT_ELV            = (1u << 10), /* 0x00000400 */
+  NMEALIB_PRESENT_SPEED          = (1u << 11), /* 0x00000800 */
 
-  TRACK          = (1u << 12), /* 0x00001000 */
-  MTRACK         = (1u << 13), /* 0x00002000 */
-  MAGVAR         = (1u << 14), /* 0x00004000 */
-  SATINUSECOUNT  = (1u << 15), /* 0x00008000 */
+  NMEALIB_PRESENT_TRACK          = (1u << 12), /* 0x00001000 */
+  NMEALIB_PRESENT_MTRACK         = (1u << 13), /* 0x00002000 */
+  NMEALIB_PRESENT_MAGVAR         = (1u << 14), /* 0x00004000 */
+  NMEALIB_PRESENT_SATINUSECOUNT  = (1u << 15), /* 0x00008000 */
 
-  SATINUSE       = (1u << 16), /* 0x00010000 */
-  SATINVIEWCOUNT = (1u << 17), /* 0x00020000 */
-  SATINVIEW      = (1u << 18), /* 0x00040000 */
-  HEIGHT         = (1u << 19), /* 0x00080000 */
+  NMEALIB_PRESENT_SATINUSE       = (1u << 16), /* 0x00010000 */
+  NMEALIB_PRESENT_SATINVIEWCOUNT = (1u << 17), /* 0x00020000 */
+  NMEALIB_PRESENT_SATINVIEW      = (1u << 18), /* 0x00040000 */
+  NMEALIB_PRESENT_HEIGHT         = (1u << 19), /* 0x00080000 */
 
-  DGPSAGE        = (1u << 20), /* 0x00100000 */
-  DGPSSID        = (1u << 21), /* 0x00200000 */
+  NMEALIB_PRESENT_DGPSAGE        = (1u << 20), /* 0x00100000 */
+  NMEALIB_PRESENT_DGPSSID        = (1u << 21), /* 0x00200000 */
 
-  _NmeaPresenceLast = DGPSSID
+  _NmeaPresenceLast = NMEALIB_PRESENT_DGPSSID
 } NmeaPresence;
 
 /** The bit-mask of all supported field name bits */

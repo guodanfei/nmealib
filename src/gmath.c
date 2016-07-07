@@ -283,12 +283,12 @@ int nmeaMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, 
 }
 
 void nmeaInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
-  if (nmeaInfoIsPresentAll(info->present, LAT))
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT))
     pos->lat = nmeaNdegToRadian(info->lat);
   else
     pos->lat = NMEALIB_DEF_LAT;
 
-  if (nmeaInfoIsPresentAll(info->present, LON))
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON))
     pos->lon = nmeaNdegToRadian(info->lon);
   else
     pos->lon = NMEALIB_DEF_LON;
@@ -297,6 +297,6 @@ void nmeaInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
 void nmeaPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {
   info->lat = nmeaRadianToNdeg(pos->lat);
   info->lon = nmeaRadianToNdeg(pos->lon);
-  nmeaInfoSetPresent(&info->present, LAT);
-  nmeaInfoSetPresent(&info->present, LON);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
 }

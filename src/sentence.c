@@ -215,7 +215,7 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSen
       generateSentence(nmeaGPGSAGenerate(dst, available, &pack));
       msk &= (enum NmeaSentence) ~GPGSA;
     } else if (msk & GPGSV) {
-      size_t satCount = nmeaInfoIsPresentAll(info->present, SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
+      size_t satCount = nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT) ? (size_t) info->satinfo.inViewCount : 0;
       nmeaGPGSV pack;
       size_t sentence;
       size_t sentences = nmeaGPGSVsatellitesToSentencesCount(satCount);

@@ -163,70 +163,70 @@ static void test_nmeaInfoFieldToString(void) {
   r = nmeaInfoFieldToString(0);
   CU_ASSERT_PTR_NULL(r);
 
-  r = nmeaInfoFieldToString(SMASK);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SMASK);
   CU_ASSERT_STRING_EQUAL(r, "SMASK");
 
-  r = nmeaInfoFieldToString(UTCDATE);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_UTCDATE);
   CU_ASSERT_STRING_EQUAL(r, "UTCDATE");
 
-  r = nmeaInfoFieldToString(UTCTIME);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_UTCTIME);
   CU_ASSERT_STRING_EQUAL(r, "UTCTIME");
 
-  r = nmeaInfoFieldToString(SIG);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SIG);
   CU_ASSERT_STRING_EQUAL(r, "SIG");
 
-  r = nmeaInfoFieldToString(FIX);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_FIX);
   CU_ASSERT_STRING_EQUAL(r, "FIX");
 
-  r = nmeaInfoFieldToString(PDOP);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_PDOP);
   CU_ASSERT_STRING_EQUAL(r, "PDOP");
 
-  r = nmeaInfoFieldToString(HDOP);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_HDOP);
   CU_ASSERT_STRING_EQUAL(r, "HDOP");
 
-  r = nmeaInfoFieldToString(VDOP);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_VDOP);
   CU_ASSERT_STRING_EQUAL(r, "VDOP");
 
-  r = nmeaInfoFieldToString(LAT);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_LAT);
   CU_ASSERT_STRING_EQUAL(r, "LAT");
 
-  r = nmeaInfoFieldToString(LON);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_LON);
   CU_ASSERT_STRING_EQUAL(r, "LON");
 
-  r = nmeaInfoFieldToString(ELV);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_ELV);
   CU_ASSERT_STRING_EQUAL(r, "ELV");
 
-  r = nmeaInfoFieldToString(SPEED);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SPEED);
   CU_ASSERT_STRING_EQUAL(r, "SPEED");
 
-  r = nmeaInfoFieldToString(TRACK);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_TRACK);
   CU_ASSERT_STRING_EQUAL(r, "TRACK");
 
-  r = nmeaInfoFieldToString(MTRACK);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_MTRACK);
   CU_ASSERT_STRING_EQUAL(r, "MTRACK");
 
-  r = nmeaInfoFieldToString(MAGVAR);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_MAGVAR);
   CU_ASSERT_STRING_EQUAL(r, "MAGVAR");
 
-  r = nmeaInfoFieldToString(SATINUSECOUNT);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SATINUSECOUNT);
   CU_ASSERT_STRING_EQUAL(r, "SATINUSECOUNT");
 
-  r = nmeaInfoFieldToString(SATINUSE);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SATINUSE);
   CU_ASSERT_STRING_EQUAL(r, "SATINUSE");
 
-  r = nmeaInfoFieldToString(SATINVIEWCOUNT);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SATINVIEWCOUNT);
   CU_ASSERT_STRING_EQUAL(r, "SATINVIEWCOUNT");
 
-  r = nmeaInfoFieldToString(SATINVIEW);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_SATINVIEW);
   CU_ASSERT_STRING_EQUAL(r, "SATINVIEW");
 
-  r = nmeaInfoFieldToString(HEIGHT);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_HEIGHT);
   CU_ASSERT_STRING_EQUAL(r, "HEIGHT");
 
-  r = nmeaInfoFieldToString(DGPSAGE);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_DGPSAGE);
   CU_ASSERT_STRING_EQUAL(r, "DGPSAGE");
 
-  r = nmeaInfoFieldToString(DGPSSID);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_DGPSSID);
   CU_ASSERT_STRING_EQUAL(r, "DGPSSID");
 
   r = nmeaInfoFieldToString(_NmeaPresenceLast + 1);

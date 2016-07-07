@@ -47,12 +47,12 @@ bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
 
   info->present = present;
   info->smask = smask;
-  nmeaInfoSetPresent(&info->present, SMASK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
   info->lat = NMEALIB_DEF_LAT;
   info->lon = NMEALIB_DEF_LON;
-  nmeaInfoSetPresent(&info->present, LAT);
-  nmeaInfoSetPresent(&info->present, LON);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
 
   while (retval && igen) {
     if (igen->init_call)
@@ -176,18 +176,18 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
   info->mtrack = nmeaRandom(0, 360);
   info->magvar = nmeaRandom(0, 360);
 
-  nmeaInfoSetPresent(&info->present, SIG);
-  nmeaInfoSetPresent(&info->present, FIX);
-  nmeaInfoSetPresent(&info->present, PDOP);
-  nmeaInfoSetPresent(&info->present, HDOP);
-  nmeaInfoSetPresent(&info->present, VDOP);
-  nmeaInfoSetPresent(&info->present, LAT);
-  nmeaInfoSetPresent(&info->present, LON);
-  nmeaInfoSetPresent(&info->present, ELV);
-  nmeaInfoSetPresent(&info->present, SPEED);
-  nmeaInfoSetPresent(&info->present, TRACK);
-  nmeaInfoSetPresent(&info->present, MTRACK);
-  nmeaInfoSetPresent(&info->present, MAGVAR);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_PDOP);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_HDOP);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_VDOP);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_ELV);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_TRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MTRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MAGVAR);
 
   info->satinfo.inUseCount = 0;
   info->satinfo.inViewCount = 0;
@@ -210,10 +210,10 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
       info->satinfo.inViewCount++;
   }
 
-  nmeaInfoSetPresent(&info->present, SATINUSECOUNT);
-  nmeaInfoSetPresent(&info->present, SATINUSE);
-  nmeaInfoSetPresent(&info->present, SATINVIEWCOUNT);
-  nmeaInfoSetPresent(&info->present, SATINVIEW);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSECOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSE);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEW);
 
   return true;
 }
@@ -271,10 +271,10 @@ static bool nmea_igen_static_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
   info->satinfo.inView[3].azimuth = 270;
   info->satinfo.inView[3].snr = 99;
 
-  nmeaInfoSetPresent(&info->present, SATINUSECOUNT);
-  nmeaInfoSetPresent(&info->present, SATINUSE);
-  nmeaInfoSetPresent(&info->present, SATINVIEWCOUNT);
-  nmeaInfoSetPresent(&info->present, SATINVIEW);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSECOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSE);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEW);
 
   return true;
 }
@@ -291,8 +291,8 @@ static bool nmea_igen_static_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
-  nmeaInfoSetPresent(&info->present, SIG);
-  nmeaInfoSetPresent(&info->present, FIX);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
 
   nmea_igen_static_reset(gen, info);
 
@@ -329,8 +329,8 @@ static bool nmea_igen_rotate_loop(nmeaGENERATOR *gen __attribute__ ((unused)), N
     srt += deg;
   }
 
-  nmeaInfoSetPresent(&info->present, SATINVIEWCOUNT);
-  nmeaInfoSetPresent(&info->present, SATINVIEW);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEW);
 
   return true;
 }
@@ -359,10 +359,10 @@ static bool nmea_igen_rotate_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
     srt += deg;
   }
 
-  nmeaInfoSetPresent(&info->present, SATINUSECOUNT);
-  nmeaInfoSetPresent(&info->present, SATINUSE);
-  nmeaInfoSetPresent(&info->present, SATINVIEWCOUNT);
-  nmeaInfoSetPresent(&info->present, SATINVIEW);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSECOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSE);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEW);
 
   return true;
 }
@@ -379,8 +379,8 @@ static bool nmea_igen_rotate_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
-  nmeaInfoSetPresent(&info->present, SIG);
-  nmeaInfoSetPresent(&info->present, FIX);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
 
   nmea_igen_rotate_reset(gen, info);
 
@@ -407,12 +407,12 @@ static bool nmea_igen_pos_rmove_init(nmeaGENERATOR *gen __attribute__ ((unused))
   info->mtrack = 0;
   info->magvar = 0;
 
-  nmeaInfoSetPresent(&info->present, SIG);
-  nmeaInfoSetPresent(&info->present, FIX);
-  nmeaInfoSetPresent(&info->present, SPEED);
-  nmeaInfoSetPresent(&info->present, TRACK);
-  nmeaInfoSetPresent(&info->present, MTRACK);
-  nmeaInfoSetPresent(&info->present, MAGVAR);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_TRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MTRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MAGVAR);
 
   return true;
 }
@@ -455,12 +455,12 @@ static bool nmea_igen_pos_rmove_loop(nmeaGENERATOR *gen __attribute__ ((unused))
 
   info->magvar = info->track;
 
-  nmeaInfoSetPresent(&info->present, LAT);
-  nmeaInfoSetPresent(&info->present, LON);
-  nmeaInfoSetPresent(&info->present, SPEED);
-  nmeaInfoSetPresent(&info->present, TRACK);
-  nmeaInfoSetPresent(&info->present, MTRACK);
-  nmeaInfoSetPresent(&info->present, MAGVAR);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_TRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MTRACK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MAGVAR);
 
   return true;
 }

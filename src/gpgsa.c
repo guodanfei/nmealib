@@ -84,7 +84,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
       goto err;
     }
 
-    nmeaInfoSetPresent(&pack->present, SIG);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SIG);
   } else {
     pack->sig = '\0';
   }
@@ -94,7 +94,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
       goto err;
     }
 
-    nmeaInfoSetPresent(&pack->present, FIX);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_FIX);
   } else {
     pack->fix = NMEALIB_FIX_BAD;
   }
@@ -103,23 +103,23 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, nmeaGPGSA *pack) {
   if (!pack->satPrn[0]) {
     memset(pack->satPrn, 0, sizeof(pack->satPrn));
   } else {
-    nmeaInfoSetPresent(&pack->present, SATINUSE);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINUSE);
   }
 
   if (!isnan(pack->pdop)) {
-    nmeaInfoSetPresent(&pack->present, PDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_PDOP);
   } else {
     pack->pdop = 0.0;
   }
 
   if (!isnan(pack->hdop)) {
-    nmeaInfoSetPresent(&pack->present, HDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HDOP);
   } else {
     pack->hdop = 0.0;
   }
 
   if (!isnan(pack->vdop)) {
-    nmeaInfoSetPresent(&pack->present, VDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_VDOP);
   } else {
     pack->vdop = 0.0;
   }
@@ -138,11 +138,11 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info) {
     return;
   }
 
-  nmeaInfoSetPresent(&info->present, SMASK);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
   info->smask |= GPGSA;
 
-  if (nmeaInfoIsPresentAll(pack->present, SIG) //
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
       && (info->sig == NMEALIB_SIG_INVALID)) {
     if (pack->sig == 'M') {
       info->sig = NMEALIB_SIG_MANUAL;
@@ -150,15 +150,15 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info) {
       info->sig = NMEALIB_SIG_FIX;
     }
 
-    nmeaInfoSetPresent(&info->present, SIG);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, FIX)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_FIX)) {
     info->fix = pack->fix;
-    nmeaInfoSetPresent(&info->present, FIX);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, SATINUSE)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINUSE)) {
     size_t packIndex = 0;
     size_t infoIndex = 0;
 
@@ -173,22 +173,22 @@ void nmeaGPGSAToInfo(const nmeaGPGSA *pack, NmeaInfo *info) {
       }
     }
 
-    nmeaInfoSetPresent(&info->present, SATINUSECOUNT | SATINUSE);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSECOUNT | NMEALIB_PRESENT_SATINUSE);
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, PDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_PDOP)) {
     info->pdop = pack->pdop;
-    nmeaInfoSetPresent(&info->present, PDOP);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_PDOP);
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, HDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_HDOP)) {
     info->hdop = pack->hdop;
-    nmeaInfoSetPresent(&info->present, HDOP);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_HDOP);
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, VDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_VDOP)) {
     info->vdop = pack->vdop;
-    nmeaInfoSetPresent(&info->present, VDOP);
+    nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_VDOP);
   }
 }
 
@@ -201,22 +201,22 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack) {
   memset(pack, 0, sizeof(*pack));
   pack->fix = NMEALIB_FIX_BAD;
 
-  if (nmeaInfoIsPresentAll(info->present, SIG)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SIG)) {
     if (info->sig == NMEALIB_SIG_MANUAL) {
       pack->sig = 'M';
     } else {
       pack->sig = 'A';
     }
 
-    nmeaInfoSetPresent(&pack->present, SIG);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SIG);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, FIX)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_FIX)) {
     pack->fix = info->fix;
-    nmeaInfoSetPresent(&pack->present, FIX);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_FIX);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, SATINUSE)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
     size_t infoIndex = 0;
     size_t packIndex = 0;
 
@@ -227,22 +227,22 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, nmeaGPGSA *pack) {
       }
     }
 
-    nmeaInfoSetPresent(&pack->present, SATINUSE);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINUSE);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, PDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_PDOP)) {
     pack->pdop = info->pdop;
-    nmeaInfoSetPresent(&pack->present, PDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_PDOP);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, HDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HDOP)) {
     pack->hdop = info->hdop;
-    nmeaInfoSetPresent(&pack->present, HDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HDOP);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, VDOP)) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_VDOP)) {
     pack->vdop = info->vdop;
-    nmeaInfoSetPresent(&pack->present, VDOP);
+    nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_VDOP);
   }
 }
 
@@ -262,20 +262,20 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
 
   chars += snprintf(dst, available, "$" NMEALIB_PREFIX_GPGSA);
 
-  if (nmeaInfoIsPresentAll(pack->present, SIG) //
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
       && pack->sig) {
     chars += snprintf(dst, available, ",%c", pack->sig);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, FIX)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_FIX)) {
     chars += snprintf(dst, available, ",%d", pack->fix);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  satInUse = nmeaInfoIsPresentAll(pack->present, SATINUSE);
+  satInUse = nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINUSE);
   for (i = 0; i < NMEALIB_GPGSA_SATS_IN_SENTENCE; i++) {
     int prn = pack->satPrn[i];
     if (satInUse && prn) {
@@ -285,19 +285,19 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const nmeaGPGSA *pack) {
     }
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, PDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_PDOP)) {
     chars += snprintf(dst, available, ",%03.1f", pack->pdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, HDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_HDOP)) {
     chars += snprintf(dst, available, ",%03.1f", pack->hdop);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, VDOP)) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_VDOP)) {
     chars += snprintf(dst, available, ",%03.1f", pack->vdop);
   } else {
     chars += snprintf(dst, available, ",");

@@ -45,25 +45,25 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	info.vdop = 1.2;
 	info.pdop = 2.594224354;
 
-	nmeaInfoSetPresent(&info.present, SIG);
-	nmeaInfoSetPresent(&info.present, FIX);
-	nmeaInfoSetPresent(&info.present, LAT);
-	nmeaInfoSetPresent(&info.present, LON);
-	nmeaInfoSetPresent(&info.present, SPEED);
-	nmeaInfoSetPresent(&info.present, ELV);
-	nmeaInfoSetPresent(&info.present, TRACK);
-	nmeaInfoSetPresent(&info.present, MTRACK);
-	nmeaInfoSetPresent(&info.present, MAGVAR);
-	nmeaInfoSetPresent(&info.present, HDOP);
-	nmeaInfoSetPresent(&info.present, VDOP);
-	nmeaInfoSetPresent(&info.present, PDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SIG);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LAT);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_TRACK);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MTRACK);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MAGVAR);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_HDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
 
 	info.satinfo.inUseCount = (int) NMEALIB_MAX_SATELLITES;
-	nmeaInfoSetPresent(&info.present, SATINUSECOUNT);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.inUse[it] = (int) it + 1;
 	}
-	nmeaInfoSetPresent(&info.present, SATINUSE);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
 	info.satinfo.inViewCount = (int) NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
@@ -72,7 +72,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		info.satinfo.inView[it].azimuth = (int) it + 1;
 		info.satinfo.inView[it].snr = 99 - (int) it;
 	}
-	nmeaInfoSetPresent(&info.present, SATINVIEWCOUNT | SATINVIEW);
+	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
   for (it = 0; it < 10; it++) {
     size_t gen_sz = nmeaSentenceFromInfo(&buff, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
