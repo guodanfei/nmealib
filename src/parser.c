@@ -25,15 +25,18 @@
 #include <ctype.h>
 #include <string.h>
 
-#define first_eol_char  ('\r')
-#define second_eol_char ('\n')
+#define NMEALIB_PARSER_EOL_CHAR_1 ('\r')
+#define NMEALIB_PARSER_EOL_CHAR_2 ('\n')
 
 void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state);
 bool nmeaParserIsHexCharacter(char c);
 bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c);
 
 void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state) {
-  assert(parser);
+  if (!parser) {
+    return;
+  }
+
   memset(&parser->sentence, 0, sizeof(parser->sentence));
   parser->buffer[0] = '\0';
   parser->bufferLength = 0;
@@ -62,14 +65,15 @@ bool nmeaParserIsHexCharacter(char c) {
       return true;
 
     default:
-      break;
+      return false;
   }
-
-  return false;
 }
 
 bool nmeaParserInit(NmeaParser *parser) {
-  assert(parser);
+  if (!parser) {
+    return false;
+  }
+
   nmeaParserReset(parser, SKIP_UNTIL_START);
   return true;
 }
@@ -104,7 +108,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
       if (*c == '*') {
         parser->sentence.state = READ_CHECKSUM;
         parser->sentence.checksumCharactersCount = 0;
-      } else if (*c == first_eol_char) {
+      } else if (*c == NMEALIB_PARSER_EOL_CHAR_1) {
         parser->sentence.state = READ_EOL;
         parser->sentence.eolCharactersCount = 1;
       } else if (nmeaValidateIsInvalidCharacter(*c)) {
@@ -144,7 +148,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
     case READ_EOL:
       switch (parser->sentence.eolCharactersCount) {
         case 0:
-          if (*c != first_eol_char) {
+          if (*c != NMEALIB_PARSER_EOL_CHAR_1) {
             nmeaParserReset(parser, SKIP_UNTIL_START);
           } else {
             parser->sentence.eolCharactersCount = 1;
@@ -152,7 +156,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
           break;
 
         case 1:
-          if (*c != second_eol_char) {
+          if (*c != NMEALIB_PARSER_EOL_CHAR_2) {
             nmeaParserReset(parser, SKIP_UNTIL_START);
           } else {
             parser->sentence.eolCharactersCount = 2;

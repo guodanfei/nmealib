@@ -29,20 +29,131 @@
 
 int parserSuiteSetup(void);
 
+extern void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state);
+extern bool nmeaParserIsHexCharacter(char c);
+extern bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c);
+
 /*
  * Tests
  */
 
 static void test_nmeaParserReset(void) {
-  // FIXME
+  NmeaParser parserEmpty;
+  NmeaParser parser;
+
+  memset(&parserEmpty, 0xff, sizeof(parserEmpty));
+  memset(&parser, 0xff, sizeof(parser));
+
+  /* invalid input */
+
+  nmeaParserReset(NULL, 0);
+  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
+  memset(&parser, 0, sizeof(parser));
+
+  /* normal */
+
+  memset(&parserEmpty, 0, sizeof(parserEmpty));
+  parserEmpty.sentence.state = READ_CHECKSUM;
+
+  nmeaParserReset(&parser, READ_CHECKSUM);
+  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
+  memset(&parser, 0, sizeof(parser));
 }
 
 static void test_nmeaParserIsHexCharacter(void) {
-  // FIXME
+  bool r;
+
+  r = nmeaParserIsHexCharacter('\0');
+  CU_ASSERT_EQUAL(r, false);
+
+  r = nmeaParserIsHexCharacter(' ');
+  CU_ASSERT_EQUAL(r, false);
+
+  r = nmeaParserIsHexCharacter('0');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('1');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('2');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('3');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('4');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('5');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('6');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('7');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('8');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('9');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('a');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('b');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('c');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('d');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('e');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('f');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('A');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('B');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('C');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('D');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('E');
+  CU_ASSERT_EQUAL(r, true);
+
+  r = nmeaParserIsHexCharacter('F');
+  CU_ASSERT_EQUAL(r, true);
 }
 
 static void test_nmeaParserInit(void) {
-  // FIXME
+  NmeaParser parser;
+  bool r;
+
+  memset(&parser, 0, sizeof(parser));
+
+  /* invalid input */
+
+  r = nmeaParserInit(NULL);
+  CU_ASSERT_EQUAL(r, false);
+  memset(&parser, 0, sizeof(parser));
+
+  /* normal */
+
+  r = nmeaParserInit(&parser);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(parser.sentence.state, SKIP_UNTIL_START);
+  memset(&parser, 0, sizeof(parser));
 }
 
 static void test_nmeaParserProcessCharacter(void) {
