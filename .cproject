@@ -62,7 +62,21 @@
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Default">
-			<resource resourceType="PROJECT" workspacePath="/nmealib"/>
+			<resource resourceType="PROJECT" workspacePath="/nmealib">
+				<exclusion class="org.eclipse.cdt.internal.core.resources.ResourceExclusion" contributorId="org.eclipse.cdt.ui.ResourceExclusionContributor" exclusionType="FOLDER">
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString=".settings" exclusionType="FOLDER" workspacePath="/nmealib/.settings"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="build" exclusionType="FOLDER" workspacePath="/nmealib/build"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="doc/html" exclusionType="FOLDER" workspacePath="/nmealib/doc/html"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="doc/man" exclusionType="FOLDER" workspacePath="/nmealib/doc/man"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="eclipse" exclusionType="FOLDER" workspacePath="/nmealib/eclipse"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="lib" exclusionType="FOLDER" workspacePath="/nmealib/lib"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="samples/build" exclusionType="FOLDER" workspacePath="/nmealib/samples/build"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="samples/lib" exclusionType="FOLDER" workspacePath="/nmealib/samples/lib"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="test/build" exclusionType="FOLDER" workspacePath="/nmealib/test/build"/>
+					<instance class="org.eclipse.cdt.core.resources.ExclusionInstance" displayString="test/lib" exclusionType="FOLDER" workspacePath="/nmealib/test/lib"/>
+					<extensionData/>
+				</exclusion>
+			</resource>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
