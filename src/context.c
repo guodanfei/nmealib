@@ -31,31 +31,31 @@ typedef struct _NmeaContext {
 } NmeaContext;
 
 /** The nmealib context */
-static NmeaContext context = {
+static NmeaContext nmealibContext = {
     .traceFunction = NULL,
     .errorFunction = NULL };
 
 nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction traceFunction) {
-  nmeaPrintFunction r = context.traceFunction;
-  context.traceFunction = traceFunction;
+  nmeaPrintFunction r = nmealibContext.traceFunction;
+  nmealibContext.traceFunction = traceFunction;
   return r;
 }
 
 nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction errorFunction) {
-  nmeaPrintFunction r = context.errorFunction;
-  context.errorFunction = errorFunction;
+  nmeaPrintFunction r = nmealibContext.errorFunction;
+  nmealibContext.errorFunction = errorFunction;
   return r;
 }
 
 void nmeaTraceBuffer(const char *s, size_t sz) {
-  nmeaPrintFunction func = context.traceFunction;
+  nmeaPrintFunction func = nmealibContext.traceFunction;
   if (func && s && sz) {
     (*func)(s, sz);
   }
 }
 
 void nmeaTrace(const char *s, ...) {
-  nmeaPrintFunction func = context.traceFunction;
+  nmeaPrintFunction func = nmealibContext.traceFunction;
   if (s && func) {
     char *buf;
     size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
@@ -99,7 +99,7 @@ out:
 }
 
 void nmeaError(const char *s, ...) {
-  nmeaPrintFunction func = context.errorFunction;
+  nmeaPrintFunction func = nmealibContext.errorFunction;
   if (s && func) {
     char *buf;
     size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;

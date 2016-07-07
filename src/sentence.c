@@ -30,7 +30,7 @@ typedef struct _NmeaSentencePrefixToType {
 /**
  * The map from NMEA sentence prefix to sentence type
  */
-static const NmeaSentencePrefixToType sentencePrefixToType[] = {
+static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
     {
         .prefix = NMEALIB_PREFIX_GPGGA, //
         .sentence = GPGGA //
@@ -60,9 +60,9 @@ static const NmeaSentencePrefixToType sentencePrefixToType[] = {
 const char * nmeaSentenceToPrefix(enum NmeaSentence sentence) {
   size_t i = 0;
 
-  while (sentencePrefixToType[i].prefix) {
-    if (sentencePrefixToType[i].sentence == sentence) {
-      return sentencePrefixToType[i].prefix;
+  while (nmealibSentencePrefixToType[i].prefix) {
+    if (nmealibSentencePrefixToType[i].sentence == sentence) {
+      return nmealibSentencePrefixToType[i].prefix;
     }
 
     i++;
@@ -90,9 +90,9 @@ enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
     return GPNON;
   }
 
-  while (sentencePrefixToType[i].prefix) {
-    if (!strncmp(str, sentencePrefixToType[i].prefix, NMEALIB_PREFIX_LENGTH)) {
-      return sentencePrefixToType[i].sentence;
+  while (nmealibSentencePrefixToType[i].prefix) {
+    if (!strncmp(str, nmealibSentencePrefixToType[i].prefix, NMEALIB_PREFIX_LENGTH)) {
+      return nmealibSentencePrefixToType[i].sentence;
     }
 
     i++;

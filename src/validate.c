@@ -21,13 +21,13 @@
 #include <ctype.h>
 
 /** Invalid NMEA character: non-ASCII */
-static const NmeaInvalidCharacter invalidNonAsciiCharsName = {
+static const NmeaInvalidCharacter nmealibInvalidNonAsciiCharsName = {
     .character = '*', //
     .description = "non-ASCII character" //
     };
 
 /** Invalid NMEA characters */
-static const NmeaInvalidCharacter invalidCharacters[] = {
+static const NmeaInvalidCharacter nmealibInvalidCharacters[] = {
     {
         .character = '$', //
         .description = "sentence delimiter" //
@@ -64,12 +64,12 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c) {
 
   if ((ch < 32) //
       || (ch > 126)) {
-    return &invalidNonAsciiCharsName;
+    return &nmealibInvalidNonAsciiCharsName;
   }
 
-  while (invalidCharacters[i].description) {
-    if (ch == invalidCharacters[i].character) {
-      return &invalidCharacters[i];
+  while (nmealibInvalidCharacters[i].description) {
+    if (ch == nmealibInvalidCharacters[i].character) {
+      return &nmealibInvalidCharacters[i];
     }
 
     i++;
