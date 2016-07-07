@@ -161,13 +161,6 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
             parser->bufferLength -= parser->sentence.eolCharactersCount;
             parser->buffer[parser->bufferLength] = '\0';
 
-            if (!parser->sentence.checksumPresent) {
-              /* fake a checksum, needed for correct parsing of empty fields at the end of the sentence */
-              parser->buffer[parser->bufferLength] = '*';
-              parser->bufferLength++;
-              parser->buffer[parser->bufferLength] = '\0';
-            }
-
             parser->sentence.state = SKIP_UNTIL_START;
             return (!parser->sentence.checksumCharactersCount
                 || (parser->sentence.checksumCharactersCount

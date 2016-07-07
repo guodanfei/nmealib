@@ -62,21 +62,21 @@ static void test_nmeaGPVTGParse(void) {
 
   /* all fields empty */
 
-  s = "$GPVTG,,,,,,,,*";
+  s = "$GPVTG,,,,,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
   /* track */
 
-  s = "$GPVTG,4.25,,,,,,,*";
+  s = "$GPVTG,4.25,,,,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,4.25,q,,,,,,*";
+  s = "$GPVTG,4.25,q,,,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,4.25,t,,,,,,*";
+  s = "$GPVTG,4.25,t,,,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, TRACK);
@@ -85,15 +85,15 @@ static void test_nmeaGPVTGParse(void) {
 
   /* mtrack */
 
-  s = "$GPVTG,,,4.25,,,,,*";
+  s = "$GPVTG,,,4.25,,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,4.25,q,,,,*";
+  s = "$GPVTG,,,4.25,q,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,4.25,m,,,,*";
+  s = "$GPVTG,,,4.25,m,,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, MTRACK);
@@ -102,15 +102,15 @@ static void test_nmeaGPVTGParse(void) {
 
   /* speed knots */
 
-  s = "$GPVTG,,,,,4.25,,,*";
+  s = "$GPVTG,,,,,4.25,,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,,,4.25,q,,*";
+  s = "$GPVTG,,,,,4.25,q,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,,,4.25,n,,*";
+  s = "$GPVTG,,,,,4.25,n,,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SPEED);
@@ -121,15 +121,15 @@ static void test_nmeaGPVTGParse(void) {
 
   /* speed kph */
 
-  s = "$GPVTG,,,,,,,4.25,*";
+  s = "$GPVTG,,,,,,,4.25,";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,,,,,4.25,q*";
+  s = "$GPVTG,,,,,,,4.25,q";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPVTG,,,,,,,4.25,k*";
+  s = "$GPVTG,,,,,,,4.25,k";
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SPEED);

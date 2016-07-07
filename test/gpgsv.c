@@ -80,73 +80,73 @@ static void test_nmeaGPGSVParse(void) {
 
   /* mandatory fields not set */
 
-  s = "$GPGSV,,,,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,,,,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
-  s = "$GPGSV,3,,,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,3,,,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
-  s = "$GPGSV,3,2,,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,3,2,,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
   /* invalid satellites */
 
-  s = "$GPGSV,250,1,1000,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,250,1,1000,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* invalid sentences */
 
-  s = "$GPGSV,0,2,10,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,0,2,10,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSV,100,2,40,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,100,2,40,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSV,2,2,10,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,2,2,10,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* invalid sentence */
 
-  s = "$GPGSV,3,0,10,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,3,0,10,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSV,3,4,10,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,3,4,10,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* not enough fields (1 field too few) */
 
-  s = "$GPGSV,1,1,4,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,1,1,4,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSV,3,2,10,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,3,2,10,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* all satellites empty */
 
-  s = "$GPGSV,1,1,4,,,,,,,,,,,,,,,,*";
+  s = "$GPGSV,1,1,4,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
   /* invalid satellite */
 
-  s = "$GPGSV,1,1,4,11,,,100,,,,,,,,,,,,*";
+  s = "$GPGSV,1,1,4,11,,,100,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
   /* valid satellites, incomplete */
 
-  s = "$GPGSV,1,1,4,11,,,45,,,,,12,13,,,,,,*";
+  s = "$GPGSV,1,1,4,11,,,45,,,,,12,13,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SATINVIEWCOUNT | SATINVIEW);
@@ -165,7 +165,7 @@ static void test_nmeaGPGSVParse(void) {
 
   /* valid satellites */
 
-  s = "$GPGSV,1,1,4,,,,,,,,,,,,,1,2,3,4*";
+  s = "$GPGSV,1,1,4,,,,,,,,,,,,,1,2,3,4";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SATINVIEWCOUNT | SATINVIEW);

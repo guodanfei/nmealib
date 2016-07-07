@@ -62,27 +62,27 @@ static void test_nmeaGPRMCParse(void) {
 
   /* all fields empty */
 
-  s = "$GPRMC,,,,,,,,,,,*";
+  s = "$GPRMC,,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
   packEmpty.v23 = true;
 
-  s = "$GPRMC,,,,,,,,,,,,*";
+  s = "$GPRMC,,,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
   /* time */
 
-  s = "$GPRMC,invalid,,,,,,,,,,,*";
+  s = "$GPRMC,invalid,,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
-  s = "$GPRMC,999999,,,,,,,,,,,*";
+  s = "$GPRMC,999999,,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,104559.64,,,,,,,,,,,*";
+  s = "$GPRMC,104559.64,,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -96,11 +96,11 @@ static void test_nmeaGPRMCParse(void) {
 
   packEmpty.v23 = false;
 
-  s = "$GPRMC,,!,,,,,,,,,*";
+  s = "$GPRMC,,!,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,v,,,,,,,,,*";
+  s = "$GPRMC,,v,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, false);
@@ -108,7 +108,7 @@ static void test_nmeaGPRMCParse(void) {
   CU_ASSERT_EQUAL(pack.sigSelection, 'V');
   CU_ASSERT_EQUAL(pack.sig, '\0');
 
-  s = "$GPRMC,,a,,,,,,,,,*";
+  s = "$GPRMC,,a,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, false);
@@ -118,27 +118,27 @@ static void test_nmeaGPRMCParse(void) {
 
   packEmpty.v23 = true;
 
-  s = "$GPRMC,,!,,,,,,,,,,*";
+  s = "$GPRMC,,!,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,v,,,,,,,,,,*";
+  s = "$GPRMC,,v,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
-  s = "$GPRMC,,a,,,,,,,,,,*";
+  s = "$GPRMC,,a,,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
-  s = "$GPRMC,,v,,,,,,,,,,!*";
+  s = "$GPRMC,,v,,,,,,,,,,!";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,a,,,,,,,,,,!*";
+  s = "$GPRMC,,a,,,,,,,,,,!";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,v,,,,,,,,,,m*";
+  s = "$GPRMC,,v,,,,,,,,,,m";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -146,7 +146,7 @@ static void test_nmeaGPRMCParse(void) {
   CU_ASSERT_EQUAL(pack.sigSelection, 'V');
   CU_ASSERT_EQUAL(pack.sig, 'M');
 
-  s = "$GPRMC,,a,,,,,,,,,,m*";
+  s = "$GPRMC,,a,,,,,,,,,,m";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -156,15 +156,15 @@ static void test_nmeaGPRMCParse(void) {
 
   /* lat */
 
-  s = "$GPRMC,,,1,,,,,,,,,*";
+  s = "$GPRMC,,,1,,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,1,!,,,,,,,,*";
+  s = "$GPRMC,,,1,!,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,-1242.55,s,,,,,,,,*";
+  s = "$GPRMC,,,-1242.55,s,,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -174,15 +174,15 @@ static void test_nmeaGPRMCParse(void) {
 
   /* lon */
 
-  s = "$GPRMC,,,,,1,,,,,,,*";
+  s = "$GPRMC,,,,,1,,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,,,1,!,,,,,,*";
+  s = "$GPRMC,,,,,1,!,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,,,-1242.55,e,,,,,,*";
+  s = "$GPRMC,,,,,-1242.55,e,,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -192,7 +192,7 @@ static void test_nmeaGPRMCParse(void) {
 
   /* speed */
 
-  s = "$GPRMC,,,,,,,4.25,,,,,*";
+  s = "$GPRMC,,,,,,,4.25,,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -201,7 +201,7 @@ static void test_nmeaGPRMCParse(void) {
 
   /* track */
 
-  s = "$GPRMC,,,,,,,,4.25,,,,*";
+  s = "$GPRMC,,,,,,,,4.25,,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -210,15 +210,15 @@ static void test_nmeaGPRMCParse(void) {
 
   /* date */
 
-  s = "$GPRMC,,,,,,,,,invalid,,,*";
+  s = "$GPRMC,,,,,,,,,invalid,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 0, true);
 
-  s = "$GPRMC,,,,,,,,,999999,,,*";
+  s = "$GPRMC,,,,,,,,,999999,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,,,,,,,100516,,,*";
+  s = "$GPRMC,,,,,,,,,100516,,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
@@ -229,15 +229,15 @@ static void test_nmeaGPRMCParse(void) {
 
   /* magvar */
 
-  s = "$GPRMC,,,,,,,,,,1,,*";
+  s = "$GPRMC,,,,,,,,,,1,,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,,,,,,,,1,!,*";
+  s = "$GPRMC,,,,,,,,,,1,!,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPRMC,,,,,,,,,,-1242.55,e,*";
+  s = "$GPRMC,,,,,,,,,,-1242.55,e,";
   r = nmeaGPRMCParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);

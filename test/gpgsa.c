@@ -63,23 +63,23 @@ static void test_nmeaGPGSAParse(void) {
 
   /* all fields empty */
 
-  s = "$GPGSA,,,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,,,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, true);
 
   /* sig */
 
-  s = "$GPGSA,!,,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,!,,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSA,a,,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,a,,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SIG);
   CU_ASSERT_EQUAL(pack.sig, 'A');
 
-  s = "$GPGSA,m,,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,m,,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SIG);
@@ -87,11 +87,11 @@ static void test_nmeaGPGSAParse(void) {
 
   /* fix */
 
-  s = "$GPGSA,,42,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,,42,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, false, 1, 1, true);
 
-  s = "$GPGSA,,3,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,,3,,,,,,,,,,,,,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, FIX);
@@ -99,7 +99,7 @@ static void test_nmeaGPGSAParse(void) {
 
   /* satPrn */
 
-  s = "$GPGSA,,,12,11,10,5,,7,8,,4,3,2,1,,,*";
+  s = "$GPGSA,,,12,11,10,5,,7,8,,4,3,2,1,,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, SATINUSE);
@@ -118,7 +118,7 @@ static void test_nmeaGPGSAParse(void) {
 
   /* pdop */
 
-  s = "$GPGSA,,,,,,,,,,,,,,,-12.128,,*";
+  s = "$GPGSA,,,,,,,,,,,,,,,-12.128,,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, PDOP);
@@ -126,7 +126,7 @@ static void test_nmeaGPGSAParse(void) {
 
   /* hdop */
 
-  s = "$GPGSA,,,,,,,,,,,,,,,,-12.128,*";
+  s = "$GPGSA,,,,,,,,,,,,,,,,-12.128,";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, HDOP);
@@ -134,7 +134,7 @@ static void test_nmeaGPGSAParse(void) {
 
   /* vdop */
 
-  s = "$GPGSA,,,,,,,,,,,,,,,,,-12.128*";
+  s = "$GPGSA,,,,,,,,,,,,,,,,,-12.128";
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, VDOP);

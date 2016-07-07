@@ -159,7 +159,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 1, true);
   memset(&info, 0, sizeof(info));
 
-  s = "$GPGGA,104559.64,,,,,,,,,,,,,*";
+  s = "$GPGGA,104559.64,,,,,,,,,,,,,";
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
@@ -179,7 +179,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 1, true);
   memset(&info, 0, sizeof(info));
 
-  s = "$GPGSA,,3,,,,,,,,,,,,,,,*";
+  s = "$GPGSA,,3,,,,,,,,,,,,,,,";
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
@@ -196,7 +196,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 1, true);
   memset(&info, 0, sizeof(info));
 
-  s = "$GPGSV,1,1,4,11,,,45,,,,,12,13,,,,,,*";
+  s = "$GPGSV,1,1,4,11,,,45,,,,,12,13,,,,,,";
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
@@ -222,7 +222,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 1, true);
   memset(&info, 0, sizeof(info));
 
-  s = "$GPRMC,104559.64,,,,,,,,,,,*";
+  s = "$GPRMC,104559.64,,,,,,,,,,,";
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
@@ -242,7 +242,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 1, true);
   memset(&info, 0, sizeof(info));
 
-  s = "$GPVTG,,,,,,,4.25,k*";
+  s = "$GPVTG,,,,,,,4.25,k";
   r = nmeaSentenceToInfo(s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
