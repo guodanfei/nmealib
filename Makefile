@@ -61,7 +61,6 @@ samples: all
 
 check: test samples
 	$(MAKECMDPREFIX)$(MAKE) -C test check
-	$(MAKECMDPREFIX)./samples/lib/parse_test
 
 
 #
