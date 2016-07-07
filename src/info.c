@@ -20,7 +20,7 @@
 #include <nmealib/sentence.h>
 #include <nmealib/util.h>
 #include <math.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <stdbool.h>
 #include <string.h>
 #include <sys/time.h>

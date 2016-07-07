@@ -21,7 +21,7 @@
 #include <nmealib/sentence.h>
 #include <nmealib/util.h>
 #include <math.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <stdlib.h>
 #include <string.h>
 

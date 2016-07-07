@@ -28,7 +28,7 @@ extern int gpgsvSuiteSetup(void);
 extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
 extern int infoSuiteSetup(void);
-extern int mathSuiteSetup(void);
+extern int nmathSuiteSetup(void);
 extern int parserSuiteSetup(void);
 extern int sentenceSuiteSetup(void);
 extern int utilSuiteSetup(void);
@@ -50,7 +50,7 @@ int main(void) {
       || (gprmcSuiteSetup() != CUE_SUCCESS) //
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
       || (infoSuiteSetup() != CUE_SUCCESS) //
-      || (mathSuiteSetup() != CUE_SUCCESS) //
+      || (nmathSuiteSetup() != CUE_SUCCESS) //
       || (parserSuiteSetup() != CUE_SUCCESS) //
       || (sentenceSuiteSetup() != CUE_SUCCESS) //
       || (utilSuiteSetup() != CUE_SUCCESS) //

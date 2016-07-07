@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <libgen.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <string.h>
 
 static const char * traceStr = "Trace: ";

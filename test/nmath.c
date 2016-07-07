@@ -20,13 +20,13 @@
 #include <nmealib/context.h>
 #include <CUnit/Basic.h>
 #include <float.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
-int mathSuiteSetup(void);
+int nmathSuiteSetup(void);
 
 /*
  * Tests
@@ -96,8 +96,8 @@ static void test_nmeaMathMoveFlatEllipsoid(void) {
  * Setup
  */
 
-int mathSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("math", mockContextSuiteInit, mockContextSuiteClean);
+int nmathSuiteSetup(void) {
+  CU_pSuite pSuite = CU_add_suite("nmath", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }

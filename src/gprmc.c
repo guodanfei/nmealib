@@ -25,7 +25,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

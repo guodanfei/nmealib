@@ -24,7 +24,7 @@
 
 #include <CUnit/Basic.h>
 #include <float.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>

@@ -17,7 +17,7 @@
 
 #include <assert.h>
 #include <math.h>
-#include <nmealib/math.h>
+#include <nmealib/nmath.h>
 
 double nmeaMathDegreeToRadian(const double v) {
   return (v * NMEALIB_PI180);
