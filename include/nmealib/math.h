@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NMEALIB_GMATH_H__
-#define __NMEALIB_GMATH_H__
+#ifndef __NMEALIB_MATH_H__
+#define __NMEALIB_MATH_H__
 
 #include <nmealib/info.h>
 
@@ -198,4 +198,4 @@ int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_p
 }
 #endif /* __cplusplus */
 
-#endif /* __NMEALIB_GMATH_H__ */
+#endif /* __NMEALIB_MATH_H__ */

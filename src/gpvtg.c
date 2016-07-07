@@ -18,7 +18,6 @@
 #include <nmealib/gpvtg.h>
 
 #include <nmealib/context.h>
-#include <nmealib/gmath.h>
 #include <nmealib/info.h>
 #include <nmealib/sentence.h>
 #include <nmealib/util.h>
@@ -26,6 +25,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <math.h>
+#include <nmealib/math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

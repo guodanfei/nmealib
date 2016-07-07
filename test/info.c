@@ -18,13 +18,13 @@
 #include "testHelpers.h"
 
 #include <nmealib/context.h>
-#include <nmealib/gmath.h>
 #include <nmealib/gpvtg.h>
 #include <nmealib/info.h>
 #include <nmealib/sentence.h>
 
 #include <CUnit/Basic.h>
 #include <float.h>
+#include <nmealib/math.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>

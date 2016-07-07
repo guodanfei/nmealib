@@ -18,10 +18,10 @@
 #include <nmealib/generator.h>
 
 #include <nmealib/context.h>
-#include <nmealib/gmath.h>
 #include <nmealib/sentence.h>
 #include <nmealib/util.h>
 #include <math.h>
+#include <nmealib/math.h>
 #include <stdlib.h>
 #include <string.h>
 

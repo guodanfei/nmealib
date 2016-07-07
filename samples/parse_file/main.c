@@ -18,11 +18,10 @@
 #include <nmealib/info.h>
 #include <nmealib/context.h>
 #include <nmealib/parser.h>
-#include <nmealib/gmath.h>
-
 #include <stdio.h>
 #include <unistd.h>
 #include <libgen.h>
+#include <nmealib/math.h>
 #include <string.h>
 
 static const char * traceStr = "Trace: ";

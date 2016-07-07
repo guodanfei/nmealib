@@ -16,8 +16,8 @@
  */
 
 #include <nmealib/info.h>
+#include <nmealib/math.h>
 
-#include <nmealib/gmath.h>
 #include <nmealib/sentence.h>
 
 #include <stdio.h>

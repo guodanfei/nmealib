@@ -17,10 +17,10 @@
 
 #include <nmealib/info.h>
 
-#include <nmealib/gmath.h>
 #include <nmealib/sentence.h>
 #include <nmealib/util.h>
 #include <math.h>
+#include <nmealib/math.h>
 #include <stdbool.h>
 #include <string.h>
 #include <sys/time.h>
