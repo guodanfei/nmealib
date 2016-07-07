@@ -163,7 +163,7 @@ typedef struct _NmeaProgress {
  */
 typedef struct _NmeaInfo {
   uint32_t       present;  /**< Bit-mask specifying which fields are present                    */
-  int            smask;    /**< Bit-mask specifying from which sentences data has been obtained */
+  uint32_t       smask;    /**< Bit-mask specifying from which sentences data has been obtained */
   NmeaTime       utc;      /**< UTC of the position data                                        */
   NmeaSignal     sig;      /**< Signal quality, see NMEALIB_SIG_* defines                       */
   NmeaFix        fix;      /**< Operating mode, see NMEALIB_FIX_* defines                       */

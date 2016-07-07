@@ -37,7 +37,7 @@
 bool nmea_gen_init(nmeaGENERATOR *gen, NmeaInfo *info) {
   bool retval = true;
   uint32_t present = info->present;
-  int smask = info->smask;
+  uint32_t smask = info->smask;
   nmeaGENERATOR *igen = gen;
 
   nmeaRandomInit();
