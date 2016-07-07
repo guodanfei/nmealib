@@ -18,11 +18,11 @@
 #include <nmealib/parser.h>
 
 #include <nmealib/sentence.h>
-#include <nmealib/tok.h>
 #include <nmealib/validate.h>
 
 #include <assert.h>
 #include <ctype.h>
+#include <nmealib/util.h>
 #include <string.h>
 
 #define NMEALIB_PARSER_EOL_CHAR_1 ('\r')

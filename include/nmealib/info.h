@@ -18,11 +18,11 @@
 #ifndef __NMEALIB_INFO_H__
 #define __NMEALIB_INFO_H__
 
-#include <nmealib/tok.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <sys/time.h>
+#include "util.h"
 
 #ifdef  __cplusplus
 extern "C" {

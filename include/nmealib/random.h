@@ -1,7 +1,6 @@
 #ifndef _NMEALIB_RANDOM_H
 #define _NMEALIB_RANDOM_H
 
-#include <nmealib/tok.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <math.h>
@@ -9,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include "util.h"
 
 #define NMEALIB_RANDOM_MAX LONG_MAX
 

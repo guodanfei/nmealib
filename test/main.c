@@ -17,7 +17,7 @@
 
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
-#include <nmealib/tok.h>
+#include <nmealib/util.h>
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);

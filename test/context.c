@@ -16,9 +16,8 @@
  */
 
 #include <nmealib/context.h>
-#include <nmealib/tok.h>
-
 #include <CUnit/CUnit.h>
+#include <nmealib/util.h>
 #include <stdlib.h>
 
 /*

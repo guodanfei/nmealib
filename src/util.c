@@ -15,14 +15,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmealib/tok.h>
-
 #include <nmealib/context.h>
-#include <nmealib/tok.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
 #include <math.h>
+#include <nmealib/util.h>
+#include <nmealib/util.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

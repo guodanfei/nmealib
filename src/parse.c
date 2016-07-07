@@ -16,7 +16,7 @@
  */
 
 #include <nmealib/context.h>
-#include <nmealib/tok.h>
 #include <ctype.h>
+#include <nmealib/util.h>
 #include <string.h>
 
