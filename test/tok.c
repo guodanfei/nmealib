@@ -34,6 +34,99 @@ int tokSuiteSetup(void);
  * Tests
  */
 
+static void test_Min(void) {
+  int r;
+
+  r = MIN(1, 1);
+  CU_ASSERT_EQUAL(r, 1);
+
+  r = MIN(1, 2);
+  CU_ASSERT_EQUAL(r, 1);
+
+  r = MIN(2, 1);
+  CU_ASSERT_EQUAL(r, 1);
+
+  r = MIN(-1, -2);
+  CU_ASSERT_EQUAL(r, -2);
+
+  r = MIN(-2, -1);
+  CU_ASSERT_EQUAL(r, -2);
+}
+
+static void test_Max(void) {
+  int r;
+
+  r = MAX(1, 1);
+  CU_ASSERT_EQUAL(r, 1);
+
+  r = MAX(1, 2);
+  CU_ASSERT_EQUAL(r, 2);
+
+  r = MAX(2, 1);
+  CU_ASSERT_EQUAL(r, 2);
+
+  r = MAX(-1, -2);
+  CU_ASSERT_EQUAL(r, -1);
+
+  r = MAX(-2, -1);
+  CU_ASSERT_EQUAL(r, -1);
+}
+
+static void test_nmeaStringTrim(void) {
+  const char *s = NULL;
+  size_t sz;
+
+  sz = nmeaStringTrim(NULL);
+  CU_ASSERT_EQUAL(sz, 0);
+
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 0);
+
+  s = "";
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 0);
+
+  s = "    \t   ";
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 0);
+
+  s = "123456";
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 6);
+
+  s = "     \t  123456";
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 6);
+
+  s = "123456   \t   ";
+  sz = nmeaStringTrim(&s);
+  CU_ASSERT_EQUAL(sz, 6);
+}
+
+static void test_nmeaStringContainsWhitespace(void) {
+  const char *s = NULL;
+  size_t sz = 0;
+  bool r;
+
+  r = nmeaStringContainsWhitespace(NULL, 1);
+  CU_ASSERT_EQUAL(r, false);
+
+  r = nmeaStringContainsWhitespace(s, sz);
+  CU_ASSERT_EQUAL(r, false);
+
+  s = "123456";
+  r = nmeaStringContainsWhitespace(s, strlen(s));
+  CU_ASSERT_EQUAL(r, false);
+
+  s = "123     456";
+  r = nmeaStringContainsWhitespace(s, strlen(s));
+  CU_ASSERT_EQUAL(r, true);
+
+  s = "123\t   456";
+  r = nmeaStringContainsWhitespace(s, strlen(s));
+  CU_ASSERT_EQUAL(r, true);
+}
+
 static void test_nmeaCalculateCRC(void) {
   unsigned int r;
   const char *s = "dummy sentence";
@@ -1611,7 +1704,11 @@ int tokSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaCalculateCRC", test_nmeaCalculateCRC)) //
+      (!CU_add_test(pSuite, "MIN", test_Min)) //
+      || (!CU_add_test(pSuite, "MAX", test_Max)) //
+      || (!CU_add_test(pSuite, "nmeaStringTrim", test_nmeaStringTrim)) //
+      || (!CU_add_test(pSuite, "nmeaStringContainsWhitespace", test_nmeaStringContainsWhitespace)) //
+      || (!CU_add_test(pSuite, "nmeaCalculateCRC", test_nmeaCalculateCRC)) //
       || (!CU_add_test(pSuite, "nmeaStringToInteger", test_nmeaStringToInteger)) //
       || (!CU_add_test(pSuite, "nmeaStringToUnsignedInteger", test_nmeaStringToUnsignedInteger)) //
       || (!CU_add_test(pSuite, "nmeaStringToLong", test_nmeaStringToLong)) //

@@ -18,12 +18,46 @@
 #ifndef __NMEALIB_TOK_H__
 #define __NMEALIB_TOK_H__
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+#ifndef INLINE
+#define INLINE inline __attribute__((always_inline))
+#endif
+
+#ifndef MAX
+#define MAX(x,y) (((x) >= (y)) ? (x) : (y))
+#endif
+
+#ifndef MIN
+#define MIN(x,y) (((x) <= (y)) ? (x) : (y))
+#endif
+
+/** The power-of-2 chunk size of a buffer allocation */
+#define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
+
+/**
+ * Trim a string of whitespace
+ *
+ * @param s The location of the string variable
+ * @return The length of the trimmed string
+ */
+size_t nmeaStringTrim(const char **s);
+
+/**
+ * Determine whether a string contains whitespace
+ *
+ * @param s The string to check for whitespace
+ * @param sz The length of the string
+ * @return True when the string contains whitespace
+ */
+bool nmeaStringContainsWhitespace(const char *s, size_t sz);
 
 /**
  * Calculate the NMEA (CRC-8) checksum of a NMEA sentence.

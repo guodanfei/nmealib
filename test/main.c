@@ -17,7 +17,7 @@
 
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
-#include <nmealib/util.h>
+#include <nmealib/tok.h>
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);
@@ -31,7 +31,6 @@ extern int parserSuiteSetup(void);
 extern int randomSuiteSetup(void);
 extern int sentenceSuiteSetup(void);
 extern int tokSuiteSetup(void);
-extern int utilSuiteSetup(void);
 extern int validateSuiteSetup(void);
 
 int main(void) {
@@ -55,7 +54,6 @@ int main(void) {
       || (randomSuiteSetup() != CUE_SUCCESS) //
       || (sentenceSuiteSetup() != CUE_SUCCESS) //
       || (tokSuiteSetup() != CUE_SUCCESS) //
-      || (utilSuiteSetup() != CUE_SUCCESS) //
       || (validateSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;

@@ -1,7 +1,7 @@
 #ifndef _NMEALIB_RANDOM_H
 #define _NMEALIB_RANDOM_H
 
-#include <nmealib/util.h>
+#include <nmealib/tok.h>
 #include <fcntl.h>
 #include <limits.h>
 #include <math.h>

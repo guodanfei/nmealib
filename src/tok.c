@@ -18,7 +18,7 @@
 #include <nmealib/tok.h>
 
 #include <nmealib/context.h>
-#include <nmealib/util.h>
+#include <nmealib/tok.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -30,6 +30,48 @@
 
 /** The maximum size of a string-to-number conversion buffer*/
 #define NMEALIB_CONVSTR_BUF    64
+
+size_t nmeaStringTrim(const char **s) {
+  const char *str;
+  size_t sz;
+
+  if (!s //
+      || !*s) {
+    return 0;
+  }
+
+  str = *s;
+
+  while (isspace(*str)) {
+    str++;
+  }
+
+  sz = strlen(str);
+
+  while (sz && isspace(str[sz - 1])) {
+    sz--;
+  }
+
+  *s = str;
+  return sz;
+}
+
+bool nmeaStringContainsWhitespace(const char *s, size_t sz) {
+  size_t i = 0;
+
+  if (!s) {
+    return false;
+  }
+
+  while ((i < sz) && s[i]) {
+    if (isspace(s[i])) {
+      return true;
+    }
+    i++;
+  }
+
+  return false;
+}
 
 unsigned int nmeaCalculateCRC(const char *s, const size_t sz) {
   size_t i = 0;
