@@ -19,7 +19,6 @@
 
 #include <nmealib/context.h>
 #include <nmealib/info.h>
-#include <nmealib/parse.h>
 #include <nmealib/sentence.h>
 #include <nmealib/tok.h>
 #include <nmealib/validate.h>

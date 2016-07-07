@@ -18,11 +18,38 @@
 #ifndef __NMEALIB_TOK_H__
 #define __NMEALIB_TOK_H__
 
+#include <nmealib/info.h>
+#include <stdbool.h>
 #include <stddef.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
+
+/**
+ * Parse a NMEA time into a nmeaTIME structure (time only, no date).
+ *
+ * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
+ * determined by the length of the string.
+ *
+ * @param s The time
+ * @param time The structure in which to store the parsed time
+ * @return True on success
+ */
+bool nmeaTimeParseTime(const char *s, NmeaTime *time);
+
+/**
+ * Parse a NMEA date into a nmeaTIME structure (date only, no time).
+ *
+ * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
+ * range of [0, 11]. The year is adjusted (incremented by 100) for years
+ * before 90 to comply with the nmeaTIME year range of [90, 189].
+ *
+ * @param s The date (DDMMYY)
+ * @param date The structure in which to store the parsed date
+ * @return True on success
+ */
+bool nmeaTimeParseDate(const char *s, NmeaTime *date);
 
 /**
  * Calculate the NMEA (CRC-8) checksum of a NMEA sentence.

@@ -27,7 +27,6 @@ extern int gpgsvSuiteSetup(void);
 extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
 extern int infoSuiteSetup(void);
-extern int parseSuiteSetup(void);
 extern int parserSuiteSetup(void);
 extern int randomSuiteSetup(void);
 extern int sentenceSuiteSetup(void);
@@ -52,7 +51,6 @@ int main(void) {
       || (gprmcSuiteSetup() != CUE_SUCCESS) //
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
       || (infoSuiteSetup() != CUE_SUCCESS) //
-      || (parseSuiteSetup() != CUE_SUCCESS) //
       || (parserSuiteSetup() != CUE_SUCCESS) //
       || (randomSuiteSetup() != CUE_SUCCESS) //
       || (sentenceSuiteSetup() != CUE_SUCCESS) //
