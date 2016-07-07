@@ -159,7 +159,7 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
   return true;
 }
 
-bool nmeaValidateFix(int fix, const char *prefix, const char *s) {
+bool nmeaValidateFix(NmeaFix fix, const char *prefix, const char *s) {
   if ((fix < NMEALIB_FIX_FIRST) //
       || (fix > NMEALIB_FIX_LAST)) {
     nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST,

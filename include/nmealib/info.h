@@ -80,12 +80,13 @@ char nmeaInfoSigToMode(NmeaSignal sig);
  * FIX
  */
 
-// FIXME convert to enum
-#define NMEALIB_FIX_FIRST (NMEALIB_FIX_BAD)
-#define NMEALIB_FIX_BAD   (1)
-#define NMEALIB_FIX_2D    (2)
-#define NMEALIB_FIX_3D    (3)
-#define NMEALIB_FIX_LAST  (NMEALIB_FIX_3D)
+typedef enum _NmeaFix {
+  NMEALIB_FIX_BAD   = 1u,
+  NMEALIB_FIX_FIRST = NMEALIB_FIX_BAD,
+  NMEALIB_FIX_2D    = 2u,
+  NMEALIB_FIX_3D    = 3u,
+  NMEALIB_FIX_LAST  = NMEALIB_FIX_3D
+} NmeaFix;
 
 /**
  * Convert a NMEALIB_FIX_* define into a string
@@ -94,7 +95,7 @@ char nmeaInfoSigToMode(NmeaSignal sig);
  * @return The corresponding string, or NULL when the NMEALIB_FIX_* define is
  * unknown
  */
-const char * nmeaInfoFixToString(int fix);
+const char * nmeaInfoFixToString(NmeaFix fix);
 
 /*
  * Limits and defaults
@@ -165,7 +166,7 @@ typedef struct _NmeaInfo {
   int            smask;    /**< Bit-mask specifying from which sentences data has been obtained */
   NmeaTime       utc;      /**< UTC of the position data                                        */
   NmeaSignal     sig;      /**< Signal quality, see NMEALIB_SIG_* defines                       */
-  int            fix;      /**< Operating mode, see NMEALIB_FIX_* defines                       */
+  NmeaFix        fix;      /**< Operating mode, see NMEALIB_FIX_* defines                       */
   double         pdop;     /**< Position Dilution Of Precision                                  */
   double         hdop;     /**< Horizontal Dilution Of Precision                                */
   double         vdop;     /**< Vertical Dilution Of Precision                                  */

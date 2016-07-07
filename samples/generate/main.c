@@ -33,7 +33,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaTimeSet(&info.utc, &info.present, NULL);
 
 	info.sig = NMEALIB_SIG_SENSITIVE;
-	info.fix = 3;
+	info.fix = NMEALIB_FIX_3D;
 	info.lat = 5000.0;
 	info.lon = 3600.0;
 	info.speed = 2.14 * NMEALIB_TUS_MS;

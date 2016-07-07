@@ -129,7 +129,7 @@ char nmeaInfoSigToMode(NmeaSignal sig) {
   }
 }
 
-const char * nmeaInfoFixToString(int fix) {
+const char * nmeaInfoFixToString(NmeaFix fix) {
   switch (fix) {
     case NMEALIB_FIX_BAD:
       return "BAD";

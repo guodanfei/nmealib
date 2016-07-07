@@ -121,7 +121,7 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateFix(int fix, const char *prefix, const char *s);
+bool nmeaValidateFix(NmeaFix fix, const char *prefix, const char *s);
 
 /**
  * Validate a signal.

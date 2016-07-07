@@ -91,7 +91,7 @@ extern "C" {
 typedef struct _nmeaGPGSA {
   uint32_t present;
   char     sig;
-  int      fix;
+  NmeaFix  fix;
   int      satPrn[NMEALIB_GPGSA_SATS_IN_SENTENCE];
   double   pdop;
   double   hdop;
