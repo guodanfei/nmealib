@@ -81,21 +81,21 @@ extern "C" {
  * altitudes at all. This is the only sentence that reports altitude.
  */
 typedef struct _nmeaGPGGA {
-  uint32_t present;
-  NmeaTime time;
-  double   latitude;
-  char     ns;
-  double   longitude;
-  char     ew;
-  int      signal;
-  int      satellitesInView;
-  double   hdop;
-  double   elevation;
-  char     elevationUnit;
-  double   height;
-  char     heightUnit;
-  double   dgpsAge;
-  int      dgpsSid;
+  uint32_t   present;
+  NmeaTime   time;
+  double     latitude;
+  char       ns;
+  double     longitude;
+  char       ew;
+  NmeaSignal signal;
+  int        satellitesInView;
+  double     hdop;
+  double     elevation;
+  char       elevationUnit;
+  double     height;
+  char       heightUnit;
+  double     dgpsAge;
+  int        dgpsSid;
 } nmeaGPGGA;
 
 /**

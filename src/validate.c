@@ -170,7 +170,7 @@ bool nmeaValidateFix(int fix, const char *prefix, const char *s) {
   return true;
 }
 
-bool nmeaValidateSignal(int sig, const char *prefix, const char *s) {
+bool nmeaValidateSignal(NmeaSignal sig, const char *prefix, const char *s) {
   if ((sig < NMEALIB_SIG_FIRST) //
       || (sig > NMEALIB_SIG_LAST)) {
     nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEALIB_SIG_FIRST,

@@ -27,7 +27,7 @@
 #include <sys/time.h>
 #include <assert.h>
 
-const char * nmeaInfoSigToString(int sig) {
+const char * nmeaInfoSigToString(NmeaSignal sig) {
   switch (sig) {
     case NMEALIB_SIG_INVALID:
       return "INVALID";
@@ -61,7 +61,7 @@ const char * nmeaInfoSigToString(int sig) {
   }
 }
 
-int nmeaInfoModeToSig(char mode) {
+NmeaSignal nmeaInfoModeToSig(char mode) {
   switch (mode) {
     case 'N':
       return NMEALIB_SIG_INVALID;
@@ -95,7 +95,7 @@ int nmeaInfoModeToSig(char mode) {
   }
 }
 
-char nmeaInfoSigToMode(int sig) {
+char nmeaInfoSigToMode(NmeaSignal sig) {
   switch (sig) {
     case NMEALIB_SIG_INVALID:
       return 'N';

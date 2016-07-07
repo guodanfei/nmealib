@@ -32,18 +32,23 @@ extern "C" {
  * SIG
  */
 
-// FIXME convert to enum
-#define NMEALIB_SIG_FIRST        (NMEALIB_SIG_INVALID)
-#define NMEALIB_SIG_INVALID      (0)
-#define NMEALIB_SIG_FIX          (1)
-#define NMEALIB_SIG_DIFFERENTIAL (2)
-#define NMEALIB_SIG_SENSITIVE    (3)
-#define NMEALIB_SIG_RTKIN        (4)
-#define NMEALIB_SIG_FLOAT_RTK    (5)
-#define NMEALIB_SIG_ESTIMATED    (6)
-#define NMEALIB_SIG_MANUAL       (7)
-#define NMEALIB_SIG_SIMULATION   (8)
-#define NMEALIB_SIG_LAST         (NMEALIB_SIG_SIMULATION)
+/**
+ * Enumeration for the signal names.
+ * The values are used in the 'sig' field.
+ */
+typedef enum _NmeaSignal {
+  NMEALIB_SIG_INVALID      = 0u,
+  NMEALIB_SIG_FIRST        = NMEALIB_SIG_INVALID,
+  NMEALIB_SIG_FIX          = 1u,
+  NMEALIB_SIG_DIFFERENTIAL = 2u,
+  NMEALIB_SIG_SENSITIVE    = 3u,
+  NMEALIB_SIG_RTKIN        = 4u,
+  NMEALIB_SIG_FLOAT_RTK    = 5u,
+  NMEALIB_SIG_ESTIMATED    = 6u,
+  NMEALIB_SIG_MANUAL       = 7u,
+  NMEALIB_SIG_SIMULATION   = 8u,
+  NMEALIB_SIG_LAST         = NMEALIB_SIG_SIMULATION
+} NmeaSignal;
 
 /**
  * Convert a NMEALIB_SIG_* define into a string
@@ -51,7 +56,7 @@ extern "C" {
  * @param sig The NMEALIB_SIG_* define
  * @return The corresponding string, or NULL when the define is unknown
  */
-const char * nmeaInfoSigToString(int sig);
+const char * nmeaInfoSigToString(NmeaSignal sig);
 
 /**
  * Convert a mode character into the corresponding NMEALIB_SIG_* define
@@ -60,7 +65,7 @@ const char * nmeaInfoSigToString(int sig);
  * @return The corresponding NMEALIB_SIG_* define, or NMEALIB_SIG_INVALID when the
  * mode is unknown
  */
-int nmeaInfoModeToSig(char mode);
+NmeaSignal nmeaInfoModeToSig(char mode);
 
 /**
  * Convert a NMEALIB_SIG_* define into the corresponding mode character
@@ -69,7 +74,7 @@ int nmeaInfoModeToSig(char mode);
  * @return The corresponding mode character, or 'N' when the NMEALIB_SIG_* define
  * is unknown
  */
-char nmeaInfoSigToMode(int sig);
+char nmeaInfoSigToMode(NmeaSignal sig);
 
 /*
  * FIX
@@ -159,7 +164,7 @@ typedef struct _NmeaInfo {
   uint32_t       present;  /**< Bit-mask specifying which fields are present                    */
   int            smask;    /**< Bit-mask specifying from which sentences data has been obtained */
   NmeaTime       utc;      /**< UTC of the position data                                        */
-  int            sig;      /**< Signal quality, see NMEALIB_SIG_* defines                       */
+  NmeaSignal     sig;      /**< Signal quality, see NMEALIB_SIG_* defines                       */
   int            fix;      /**< Operating mode, see NMEALIB_FIX_* defines                       */
   double         pdop;     /**< Position Dilution Of Precision                                  */
   double         hdop;     /**< Horizontal Dilution Of Precision                                */

@@ -163,7 +163,7 @@ static bool nmea_igen_noise_loop(nmeaGENERATOR *gen __attribute__ ((unused)), Nm
   size_t it;
   size_t in_use;
 
-  info->sig = (int) lrint(nmeaRandom(1, 3));
+  info->sig = (int) lrint(nmeaRandom(NMEALIB_SIG_FIX, NMEALIB_SIG_SENSITIVE));
   info->fix = (int) lrint(nmeaRandom(2, 3));
   info->pdop = nmeaRandom(0, 9);
   info->hdop = nmeaRandom(0, 9);
@@ -288,7 +288,7 @@ static bool nmea_igen_static_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
  * @return true on success, false otherwise
  */
 static bool nmea_igen_static_init(nmeaGENERATOR *gen, NmeaInfo *info) {
-  info->sig = 3;
+  info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = 3;
 
   nmeaInfoSetPresent(&info->present, SIG);
@@ -376,7 +376,7 @@ static bool nmea_igen_rotate_reset(nmeaGENERATOR *gen __attribute__ ((unused)), 
  * @return true on success, false otherwise
  */
 static bool nmea_igen_rotate_init(nmeaGENERATOR *gen, NmeaInfo *info) {
-  info->sig = 3;
+  info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = 3;
 
   nmeaInfoSetPresent(&info->present, SIG);
@@ -400,7 +400,7 @@ static bool nmea_igen_rotate_init(nmeaGENERATOR *gen, NmeaInfo *info) {
  * @return true on success, false otherwise
  */
 static bool nmea_igen_pos_rmove_init(nmeaGENERATOR *gen __attribute__ ((unused)), NmeaInfo *info) {
-  info->sig = 3;
+  info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = 3;
   info->speed = 20;
   info->track = 0;

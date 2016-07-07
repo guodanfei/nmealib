@@ -136,7 +136,7 @@ bool nmeaValidateFix(int fix, const char *prefix, const char *s);
  * @param s The NMEA sentence
  * @return True when valid, false otherwise
  */
-bool nmeaValidateSignal(int sig, const char *prefix, const char *s);
+bool nmeaValidateSignal(NmeaSignal sig, const char *prefix, const char *s);
 
 /**
  * Validate and upper-case the mode.
