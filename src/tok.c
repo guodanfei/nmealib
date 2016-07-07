@@ -35,6 +35,11 @@ unsigned int nmeaCalculateCRC(const char *s, const size_t sz) {
   size_t i = 0;
   int crc = 0;
 
+  if (!s //
+      || !sz) {
+    return 0xff;
+  }
+
   if (s[i] == '$') {
     i++;
   }
@@ -75,7 +80,10 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
   char * endPtr = NULL;
   long value;
 
-  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF) || (radix < 1)) {
+  if (!s //
+      || !sz //
+      || (sz >= NMEALIB_CONVSTR_BUF) //
+      || (radix < 1)) {
     return 0;
   }
 
@@ -85,7 +93,9 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
   errno = 0;
   value = strtol(buf, &endPtr, radix);
 
-  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+  if ((errno != ERANGE) //
+      && ((endPtr == buf) //
+          || (*buf == '\0'))) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to a long integer", buf);
     return LONG_MAX;
@@ -99,7 +109,10 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
   char * endPtr = NULL;
   unsigned long value;
 
-  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF) || (radix < 1)) {
+  if (!s //
+      || !sz //
+      || (sz >= NMEALIB_CONVSTR_BUF) //
+      || (radix < 1)) {
     return 0;
   }
 
@@ -109,7 +122,9 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
   errno = 0;
   value = strtoul(buf, &endPtr, radix);
 
-  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+  if ((errno != ERANGE) //
+      && ((endPtr == buf) //
+          || (*buf == '\0'))) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to an unsigned long integer", buf);
     return ULONG_MAX;
@@ -123,7 +138,9 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
   char * endPtr = NULL;
   double value;
 
-  if (!s || !sz || (sz >= NMEALIB_CONVSTR_BUF)) {
+  if (!s //
+      || !sz //
+      || (sz >= NMEALIB_CONVSTR_BUF)) {
     return 0.0;
   }
 
@@ -133,7 +150,9 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
   errno = 0;
   value = strtod(buf, &endPtr);
 
-  if (!((endPtr != buf) && (*buf != '\0')) || (errno == ERANGE)) {
+  if ((errno != ERANGE) //
+      && ((endPtr == buf) //
+          || (*buf == '\0'))) {
     /* invalid conversion */
     nmeaError("Could not convert '%s' to a double", buf);
     return NAN;
@@ -143,45 +162,54 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
 }
 
 int nmeaAppendChecksum(char *s, size_t sz, size_t len) {
-  size_t l = 0;
-  if (sz > len) {
-    l = sz - len;
+
+#define dst       (&s[len])
+#define available ((sz <= len) ? 0 : (sz - len))
+
+  if (!s) {
+    return 0;
   }
-  return snprintf(&s[len], l, "*%02X\r\n", nmeaCalculateCRC(s, len));
+
+  return snprintf(dst, available, "*%02X\r\n", nmeaCalculateCRC(s, len));
+
+#undef available
+#undef dst
+
 }
 
 int nmeaPrintf(char *s, size_t sz, const char *format, ...) {
-  va_list args;
-  int chars;
-  int addedChars;
 
-  if (!s || !sz || !format) {
+#define dst       (s)
+#define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))
+
+  int chars = 0;
+  va_list args;
+
+  if (!s //
+      || !format) {
     return 0;
   }
 
   va_start(args, format);
 
-  chars = vsnprintf(s, sz, format, args);
+  chars = vsnprintf(dst, available, format, args);
 
-  if ((chars < 0) //
-      || (size_t) chars >= sz) {
-    goto out;
-  }
-
-  addedChars = nmeaAppendChecksum(s, sz, (size_t) chars);
-  if (addedChars < 0) {
-    chars = addedChars;
-    goto out;
-  }
-
-  chars += addedChars;
-
-out:
   va_end(args);
+
+  if (chars >= 0) {
+    chars += nmeaAppendChecksum(dst, sz, (size_t) chars);
+  }
+
   return chars;
+
+#undef available
+#undef dst
+
 }
 
 size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
+
+#define sCharsLeft (sEnd - sCharacter)
 
 #define NMEALIB_SCANF_COMPARE   1u
 #define NMEALIB_SCANF_TOKEN     2u
@@ -190,101 +218,103 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
   unsigned char state = NMEALIB_SCANF_COMPARE;
 
   const char *sCharacter = s;
+  const char *sTokenStart = sCharacter;
   const char *sEnd = &s[sz];
 
   const char *formatCharacter = format;
   const char *formatStart = format;
 
   size_t width = 0;
-  size_t widthMax = sz;
+  size_t widthMax = 0; /* for strings; includes null-terminator */
   size_t widthCount = 0;
-  const char *sTokenStart = sCharacter;
 
   void *arg = NULL;
   va_list args;
 
+  if (!s //
+      || !format) {
+    return 0;
+  }
+
   va_start(args, format);
 
-  for (formatCharacter = format; *formatCharacter && (sCharacter < sEnd); formatCharacter++) {
+  for (formatCharacter = format; *formatCharacter && (sCharacter <= sEnd); formatCharacter++) {
     switch (state) {
-      case NMEALIB_SCANF_COMPARE:
-        if (*formatCharacter == '%') {
-          /* start of format */
-          formatStart = &formatCharacter[1];
-          widthCount = 0;
-          state = NMEALIB_SCANF_TOKEN;
-        } else if (*sCharacter++ != *formatCharacter) {
-          /* compare regular character between s and format */
-          goto out;
-        }
-        break;
-
       case NMEALIB_SCANF_TOKEN:
         if (isdigit(*formatCharacter)) {
           widthCount++;
           break;
         }
 
-        /* determine width */
+        /* start of a token */
+
+        sTokenStart = sCharacter;
+        tokens++;
+
         if (!widthCount) {
+          /* no width specified */
           width = 0;
-          widthMax = (size_t)(sEnd - sCharacter);
+          widthMax = (size_t) (sCharsLeft + 1);
         } else {
+          /* width specified */
           width = nmeaStringToUnsignedInteger(formatStart, widthCount, 10);
           widthMax = width;
         }
 
-        sTokenStart = sCharacter;
-
-        if (!width && ('C' == toupper(*formatCharacter)) && (*sCharacter != formatCharacter[1])) {
-          width = 1;
-        }
-
         if (!width) {
-          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) (sEnd - sCharacter))))) {
+          /* no width specified */
+
+          if (('C' == toupper(*formatCharacter)) //
+              && (*sCharacter != formatCharacter[1])) {
+            width = 1;
+          }
+
+          if (!formatCharacter[1] //
+              || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) sCharsLeft)))) {
             sCharacter = sEnd;
           }
-        } else if ('s' == *formatCharacter) {
-          if (!formatCharacter[1] || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) (sEnd - sCharacter))))) {
+        } else if (('S' == toupper(*formatCharacter)) //
+                   || ('C' == toupper(*formatCharacter))) {
+          /* string/char maximum width specified */
+
+          if (!formatCharacter[1] //
+              || (0 == (sCharacter = (char *) memchr(sCharacter, formatCharacter[1], (size_t) sCharsLeft)))) {
             sCharacter = sEnd;
           }
         } else {
-          if ((sCharacter + width) <= sEnd) {
-            sCharacter += width;
-          } else {
-            goto out;
-          }
+          /* exact width specified */
+          sCharacter += width;
         }
 
-        if (sCharacter > sEnd) {
-          goto out;
+        if (sCharsLeft < 0) {
+          sCharacter = sEnd;
         }
 
-        state = NMEALIB_SCANF_COMPARE;
-        tokens++;
-
-        arg = NULL;
-        if (*sTokenStart == '*') {
+        if ((sTokenStart >= sEnd) //
+            || (*sTokenStart == '*') //
+            || (*sTokenStart == '\0')) {
+          /* empty field at the end of the string */
           width = 0;
         } else {
           width = (size_t) (sCharacter - sTokenStart);
         }
-        if (width > widthMax) {
-          width = widthMax;
-        }
 
+        width = MIN(width, widthMax);
+
+        /* go back to the compare state after storing arg */
+        state = NMEALIB_SCANF_COMPARE;
+
+        arg = NULL;
         switch (*formatCharacter) {
           case 'c':
-            arg = (void *) va_arg(args, char *);
-            if (width && arg) {
-              *((char *) arg) = *sTokenStart;
-            }
-            break;
-
           case 'C':
             arg = (void *) va_arg(args, char *);
             if (width && arg) {
-              *((char *) arg) = (char) toupper(*sTokenStart);
+              if (*formatCharacter == 'c') {
+                *((char *) arg) = *sTokenStart;
+              } else {
+                *((char *) arg) = (char) toupper(*sTokenStart);
+              }
             }
             break;
 
@@ -301,17 +331,6 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             break;
 
           case 'f':
-            arg = (void *) va_arg(args, double *);
-            if (width && arg) {
-              double v = nmeaStringToDouble(sTokenStart, width);
-              if (isnan(v)) {
-                tokens = 0;
-                goto out;
-              }
-              *((double *) arg) = v;
-            }
-            break;
-
           case 'F':
             arg = (void *) va_arg(args, double *);
             if (width && arg) {
@@ -320,7 +339,11 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
                 tokens = 0;
                 goto out;
               }
-              *((double *) arg) = fabs(v);
+              if (*formatCharacter == 'f') {
+                *((double *) arg) = v;
+              } else {
+                *((double *) arg) = fabs(v);
+              }
             }
             break;
 
@@ -361,17 +384,32 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             break;
 
           default:
+            tokens--;
+            nmeaError("Unknown format character '%c' in '%s' (%s)", *formatCharacter, format, __FUNCTION__);
             goto out;
-        }
-
+        } /* switch (*formatCharacter) */
         break;
 
+      case NMEALIB_SCANF_COMPARE:
       default:
+        if (*formatCharacter == '%') {
+          /* start of format */
+          formatStart = &formatCharacter[1];
+          widthCount = 0;
+          state = NMEALIB_SCANF_TOKEN;
+        } else if (*sCharacter++ != *formatCharacter) {
+          /* compare regular character between s and format */
+          goto out;
+        }
         break;
-    };
+    } /* switch (state) */
   } /* for */
 
 out:
   va_end(args);
   return tokens;
+
+#undef NMEALIB_SCANF_TOKEN
+#undef NMEALIB_SCANF_COMPARE
+
 }
