@@ -32,23 +32,23 @@ typedef struct _NmeaSentencePrefixToType {
  */
 static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
     {
-        .prefix = NMEALIB_PREFIX_GPGGA, //
+        .prefix = NMEALIB_GPGGA_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPGGA //
     },
     {
-        .prefix = NMEALIB_PREFIX_GPGSA, //
+        .prefix = NMEALIB_GPGSA_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPGSA //
     },
     {
-        .prefix = NMEALIB_PREFIX_GPGSV, //
+        .prefix = NMEALIB_GPGSV_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPGSV //
     },
     {
-        .prefix = NMEALIB_PREFIX_GPRMC, //
+        .prefix = NMEALIB_GPRMC_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPRMC //
     },
     {
-        .prefix = NMEALIB_PREFIX_GPVTG, //
+        .prefix = NMEALIB_GPVTG_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPVTG //
     },
     {
@@ -71,7 +71,7 @@ const char * nmeaSentenceToPrefix(NmeaSentence sentence) {
   return NULL;
 }
 
-NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
+NmeaSentence nmeaSentenceFromPrefix(const char *s, const size_t sz) {
   const char * str = s;
   size_t size = sz;
   size_t i = 0;
@@ -102,7 +102,7 @@ NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz) {
 }
 
 bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
-  switch (nmeaPrefixToSentence(s, sz)) {
+  switch (nmeaSentenceFromPrefix(s, sz)) {
     case NMEALIB_SENTENCE_GPGGA: {
       NmeaGPGGA gpgga;
       if (nmeaGPGGAParse(s, sz, &gpgga)) {

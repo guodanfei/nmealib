@@ -174,7 +174,7 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
       && ((endPtr == buf) //
           || (*buf == '\0'))) {
     /* invalid conversion */
-    nmeaError("Could not convert '%s' to a long integer", buf);
+    nmeaContextError("Could not convert '%s' to a long integer", buf);
     return LONG_MAX;
   }
 
@@ -203,7 +203,7 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
       && ((endPtr == buf) //
           || (*buf == '\0'))) {
     /* invalid conversion */
-    nmeaError("Could not convert '%s' to an unsigned long integer", buf);
+    nmeaContextError("Could not convert '%s' to an unsigned long integer", buf);
     return ULONG_MAX;
   }
 
@@ -231,7 +231,7 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
       && ((endPtr == buf) //
           || (*buf == '\0'))) {
     /* invalid conversion */
-    nmeaError("Could not convert '%s' to a double", buf);
+    nmeaContextError("Could not convert '%s' to a double", buf);
     return NAN;
   }
 
@@ -462,7 +462,7 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
 
           default:
             tokens--;
-            nmeaError("Unknown format character '%c' in '%s' (%s)", *formatCharacter, format, __FUNCTION__);
+            nmeaContextError("Unknown format character '%c' in '%s' (%s)", *formatCharacter, format, __FUNCTION__);
             goto out;
         } /* switch (*formatCharacter) */
         break;

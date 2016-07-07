@@ -527,7 +527,7 @@ static void test_nmeaInfoUnitConversion(void) {
   CU_ASSERT_EQUAL(memcmp(&info, &infoExpected, sizeof(info)), 0);
 }
 
-static void test_qsortComparePRN(void) {
+static void test_nmeaQsortPRNCompare(void) {
   int prn[] = {
       2,
       3,
@@ -563,7 +563,7 @@ static void test_qsortComparePRN(void) {
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
-static void test_qsortCompactPRN(void) {
+static void test_nmeaQsortPRNCompact(void) {
   int prn[] = {
       2,
       3,
@@ -599,7 +599,7 @@ static void test_qsortCompactPRN(void) {
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
-static void test_qsortCompareSatellite(void) {
+static void test_nmeaQsortSatelliteCompare(void) {
   NmeaSatellite prn[] = {
       {
           2,
@@ -747,7 +747,7 @@ static void test_qsortCompareSatellite(void) {
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
-static void test_qsortCompactSatellite(void) {
+static void test_nmeaQsortSatelliteCompact(void) {
   NmeaSatellite prn[] = {
       {
           2,
@@ -919,10 +919,10 @@ int infoSuiteSetup(void) {
       || (!CU_add_test(pSuite, "nmeaInfoClear", test_nmeaInfoClear)) //
       || (!CU_add_test(pSuite, "nmeaInfoSanitise", test_nmeaInfoSanitise)) //
       || (!CU_add_test(pSuite, "nmeaInfoUnitConversion", test_nmeaInfoUnitConversion)) //
-      || (!CU_add_test(pSuite, "qsortComparePRN", test_qsortComparePRN)) //
-      || (!CU_add_test(pSuite, "qsortCompactPRN", test_qsortCompactPRN)) //
-      || (!CU_add_test(pSuite, "qsortCompareSatellite", test_qsortCompareSatellite)) //
-      || (!CU_add_test(pSuite, "qsortCompactSatellite", test_qsortCompactSatellite)) //
+      || (!CU_add_test(pSuite, "nmeaQsortPRNCompare", test_nmeaQsortPRNCompare)) //
+      || (!CU_add_test(pSuite, "nmeaQsortPRNCompact", test_nmeaQsortPRNCompact)) //
+      || (!CU_add_test(pSuite, "nmeaQsortSatelliteCompare", test_nmeaQsortSatelliteCompare)) //
+      || (!CU_add_test(pSuite, "nmeaQsortSatelliteCompact", test_nmeaQsortSatelliteCompact)) //
       ) {
     return CU_get_error();
   }

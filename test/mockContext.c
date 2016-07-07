@@ -30,16 +30,16 @@ void mockContextReset(void) {
   nmeaErrorCalls = 0;
 }
 
-void traceFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
+static void traceFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
   nmeaTraceCalls++;
 }
 
-void errorFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
+static void errorFunction(const char *s __attribute__((unused)), size_t sz __attribute__((unused))) {
   nmeaErrorCalls++;
 }
 
 int mockContextSuiteInit(void) {
-  nmeaPrintFunction prev;
+  nmeaContextPrintFunction prev;
 
   prev = nmeaContextSetTraceFunction(traceFunction);
   if (prev) {

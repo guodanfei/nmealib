@@ -31,7 +31,7 @@ extern "C" {
  * @param s The string to trace or log an error with
  * @param sz The length of the string
  */
-typedef void (*nmeaPrintFunction)(const char *s, size_t sz);
+typedef void (*nmeaContextPrintFunction)(const char *s, size_t sz);
 
 /**
  * Set the trace function
@@ -47,7 +47,7 @@ typedef void (*nmeaPrintFunction)(const char *s, size_t sz);
  * @param function The trace function
  * @return The overwritten trace function
  */
-nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction function);
+nmeaContextPrintFunction nmeaContextSetTraceFunction(nmeaContextPrintFunction function);
 
 /**
  * Set the error logging function
@@ -63,7 +63,7 @@ nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction function);
  * @param function The error logging function
  * @return The overwritten error logging function
  */
-nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction function);
+nmeaContextPrintFunction nmeaContextSetErrorFunction(nmeaContextPrintFunction function);
 
 /**
  * Trace a buffer (a sized string)
@@ -71,21 +71,21 @@ nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction function);
  * @param s The buffer (sized string)
  * @param sz The size of the buffer (length of the size string)
  */
-void nmeaTraceBuffer(const char *s, size_t sz);
+void nmeaContextTraceBuffer(const char *s, size_t sz);
 
 /**
  * Trace a formatted string
  *
  * @param s The formatted string to trace
  */
-void nmeaTrace(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
+void nmeaContextTrace(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
 
 /**
  * Log a formatted string as an error
  *
  * @param s The formatted string to log as an error
  */
-void nmeaError(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
+void nmeaContextError(const char *s, ...) __attribute__ ((format(printf, 1, 2)));
 
 #ifdef  __cplusplus
 }

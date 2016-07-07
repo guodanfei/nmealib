@@ -41,7 +41,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     return false;
   }
 
-  nmeaTraceBuffer(s, sz);
+  nmeaContextTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
@@ -52,7 +52,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_PREFIX_GPVTG ",%f,%C,%f,%C,%f,%C,%f,%C*", //
+      "$" NMEALIB_GPVTG_PREFIX ",%f,%C,%f,%C,%f,%C,%f,%C*", //
       &pack->track, //
       &pack->track_t, //
       &pack->mtrack, //
@@ -64,7 +64,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 8) {
-    nmeaError(NMEALIB_PREFIX_GPVTG " parse error: need 8 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: need 8 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 
@@ -72,7 +72,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   if (!isnan(pack->track)) {
     if (pack->track_t != 'T') {
-      nmeaError(NMEALIB_PREFIX_GPVTG " parse error: invalid track unit, got '%c', expected 'T'", pack->track_t);
+      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid track unit, got '%c', expected 'T'", pack->track_t);
       goto err;
     }
 
@@ -84,7 +84,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   if (!isnan(pack->mtrack)) {
     if (pack->mtrack_m != 'M') {
-      nmeaError(NMEALIB_PREFIX_GPVTG " parse error: invalid mtrack unit, got '%c', expected 'M'", pack->mtrack_m);
+      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid mtrack unit, got '%c', expected 'M'", pack->mtrack_m);
       goto err;
     }
 
@@ -96,7 +96,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   if (!isnan(pack->spn)) {
     if (pack->spn_n != 'N') {
-      nmeaError(NMEALIB_PREFIX_GPVTG " parse error: invalid knots speed unit, got '%c', expected 'N'", pack->spn_n);
+      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid knots speed unit, got '%c', expected 'N'", pack->spn_n);
       goto err;
     }
 
@@ -109,7 +109,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   if (!isnan(pack->spk)) {
     if (pack->spk_k != 'K') {
-      nmeaError(NMEALIB_PREFIX_GPVTG " parse error: invalid kph speed unit, got '%c', expected 'K'", pack->spk_k);
+      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid kph speed unit, got '%c', expected 'K'", pack->spk_k);
       goto err;
     }
 
@@ -208,7 +208,7 @@ size_t nmeaGPVTGGenerate(char *s, const size_t sz, const NmeaGPVTG *pack) {
     return 0;
   }
 
-  chars += snprintf(dst, available, "$" NMEALIB_PREFIX_GPVTG);
+  chars += snprintf(dst, available, "$" NMEALIB_GPVTG_PREFIX);
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_TRACK)) {
     chars += snprintf(dst, available, ",%03.1f,%c", pack->track, pack->track_t);

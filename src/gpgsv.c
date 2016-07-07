@@ -69,7 +69,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
     return false;
   }
 
-  nmeaTraceBuffer(s, sz);
+  nmeaContextTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   pack->sentences = UINT_MAX;
@@ -78,7 +78,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_PREFIX_GPGSV ",%u,%u,%u" //
+      "$" NMEALIB_GPGSV_PREFIX ",%u,%u,%u" //
       ",%d,%d,%d,%d"//
       ",%d,%d,%d,%d"//
       ",%d,%d,%d,%d"//
@@ -98,35 +98,35 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   /* check data */
 
   if (pack->satellites > NMEALIB_MAX_SATELLITES) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: can't handle %u satellites (maximum is %u)", pack->satellites,
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: can't handle %u satellites (maximum is %u)", pack->satellites,
     NMEALIB_MAX_SATELLITES);
     goto err;
   }
 
   if (!pack->sentences) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: sentences count %u is invalid in '%s'", pack->sentences, s);
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentences count %u is invalid in '%s'", pack->sentences, s);
     goto err;
   }
 
   if (pack->sentences > NMEALIB_GPGSV_MAX_SENTENCES) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: can't handle %u sentences (maximum is %u)", pack->sentences,
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: can't handle %u sentences (maximum is %u)", pack->sentences,
         NMEALIB_GPGSV_MAX_SENTENCES);
     goto err;
   }
 
   if (pack->sentences != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: sentences count %u does not correspond to satellite count %u in '%s'",
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentences count %u does not correspond to satellite count %u in '%s'",
         pack->sentences, pack->satellites, s);
     goto err;
   }
 
   if (!pack->sentence) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: sentence index %u is invalid in '%s'", pack->sentence, s);
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentence index %u is invalid in '%s'", pack->sentence, s);
     goto err;
   }
 
   if (pack->sentence > pack->sentences) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: sentence index %u is beyond the number of sentences (%u) in '%s'",
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentence index %u is beyond the number of sentences (%u) in '%s'",
         pack->sentence, pack->sentences, s);
     goto err;
   }
@@ -142,7 +142,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
 
   if ((fieldCount != fieldCountExpected) //
       && (fieldCount != 19)) {
-    nmeaError(NMEALIB_PREFIX_GPGSV " parse error: need %lu (or 19) tokens, got %lu in '%s'",
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: need %lu (or 19) tokens, got %lu in '%s'",
         (long unsigned) fieldCountExpected, (long unsigned) fieldCount, s);
     goto err;
   }
@@ -154,7 +154,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   satCount = 0;
   for (i = 0; i < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE; i++) {
     NmeaSatellite *sat = &pack->satellite[i];
-    if (!nmeaValidateSatellite(sat, NMEALIB_PREFIX_GPGSV, s)) {
+    if (!nmeaValidateSatellite(sat, NMEALIB_GPGSV_PREFIX, s)) {
       goto err;
     }
     if (sat->prn) {
@@ -189,7 +189,7 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
 
   if (nmeaInfoIsPresentAny(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW) //
       && (pack->satellites > NMEALIB_MAX_SATELLITES)) {
-    nmeaError("%s error: can't handle %u satellites (maximum is %u)", __FUNCTION__, pack->satellites,
+    nmeaContextError("%s error: can't handle %u satellites (maximum is %u)", __FUNCTION__, pack->satellites,
     NMEALIB_MAX_SATELLITES);
     return;
   }
@@ -199,29 +199,29 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
     size_t packIndex;
 
     if (!pack->sentences) {
-      nmeaError("%s parse error: sentences count %u is invalid", __FUNCTION__, pack->sentences);
+      nmeaContextError("%s parse error: sentences count %u is invalid", __FUNCTION__, pack->sentences);
       return;
     }
 
     if (pack->sentences > NMEALIB_GPGSV_MAX_SENTENCES) {
-      nmeaError("%s error: can't handle %u sentences (maximum is %u)", __FUNCTION__, pack->sentences,
+      nmeaContextError("%s error: can't handle %u sentences (maximum is %u)", __FUNCTION__, pack->sentences,
           NMEALIB_GPGSV_MAX_SENTENCES);
       return;
     }
 
     if (pack->sentences != nmeaGPGSVsatellitesToSentencesCount(pack->satellites)) {
-      nmeaError("%s parse error: sentences count %u does not correspond to satellite count %u",
+      nmeaContextError("%s parse error: sentences count %u does not correspond to satellite count %u",
           __FUNCTION__, pack->sentences, pack->satellites);
       return;
     }
 
     if (!pack->sentence) {
-      nmeaError("%s error: sentence index %u is invalid", __FUNCTION__, pack->sentence);
+      nmeaContextError("%s error: sentence index %u is invalid", __FUNCTION__, pack->sentence);
       return;
     }
 
     if (pack->sentence > pack->sentences) {
-      nmeaError("%s error: sentence %u is beyond the number of sentences (%u)", __FUNCTION__, pack->sentence,
+      nmeaContextError("%s error: sentence %u is beyond the number of sentences (%u)", __FUNCTION__, pack->sentence,
           pack->sentences);
       return;
     }
@@ -331,7 +331,7 @@ size_t nmeaGPGSVGenerate(char *s, const size_t sz, const NmeaGPGSV *pack) {
   }
 
   chars += snprintf(dst, available, //
-      "$" NMEALIB_PREFIX_GPGSV ",%lu,%lu,%lu", //
+      "$" NMEALIB_GPGSV_PREFIX ",%lu,%lu,%lu", //
       (long unsigned) sentences, //
       (long unsigned) sentence, //
       (long unsigned) satellites);

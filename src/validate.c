@@ -105,7 +105,7 @@ bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s) {
       || (t->min > 59) //
       || (t->sec > 60) //
       || (t->hsec > 99)) {
-    nmeaError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
+    nmeaContextError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
         t->sec, t->hsec * 10, s);
     return false;
   }
@@ -124,7 +124,7 @@ bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s) {
       || (t->mon > 12) //
       || (t->day < 1) //
       || (t->day > 31)) {
-    nmeaError("%s parse error: invalid date '%02u-%02u-%04u' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
+    nmeaContextError("%s parse error: invalid date '%02u-%02u-%04u' (dd-mm-yyyy) in '%s'", prefix, t->day, t->mon,
         t->year, s);
     return false;
   }
@@ -145,13 +145,13 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
   if (ns) {
     if ((c != 'N') //
         && (c != 'S')) {
-      nmeaError("%s parse error: invalid North/South '%s' in '%s'", prefix, cu, s);
+      nmeaContextError("%s parse error: invalid North/South '%s' in '%s'", prefix, cu, s);
       return false;
     }
   } else {
     if ((c != 'E') //
         && (c != 'W')) {
-      nmeaError("%s parse error: invalid East/West '%s' in '%s'", prefix, cu, s);
+      nmeaContextError("%s parse error: invalid East/West '%s' in '%s'", prefix, cu, s);
       return false;
     }
   }
@@ -162,7 +162,7 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
 bool nmeaValidateFix(NmeaFix fix, const char *prefix, const char *s) {
   if ((fix < NMEALIB_FIX_FIRST) //
       || (fix > NMEALIB_FIX_LAST)) {
-    nmeaError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST,
+    nmeaContextError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST,
         s);
     return false;
   }
@@ -173,7 +173,7 @@ bool nmeaValidateFix(NmeaFix fix, const char *prefix, const char *s) {
 bool nmeaValidateSignal(NmeaSignal sig, const char *prefix, const char *s) {
   if ((sig < NMEALIB_SIG_FIRST) //
       || (sig > NMEALIB_SIG_LAST)) {
-    nmeaError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEALIB_SIG_FIRST,
+    nmeaContextError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEALIB_SIG_FIRST,
     NMEALIB_SIG_LAST, s);
     return false;
   }
@@ -195,7 +195,7 @@ bool nmeaValidateMode(char c, const char *prefix, const char *s) {
       && (c != 'E') //
       && (c != 'M') //
       && (c != 'S')) {
-    nmeaError("%s parse error: invalid mode '%c' in '%s'", prefix, c, s);
+    nmeaContextError("%s parse error: invalid mode '%c' in '%s'", prefix, c, s);
     return false;
   }
 
@@ -208,25 +208,25 @@ bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s
   }
 
   if ((sat->prn < 0)) {
-    nmeaError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->prn, s);
+    nmeaContextError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->prn, s);
     return false;
   }
 
   if ((sat->elevation < -180) //
       || (sat->elevation > 180)) {
-    nmeaError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elevation, s);
+    nmeaContextError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elevation, s);
     return false;
   }
 
   if ((sat->azimuth < 0) //
       || (sat->azimuth > 359)) {
-    nmeaError("%s parse error: invalid satellite azimuth %d in '%s'", prefix, sat->azimuth, s);
+    nmeaContextError("%s parse error: invalid satellite azimuth %d in '%s'", prefix, sat->azimuth, s);
     return false;
   }
 
   if ((sat->snr < 0) //
       || (sat->snr > 99)) {
-    nmeaError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->snr, s);
+    nmeaContextError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->snr, s);
     return false;
   }
 

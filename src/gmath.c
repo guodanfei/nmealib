@@ -286,12 +286,12 @@ void nmeaInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT))
     pos->lat = nmeaNdegToRadian(info->lat);
   else
-    pos->lat = NMEALIB_DEF_LAT;
+    pos->lat = NMEALIB_LATITUDE_DEFAULT;
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON))
     pos->lon = nmeaNdegToRadian(info->lon);
   else
-    pos->lon = NMEALIB_DEF_LON;
+    pos->lon = NMEALIB_LONGITUDE_DEFAULT;
 }
 
 void nmeaPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {

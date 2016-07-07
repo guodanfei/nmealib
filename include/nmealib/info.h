@@ -105,10 +105,10 @@ const char * nmeaInfoFixToString(NmeaFix fix);
 #define NMEALIB_MAX_SATELLITES (72u)
 
 /** The default latitude */
-#define NMEALIB_DEF_LAT           (0.0)
+#define NMEALIB_LATITUDE_DEFAULT           (0.0)
 
 /** The default longitude */
-#define NMEALIB_DEF_LON           (0.0)
+#define NMEALIB_LONGITUDE_DEFAULT           (0.0)
 
 /**
  * Date and time data

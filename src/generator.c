@@ -363,8 +363,8 @@ bool nmeaGeneratorInit(NmeaGenerator *gen, NmeaInfo *info) {
   info->smask = smask;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->lat = NMEALIB_DEF_LAT;
-  info->lon = NMEALIB_DEF_LON;
+  info->lat = NMEALIB_LATITUDE_DEFAULT;
+  info->lon = NMEALIB_LONGITUDE_DEFAULT;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
 
@@ -383,7 +383,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
   switch (type) {
     case NMEALIB_GENERATOR_NOISE:
       if (!(gen = malloc(sizeof(NmeaGenerator))))
-        nmeaError("%s: insufficient memory!", __FUNCTION__);
+        nmeaContextError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(NmeaGenerator));
         gen->loop_call = &nmeaGeneratorLoopNoise;
@@ -393,7 +393,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
     case NMEALIB_GENERATOR_STATIC:
     case NMEALIB_GENERATOR_SAT_STATIC:
       if (!(gen = malloc(sizeof(NmeaGenerator))))
-        nmeaError("%s: insufficient memory!", __FUNCTION__);
+        nmeaContextError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmeaGeneratorInitStatic;
@@ -404,7 +404,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
 
     case NMEALIB_GENERATOR_SAT_ROTATE:
       if (!(gen = malloc(sizeof(NmeaGenerator))))
-        nmeaError("%s: insufficient memory!", __FUNCTION__);
+        nmeaContextError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmeaGeneratorInitRotate;
@@ -415,7 +415,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
 
     case NMEALIB_GENERATOR_POS_RANDMOVE:
       if (!(gen = malloc(sizeof(NmeaGenerator))))
-        nmeaError("%s: insufficient memory!", __FUNCTION__);
+        nmeaContextError("%s: insufficient memory!", __FUNCTION__);
       else {
         memset(gen, 0, sizeof(NmeaGenerator));
         gen->init_call = &nmeaGeneratorInitRandomMove;

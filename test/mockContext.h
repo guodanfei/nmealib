@@ -18,15 +18,10 @@
 #ifndef __NMEALIB_TEST_MOCK_CONTEXT_H_
 #define __NMEALIB_TEST_MOCK_CONTEXT_H_
 
-#include <stddef.h>
-
 extern int nmeaTraceCalls;
 extern int nmeaErrorCalls;
 
 void mockContextReset(void);
-
-void traceFunction(const char *s, size_t sz);
-void errorFunction(const char *s, size_t sz);
 
 int mockContextSuiteInit(void);
 int mockContextSuiteClean(void);

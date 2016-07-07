@@ -26,8 +26,8 @@
  * The structure with the nmealib context.
  */
 typedef struct _NmeaContext {
-  volatile nmeaPrintFunction traceFunction;
-  volatile nmeaPrintFunction errorFunction;
+  volatile nmeaContextPrintFunction traceFunction;
+  volatile nmeaContextPrintFunction errorFunction;
 } NmeaContext;
 
 /** The nmealib context */
@@ -35,27 +35,27 @@ static NmeaContext nmealibContext = {
     .traceFunction = NULL,
     .errorFunction = NULL };
 
-nmeaPrintFunction nmeaContextSetTraceFunction(nmeaPrintFunction traceFunction) {
-  nmeaPrintFunction r = nmealibContext.traceFunction;
+nmeaContextPrintFunction nmeaContextSetTraceFunction(nmeaContextPrintFunction traceFunction) {
+  nmeaContextPrintFunction r = nmealibContext.traceFunction;
   nmealibContext.traceFunction = traceFunction;
   return r;
 }
 
-nmeaPrintFunction nmeaContextSetErrorFunction(nmeaPrintFunction errorFunction) {
-  nmeaPrintFunction r = nmealibContext.errorFunction;
+nmeaContextPrintFunction nmeaContextSetErrorFunction(nmeaContextPrintFunction errorFunction) {
+  nmeaContextPrintFunction r = nmealibContext.errorFunction;
   nmealibContext.errorFunction = errorFunction;
   return r;
 }
 
-void nmeaTraceBuffer(const char *s, size_t sz) {
-  nmeaPrintFunction func = nmealibContext.traceFunction;
+void nmeaContextTraceBuffer(const char *s, size_t sz) {
+  nmeaContextPrintFunction func = nmealibContext.traceFunction;
   if (func && s && sz) {
     (*func)(s, sz);
   }
 }
 
-void nmeaTrace(const char *s, ...) {
-  nmeaPrintFunction func = nmealibContext.traceFunction;
+void nmeaContextTrace(const char *s, ...) {
+  nmeaContextPrintFunction func = nmealibContext.traceFunction;
   if (s && func) {
     char *buf;
     size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
@@ -98,8 +98,8 @@ out:
   }
 }
 
-void nmeaError(const char *s, ...) {
-  nmeaPrintFunction func = nmealibContext.errorFunction;
+void nmeaContextError(const char *s, ...) {
+  nmeaContextPrintFunction func = nmealibContext.errorFunction;
   if (s && func) {
     char *buf;
     size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;

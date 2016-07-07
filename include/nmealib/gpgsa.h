@@ -33,7 +33,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /** The NMEA prefix */
-#define NMEALIB_PREFIX_GPGSA "GPGSA"
+#define NMEALIB_GPGSA_PREFIX "GPGSA"
 
 /** The number of satellite PRNs in the sentence */
 #define NMEALIB_GPGSA_SATS_IN_SENTENCE (12)

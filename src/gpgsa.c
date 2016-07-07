@@ -38,7 +38,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     return false;
   }
 
-  nmeaTraceBuffer(s, sz);
+  nmeaContextTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
@@ -49,7 +49,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_PREFIX_GPGSA ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%F,%F,%F*", //
+      "$" NMEALIB_GPGSA_PREFIX ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%F,%F,%F*", //
       &pack->sig, //
       &pack->fix, //
       &pack->satPrn[0], //
@@ -70,7 +70,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmeaError(NMEALIB_PREFIX_GPGSA " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 
@@ -79,7 +79,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   if (pack->sig) {
     if (!((pack->sig == 'A') //
         || (pack->sig == 'M'))) {
-      nmeaError(NMEALIB_PREFIX_GPGSA " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
+      nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
       goto err;
     }
 
@@ -89,7 +89,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   }
 
   if (pack->fix != UINT_MAX) {
-    if (!nmeaValidateFix(pack->fix, NMEALIB_PREFIX_GPGSA, s)) {
+    if (!nmeaValidateFix(pack->fix, NMEALIB_GPGSA_PREFIX, s)) {
       goto err;
     }
 
@@ -259,7 +259,7 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack) {
     return 0;
   }
 
-  chars += snprintf(dst, available, "$" NMEALIB_PREFIX_GPGSA);
+  chars += snprintf(dst, available, "$" NMEALIB_GPGSA_PREFIX);
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
       && pack->sig) {

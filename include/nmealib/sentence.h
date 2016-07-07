@@ -106,7 +106,7 @@ const char * nmeaSentenceToPrefix(NmeaSentence sentence);
  * @param sz The length of the NMEA sentence
  * @return The packet type, or GPNON when it could not be determined
  */
-NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
+NmeaSentence nmeaSentenceFromPrefix(const char *s, const size_t sz);
 
 /**
  * Parse a NMEA sentence into an (unsanitised) nmeaINFO structure

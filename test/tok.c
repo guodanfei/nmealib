@@ -34,7 +34,7 @@ int tokSuiteSetup(void);
  * Tests
  */
 
-static void test_nmeaTIMEparseTime(void) {
+static void test_nmeaTimeParseTime(void) {
   bool r;
   const char *time;
   NmeaTime t;
@@ -155,7 +155,7 @@ static void test_nmeaTIMEparseTime(void) {
   validateContext(0, 0);
 }
 
-static void test_nmeaTIMEparseDate(void) {
+static void test_nmeaTimeParseDate(void) {
   bool r;
   const char *date;
   NmeaTime d;
@@ -1791,8 +1791,8 @@ int tokSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaTIMEparseTime", test_nmeaTIMEparseTime)) //
-      || (!CU_add_test(pSuite, "nmeaTIMEparseDate", test_nmeaTIMEparseDate)) //
+      (!CU_add_test(pSuite, "nmeaTimeParseTime", test_nmeaTimeParseTime)) //
+      || (!CU_add_test(pSuite, "nmeaTimeParseDate", test_nmeaTimeParseDate)) //
       || (!CU_add_test(pSuite, "nmeaCalculateCRC", test_nmeaCalculateCRC)) //
       || (!CU_add_test(pSuite, "nmeaStringToInteger", test_nmeaStringToInteger)) //
       || (!CU_add_test(pSuite, "nmeaStringToUnsignedInteger", test_nmeaStringToUnsignedInteger)) //

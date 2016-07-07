@@ -43,86 +43,86 @@ static void test_nmeaSentenceToPrefix(void) {
   CU_ASSERT_PTR_NULL(r);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGGA);
+  CU_ASSERT_STRING_EQUAL(r, NMEALIB_GPGGA_PREFIX);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGSA);
-  CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGSA);
+  CU_ASSERT_STRING_EQUAL(r, NMEALIB_GPGSA_PREFIX);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGSV);
-  CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGSV);
+  CU_ASSERT_STRING_EQUAL(r, NMEALIB_GPGSV_PREFIX);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPRMC);
+  CU_ASSERT_STRING_EQUAL(r, NMEALIB_GPRMC_PREFIX);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPVTG);
+  CU_ASSERT_STRING_EQUAL(r, NMEALIB_GPVTG_PREFIX);
 
   r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_LAST + 1);
   CU_ASSERT_PTR_NULL(r);
 }
 
-static void test_nmeaPrefixToSentence(void) {
+static void test_nmeaSentenceFromPrefix(void) {
   NmeaSentence r;
   const char *s;
 
   s = NULL;
-  r = nmeaPrefixToSentence(s, 1);
+  r = nmeaSentenceFromPrefix(s, 1);
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "$GPGG";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "$GPGGA,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGGA);
 
   s = "GPGGA,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGGA);
 
   s = "$GPGSA,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSA);
 
   s = "GPGSA,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSA);
 
   s = "$GPGSV,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSV);
 
   s = "GPGSV,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSV);
 
   s = "$GPRMC,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPRMC);
 
   s = "GPRMC,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPRMC);
 
   s = "$GPVTG,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPVTG);
 
   s = "GPVTG,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPVTG);
 
   s = "$UNKNW,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "UNKNW,blah";
-  r = nmeaPrefixToSentence(s, strlen(s));
+  r = nmeaSentenceFromPrefix(s, strlen(s));
   CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
 }
@@ -361,7 +361,7 @@ int sentenceSuiteSetup(void) {
 
   if ( //
       (!CU_add_test(pSuite, "nmeaSentenceToPrefix", test_nmeaSentenceToPrefix)) //
-      || (!CU_add_test(pSuite, "nmeaPrefixToSentence", test_nmeaPrefixToSentence)) //
+      || (!CU_add_test(pSuite, "nmeaSentenceFromPrefix", test_nmeaSentenceFromPrefix)) //
       || (!CU_add_test(pSuite, "nmeaSentenceToInfo", test_nmeaSentenceToInfo)) //
       || (!CU_add_test(pSuite, "nmeaSentenceFromInfo", test_nmeaSentenceFromInfo)) //
       ) {

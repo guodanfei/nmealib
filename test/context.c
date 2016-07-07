@@ -58,10 +58,10 @@ static void reset(void) {
  * Tests
  */
 
-static void test_nmeaTrace(void) {
+static void test_nmeaContextTrace(void) {
   const char * s = "some string";
   char * buf = NULL;
-  nmeaPrintFunction prev = nmeaContextSetTraceFunction(NULL);
+  nmeaContextPrintFunction prev = nmeaContextSetTraceFunction(NULL);
 
   CU_ASSERT_PTR_NOT_NULL(prev);
 
@@ -69,24 +69,24 @@ static void test_nmeaTrace(void) {
 
   /* invalid inputs */
 
-  nmeaTrace(NULL);
+  nmeaContextTrace(NULL);
   validateContext(0, 0);
 
   /* no trace */
 
-  nmeaTrace("%s", s);
+  nmeaContextTrace("%s", s);
   validateContext(0, 0);
 
   /* trace */
 
   nmeaContextSetTraceFunction(traceFunction);
 
-  nmeaTrace("%s", s);
+  nmeaContextTrace("%s", s);
   validateContext(1, 0);
 
   /* empty string*/
 
-  nmeaTrace("%s", "");
+  nmeaContextTrace("%s", "");
   validateContext(0, 0);
 
   /* very large string*/
@@ -95,14 +95,14 @@ static void test_nmeaTrace(void) {
   memset(buf, 'A', 2 * NMEALIB_BUFFER_CHUNK_SIZE);
   buf[(2 * NMEALIB_BUFFER_CHUNK_SIZE) - 1] = '\0';
 
-  nmeaTrace("%s", buf);
+  nmeaContextTrace("%s", buf);
   validateContext(1, 0);
 }
 
-static void test_nmeaError(void) {
+static void test_nmeaContextError(void) {
   const char * s = "some string";
   char * buf = NULL;
-  nmeaPrintFunction prev = nmeaContextSetErrorFunction(NULL);
+  nmeaContextPrintFunction prev = nmeaContextSetErrorFunction(NULL);
 
   CU_ASSERT_PTR_NOT_NULL(prev);
 
@@ -110,24 +110,24 @@ static void test_nmeaError(void) {
 
   /* invalid inputs */
 
-  nmeaError(NULL);
+  nmeaContextError(NULL);
   validateContext(0, 0);
 
   /* no error */
 
-  nmeaError("%s", s);
+  nmeaContextError("%s", s);
   validateContext(0, 0);
 
   /* error */
 
   nmeaContextSetErrorFunction(errorFunction);
 
-  nmeaError("%s", s);
+  nmeaContextError("%s", s);
   validateContext(0, 1);
 
   /* empty string*/
 
-  nmeaError("%s", "");
+  nmeaContextError("%s", "");
   validateContext(0, 0);
 
   /* very large string*/
@@ -136,7 +136,7 @@ static void test_nmeaError(void) {
   memset(buf, 'A', 2 * NMEALIB_BUFFER_CHUNK_SIZE);
   buf[(2 * NMEALIB_BUFFER_CHUNK_SIZE) - 1] = '\0';
 
-  nmeaError("%s", buf);
+  nmeaContextError("%s", buf);
   validateContext(0, 1);
 }
 
@@ -145,7 +145,7 @@ static void test_nmeaError(void) {
  */
 
 static int suiteInit(void) {
-  nmeaPrintFunction prev;
+  nmeaContextPrintFunction prev;
 
   prev = nmeaContextSetTraceFunction(traceFunction);
   if (prev) {
@@ -177,8 +177,8 @@ int contextSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaTrace", test_nmeaTrace)) //
-      || (!CU_add_test(pSuite, "nmeaError", test_nmeaError)) //
+      (!CU_add_test(pSuite, "nmeaContextTrace", test_nmeaContextTrace)) //
+      || (!CU_add_test(pSuite, "nmeaContextError", test_nmeaContextError)) //
       ) {
     return CU_get_error();
   }

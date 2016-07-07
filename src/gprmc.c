@@ -42,7 +42,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     return false;
   }
 
-  nmeaTraceBuffer(s, sz);
+  nmeaContextTraceBuffer(s, sz);
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(timeBuf, 0, sizeof(timeBuf));
@@ -73,7 +73,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   /* see that there are enough tokens */
   if ((fieldCount != 11) //
       && (fieldCount != 12)) {
-    nmeaError(NMEALIB_PREFIX_GPRMC " parse error: need 11 or 12 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: need 11 or 12 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
     goto err;
   }
 
@@ -83,7 +83,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
 
   if (*timeBuf) {
     if (!nmeaTimeParseTime(timeBuf, &pack->utc) //
-        || !nmeaValidateTime(&pack->utc, NMEALIB_PREFIX_GPRMC, s)) {
+        || !nmeaValidateTime(&pack->utc, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
@@ -98,7 +98,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   if (pack->sigSelection //
       && !((pack->sigSelection == 'A') //
           || (pack->sigSelection == 'V'))) {
-    nmeaError(NMEALIB_PREFIX_GPRMC " parse error: invalid status '%c' in '%s'", pack->sigSelection, s);
+    nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: invalid status '%c' in '%s'", pack->sigSelection, s);
     goto err;
   }
 
@@ -115,7 +115,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     /* with mode */
     if (pack->sigSelection //
         && pack->sig) {
-      if (!nmeaValidateMode(pack->sig, NMEALIB_PREFIX_GPRMC, s)) {
+      if (!nmeaValidateMode(pack->sig, NMEALIB_GPRMC_PREFIX, s)) {
         goto err;
       }
 
@@ -127,7 +127,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(pack->ns, true, NMEALIB_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->ns, true, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
@@ -138,7 +138,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(pack->ew, false, NMEALIB_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->ew, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
@@ -162,7 +162,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
 
   if (*dateBuf) {
     if (!nmeaTimeParseDate(dateBuf, &pack->utc) //
-        || !nmeaValidateDate(&pack->utc, NMEALIB_PREFIX_GPRMC, s)) {
+        || !nmeaValidateDate(&pack->utc, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
@@ -174,7 +174,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar)) {
-    if (!nmeaValidateNSEW(pack->magvar_ew, false, NMEALIB_PREFIX_GPRMC, s)) {
+    if (!nmeaValidateNSEW(pack->magvar_ew, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
@@ -350,7 +350,7 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
     return 0;
   }
 
-  chars += snprintf(dst, available, "$" NMEALIB_PREFIX_GPRMC);
+  chars += snprintf(dst, available, "$" NMEALIB_GPRMC_PREFIX);
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_UTCTIME)) {
     chars += snprintf(dst, available, //
