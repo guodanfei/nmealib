@@ -67,7 +67,7 @@ check: test samples
 # Phony Targets
 #
 
-.PHONY: all-before clean doc doc-clean install install-headers uninstall uninstall-headers
+.PHONY: all-before clean doc doc-pdf doc-all doc-clean install install-headers uninstall uninstall-headers
 
 all-before:
 	$(MAKECMDPREFIX)mkdir -p build lib
@@ -79,6 +79,12 @@ clean:
 	$(MAKECMDPREFIX)rm -fr build lib
 
 doc:
+	$(MAKECMDPREFIX)$(MAKE) -C doc doc
+
+doc-pdf:
+	$(MAKECMDPREFIX)$(MAKE) -C doc doc-pdf
+
+doc-all:
 	$(MAKECMDPREFIX)$(MAKE) -C doc all
 
 doc-clean:
