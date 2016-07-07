@@ -19,32 +19,32 @@
 #include <math.h>
 #include <nmealib/math.h>
 
-double nmeaMathDegreeToRadian(const double val) {
-  return (val * NMEALIB_PI180);
+double nmeaMathDegreeToRadian(const double v) {
+  return (v * NMEALIB_PI180);
 }
 
-double nmeaMathRadianToDegree(const double val) {
-  return (val / NMEALIB_PI180);
+double nmeaMathRadianToDegree(const double v) {
+  return (v / NMEALIB_PI180);
 }
 
-double nmeaMathNdegToDegree(const double val) {
-  double deg;
-  double fra_part = modf(val / 100.0, &deg);
-  return (deg + ((fra_part * 100.0) / 60.0));
+double nmeaMathNdegToDegree(const double v) {
+  double integer;
+  double faction = modf(v / 100.0, &integer);
+  return (integer + ((faction * 100.0) / 60.0));
 }
 
-double nmeaMathDegreeToNdeg(const double val) {
-  double deg;
-  double fra_part = modf(val, &deg);
-  return ((deg * 100.0) + (fra_part * 60.0));
+double nmeaMathDegreeToNdeg(const double v) {
+  double integer;
+  double faction = modf(v, &integer);
+  return ((integer * 100.0) + (faction * 60.0));
 }
 
-double nmeaMathNdegToRadian(const double val) {
-  return nmeaMathDegreeToRadian(nmeaMathNdegToDegree(val));
+double nmeaMathNdegToRadian(const double v) {
+  return nmeaMathDegreeToRadian(nmeaMathNdegToDegree(v));
 }
 
-double nmeaMathRadianToNdeg(const double val) {
-  return nmeaMathDegreeToNdeg(nmeaMathRadianToDegree(val));
+double nmeaMathRadianToNdeg(const double v) {
+  return nmeaMathDegreeToNdeg(nmeaMathRadianToDegree(v));
 }
 
 double nmeaMathPdopCalculate(const double hdop, const double vdop) {
@@ -59,14 +59,34 @@ double nmeaMathMetersToDop(const double meters) {
   return (meters / NMEALIB_DOP_FACTOR);
 }
 
-double nmeaMathDistance(const NmeaPosition *from_pos, const NmeaPosition *to_pos) {
-  return ((double) NMEALIB_EARTHRADIUS_M)
-      * acos(
-          sin(to_pos->lat) * sin(from_pos->lat)
-              + cos(to_pos->lat) * cos(from_pos->lat) * cos(to_pos->lon - from_pos->lon));
+void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
+    pos->lat = nmeaMathNdegToRadian(info->lat);
+  } else {
+    pos->lat = NMEALIB_LATITUDE_DEFAULT;
+  }
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
+    pos->lon = nmeaMathNdegToRadian(info->lon);
+  } else {
+    pos->lon = NMEALIB_LONGITUDE_DEFAULT;
+  }
 }
 
-double nmeaMathDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPosition *to_pos, double *from_azimuth, double *to_azimuth) {
+void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {
+  info->lat = nmeaMathRadianToNdeg(pos->lat);
+  info->lon = nmeaMathRadianToNdeg(pos->lon);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
+}
+
+double nmeaMathDistance(const NmeaPosition *from, const NmeaPosition *to) {
+  return ((double) NMEALIB_EARTHRADIUS_M) //
+  * acos(sin(to->lat) * sin(from->lat) + cos(to->lat) * cos(from->lat) * cos(to->lon - from->lon));
+}
+
+double nmeaMathDistanceEllipsoid(const NmeaPosition *from, const NmeaPosition *to, double *fromAzimuth,
+    double *toAzimuth) {
   /* All variables */
   double f, a, b, sqr_a, sqr_b;
   double L, phi1, phi2, U1, U2, sin_U1, sin_U2, cos_U1, cos_U2;
@@ -76,14 +96,14 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPositio
   double sqr_u, A, B, delta_sigma, lambda_prev;
 
   /* Check input */
-  assert(from_pos != 0);
-  assert(to_pos != 0);
+  assert(from != 0);
+  assert(to != 0);
 
-  if ((from_pos->lat == to_pos->lat) && (from_pos->lon == to_pos->lon)) { /* Identical points */
-    if (from_azimuth != 0)
-      *from_azimuth = 0;
-    if (to_azimuth != 0)
-      *to_azimuth = 0;
+  if ((from->lat == to->lat) && (from->lon == to->lon)) { /* Identical points */
+    if (fromAzimuth != 0)
+      *fromAzimuth = 0;
+    if (toAzimuth != 0)
+      *toAzimuth = 0;
     return 0;
   } /* Identical points */
 
@@ -95,9 +115,9 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPositio
   sqr_b = b * b;
 
   /* Calculation */
-  L = to_pos->lon - from_pos->lon;
-  phi1 = from_pos->lat;
-  phi2 = to_pos->lat;
+  L = to->lon - from->lon;
+  phi1 = from->lat;
+  phi2 = to->lat;
   U1 = atan((1 - f) * tan(phi1));
   U2 = atan((1 - f) * tan(phi2));
   sin_U1 = sin(U1);
@@ -160,40 +180,39 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPositio
                   - B / 6 * cos_2_sigmam * (-3 + 4 * sin_sigma * sin_sigma) * (-3 + 4 * sqr_cos_2_sigmam)));
 
   /* Calculate result */
-  if (from_azimuth != 0) {
+  if (fromAzimuth != 0) {
     double tan_alpha_1 = cos_U2 * sin_lambda / (cos_U1 * sin_U2 - sin_U1 * cos_U2 * cos_lambda);
-    *from_azimuth = atan(tan_alpha_1);
+    *fromAzimuth = atan(tan_alpha_1);
   }
-  if (to_azimuth != 0) {
+  if (toAzimuth != 0) {
     double tan_alpha_2 = cos_U1 * sin_lambda / (-sin_U1 * cos_U2 + cos_U1 * sin_U2 * cos_lambda);
-    *to_azimuth = atan(tan_alpha_2);
+    *toAzimuth = atan(tan_alpha_2);
   }
 
   return b * A * (sigma - delta_sigma);
 }
 
-int nmeaMathMoveFlat(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance) {
-  NmeaPosition p1 = *start_pos;
+int nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance) {
+  NmeaPosition p1 = *from;
   int RetVal = 1;
 
   distance /= NMEALIB_EARTHRADIUS_KM; /* Angular distance covered on earth's surface */
   azimuth = nmeaMathDegreeToRadian(azimuth);
 
-  end_pos->lat = asin(sin(p1.lat) * cos(distance) + cos(p1.lat) * sin(distance) * cos(azimuth));
-  end_pos->lon = p1.lon
-      + atan2(sin(azimuth) * sin(distance) * cos(p1.lat), cos(distance) - sin(p1.lat) * sin(end_pos->lat));
+  to->lat = asin(sin(p1.lat) * cos(distance) + cos(p1.lat) * sin(distance) * cos(azimuth));
+  to->lon = p1.lon + atan2(sin(azimuth) * sin(distance) * cos(p1.lat), cos(distance) - sin(p1.lat) * sin(to->lat));
 
-  if (isnan(end_pos->lat) || isnan(end_pos->lon)) {
-    end_pos->lat = 0;
-    end_pos->lon = 0;
+  if (isnan(to->lat) || isnan(to->lon)) {
+    to->lat = 0;
+    to->lon = 0;
     RetVal = 0;
   }
 
   return RetVal;
 }
 
-int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance,
-    double *end_azimuth) {
+int nmeaMathMoveFlatEllipsoid(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance,
+    double *toAzimuth) {
   /* Variables */
   double f, a, b, sqr_a, sqr_b;
   double phi1, tan_U1, sin_U1, cos_U1, s, alpha1, sin_alpha1, cos_alpha1;
@@ -203,14 +222,14 @@ int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_p
   double tmp1, phi2, lambda, C, L;
 
   /* Check input */
-  assert(start_pos != 0);
-  assert(end_pos != 0);
+  assert(from != 0);
+  assert(to != 0);
 
   if (fabs(distance) < 1e-12) { /* No move */
-    *end_pos = *start_pos;
-    if (end_azimuth != 0)
-      *end_azimuth = azimuth;
-    return !(isnan(end_pos->lat) || isnan(end_pos->lon));
+    *to = *from;
+    if (toAzimuth != 0)
+      *toAzimuth = azimuth;
+    return !(isnan(to->lat) || isnan(to->lon));
   } /* No move */
 
   /* Earth geometry */
@@ -221,7 +240,7 @@ int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_p
   sqr_b = b * b;
 
   /* Calculation */
-  phi1 = start_pos->lat;
+  phi1 = from->lat;
   tan_U1 = (1 - f) * tan(phi1);
   cos_U1 = 1 / sqrt(1 + tan_U1 * tan_U1);
   sin_U1 = tan_U1 * cos_U1;
@@ -273,29 +292,10 @@ int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_p
           * (sigma + C * sin_sigma * (cos_2_sigmam + C * cos_sigma * (-1 + 2 * sqr_cos_2_sigmam)));
 
   /* Result */
-  end_pos->lon = start_pos->lon + L;
-  end_pos->lat = phi2;
-  if (end_azimuth != 0) {
-    *end_azimuth = atan2(sin_alpha, -sin_U1 * sin_sigma + cos_U1 * cos_sigma * cos_alpha1);
+  to->lon = from->lon + L;
+  to->lat = phi2;
+  if (toAzimuth != 0) {
+    *toAzimuth = atan2(sin_alpha, -sin_U1 * sin_sigma + cos_U1 * cos_sigma * cos_alpha1);
   }
-  return !(isnan(end_pos->lat) || isnan(end_pos->lon));
-}
-
-void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
-  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT))
-    pos->lat = nmeaMathNdegToRadian(info->lat);
-  else
-    pos->lat = NMEALIB_LATITUDE_DEFAULT;
-
-  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON))
-    pos->lon = nmeaMathNdegToRadian(info->lon);
-  else
-    pos->lon = NMEALIB_LONGITUDE_DEFAULT;
-}
-
-void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {
-  info->lat = nmeaMathRadianToNdeg(pos->lat);
-  info->lon = nmeaMathRadianToNdeg(pos->lon);
-  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
-  nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
+  return !(isnan(to->lat) || isnan(to->lon));
 }
