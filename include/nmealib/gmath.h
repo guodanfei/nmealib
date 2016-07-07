@@ -24,18 +24,18 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define NMEALIB_TUD_YARDS              (1.0936133)                        /**< Yards, meter * NMEALIB_TUD_YARDS = yard */
-#define NMEALIB_TUD_KNOTS              (1.852)                            /**< Knots, kilometer / NMEALIB_TUD_KNOTS = knot */
-#define NMEALIB_TUD_MILES              (1.609344)                         /**< Miles, kilometer / NMEALIB_TUD_MILES = mile */
-#define NMEALIB_TUS_MS                 (3.6)                              /**< Meters per seconds, (k/h) / NMEALIB_TUS_MS= (m/s) */
-#define NMEALIB_PI                     (3.141592653589793)                /**< PI value */
-#define NMEALIB_PI180                  (NMEALIB_PI / 180)                 /**< PI division by 180 */
-#define NMEALIB_EARTHRADIUS_KM         (6378)                             /**< Earth's mean radius in km */
-#define NMEALIB_EARTHRADIUS_M          (NMEALIB_EARTHRADIUS_KM * 1000)    /**< Earth's mean radius in m */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_M  (6378137.0)                        /**< Earth's semi-major axis in m according WGS84 */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_KM (NMEALIB_EARTHMAJORAXIS_KM / 1000) /**< Earth's semi-major axis in km according WGS 84 */
-#define NMEALIB_EARTH_FLATTENING       (1 / 298.257223563)                /**< Earth's flattening according WGS 84 */
-#define NMEALIB_DOP_FACTOR             (5)                                /**< Factor for translating DOP to meters */
+#define NMEALIB_TUD_YARDS              (1.0936133)                          /**< Yards, meter * NMEALIB_TUD_YARDS = yard           */
+#define NMEALIB_TUD_KNOTS              (1.852)                              /**< Knots, kilometer / NMEALIB_TUD_KNOTS = knot       */
+#define NMEALIB_TUD_MILES              (1.609344)                           /**< Miles, kilometer / NMEALIB_TUD_MILES = mile       */
+#define NMEALIB_TUS_MS                 (3.6)                                /**< Meters per seconds, (k/h) / NMEALIB_TUS_MS= (m/s) */
+#define NMEALIB_PI                     (3.141592653589793)                  /**< PI value                                          */
+#define NMEALIB_PI180                  (NMEALIB_PI / 180.0)                 /**< PI division by 180                                */
+#define NMEALIB_EARTHRADIUS_KM         (6378.0)                             /**< Earth's mean radius in km                         */
+#define NMEALIB_EARTHRADIUS_M          (NMEALIB_EARTHRADIUS_KM * 1000.0)    /**< Earth's mean radius in m                          */
+#define NMEALIB_EARTH_SEMIMAJORAXIS_M  (6378137.0)                          /**< Earth's semi-major axis in m according WGS84      */
+#define NMEALIB_EARTH_SEMIMAJORAXIS_KM (NMEALIB_EARTHMAJORAXIS_KM / 1000.0) /**< Earth's semi-major axis in km according WGS 84    */
+#define NMEALIB_EARTH_FLATTENING       (1.0 / 298.257223563)                /**< Earth's flattening according WGS 84               */
+#define NMEALIB_DOP_FACTOR             (5.0)                                /**< Factor for translating DOP to meters              */
 
 /*
  * Degree and Radians
