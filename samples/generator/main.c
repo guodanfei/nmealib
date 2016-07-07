@@ -36,11 +36,11 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
 
-	if (0 == (gen = nmea_create_generator(NMEALIB_GEN_ROTATE, &info)))
+	if (0 == (gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info)))
 		return -1;
 
   for (it = 0; it < 10000; it++) {
-    size_t gen_sz = nmea_generate_from(&buff, &info, gen, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
+    size_t gen_sz = nmeaGeneratorGenerateFrom(&buff, &info, gen, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
     if (gen_sz && buff) {
       printf("%s\n", buff);
       free(buff);
@@ -49,7 +49,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     }
   }
 
-	nmea_gen_destroy(gen);
+	nmeaGeneratorDestroy(gen);
 
 	return 0;
 }
