@@ -221,16 +221,21 @@ const char * nmeaInfoFieldToString(NmeaPresence field) {
 void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
   struct timeval tp;
   struct tm tt;
+  long usec;
 
-  assert(utc);
-
-  if (timeval) {
-    gettimeofday(timeval, NULL);
-  } else {
-    gettimeofday(&tp, NULL);
+  if (!utc) {
+    return;
   }
 
-  gmtime_r(&tp.tv_sec, &tt);
+  if (timeval) {
+    gmtime_r(&timeval->tv_sec, &tt);
+    usec = timeval->tv_usec;
+  } else {
+    gettimeofday(&tp, NULL);
+    gmtime_r(&tp.tv_sec, &tt);
+    usec = tp.tv_usec;
+  }
+
 
   utc->year = (unsigned int) tt.tm_year + 1900;
   utc->mon = (unsigned int) tt.tm_mon + 1;
@@ -238,7 +243,7 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
   utc->hour = (unsigned int) tt.tm_hour;
   utc->min = (unsigned int) tt.tm_min;
   utc->sec = (unsigned int) tt.tm_sec;
-  utc->hsec = (unsigned int) (tp.tv_usec / 10000);
+  utc->hsec = (unsigned int) (usec / 10000);
   if (present) {
     nmeaInfoSetPresent(present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
   }
@@ -616,8 +621,6 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
     return;
   }
 
-  info->metric = toMetric;
-
   /* smask (already in correct format) */
 
   /* utc (already in correct format) */
@@ -672,6 +675,8 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
   /* magvar (already in correct format) */
 
   /* satinfo (already in correct format) */
+
+  info->metric = toMetric;
 }
 
 int nmeaQsortPRNCompare(const void *p1, const void *p2) {
