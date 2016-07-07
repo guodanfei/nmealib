@@ -15,20 +15,51 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <nmealib/util.h>
+
 #include <nmealib/context.h>
 #include <ctype.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <math.h>
-#include <nmealib/util.h>
-#include <nmealib/util.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 /** The maximum size of a string-to-number conversion buffer*/
 #define NMEALIB_CONVSTR_BUF    64
+
+void nmeaRandomInit(void) {
+  srandom((unsigned int) time(NULL));
+}
+
+double nmeaRandom(const double min, const double max) {
+  long value;
+  int randomFile;
+  double range = fabs(max - min);
+
+  randomFile = open("/dev/urandom", O_RDONLY);
+  if (randomFile == -1) {
+    /* can't be covered in a test */
+    randomFile = open("/dev/random", O_RDONLY);
+  }
+
+  if ((randomFile == -1) //
+      || (read(randomFile, &value, sizeof(value)) != sizeof(value))) {
+    /* can't be covered in a test */
+    value = random();
+  }
+
+  if (randomFile != -1) {
+    close(randomFile);
+  }
+
+  return min + ((fabs((double) value) * range) / (double) NMEALIB_RANDOM_MAX);
+}
 
 size_t nmeaStringTrim(const char **s) {
   const char *str;

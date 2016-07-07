@@ -16,6 +16,7 @@
  */
 
 #include <nmealib/sentence.h>
+
 #include <stdlib.h>
 #include <string.h>
 

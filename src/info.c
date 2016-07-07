@@ -19,13 +19,12 @@
 
 #include <nmealib/gmath.h>
 #include <nmealib/sentence.h>
+#include <nmealib/util.h>
+#include <math.h>
 #include <stdbool.h>
 #include <string.h>
-#include <math.h>
-#include <time.h>
 #include <sys/time.h>
-#include <assert.h>
-#include <nmealib/util.h>
+#include <time.h>
 
 const char * nmeaInfoSigToString(NmeaSignal sig) {
   switch (sig) {

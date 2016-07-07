@@ -27,11 +27,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-int tokSuiteSetup(void);
+int utilSuiteSetup(void);
 
 /*
  * Tests
  */
+
+static void test_nmeaRandomInit(void) {
+  nmeaRandomInit();
+}
+
+static void test_nmeaRandom(void) {
+  double r;
+
+  r = nmeaRandom(10.0, 20.0);
+  CU_ASSERT_EQUAL(r >= 10.0, true);
+  CU_ASSERT_EQUAL(r <= 20.0, true);
+}
 
 static void test_Min(void) {
   int r;
@@ -1696,14 +1708,16 @@ static void test_nmeaScanf(void) {
  * Setup
  */
 
-int tokSuiteSetup(void) {
-  CU_pSuite pSuite = CU_add_suite("tok", mockContextSuiteInit, mockContextSuiteClean);
+int utilSuiteSetup(void) {
+  CU_pSuite pSuite = CU_add_suite("util", mockContextSuiteInit, mockContextSuiteClean);
   if (!pSuite) {
     return CU_get_error();
   }
 
   if ( //
-      (!CU_add_test(pSuite, "MIN", test_Min)) //
+      (!CU_add_test(pSuite, "nmeaInitRandom", test_nmeaRandomInit)) //
+      || (!CU_add_test(pSuite, "nmeaRandom", test_nmeaRandom)) //
+      || (!CU_add_test(pSuite, "MIN", test_Min)) //
       || (!CU_add_test(pSuite, "MAX", test_Max)) //
       || (!CU_add_test(pSuite, "nmeaStringTrim", test_nmeaStringTrim)) //
       || (!CU_add_test(pSuite, "nmeaStringContainsWhitespace", test_nmeaStringContainsWhitespace)) //

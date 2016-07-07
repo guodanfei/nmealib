@@ -42,6 +42,12 @@ extern "C" {
 /** The power-of-2 chunk size of a buffer allocation */
 #define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
 
+#define NMEALIB_RANDOM_MAX LONG_MAX
+
+void nmeaRandomInit(void);
+
+double nmeaRandom(const double min, const double max);
+
 /**
  * Trim a string of whitespace
  *

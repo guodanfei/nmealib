@@ -21,6 +21,8 @@
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);
+// FIXME generator
+// FIXME gmath
 extern int gpggaSuiteSetup(void);
 extern int gpgsaSuiteSetup(void);
 extern int gpgsvSuiteSetup(void);
@@ -28,9 +30,8 @@ extern int gprmcSuiteSetup(void);
 extern int gpvtgSuiteSetup(void);
 extern int infoSuiteSetup(void);
 extern int parserSuiteSetup(void);
-extern int randomSuiteSetup(void);
 extern int sentenceSuiteSetup(void);
-extern int tokSuiteSetup(void);
+extern int utilSuiteSetup(void);
 extern int validateSuiteSetup(void);
 
 int main(void) {
@@ -51,9 +52,8 @@ int main(void) {
       || (gpvtgSuiteSetup() != CUE_SUCCESS) //
       || (infoSuiteSetup() != CUE_SUCCESS) //
       || (parserSuiteSetup() != CUE_SUCCESS) //
-      || (randomSuiteSetup() != CUE_SUCCESS) //
       || (sentenceSuiteSetup() != CUE_SUCCESS) //
-      || (tokSuiteSetup() != CUE_SUCCESS) //
+      || (utilSuiteSetup() != CUE_SUCCESS) //
       || (validateSuiteSetup() != CUE_SUCCESS) //
       ) {
     goto cleanup;

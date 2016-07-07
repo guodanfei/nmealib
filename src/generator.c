@@ -19,12 +19,11 @@
 
 #include <nmealib/context.h>
 #include <nmealib/gmath.h>
-#include <nmealib/random.h>
 #include <nmealib/sentence.h>
-
+#include <nmealib/util.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 /*
  * NOISE generator

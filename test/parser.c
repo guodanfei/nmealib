@@ -157,11 +157,11 @@ static void test_nmeaParserInit(void) {
 }
 
 static void test_nmeaParserProcessCharacter(void) {
-  // FIXME
+  // FIXME test_nmeaParserProcessCharacter
 }
 
 static void test_nmeaParserParse(void) {
-  // FIXME
+  // FIXME test_nmeaParserParse
 }
 
 /*

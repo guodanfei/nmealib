@@ -606,7 +606,7 @@ static void test_nmeaInfoClear(void) {
 }
 
 static void test_nmeaInfoSanitise(void) {
-  // FIXME
+  // FIXME test_nmeaInfoSanitise
 }
 
 static void test_nmeaInfoUnitConversion(void) {

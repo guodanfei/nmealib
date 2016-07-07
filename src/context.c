@@ -16,8 +16,8 @@
  */
 
 #include <nmealib/context.h>
-#include <nmealib/util.h>
 
+#include <nmealib/util.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
