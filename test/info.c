@@ -353,7 +353,7 @@ static void test_qsortComparePRN(void) {
       0,
       0 };
 
-  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), qsortComparePRN);
+  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortPRNCompare);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
@@ -389,7 +389,7 @@ static void test_qsortCompactPRN(void) {
       0,
       0 };
 
-  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), qsortCompactPRN);
+  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortPRNCompact);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
@@ -537,7 +537,7 @@ static void test_qsortCompareSatellite(void) {
           0,
           0 } };
 
-  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), qsortCompareSatellite);
+  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortSatelliteCompare);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 
@@ -685,7 +685,7 @@ static void test_qsortCompactSatellite(void) {
           0,
           0 } };
 
-  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), qsortCompactSatellite);
+  qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortSatelliteCompact);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
 }
 

@@ -351,7 +351,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric);
  * @return 0 when both are equal, a negative value when PRN1 < PRN2, a
  * positive value otherwise
  */
-int qsortComparePRN(const void *p1, const void *p2);
+int nmeaQsortPRNCompare(const void *p1, const void *p2);
 
 /**
  * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
@@ -362,7 +362,7 @@ int qsortComparePRN(const void *p1, const void *p2);
  * @return 0 when both are non-zero or are equal, a negative value when
  * PRN1 < PRN2, a positive value otherwise
  */
-int qsortCompactPRN(const void *p1, const void *p2);
+int nmeaQsortPRNCompact(const void *p1, const void *p2);
 
 /**
  * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)
@@ -372,7 +372,7 @@ int qsortCompactPRN(const void *p1, const void *p2);
  * @return 0 when both are equal, a negative value when PRN1 < PRN2, a
  * positive value otherwise
  */
-int qsortCompareSatellite(const void *s1, const void *s2);
+int nmeaQsortSatelliteCompare(const void *s1, const void *s2);
 
 /**
  * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
@@ -383,7 +383,7 @@ int qsortCompareSatellite(const void *s1, const void *s2);
  * @return 0 when both are non-zero or are equal, a negative value when
  * PRN1 < PRN2, a positive value otherwise
  */
-int qsortCompactSatellite(const void *s1, const void *s2);
+int nmeaQsortSatelliteCompact(const void *s1, const void *s2);
 
 #ifdef  __cplusplus
 }

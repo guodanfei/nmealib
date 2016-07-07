@@ -99,7 +99,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     pack->fix = NMEALIB_FIX_BAD;
   }
 
-  qsort(pack->satPrn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(int), qsortCompactPRN);
+  qsort(pack->satPrn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(int), nmeaQsortPRNCompact);
   if (!pack->satPrn[0]) {
     memset(pack->satPrn, 0, sizeof(pack->satPrn));
   } else {

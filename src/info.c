@@ -674,7 +674,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
   /* satinfo (already in correct format) */
 }
 
-int qsortComparePRN(const void *p1, const void *p2) {
+int nmeaQsortPRNCompare(const void *p1, const void *p2) {
   int prn1 = *((const int *) p1);
   int prn2 = *((const int *) p2);
 
@@ -688,7 +688,7 @@ int qsortComparePRN(const void *p1, const void *p2) {
   return (prn1 - prn2);
 }
 
-int qsortCompactPRN(const void *p1, const void *p2) {
+int nmeaQsortPRNCompact(const void *p1, const void *p2) {
   int prn1 = *((const int *) p1);
   int prn2 = *((const int *) p2);
 
@@ -696,19 +696,19 @@ int qsortCompactPRN(const void *p1, const void *p2) {
     return 0;
   }
 
-  return qsortComparePRN(p1, p2);
+  return nmeaQsortPRNCompare(p1, p2);
 }
 
-int qsortCompareSatellite(const void *s1, const void *s2) {
+int nmeaQsortSatelliteCompare(const void *s1, const void *s2) {
   const NmeaSatellite *sat1 = (const NmeaSatellite *) s1;
   const NmeaSatellite *sat2 = (const NmeaSatellite *) s2;
 
-  return qsortComparePRN(&sat1->prn, &sat2->prn);
+  return nmeaQsortPRNCompare(&sat1->prn, &sat2->prn);
 }
 
-int qsortCompactSatellite(const void *s1, const void *s2) {
+int nmeaQsortSatelliteCompact(const void *s1, const void *s2) {
   const NmeaSatellite *sat1 = (const NmeaSatellite *) s1;
   const NmeaSatellite *sat2 = (const NmeaSatellite *) s2;
 
-  return qsortCompactPRN(&sat1->prn, &sat2->prn);
+  return nmeaQsortPRNCompact(&sat1->prn, &sat2->prn);
 }

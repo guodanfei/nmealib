@@ -149,7 +149,7 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   }
 
   /* compact satellites */
-  qsort(pack->satellite, NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE, sizeof(pack->satellite[0]), qsortCompactSatellite);
+  qsort(pack->satellite, NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE, sizeof(pack->satellite[0]), nmeaQsortSatelliteCompact);
 
   /* validate all satellite settings and count the number of satellites in the sentence */
   satCount = 0;
