@@ -47,7 +47,7 @@ extern "C" {
  * @param val degrees
  * @return radians
  */
-double nmeaDegreeToRadian(const double val);
+double nmeaMathDegreeToRadian(const double val);
 
 /**
  * Convert radians to degrees
@@ -55,7 +55,7 @@ double nmeaDegreeToRadian(const double val);
  * @param val radians
  * @return degrees
  */
-double nmeaRadianToDegree(const double val);
+double nmeaMathRadianToDegree(const double val);
 
 /*
  * NDEG (NMEA degree)
@@ -67,7 +67,7 @@ double nmeaRadianToDegree(const double val);
  * @param val NDEG (NMEA degrees)
  * @return decimal (fractional) degrees
  */
-double nmeaNdegToDegree(const double val);
+double nmeaMathNdegToDegree(const double val);
 
 /**
  * Convert decimal (fractional) degrees to NDEG (NMEA degrees)
@@ -75,7 +75,7 @@ double nmeaNdegToDegree(const double val);
  * @param val decimal (fractional) degrees
  * @return NDEG (NMEA degrees)
  */
-double nmeaDegreeToNdeg(const double val);
+double nmeaMathDegreeToNdeg(const double val);
 
 /**
  * Convert NDEG (NMEA degrees) to radians
@@ -83,7 +83,7 @@ double nmeaDegreeToNdeg(const double val);
  * @param val NDEG (NMEA degrees)
  * @return radians
  */
-double nmeaNdegToRadian(const double val);
+double nmeaMathNdegToRadian(const double val);
 
 /**
  * Convert radians to NDEG (NMEA degrees)
@@ -91,7 +91,7 @@ double nmeaNdegToRadian(const double val);
  * @param val radians
  * @return NDEG (NMEA degrees)
  */
-double nmeaRadianToNdeg(const double val);
+double nmeaMathRadianToNdeg(const double val);
 
 /*
  * DOP
@@ -104,7 +104,7 @@ double nmeaRadianToNdeg(const double val);
  * @param vdop VDOP
  * @return PDOP
  */
-double nmeaPdopCalculate(const double hdop, const double vdop);
+double nmeaMathPdopCalculate(const double hdop, const double vdop);
 
 /**
  * Convert DOP to meters, using the NMEALIB_DOP_FACTOR factor
@@ -112,7 +112,7 @@ double nmeaPdopCalculate(const double hdop, const double vdop);
  * @param dop the DOP
  * @return the DOP in meters
  */
-double nmeaDopToMeters(const double dop);
+double nmeaMathDopToMeters(const double dop);
 
 /**
  * Convert DOP in meters to plain DOP, using the NMEALIB_DOP_FACTOR factor
@@ -120,7 +120,7 @@ double nmeaDopToMeters(const double dop);
  * @param meters the DOP in meters
  * @return the plain DOP
  */
-double nmeaMetersToDop(const double meters);
+double nmeaMathMetersToDop(const double meters);
 
 /*
  * Positions
@@ -132,7 +132,7 @@ double nmeaMetersToDop(const double meters);
  * @param info a pointer to the INFO position
  * @param pos a pointer to the radians position (output)
  */
-void nmeaInfoToPosition(const NmeaInfo *info, NmeaPosition *pos);
+void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos);
 
 /**
  * Convert a radians position to a position from INFO
@@ -140,7 +140,7 @@ void nmeaInfoToPosition(const NmeaInfo *info, NmeaPosition *pos);
  * @param pos a pointer to the radians position
  * @param info a pointer to the INFO position (output)
  */
-void nmeaPositionToInfo(const NmeaPosition *pos, NmeaInfo *info);
+void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info);
 
 /**
  * Calculate distance between two points
@@ -149,7 +149,7 @@ void nmeaPositionToInfo(const NmeaPosition *pos, NmeaInfo *info);
  * @param to_pos a pointer to the to position (in radians)
  * @return distance in meters
  */
-double nmeaDistance(const NmeaPosition *from_pos, const NmeaPosition *to_pos);
+double nmeaMathDistance(const NmeaPosition *from_pos, const NmeaPosition *to_pos);
 
 /**
  * Calculate the distance between two points.
@@ -163,7 +163,7 @@ double nmeaDistance(const NmeaPosition *from_pos, const NmeaPosition *to_pos);
  * @param to_azimuth a pointer to the azimuth at "to" position (in radians) (output)
  * @return distance in meters
  */
-double nmeaDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPosition *to_pos, double *from_azimuth,
+double nmeaMathDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPosition *to_pos, double *from_azimuth,
     double *to_azimuth);
 
 /**
@@ -175,7 +175,7 @@ double nmeaDistanceEllipsoid(const NmeaPosition *from_pos, const NmeaPosition *t
  * @param distance the distance (in km)
  * @return 1 (true) on success, 0 (false) on failure
  */
-int nmeaMoveFlat(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance);
+int nmeaMathMoveFlat(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance);
 
 /**
  * Perform a flat (horizontal) move against the ellipsoid.
@@ -191,7 +191,7 @@ int nmeaMoveFlat(const NmeaPosition *start_pos, NmeaPosition *end_pos, double az
  * @param end_azimuth azimuth at end position (in radians) (output)
  * @return 1 (true) on success, 0 (false) on failure
  */
-int nmeaMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance,
+int nmeaMathMoveFlatEllipsoid(const NmeaPosition *start_pos, NmeaPosition *end_pos, double azimuth, double distance,
     double *end_azimuth);
 
 #ifdef  __cplusplus

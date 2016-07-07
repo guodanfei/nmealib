@@ -706,41 +706,41 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_PDOP)) {
     if (toMetric) {
-      info->pdop = nmeaDopToMeters(info->pdop);
+      info->pdop = nmeaMathDopToMeters(info->pdop);
     } else {
-      info->pdop = nmeaMetersToDop(info->pdop);
+      info->pdop = nmeaMathMetersToDop(info->pdop);
     }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HDOP)) {
     if (toMetric) {
-      info->hdop = nmeaDopToMeters(info->hdop);
+      info->hdop = nmeaMathDopToMeters(info->hdop);
     } else {
-      info->hdop = nmeaMetersToDop(info->hdop);
+      info->hdop = nmeaMathMetersToDop(info->hdop);
     }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_VDOP)) {
     if (toMetric) {
-      info->vdop = nmeaDopToMeters(info->vdop);
+      info->vdop = nmeaMathDopToMeters(info->vdop);
     } else {
-      info->vdop = nmeaMetersToDop(info->vdop);
+      info->vdop = nmeaMathMetersToDop(info->vdop);
     }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     if (toMetric) {
-      info->lat = nmeaNdegToDegree(info->lat);
+      info->lat = nmeaMathNdegToDegree(info->lat);
     } else {
-      info->lat = nmeaDegreeToNdeg(info->lat);
+      info->lat = nmeaMathDegreeToNdeg(info->lat);
     }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
     if (toMetric) {
-      info->lon = nmeaNdegToDegree(info->lon);
+      info->lon = nmeaMathNdegToDegree(info->lon);
     } else {
-      info->lon = nmeaDegreeToNdeg(info->lon);
+      info->lon = nmeaMathDegreeToNdeg(info->lon);
     }
   }
 

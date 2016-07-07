@@ -327,9 +327,9 @@ static bool nmeaGeneratorLoopRandomMove(NmeaGenerator *gen __attribute__ ((unuse
   if (info->speed < 1)
     info->speed = 1;
 
-  nmeaInfoToPosition(info, &crd);
-  nmeaMoveFlat(&crd, &crd, info->track, info->speed / 3600);
-  nmeaPositionToInfo(&crd, info);
+  nmeaMathInfoToPosition(info, &crd);
+  nmeaMathMoveFlat(&crd, &crd, info->track, info->speed / 3600);
+  nmeaMathPositionToInfo(&crd, info);
 
   info->magvar = info->track;
 

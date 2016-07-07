@@ -42,7 +42,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	for (it = 0; it < 6; it++) {
 		nmeaParserParse(&parser, buff[it], strlen(buff[it]), &info);
 
-		nmeaInfoToPosition(&info, &dpos);
+		nmeaMathInfoToPosition(&info, &dpos);
 		printf("%03d, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", it, dpos.lat, dpos.lon, info.sig, info.fix);
 	}
 

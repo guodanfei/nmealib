@@ -79,7 +79,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	  size_t size = fread(&buff[0], 1, 100, file);
 
 		nmeaParserParse(&parser, &buff[0], size, &info);
-		nmeaInfoToPosition(&info, &dpos);
+		nmeaMathInfoToPosition(&info, &dpos);
 
 		printf("*** %03lu, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", (unsigned long) it++, dpos.lat, dpos.lon, info.sig, info.fix);
 	}

@@ -43,17 +43,17 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		NmeaInfo info;
 		nmeaInfoClear(&info);
 		(void) nmeaParserParse(&parser, buff[it], strlen(buff[it]), &info);
-		nmeaInfoToPosition(&info, &pos[it]);
+		nmeaMathInfoToPosition(&info, &pos[it]);
 	}
 
 	for (it = 0; it < NUM_POINTS; it++) {
-		dist[it][0] = nmeaDistance(&pos[0], &pos[it]);
-		dist[it][1] = nmeaDistanceEllipsoid(&pos[0], &pos[it], &azimuth[it][0], &azimuth[it][1]);
+		dist[it][0] = nmeaMathDistance(&pos[0], &pos[it]);
+		dist[it][1] = nmeaMathDistanceEllipsoid(&pos[0], &pos[it], &azimuth[it][0], &azimuth[it][1]);
 	}
 
 	for (it = 0; it < NUM_POINTS; it++) {
-		result[0] = nmeaMoveFlat(&pos[0], &pos_moved[it][0], azimuth[it][0], dist[it][0]);
-		result[1] = nmeaMoveFlatEllipsoid(&pos[0], &pos_moved[it][1], azimuth[it][0], dist[it][0],
+		result[0] = nmeaMathMoveFlat(&pos[0], &pos_moved[it][0], azimuth[it][0], dist[it][0]);
+		result[1] = nmeaMathMoveFlatEllipsoid(&pos[0], &pos_moved[it][1], azimuth[it][0], dist[it][0],
 				&azimuth_moved[it]);
 
 	}
@@ -62,7 +62,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	printf("Coordinate points:\n");
 	for (it = 0; it < NUM_POINTS; it++) {
 		printf("P%d in radians: lat:%9.6lf lon:%9.6lf  \tin degree: lat:%+010.6lf° lon:%+011.6lf°\n", it, pos[it].lat,
-				pos[it].lon, nmeaRadianToDegree(pos[it].lat), nmeaRadianToDegree(pos[it].lon));
+				pos[it].lon, nmeaMathRadianToDegree(pos[it].lat), nmeaMathRadianToDegree(pos[it].lon));
 	}
 
 	printf("\nCalculation results:\n");
@@ -70,17 +70,17 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		printf("\n");
 		printf("Distance P0 to P%d\ton spheroid:  %14.3lf m\n", it, dist[it][0]);
 		printf("Distance P0 to P%d\ton ellipsoid: %14.3lf m\n", it, dist[it][1]);
-		printf("Azimuth  P0 to P%d\tat start: %8.3lf°\tat end: %8.3lf°\n", it, nmeaRadianToDegree(azimuth[it][0]),
-				nmeaRadianToDegree(azimuth[it][1]));
-		printf("Move     P0 to P%d\t         \tAzimuth at end: %8.3lf°\n", it, nmeaRadianToDegree(azimuth_moved[it]));
+		printf("Azimuth  P0 to P%d\tat start: %8.3lf°\tat end: %8.3lf°\n", it, nmeaMathRadianToDegree(azimuth[it][0]),
+				nmeaMathRadianToDegree(azimuth[it][1]));
+		printf("Move     P0 to P%d\t         \tAzimuth at end: %8.3lf°\n", it, nmeaMathRadianToDegree(azimuth_moved[it]));
 		printf("Move     P0 to P%d\ton spheroid:  %3s lat:%+010.6lf° lon:%+011.6lf°\n", it,
-				result[0] == 1 ? "OK" : "nOK", nmeaRadianToDegree(pos_moved[it][0].lat),
-				nmeaRadianToDegree(pos_moved[it][0].lon));
+				result[0] == 1 ? "OK" : "nOK", nmeaMathRadianToDegree(pos_moved[it][0].lat),
+				nmeaMathRadianToDegree(pos_moved[it][0].lon));
 		printf("Move     P0 to P%d\ton ellipsoid: %3s lat:%+010.6lf° lon:%+011.6lf°\n", it,
-				result[0] == 1 ? "OK" : "nOK", nmeaRadianToDegree(pos_moved[it][1].lat),
-				nmeaRadianToDegree(pos_moved[it][1].lon));
+				result[0] == 1 ? "OK" : "nOK", nmeaMathRadianToDegree(pos_moved[it][1].lat),
+				nmeaMathRadianToDegree(pos_moved[it][1].lon));
 		printf("Move     P0 to P%d\toriginal:         lat:%+010.6lf° lon:%+011.6lf°\n", it,
-				nmeaRadianToDegree(pos[it].lat), nmeaRadianToDegree(pos[it].lon));
+				nmeaMathRadianToDegree(pos[it].lat), nmeaMathRadianToDegree(pos[it].lon));
 	}
 
 	return 0;

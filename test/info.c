@@ -672,11 +672,11 @@ static void test_nmeaInfoUnitConversion(void) {
   info.metric = false;
   memcpy(&infoExpected, &info, sizeof(info));
   infoExpected.metric = true;
-  infoExpected.pdop = nmeaDopToMeters(infoExpected.pdop);
-  infoExpected.hdop = nmeaDopToMeters(infoExpected.hdop);
-  infoExpected.vdop = nmeaDopToMeters(infoExpected.vdop);
-  infoExpected.lat = nmeaNdegToDegree(infoExpected.lat);
-  infoExpected.lon = nmeaNdegToDegree(infoExpected.lon);
+  infoExpected.pdop = nmeaMathDopToMeters(infoExpected.pdop);
+  infoExpected.hdop = nmeaMathDopToMeters(infoExpected.hdop);
+  infoExpected.vdop = nmeaMathDopToMeters(infoExpected.vdop);
+  infoExpected.lat = nmeaMathNdegToDegree(infoExpected.lat);
+  infoExpected.lon = nmeaMathNdegToDegree(infoExpected.lon);
   nmeaInfoUnitConversion(&info, true);
   CU_ASSERT_EQUAL(memcmp(&info, &infoExpected, sizeof(info)), 0);
 
@@ -686,11 +686,11 @@ static void test_nmeaInfoUnitConversion(void) {
   info.metric = true;
   memcpy(&infoExpected, &info, sizeof(info));
   infoExpected.metric = false;
-  infoExpected.pdop = nmeaMetersToDop(infoExpected.pdop);
-  infoExpected.hdop = nmeaMetersToDop(infoExpected.hdop);
-  infoExpected.vdop = nmeaMetersToDop(infoExpected.vdop);
-  infoExpected.lat = nmeaDegreeToNdeg(infoExpected.lat);
-  infoExpected.lon = nmeaDegreeToNdeg(infoExpected.lon);
+  infoExpected.pdop = nmeaMathMetersToDop(infoExpected.pdop);
+  infoExpected.hdop = nmeaMathMetersToDop(infoExpected.hdop);
+  infoExpected.vdop = nmeaMathMetersToDop(infoExpected.vdop);
+  infoExpected.lat = nmeaMathDegreeToNdeg(infoExpected.lat);
+  infoExpected.lon = nmeaMathDegreeToNdeg(infoExpected.lon);
   nmeaInfoUnitConversion(&info, false);
   CU_ASSERT_EQUAL(memcmp(&info, &infoExpected, sizeof(info)), 0);
 
