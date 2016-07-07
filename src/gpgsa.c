@@ -140,7 +140,7 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->smask |= GPGSA;
+  info->smask |= NMEALIB_SENTENCE_GPGSA;
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
       && (info->sig == NMEALIB_SIG_INVALID)) {

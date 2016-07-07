@@ -202,7 +202,7 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->smask |= GPRMC;
+  info->smask |= NMEALIB_SENTENCE_GPRMC;
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_UTCTIME)) {
     info->utc.hour = pack->utc.hour;

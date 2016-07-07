@@ -53,9 +53,9 @@ static void test_nmeaParserReset(void) {
   /* normal */
 
   memset(&parserEmpty, 0, sizeof(parserEmpty));
-  parserEmpty.sentence.state = READ_CHECKSUM;
+  parserEmpty.sentence.state = NMEALIB_SENTENCE_STATE_READ_CHECKSUM;
 
-  nmeaParserReset(&parser, READ_CHECKSUM);
+  nmeaParserReset(&parser, NMEALIB_SENTENCE_STATE_READ_CHECKSUM);
   CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
   memset(&parser, 0, sizeof(parser));
 }
@@ -152,7 +152,7 @@ static void test_nmeaParserInit(void) {
 
   r = nmeaParserInit(&parser);
   CU_ASSERT_EQUAL(r, true);
-  CU_ASSERT_EQUAL(parser.sentence.state, SKIP_UNTIL_START);
+  CU_ASSERT_EQUAL(parser.sentence.state, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
   memset(&parser, 0, sizeof(parser));
 }
 

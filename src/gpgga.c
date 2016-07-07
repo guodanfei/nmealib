@@ -189,7 +189,7 @@ void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->smask |= GPGGA;
+  info->smask |= NMEALIB_SENTENCE_GPGGA;
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_UTCTIME)) {
     info->utc.hour = pack->time.hour;

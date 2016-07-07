@@ -47,7 +47,7 @@ typedef enum _NmeaGeneratorType {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-typedef bool (*nmeaNMEA_GEN_INIT)(NmeaGenerator *gen, NmeaInfo *info);
+typedef bool (*NmeaGeneratorInit)(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
  * Generator loop function definition.
@@ -56,7 +56,7 @@ typedef bool (*nmeaNMEA_GEN_INIT)(NmeaGenerator *gen, NmeaInfo *info);
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-typedef bool (*nmeaNMEA_GEN_LOOP)(NmeaGenerator *gen, NmeaInfo *info);
+typedef bool (*NmeaGeneratorLoop)(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
  * Generator reset function definition.
@@ -65,7 +65,7 @@ typedef bool (*nmeaNMEA_GEN_LOOP)(NmeaGenerator *gen, NmeaInfo *info);
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-typedef bool (*nmeaNMEA_GEN_RESET)(NmeaGenerator *gen, NmeaInfo *info);
+typedef bool (*NmeaGeneratorReset)(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
  * Generator destroy function definition.
@@ -73,17 +73,17 @@ typedef bool (*nmeaNMEA_GEN_RESET)(NmeaGenerator *gen, NmeaInfo *info);
  * @param gen a pointer to the generator
  * @return true on success, false otherwise
  */
-typedef bool (*nmeaNMEA_GEN_DESTROY)(NmeaGenerator *gen);
+typedef bool (*NmeaGeneratorDestroy)(NmeaGenerator *gen);
 
 /**
  * Generator structure
  */
 typedef struct _NmeaGenerator {
     void                 *gen_data;     /**< generator data       */
-    nmeaNMEA_GEN_INIT     init_call;    /**< initialiser function */
-    nmeaNMEA_GEN_LOOP     loop_call;    /**< loop function        */
-    nmeaNMEA_GEN_RESET    reset_call;   /**< reset function       */
-    nmeaNMEA_GEN_DESTROY  destroy_call; /**< destroy function     */
+    NmeaGeneratorInit     init_call;    /**< initialiser function */
+    NmeaGeneratorLoop     loop_call;    /**< loop function        */
+    NmeaGeneratorReset    reset_call;   /**< reset function       */
+    NmeaGeneratorDestroy  destroy_call; /**< destroy function     */
     NmeaGenerator        *next;         /**< the next generator   */
 } NmeaGenerator;
 

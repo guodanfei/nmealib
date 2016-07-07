@@ -229,7 +229,7 @@ static void test_nmeaInfoFieldToString(void) {
   r = nmeaInfoFieldToString(NMEALIB_PRESENT_DGPSSID);
   CU_ASSERT_STRING_EQUAL(r, "DGPSSID");
 
-  r = nmeaInfoFieldToString(_NmeaPresenceLast + 1);
+  r = nmeaInfoFieldToString(NMEALIB_PRESENT_LAST + 1);
   CU_ASSERT_PTR_NULL(r);
 }
 

@@ -280,7 +280,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   checkSatellitesEmpty(info.satinfo.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0);
@@ -295,7 +295,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEWCOUNT);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 12);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   checkSatellitesEmpty(info.satinfo.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0);
@@ -317,7 +317,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 11);
@@ -347,7 +347,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
@@ -378,7 +378,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, true);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   checkSatellitesEmpty(info.satinfo.inView, 0, 1, 0);
@@ -405,7 +405,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, true);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   checkSatellitesEmpty(info.satinfo.inView, 0, 3, 0xaaaaaaaa);
@@ -434,7 +434,7 @@ static void test_nmeaGPGSVToInfo(void) {
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
   checkSatellitesEmpty(info.satinfo.inView, 0, 7, 0xaaaaaaaa);

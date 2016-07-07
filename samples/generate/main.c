@@ -75,7 +75,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
   for (it = 0; it < 10; it++) {
-    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
+    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info, NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC | NMEALIB_SENTENCE_GPVTG);
     if (gen_sz && buff) {
       printf("%s\n", buff);
       free(buff);

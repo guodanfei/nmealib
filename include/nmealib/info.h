@@ -191,6 +191,7 @@ typedef struct _NmeaInfo {
  */
 typedef enum _NmeaPresence {
   NMEALIB_PRESENT_SMASK          = (1u << 0),  /* 0x00000001 */
+  NMEALIB_PRESENT_FIRST          = NMEALIB_PRESENT_SMASK,
   NMEALIB_PRESENT_UTCDATE        = (1u << 1),  /* 0x00000002 */
   NMEALIB_PRESENT_UTCTIME        = (1u << 2),  /* 0x00000004 */
   NMEALIB_PRESENT_SIG            = (1u << 3),  /* 0x00000008 */
@@ -218,11 +219,11 @@ typedef enum _NmeaPresence {
   NMEALIB_PRESENT_DGPSAGE        = (1u << 20), /* 0x00100000 */
   NMEALIB_PRESENT_DGPSSID        = (1u << 21), /* 0x00200000 */
 
-  _NmeaPresenceLast = NMEALIB_PRESENT_DGPSSID
+  NMEALIB_PRESENT_LAST           = NMEALIB_PRESENT_DGPSSID
 } NmeaPresence;
 
 /** The bit-mask of all supported field name bits */
-#define NMEALIB_INFO_PRESENT_MASK ((_NmeaPresenceLast << 1) - 1)
+#define NMEALIB_INFO_PRESENT_MASK ((NMEALIB_PRESENT_LAST << 1) - 1)
 
 /**
  * Convert a nmeaINFO_FIELD into a string

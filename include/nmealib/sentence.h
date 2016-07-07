@@ -71,18 +71,19 @@ extern "C" {
 /**
  * Supported NMEA sentences
  */
-enum NmeaSentence {
-  GPNON = 0u,
-  GPGGA = (1u << 0),
-  GPGSA = (1u << 1),
-  GPGSV = (1u << 2),
-  GPRMC = (1u << 3),
-  GPVTG = (1u << 4),
-  _NmeaSentenceLast = GPVTG
-};
+typedef enum _NmeaSentence {
+  NMEALIB_SENTENCE_GPNON = 0u,
+  NMEALIB_SENTENCE_FIRST = NMEALIB_SENTENCE_GPNON,
+  NMEALIB_SENTENCE_GPGGA = (1u << 0),
+  NMEALIB_SENTENCE_GPGSA = (1u << 1),
+  NMEALIB_SENTENCE_GPGSV = (1u << 2),
+  NMEALIB_SENTENCE_GPRMC = (1u << 3),
+  NMEALIB_SENTENCE_GPVTG = (1u << 4),
+  NMEALIB_SENTENCE_LAST = NMEALIB_SENTENCE_GPVTG
+} NmeaSentence;
 
 /** The bit-mask with all NmeaSentence entries */
-#define NMEALIB_SENTENCE_MASK (_NmeaSentenceLast - 1)
+#define NMEALIB_SENTENCE_MASK (NMEALIB_SENTENCE_LAST - 1)
 
 /** The fixed length of a NMEA prefix */
 #define NMEALIB_PREFIX_LENGTH 5
@@ -93,7 +94,7 @@ enum NmeaSentence {
  * @param sentence The sentence type
  * @return The NMEA prefix, or NULL when the sentence type is unknown
  */
-const char * nmeaSentenceToPrefix(enum NmeaSentence sentence);
+const char * nmeaSentenceToPrefix(NmeaSentence sentence);
 
 /**
  * Determine the sentence type from the start of the specified NMEA
@@ -105,7 +106,7 @@ const char * nmeaSentenceToPrefix(enum NmeaSentence sentence);
  * @param sz The length of the NMEA sentence
  * @return The packet type, or GPNON when it could not be determined
  */
-enum NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
+NmeaSentence nmeaPrefixToSentence(const char *s, const size_t sz);
 
 /**
  * Parse a NMEA sentence into an (unsanitised) nmeaINFO structure
@@ -128,7 +129,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
  * @param mask The bit-mask of sentences to generate
  * @return The total length of the generated sentences
  */
-size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const enum NmeaSentence mask);
+size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const NmeaSentence mask);
 
 #ifdef  __cplusplus
 }

@@ -36,94 +36,94 @@ int sentenceSuiteSetup(void);
 static void test_nmeaSentenceToPrefix(void) {
   const char *r;
 
-  r = nmeaSentenceToPrefix(GPNON - 1);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_FIRST - 1);
   CU_ASSERT_PTR_NULL(r);
 
-  r = nmeaSentenceToPrefix(GPNON);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPNON);
   CU_ASSERT_PTR_NULL(r);
 
-  r = nmeaSentenceToPrefix(GPGGA);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGGA);
 
-  r = nmeaSentenceToPrefix(GPGSA);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGSA);
 
-  r = nmeaSentenceToPrefix(GPGSV);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPGSV);
 
-  r = nmeaSentenceToPrefix(GPRMC);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPRMC);
 
-  r = nmeaSentenceToPrefix(GPVTG);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_GPVTG);
   CU_ASSERT_STRING_EQUAL(r, NMEALIB_PREFIX_GPVTG);
 
-  r = nmeaSentenceToPrefix(_NmeaSentenceLast + 1);
+  r = nmeaSentenceToPrefix(NMEALIB_SENTENCE_LAST + 1);
   CU_ASSERT_PTR_NULL(r);
 }
 
 static void test_nmeaPrefixToSentence(void) {
-  enum NmeaSentence r;
+  NmeaSentence r;
   const char *s;
 
   s = NULL;
   r = nmeaPrefixToSentence(s, 1);
-  CU_ASSERT_EQUAL(r, GPNON);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPNON);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "$GPGG";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPNON);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "$GPGGA,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGGA);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGGA);
 
   s = "GPGGA,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGGA);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGGA);
 
   s = "$GPGSA,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGSA);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSA);
 
   s = "GPGSA,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGSA);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSA);
 
   s = "$GPGSV,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGSV);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSV);
 
   s = "GPGSV,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPGSV);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPGSV);
 
   s = "$GPRMC,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPRMC);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPRMC);
 
   s = "GPRMC,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPRMC);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPRMC);
 
   s = "$GPVTG,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPVTG);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPVTG);
 
   s = "GPVTG,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPVTG);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPVTG);
 
   s = "$UNKNW,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPNON);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
   s = "UNKNW,blah";
   r = nmeaPrefixToSentence(s, strlen(s));
-  CU_ASSERT_EQUAL(r, GPNON);
+  CU_ASSERT_EQUAL(r, NMEALIB_SENTENCE_GPNON);
 
 }
 
@@ -164,7 +164,7 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPGGA);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(info.utc.hour, 10);
   CU_ASSERT_EQUAL(info.utc.min, 45);
   CU_ASSERT_EQUAL(info.utc.sec, 59);
@@ -184,7 +184,7 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_FIX | NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPGSA);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
   memset(&info, 0, sizeof(info));
 
@@ -201,7 +201,7 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW | NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPGSV);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 11);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 0);
@@ -227,7 +227,7 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.utc.hour, 10);
   CU_ASSERT_EQUAL(info.utc.min, 45);
   CU_ASSERT_EQUAL(info.utc.sec, 59);
@@ -247,7 +247,7 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(r, true);
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPVTG);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 4.25, DBL_EPSILON);
   memset(&info, 0, sizeof(info));
 }
@@ -263,13 +263,13 @@ static void test_nmeaSentenceFromInfo(void) {
 
   /* invalid inputs */
 
-  r = nmeaSentenceFromInfo(NULL, &info, GPGGA);
+  r = nmeaSentenceFromInfo(NULL, &info, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
 
   buf = (void *)&info;
-  r = nmeaSentenceFromInfo(&buf, NULL, GPGGA);
+  r = nmeaSentenceFromInfo(&buf, NULL, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
   CU_ASSERT_PTR_NULL(buf);
@@ -289,7 +289,7 @@ static void test_nmeaSentenceFromInfo(void) {
   info.utc.sec = 32;
   info.utc.hsec = 42;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
-  r = nmeaSentenceFromInfo(&buf, &info, GPGGA);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 34);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
   validateContext(0, 0);
@@ -299,7 +299,7 @@ static void test_nmeaSentenceFromInfo(void) {
 
   info.fix = NMEALIB_FIX_3D;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
-  r = nmeaSentenceFromInfo(&buf, &info, GPGSA);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_EQUAL(r, 29);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
   validateContext(0, 0);
@@ -309,7 +309,7 @@ static void test_nmeaSentenceFromInfo(void) {
 
   info.satinfo.inViewCount = 5;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  r = nmeaSentenceFromInfo(&buf, &info, GPGSV);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(r, 54);
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
   validateContext(0, 0);
@@ -322,7 +322,7 @@ static void test_nmeaSentenceFromInfo(void) {
   info.utc.sec = 32;
   info.utc.hsec = 42;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
-  r = nmeaSentenceFromInfo(&buf, &info, GPRMC);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(r, 32);
   CU_ASSERT_STRING_EQUAL(buf, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
   validateContext(0, 0);
@@ -332,7 +332,7 @@ static void test_nmeaSentenceFromInfo(void) {
 
   info.speed = 42.43;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
-  r = nmeaSentenceFromInfo(&buf, &info, GPVTG);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPVTG);
   CU_ASSERT_EQUAL(r, 29);
   CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
   validateContext(0, 0);
@@ -342,7 +342,7 @@ static void test_nmeaSentenceFromInfo(void) {
 
   info.speed = 42.43;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
-  r = nmeaSentenceFromInfo(&buf, &info, _NmeaSentenceLast << 1);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_LAST << 1);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
   CU_ASSERT_PTR_NULL(buf);

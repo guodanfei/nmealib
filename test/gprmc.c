@@ -272,7 +272,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -287,7 +287,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_UTCTIME);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.utc.hour, 12);
   CU_ASSERT_EQUAL(info.utc.min, 42);
   CU_ASSERT_EQUAL(info.utc.sec, 43);
@@ -305,7 +305,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -318,7 +318,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -330,7 +330,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SIG);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_FIX);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -343,7 +343,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SIG);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -356,7 +356,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SIG);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_MANUAL);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -370,7 +370,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -382,7 +382,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -394,7 +394,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -406,7 +406,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -420,7 +420,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -432,7 +432,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -444,7 +444,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -456,7 +456,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -469,7 +469,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -482,7 +482,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_TRACK);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 42.75, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -497,7 +497,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_UTCDATE);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(info.utc.day, 12);
   CU_ASSERT_EQUAL(info.utc.mon, 5);
   CU_ASSERT_EQUAL(info.utc.year, 2016);
@@ -513,7 +513,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_MAGVAR);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -525,7 +525,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_MAGVAR);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -537,7 +537,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_MAGVAR);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
@@ -549,7 +549,7 @@ static void test_nmeaGPRMCToInfo(void) {
   nmeaGPRMCToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_MAGVAR);
-  CU_ASSERT_EQUAL(info.smask, GPRMC);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));

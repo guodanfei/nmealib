@@ -40,7 +40,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		return -1;
 
   for (it = 0; it < 10000; it++) {
-    size_t gen_sz = nmeaGeneratorGenerateFrom(&buff, &info, gen, GPGGA | GPGSA | GPGSV | GPRMC | GPVTG);
+    size_t gen_sz = nmeaGeneratorGenerateFrom(&buff, &info, gen, NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC | NMEALIB_SENTENCE_GPVTG);
     if (gen_sz && buff) {
       printf("%s\n", buff);
       free(buff);

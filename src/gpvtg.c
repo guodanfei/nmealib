@@ -144,7 +144,7 @@ void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info) {
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->smask |= GPVTG;
+  info->smask |= NMEALIB_SENTENCE_GPVTG;
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_TRACK)) {
     info->track = pack->track;
