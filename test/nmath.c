@@ -33,63 +33,488 @@ int nmathSuiteSetup(void);
  */
 
 static void test_nmeaMathDegreeToRadian(void) {
-  // FIXME test_nmeaMathDegreeToRadian
+  double r;
+
+  r = nmeaMathDegreeToRadian(0.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  r = nmeaMathDegreeToRadian(180.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, NMEALIB_PI, DBL_EPSILON);
+
+  r = nmeaMathDegreeToRadian(45.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, NMEALIB_PI / 4.0, DBL_EPSILON);
 }
 
 static void test_nmeaMathRadianToDegree(void) {
-  // FIXME test_nmeaMathRadianToDegree
+  double r;
+
+  r = nmeaMathRadianToDegree(0.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  r = nmeaMathRadianToDegree(NMEALIB_PI);
+  CU_ASSERT_DOUBLE_EQUAL(r, 180.0, DBL_EPSILON);
+
+  r = nmeaMathRadianToDegree(NMEALIB_PI / 4.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 45.0, DBL_EPSILON);
 }
 
 static void test_nmeaMathNdegToDegree(void) {
-  // FIXME test_nmeaMathNdegToDegree
+  double r;
+
+  r = nmeaMathNdegToDegree(0.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  r = nmeaMathNdegToDegree(18000.00);
+  CU_ASSERT_DOUBLE_EQUAL(r, 180.0, DBL_EPSILON);
+
+  r = nmeaMathNdegToDegree(13015.45);
+  CU_ASSERT_DOUBLE_EQUAL(r, 130.257500000000021600499167107045650482, DBL_EPSILON);
 }
 
 static void test_nmeaMathDegreeToNdeg(void) {
-  // FIXME test_nmeaMathDegreeToNdeg
+  double r;
+
+  r = nmeaMathDegreeToNdeg(0.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  r = nmeaMathDegreeToNdeg(180.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 18000.0, DBL_EPSILON);
+
+  r = nmeaMathDegreeToNdeg(130.2575);
+  CU_ASSERT_DOUBLE_EQUAL(r, 13015.449999999998908606357872486114501953, DBL_EPSILON);
 }
 
 static void test_nmeaMathNdegToRadian(void) {
-  // FIXME test_nmeaMathNdegToRadian
+  double r;
+
+  r = nmeaMathNdegToRadian(0.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, nmeaMathDegreeToRadian(0.0), DBL_EPSILON);
+
+  r = nmeaMathNdegToRadian(18000.00);
+  CU_ASSERT_DOUBLE_EQUAL(r, nmeaMathDegreeToRadian(180.0), DBL_EPSILON);
+
+  r = nmeaMathNdegToRadian(13015.45);
+  CU_ASSERT_DOUBLE_EQUAL(r, 2.273422250416514245330290577840059996, DBL_EPSILON);
 }
 
 static void test_nmeaMathRadianToNdeg(void) {
-  // FIXME test_nmeaMathRadianToNdeg
+  double r;
+
+  r = nmeaMathRadianToNdeg(nmeaMathDegreeToRadian(0.0));
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  r = nmeaMathRadianToNdeg(nmeaMathDegreeToRadian(180.0));
+  CU_ASSERT_DOUBLE_EQUAL(r, 18000.0, DBL_EPSILON);
+
+  r = nmeaMathRadianToNdeg(nmeaMathDegreeToRadian(130.2575));
+  CU_ASSERT_DOUBLE_EQUAL(r, 13015.449999999998908606357872486114501953, DBL_EPSILON);
 }
 
 static void test_nmeaMathPdopCalculate(void) {
-  // FIXME test_nmeaMathPdopCalculate
+  double r;
+
+  r = nmeaMathPdopCalculate(1.0, 1.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, sqrt(2.0), DBL_EPSILON);
+
+  r = nmeaMathPdopCalculate(2.0, 2.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, sqrt(8.0), DBL_EPSILON);
 }
 
 static void test_nmeaMathDopToMeters(void) {
-  // FIXME test_nmeaMathDopToMeters
+  double r;
+
+  r = nmeaMathDopToMeters(1.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 1.0 * NMEALIB_DOP_FACTOR, DBL_EPSILON);
+
+  r = nmeaMathDopToMeters(2.5);
+  CU_ASSERT_DOUBLE_EQUAL(r, 2.5 * NMEALIB_DOP_FACTOR, DBL_EPSILON);
 }
 
 static void test_nmeaMathMetersToDop(void) {
-  // FIXME test_nmeaMathMetersToDop
+  double r;
+
+  r = nmeaMathMetersToDop(1.0);
+  CU_ASSERT_DOUBLE_EQUAL(r, 1.0 / NMEALIB_DOP_FACTOR, DBL_EPSILON);
+
+  r = nmeaMathMetersToDop(2.5);
+  CU_ASSERT_DOUBLE_EQUAL(r, 2.5 / NMEALIB_DOP_FACTOR, DBL_EPSILON);
 }
 
 static void test_nmeaMathInfoToPosition(void) {
-  // FIXME test_nmeaMathInfoToPosition
+  NmeaInfo info;
+  NmeaInfo infoExp;
+  NmeaPosition pos;
+  NmeaPosition posExp;
+
+  /* invalid inputs */
+
+  memset(&info, 0xaa, sizeof(info));
+  memset(&pos, 0xaa, sizeof(pos));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  nmeaMathInfoToPosition(NULL, NULL);
+  CU_ASSERT_EQUAL(memcmp(&info, &infoExp, sizeof(info)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lat, posExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lon, posExp.lon, DBL_EPSILON);
+
+  /* no info */
+
+  memset(&info, 0xaa, sizeof(info));
+  memset(&pos, 0xaa, sizeof(pos));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  posExp.lat = nmeaMathNdegToRadian(NMEALIB_LATITUDE_DEFAULT_NDEG);
+  posExp.lon = nmeaMathNdegToRadian(NMEALIB_LONGITUDE_DEFAULT_NDEG);
+  nmeaMathInfoToPosition(NULL, &pos);
+  CU_ASSERT_EQUAL(memcmp(&info, &infoExp, sizeof(info)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lat, posExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lon, posExp.lon, DBL_EPSILON);
+
+  /* no info position */
+
+  memset(&info, 0xaa, sizeof(info));
+  info.present = 0;
+  memset(&pos, 0xaa, sizeof(pos));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  posExp.lat = nmeaMathNdegToRadian(NMEALIB_LATITUDE_DEFAULT_NDEG);
+  posExp.lon = nmeaMathNdegToRadian(NMEALIB_LONGITUDE_DEFAULT_NDEG);
+  nmeaMathInfoToPosition(&info, &pos);
+  CU_ASSERT_EQUAL(memcmp(&info, &infoExp, sizeof(info)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lat, posExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lon, posExp.lon, DBL_EPSILON);
+
+  /* info position */
+
+  memset(&info, 0xaa, sizeof(info));
+  info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
+  info.lat = 12345.67;
+  info.lon = 8910.11;
+  memset(&pos, 0xaa, sizeof(pos));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  posExp.lat = nmeaMathNdegToRadian(info.lat);
+  posExp.lon = nmeaMathNdegToRadian(info.lon);
+  nmeaMathInfoToPosition(&info, &pos);
+  CU_ASSERT_EQUAL(memcmp(&info, &infoExp, sizeof(info)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lat, posExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pos.lon, posExp.lon, DBL_EPSILON);
 }
 
 static void test_nmeaMathPositionToInfo(void) {
-  // FIXME test_nmeaMathPositionToInfo
+  NmeaInfo info;
+  NmeaInfo infoExp;
+  NmeaPosition pos;
+  NmeaPosition posExp;
+
+  /* invalid inputs */
+
+  memset(&pos, 0xaa, sizeof(pos));
+  memset(&info, 0xaa, sizeof(info));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  nmeaMathPositionToInfo(NULL, NULL);
+  CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
+
+  /* no pos */
+
+  memset(&pos, 0xaa, sizeof(pos));
+  memset(&info, 0xaa, sizeof(info));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  infoExp.lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  infoExp.lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+  nmeaMathPositionToInfo(NULL, &info);
+  CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
+
+  /* pos position */
+
+  memset(&pos, 0xaa, sizeof(pos));
+  pos.lat = nmeaMathNdegToRadian(12345.67);
+  pos.lon = nmeaMathNdegToRadian(8910.11);
+  memset(&info, 0xaa, sizeof(info));
+  memcpy(&posExp, &pos, sizeof(posExp));
+  memcpy(&infoExp, &info, sizeof(infoExp));
+  infoExp.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
+  infoExp.lat = nmeaMathRadianToNdeg(pos.lat);
+  infoExp.lon = nmeaMathRadianToNdeg(pos.lon);
+  nmeaMathPositionToInfo(&pos, &info);
+  CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
 }
 
 static void test_nmeaMathDistance(void) {
-  // FIXME test_nmeaMathDistance
+  NmeaPosition from;
+  NmeaPosition to;
+  double r;
+
+  /* invalid inputs */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistance(NULL, &to);
+  CU_ASSERT_EQUAL(isnan(r), true);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistance(&from, NULL);
+  CU_ASSERT_EQUAL(isnan(r), true);
+
+  /* same pos */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistance(&from, &to);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  /* different lat */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lat = 0.1;
+  r = nmeaMathDistance(&from, &to);
+  CU_ASSERT_DOUBLE_EQUAL(r, 637799.99999999650754034519195556640625, DBL_EPSILON);
+
+  /* different lon */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lon = 0.1;
+  r = nmeaMathDistance(&from, &to);
+  CU_ASSERT_DOUBLE_EQUAL(r, 637799.99999999650754034519195556640625, DBL_EPSILON);
+
+  /* different lat and lon */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lat = 0.01;
+  to.lon = 0.01;
+  r = nmeaMathDistance(&from, &to);
+  CU_ASSERT_DOUBLE_EQUAL(r, 90197.789340498522506095468997955322265625, DBL_EPSILON);
+
 }
 
 static void test_nmeaMathDistanceEllipsoid(void) {
-  // FIXME test_nmeaMathDistanceEllipsoid
+  NmeaPosition from;
+  NmeaPosition to;
+  double fromAzimuth;
+  double toAzimuth;
+  double r;
+
+  /* invalid inputs */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistanceEllipsoid(NULL, &to, NULL, NULL);
+  CU_ASSERT_EQUAL(isnan(r), true);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistanceEllipsoid(&from, NULL, NULL, NULL);
+  CU_ASSERT_EQUAL(isnan(r), true);
+
+  /* same pos */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  r = nmeaMathDistanceEllipsoid(&from, &to, NULL, NULL);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  fromAzimuth = INFINITY;
+  toAzimuth = INFINITY;
+  r = nmeaMathDistanceEllipsoid(&from, &to, &fromAzimuth, &toAzimuth);
+  CU_ASSERT_DOUBLE_EQUAL(r, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(fromAzimuth, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(toAzimuth, 0.0, DBL_EPSILON);
+
+  /* different lat and lon */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lat = 0.01;
+  to.lon = 0.01;
+  r = nmeaMathDistanceEllipsoid(&from, &to, NULL, NULL);
+  CU_ASSERT_DOUBLE_EQUAL(r, 89898.333114560940884985029697418212890625, DBL_EPSILON);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lat = 0.01;
+  to.lon = -0.03;
+  fromAzimuth = INFINITY;
+  toAzimuth = INFINITY;
+  r = nmeaMathDistanceEllipsoid(&from, &to, &fromAzimuth, &toAzimuth);
+  CU_ASSERT_DOUBLE_EQUAL(r, 201556.7858809516765177249908447265625, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(fromAzimuth, -1.251000383622602463162820640718564391, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(toAzimuth, -1.251150396207637349732522125123068690, DBL_EPSILON);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  to.lat = 1.0;
+  to.lon = 7.0;
+  fromAzimuth = INFINITY;
+  toAzimuth = INFINITY;
+  r = nmeaMathDistanceEllipsoid(&from, &to, &fromAzimuth, &toAzimuth);
+  CU_ASSERT_DOUBLE_EQUAL(r, 7322337.17246529273688793182373046875, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(fromAzimuth, 0.40102001168502454664377410153974779, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(toAzimuth, 0.804906291629721715175094232108676806, DBL_EPSILON);
 }
 
 static void test_nmeaMathMoveFlat(void) {
-  // FIXME test_nmeaMathMoveFlat
+  NmeaPosition from;
+  NmeaPosition to;
+  double azimuth;
+  double distance;
+  bool r;
+
+  /* invalid inputs */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 10.0;
+  r = nmeaMathMoveFlat(NULL, &to, azimuth, distance);
+  CU_ASSERT_EQUAL(r, false);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 10.0;
+  r = nmeaMathMoveFlat(&from, NULL, azimuth, distance);
+  CU_ASSERT_EQUAL(r, false);
+
+  /* NaN */
+
+  memset(&from, 0, sizeof(from));
+  from.lat = 0.0;
+  from.lon = NAN;
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlat(&from, &to, azimuth, distance);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(isnan(to.lat), true);
+  CU_ASSERT_EQUAL(isnan(to.lon), true);
+
+  memset(&from, 0, sizeof(from));
+  from.lat = NAN;
+  from.lon = 0.0;
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlat(&from, &to, azimuth, distance);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(isnan(to.lat), true);
+  CU_ASSERT_EQUAL(isnan(to.lon), true);
+
+  /* normal */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlat(&from, &to, azimuth, distance);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_DOUBLE_EQUAL(to.lat, 0.147262209776827190932380062804440968, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(to.lon, 0.054016168021498375817479598026693566, DBL_EPSILON);
 }
 
 static void test_nmeaMathMoveFlatEllipsoid(void) {
-  // FIXME test_nmeaMathMoveFlatEllipsoid
+  NmeaPosition from;
+  NmeaPosition to;
+  double azimuth;
+  double distance;
+  double toAzimuth;
+  bool r;
+
+  /* invalid inputs */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 10.0;
+  r = nmeaMathMoveFlatEllipsoid(NULL, &to, azimuth, distance, &toAzimuth);
+  CU_ASSERT_EQUAL(r, false);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 10.0;
+  r = nmeaMathMoveFlatEllipsoid(&from, NULL, azimuth, distance, &toAzimuth);
+  CU_ASSERT_EQUAL(r, false);
+
+  /* NaN */
+
+  memset(&from, 0, sizeof(from));
+  from.lat = 0.0;
+  from.lon = NAN;
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, NULL);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(isnan(to.lat), true);
+  CU_ASSERT_EQUAL(isnan(to.lon), true);
+
+  memset(&from, 0, sizeof(from));
+  from.lat = NAN;
+  from.lon = 0.0;
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, &toAzimuth);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(isnan(to.lat), true);
+  CU_ASSERT_EQUAL(isnan(to.lon), true);
+  CU_ASSERT_EQUAL(isnan(toAzimuth), true);
+
+  /* normal 'no move' */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1e-13;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, NULL);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_DOUBLE_EQUAL(to.lat, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(to.lon, 0.0, DBL_EPSILON);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1e-13;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, &toAzimuth);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_DOUBLE_EQUAL(to.lat, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(to.lon, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(toAzimuth, 20.0, DBL_EPSILON);
+
+  /* normal */
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, NULL);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_DOUBLE_EQUAL(to.lat, 0.000064412590716141725059352973747906, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(to.lon, 0.000143136663881879028920041108108308, DBL_EPSILON);
+
+  memset(&from, 0, sizeof(from));
+  memset(&to, 0, sizeof(to));
+  azimuth = 20.0;
+  distance = 1000.0;
+  r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, &toAzimuth);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_DOUBLE_EQUAL(to.lat, 0.000064412590716141725059352973747906, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(to.lon, 0.000143136663881879028920041108108308, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(toAzimuth, 1.150444083071142209462323080515488982, DBL_EPSILON);
 }
 
 /*

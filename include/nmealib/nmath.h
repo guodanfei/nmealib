@@ -176,7 +176,7 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from, const NmeaPosition *t
  * @param distance The distance (in km)
  * @return True on success
  */
-int nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance);
+bool nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance);
 
 /**
  * Perform a flat (horizontal) move against the ellipsoid.
@@ -192,7 +192,7 @@ int nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth,
  * @param toAzimuth Azimuth at end position (in radians)
  * @return True on success
  */
-int nmeaMathMoveFlatEllipsoid(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance,
+bool nmeaMathMoveFlatEllipsoid(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance,
     double *toAzimuth);
 
 #ifdef  __cplusplus

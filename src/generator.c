@@ -362,8 +362,8 @@ bool nmeaGeneratorInit(NmeaGenerator *gen, NmeaInfo *info) {
   info->smask = smask;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->lat = NMEALIB_LATITUDE_DEFAULT;
-  info->lon = NMEALIB_LONGITUDE_DEFAULT;
+  info->lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  info->lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
 
