@@ -332,32 +332,38 @@ void nmeaInfoClear(NmeaInfo *info);
 
 /**
  * Sanitise the NMEA info, make sure that:
+ * - all information is in the original units
+ * - utc date is set to the current date when not present
+ * - utc time is set to the current time when not present
  * - sig is in the range [NMEALIB_SIG_FIRST, NMEALIB_SIG_LAST],
  *   if this is not the case then sig is set to NMEALIB_SIG_INVALID
  * - fix is in the range [NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST],
  *   if this is not the case then fix is set to NMEALIB_FIX_BAD
- * - DOPs are positive,
- * - latitude is in the range [-9000, 9000],
- * - longitude is in the range [-18000, 18000],
- * - speed is positive,
- * - track is in the range [0, 360>.
- * - mtrack is in the range [0, 360>.
- * - magvar is in the range [0, 360>.
+ * - DOPs are positive
+ * - latitude is in the range [-9000, 9000]
+ * - longitude is in the range [-18000, 18000]
+ * - speed is positive
+ * - track is in the range [0, 360>
+ * - mtrack is in the range [0, 360>
+ * - magvar is in the range [0, 360>
+ * - dgpsAge is positive
+ * - dgpsSid is positive
  * - satinfo:
- *   - inuse and in_use are consistent (w.r.t. count)
- *   - inview and sat are consistent (w.r.t. count/id)
- *   - in_use and sat are consistent (w.r.t. count/id)
- *   - elv is in the range [0, 90]
- *   - azimuth is in the range [0, 359]
- *   - sig is in the range [0, 99]
+ *   - inuseCount is positive
+ *   - each inUse satellite has a positive PRN
+ *   - inUse satellites are compacted (satellites with a zero PRN last)
+ *   - inViewCount is positive
+ *   - inView (only when GPGSV is not 'in progress'):
+ *     - prn is positive
+ *     - elevation is in the range [-90, 90]
+ *     - azimuth is in the range [0, 359]
+ *     - snr is in the range [0, 99]
  *
- * Time is set to the current time when not present.
  * Fields are reset to their defaults (0) when not signalled as being present.
  *
- * @param nmeaInfo
- * the NMEA info structure to sanitise
+ * @param info The NMEA info structure to sanitise
  */
-void nmeaInfoSanitise(NmeaInfo *nmeaInfo);
+void nmeaInfoSanitise(NmeaInfo *info);
 
 /**
  * Converts the position fields to degrees and DOP fields to meters so that

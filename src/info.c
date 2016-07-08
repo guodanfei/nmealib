@@ -22,6 +22,7 @@
 #include <math.h>
 #include <nmealib/nmath.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
@@ -339,7 +340,7 @@ void nmeaInfoClear(NmeaInfo *info) {
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);
 }
 
-void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
+void nmeaInfoSanitise(NmeaInfo *info) {
   double lat = 0;
   double lon = 0;
   double speed = 0;
@@ -353,337 +354,467 @@ void nmeaInfoSanitise(NmeaInfo *nmeaInfo) {
   bool mtrackAdjusted = false;
   bool magvarAdjusted = false;
   NmeaTime utc;
-  size_t inuseIndex;
-  size_t inviewIndex;
+  size_t i;
 
-  if (!nmeaInfo) {
+  if (!info) {
     return;
   }
 
-  nmeaInfo->present = nmeaInfo->present & NMEALIB_INFO_PRESENT_MASK;
+  /* convert back to non-metric */
+  nmeaInfoUnitConversion(info, false);
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SMASK)) {
-    nmeaInfo->smask = 0;
+  /*
+   * Reset to default when not present
+   */
+
+  /* no need to reset present; always present */
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SMASK)) {
+    info->smask = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCDATE) || !nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCTIME)) {
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME)) {
     nmeaTimeSet(&utc, NULL, NULL);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCDATE)) {
-    nmeaInfo->utc.year = utc.year;
-    nmeaInfo->utc.mon = utc.mon;
-    nmeaInfo->utc.day = utc.day;
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE)) {
+    info->utc.year = utc.year;
+    info->utc.mon = utc.mon;
+    info->utc.day = utc.day;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_UTCTIME)) {
-    nmeaInfo->utc.hour = utc.hour;
-    nmeaInfo->utc.min = utc.min;
-    nmeaInfo->utc.sec = utc.sec;
-    nmeaInfo->utc.hsec = utc.hsec;
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCTIME)) {
+    info->utc.hour = utc.hour;
+    info->utc.min = utc.min;
+    info->utc.sec = utc.sec;
+    info->utc.hsec = utc.hsec;
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SIG)) {
-    nmeaInfo->sig = NMEALIB_SIG_INVALID;
-  } else {
-    if ((nmeaInfo->sig < NMEALIB_SIG_FIRST) || (nmeaInfo->sig > NMEALIB_SIG_LAST)) {
-      nmeaInfo->sig = NMEALIB_SIG_INVALID;
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SIG)) {
+    info->sig = NMEALIB_SIG_INVALID;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_FIX)) {
+    info->fix = NMEALIB_FIX_BAD;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_PDOP)) {
+    info->pdop = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HDOP)) {
+    info->hdop = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_VDOP)) {
+    info->vdop = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
+    info->lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
+    info->lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_ELV)) {
+    info->elv = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HEIGHT)) {
+    info->height = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
+    info->speed = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_TRACK)) {
+    info->track = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MTRACK)) {
+    info->mtrack = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MAGVAR)) {
+    info->magvar = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_DGPSAGE)) {
+    info->dgpsAge = 0.0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_DGPSSID)) {
+    info->dgpsSid = 0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
+    info->satinfo.inUseCount = 0;
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
+    memset(&info->satinfo.inUse, 0, sizeof(info->satinfo.inUse));
+  }
+
+  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
+    info->satinfo.inViewCount = 0;
+  }
+
+  if (!info->progress.gpgsvInProgress //
+      && !nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW)) {
+    memset(&info->satinfo.inView, 0, sizeof(info->satinfo.inView));
+  }
+
+  /*
+   * present
+   */
+
+  info->present = info->present & NMEALIB_INFO_PRESENT_MASK;
+
+  /*
+   * smask
+   */
+
+  info->smask = info->smask & NMEALIB_SENTENCE_MASK;
+
+  /*
+   * utc
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE)) {
+    if (info->utc.year < 1990) {
+      info->utc.year = 1990;
+    } else if (info->utc.year > 2189) {
+      info->utc.year = 2189;
+    }
+    if (info->utc.mon < 1) {
+      info->utc.mon = 1;
+    } else if (info->utc.mon > 12) {
+      info->utc.mon = 12;
+    }
+    if (info->utc.day < 1) {
+      info->utc.day = 1;
+    } else if (info->utc.day > 31) {
+      info->utc.day = 31;
     }
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_FIX)) {
-    nmeaInfo->fix = NMEALIB_FIX_BAD;
-  } else {
-    if ((nmeaInfo->fix < NMEALIB_FIX_FIRST) || (nmeaInfo->fix > NMEALIB_FIX_LAST)) {
-      nmeaInfo->fix = NMEALIB_FIX_BAD;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE)) {
+    info->utc.hour = info->utc.hour %  24;
+    info->utc.min  = info->utc.min  %  60;
+    info->utc.sec  = info->utc.sec  %  61;
+    info->utc.hsec = info->utc.hsec % 100;
+  }
+
+  /*
+   * sig
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SIG)) {
+    if ((info->sig < NMEALIB_SIG_FIRST) //
+        || (info->sig > NMEALIB_SIG_LAST)) {
+      info->sig = NMEALIB_SIG_INVALID;
     }
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_PDOP)) {
-    nmeaInfo->pdop = 0;
-  } else {
-    nmeaInfo->pdop = fabs(nmeaInfo->pdop);
+  /*
+   * fix
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_FIX)) {
+    if ((info->fix < NMEALIB_FIX_FIRST) //
+        || (info->fix > NMEALIB_FIX_LAST)) {
+      info->fix = NMEALIB_FIX_BAD;
+    }
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_HDOP)) {
-    nmeaInfo->hdop = 0;
-  } else {
-    nmeaInfo->hdop = fabs(nmeaInfo->hdop);
+  /*
+   * pdop
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_PDOP)) {
+    info->pdop = fabs(info->pdop);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_VDOP)) {
-    nmeaInfo->vdop = 0;
-  } else {
-    nmeaInfo->vdop = fabs(nmeaInfo->vdop);
+  /*
+   * hdop
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HDOP)) {
+    info->hdop = fabs(info->hdop);
   }
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_LAT)) {
-    nmeaInfo->lat = 0;
-  }
+  /*
+   * vdop
+   */
 
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_LON)) {
-    nmeaInfo->lon = 0;
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_ELV)) {
-    nmeaInfo->elv = 0;
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SPEED)) {
-    nmeaInfo->speed = 0;
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_TRACK)) {
-    nmeaInfo->track = 0;
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_MTRACK)) {
-    nmeaInfo->mtrack = 0;
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_MAGVAR)) {
-    nmeaInfo->magvar = 0;
-  } else {
-    nmeaInfo->magvar = fabs(nmeaInfo->magvar);
-  }
-
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
-    nmeaInfo->satinfo.inUseCount = 0;
-  }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINUSE)) {
-    memset(&nmeaInfo->satinfo.inUse, 0, sizeof(nmeaInfo->satinfo.inUse));
-  }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    nmeaInfo->satinfo.inViewCount = 0;
-  }
-  if (!nmeaInfoIsPresentAll(nmeaInfo->present, NMEALIB_PRESENT_SATINVIEW)) {
-    memset(&nmeaInfo->satinfo.inView, 0, sizeof(nmeaInfo->satinfo.inView));
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_VDOP)) {
+    info->vdop = fabs(info->vdop);
   }
 
   /*
    * lat
    */
 
-  lat = nmeaInfo->lat;
-  lon = nmeaInfo->lon;
+  lat = info->lat;
+  lon = info->lon;
 
-  /* force lat in [-18000, 18000] */
-  while (lat < -18000.0) {
-    lat += 36000.0;
-    latAdjusted = true;
-  }
-  while (lat > 18000.0) {
-    lat -= 36000.0;
-    latAdjusted = true;
-  }
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
+    /* force lat in [-18000, 18000] */
+    while (lat < -18000.0) {
+      lat += 36000.0;
+      latAdjusted = true;
+    }
+    while (lat > 18000.0) {
+      lat -= 36000.0;
+      latAdjusted = true;
+    }
 
-  /* lat is now in [-18000, 18000] */
+    /* lat is now in [-18000, 18000] */
 
-  /* force lat from <9000, 18000] in [9000, 0] */
-  if (lat > 9000.0) {
-    lat = 18000.0 - lat;
-    lon += 18000.0;
-    latAdjusted = true;
-    lonAdjusted = true;
-  }
+    /* force lat from <9000, 18000] in [9000, 0] */
+    if (lat > 9000.0) {
+      lat = 18000.0 - lat;
+      lon += 18000.0;
+      latAdjusted = true;
+      lonAdjusted = true;
+    }
 
-  /* force lat from [-18000, -9000> in [0, -9000] */
-  if (lat < -9000.0) {
-    lat = -18000.0 - lat;
-    lon += 18000.0;
-    latAdjusted = true;
-    lonAdjusted = true;
-  }
+    /* force lat from [-18000, -9000> in [0, -9000] */
+    if (lat < -9000.0) {
+      lat = -18000.0 - lat;
+      lon += 18000.0;
+      latAdjusted = true;
+      lonAdjusted = true;
+    }
 
-  /* lat is now in [-9000, 9000] */
+    /* lat is now in [-9000, 9000] */
 
-  if (latAdjusted) {
-    nmeaInfo->lat = lat;
+    if (latAdjusted) {
+      info->lat = lat;
+    }
   }
 
   /*
    * lon
    */
 
-  /* force lon in [-18000, 18000] */
-  while (lon < -18000.0) {
-    lon += 36000.0;
-    lonAdjusted = true;
-  }
-  while (lon > 18000.0) {
-    lon -= 36000.0;
-    lonAdjusted = true;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
+    /* force lon in [-18000, 18000] */
+    while (lon < -18000.0) {
+      lon += 36000.0;
+      lonAdjusted = true;
+    }
+    while (lon > 18000.0) {
+      lon -= 36000.0;
+      lonAdjusted = true;
+    }
+
+    /* lon is now in [-18000, 18000] */
+
+    if (lonAdjusted) {
+      info->lon = lon;
+    }
   }
 
-  /* lon is now in [-18000, 18000] */
+  /*
+   * elv
+   */
 
-  if (lonAdjusted) {
-    nmeaInfo->lon = lon;
-  }
+  /*
+   * height
+   */
 
   /*
    * speed
    */
 
-  speed = nmeaInfo->speed;
-  track = nmeaInfo->track;
-  mtrack = nmeaInfo->mtrack;
+  speed = info->speed;
+  track = info->track;
+  mtrack = info->mtrack;
 
-  if (speed < 0.0) {
-    speed = -speed;
-    track += 180.0;
-    mtrack += 180.0;
-    speedAdjusted = true;
-    trackAdjusted = true;
-    mtrackAdjusted = true;
-  }
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
+    if (speed < 0.0) {
+      speed = -speed;
+      track += 180.0;
+      mtrack += 180.0;
+      speedAdjusted = true;
+      trackAdjusted = true;
+      mtrackAdjusted = true;
+    }
 
-  /* speed is now in [0, max> */
+    /* speed is now in [0, max> */
 
-  if (speedAdjusted) {
-    nmeaInfo->speed = speed;
+    if (speedAdjusted) {
+      info->speed = speed;
+    }
   }
 
   /*
    * track
    */
 
-  /* force track in [0, 360> */
-  while (track < 0.0) {
-    track += 360.0;
-    trackAdjusted = true;
-  }
-  while (track >= 360.0) {
-    track -= 360.0;
-    trackAdjusted = true;
-  }
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_TRACK)) {
+    /* force track in [0, 360> */
+    while (track < 0.0) {
+      track += 360.0;
+      trackAdjusted = true;
+    }
+    while (track >= 360.0) {
+      track -= 360.0;
+      trackAdjusted = true;
+    }
 
-  /* track is now in [0, 360> */
+    /* track is now in [0, 360> */
 
-  if (trackAdjusted) {
-    nmeaInfo->track = track;
+    if (trackAdjusted) {
+      info->track = track;
+    }
   }
 
   /*
    * mtrack
    */
 
-  /* force mtrack in [0, 360> */
-  while (mtrack < 0.0) {
-    mtrack += 360.0;
-    mtrackAdjusted = true;
-  }
-  while (mtrack >= 360.0) {
-    mtrack -= 360.0;
-    mtrackAdjusted = true;
-  }
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MTRACK)) {
+    /* force mtrack in [0, 360> */
+    while (mtrack < 0.0) {
+      mtrack += 360.0;
+      mtrackAdjusted = true;
+    }
+    while (mtrack >= 360.0) {
+      mtrack -= 360.0;
+      mtrackAdjusted = true;
+    }
 
-  /* mtrack is now in [0, 360> */
+    /* mtrack is now in [0, 360> */
 
-  if (mtrackAdjusted) {
-    nmeaInfo->mtrack = mtrack;
+    if (mtrackAdjusted) {
+      info->mtrack = mtrack;
+    }
   }
 
   /*
    * magvar
    */
 
-  magvar = nmeaInfo->magvar;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MAGVAR)) {
+    info->magvar = fabs(info->magvar);
 
-  /* force magvar in [0, 360> */
-  while (magvar < 0.0) {
-    magvar += 360.0;
-    magvarAdjusted = true;
+    magvar = info->magvar;
+
+    /* force magvar in [0, 360> */
+    while (magvar < 0.0) {
+      magvar += 360.0;
+      magvarAdjusted = true;
+    }
+    while (magvar >= 360.0) {
+      magvar -= 360.0;
+      magvarAdjusted = true;
+    }
+
+    /* magvar is now in [0, 360> */
+
+    if (magvarAdjusted) {
+      info->magvar = magvar;
+    }
   }
-  while (magvar >= 360.0) {
-    magvar -= 360.0;
-    magvarAdjusted = true;
+
+  /*
+   * dgpsAge
+   */
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_DGPSAGE)) {
+    info->dgpsAge = fabs(info->dgpsAge);
   }
 
-  /* magvar is now in [0, 360> */
+  /*
+   * dgpsSid
+   */
 
-  if (magvarAdjusted) {
-    nmeaInfo->magvar = magvar;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_DGPSSID)) {
+    info->dgpsSid = abs(info->dgpsSid);
   }
 
   /*
    * satinfo
    */
 
-  nmeaInfo->satinfo.inUseCount = 0;
-  for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
-    if (nmeaInfo->satinfo.inUse[inuseIndex])
-      nmeaInfo->satinfo.inUseCount++;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
+    info->satinfo.inUseCount = abs(info->satinfo.inUseCount);
   }
 
-  nmeaInfo->satinfo.inViewCount = 0;
-  for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
-    if (nmeaInfo->satinfo.inView[inviewIndex].prn) {
-      nmeaInfo->satinfo.inViewCount++;
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
+    qsort(info->satinfo.inUse, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inUse[0]), nmeaQsortPRNCompact);
+
+    for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
+      if (!info->satinfo.inUse[i]) {
+        break;
+      }
+
+      info->satinfo.inUse[i] = abs(info->satinfo.inUse[i]);
+    }
+  }
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
+    info->satinfo.inViewCount = abs(info->satinfo.inViewCount);
+  }
+
+  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW) //
+      && !info->progress.gpgsvInProgress) {
+    qsort(info->satinfo.inView, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inView[0]), nmeaQsortSatelliteCompact);
+
+    for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
+      NmeaSatellite *sat = &info->satinfo.inView[i];
+      if (!sat->prn) {
+        break;
+      }
+
+      sat->prn = abs(sat->prn);
 
       /* force elv in [-180, 180] */
-      while (nmeaInfo->satinfo.inView[inviewIndex].elevation < -180) {
-        nmeaInfo->satinfo.inView[inviewIndex].elevation += 360;
+      while (sat->elevation < -180) {
+        sat->elevation += 360;
       }
-      while (nmeaInfo->satinfo.inView[inviewIndex].elevation > 180) {
-        nmeaInfo->satinfo.inView[inviewIndex].elevation -= 360;
+      while (sat->elevation > 180) {
+        sat->elevation -= 360;
       }
 
       /* elv is now in [-180, 180] */
 
       /* force elv from <90, 180] in [90, 0] */
-      if (nmeaInfo->satinfo.inView[inviewIndex].elevation > 90) {
-        nmeaInfo->satinfo.inView[inviewIndex].elevation = 180 - nmeaInfo->satinfo.inView[inviewIndex].elevation;
+      if (sat->elevation > 90) {
+        sat->elevation = 180 - sat->elevation;
+        sat->azimuth += 180;
       }
 
       /* force elv from [-180, -90> in [0, -90] */
-      if (nmeaInfo->satinfo.inView[inviewIndex].elevation < -90) {
-        nmeaInfo->satinfo.inView[inviewIndex].elevation = -180 - nmeaInfo->satinfo.inView[inviewIndex].elevation;
+      if (sat->elevation < -90) {
+        sat->elevation = -180 - sat->elevation;
+        sat->azimuth += 180;
       }
 
       /* elv is now in [-90, 90] */
 
-      if (nmeaInfo->satinfo.inView[inviewIndex].elevation < 0) {
-        nmeaInfo->satinfo.inView[inviewIndex].elevation = -nmeaInfo->satinfo.inView[inviewIndex].elevation;
-      }
-
-      /* elv is now in [0, 90] */
-
       /* force azimuth in [0, 360> */
-      while (nmeaInfo->satinfo.inView[inviewIndex].azimuth < 0) {
-        nmeaInfo->satinfo.inView[inviewIndex].azimuth += 360;
+      while (sat->azimuth < 0) {
+        sat->azimuth += 360;
       }
-      while (nmeaInfo->satinfo.inView[inviewIndex].azimuth >= 360) {
-        nmeaInfo->satinfo.inView[inviewIndex].azimuth -= 360;
+      while (sat->azimuth >= 360) {
+        sat->azimuth -= 360;
       }
       /* azimuth is now in [0, 360> */
 
-      /* force sig in [0, 99] */
-      if (nmeaInfo->satinfo.inView[inviewIndex].snr < 0)
-        nmeaInfo->satinfo.inView[inviewIndex].snr = 0;
-      if (nmeaInfo->satinfo.inView[inviewIndex].snr > 99)
-        nmeaInfo->satinfo.inView[inviewIndex].snr = 99;
-    }
-  }
-
-  /* make sure the in_use IDs map to sat IDs */
-  for (inuseIndex = 0; inuseIndex < NMEALIB_MAX_SATELLITES; inuseIndex++) {
-    int inuseID = nmeaInfo->satinfo.inUse[inuseIndex];
-    if (inuseID) {
-      bool found = false;
-      for (inviewIndex = 0; inviewIndex < NMEALIB_MAX_SATELLITES; inviewIndex++) {
-        int inviewID = nmeaInfo->satinfo.inView[inviewIndex].prn;
-        if (inuseID == inviewID) {
-          found = true;
-          break;
-        }
+      /* force snr in [0, 99] */
+      if (sat->snr < 0) {
+        sat->snr = 0;
       }
-      if (!found) {
-        /* clear the id, did not find it */
-        nmeaInfo->satinfo.inUse[inuseIndex] = 0;
-        if (nmeaInfo->satinfo.inUseCount)
-          nmeaInfo->satinfo.inUseCount--;
+      if (sat->snr > 99) {
+        sat->snr = 99;
       }
+      /* snr is now in [0, 99] */
     }
   }
 }
