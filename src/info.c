@@ -701,8 +701,6 @@ void nmeaInfoSanitise(NmeaInfo *info) {
    */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MAGVAR)) {
-    info->magvar = fabs(info->magvar);
-
     magvar = info->magvar;
 
     /* force magvar in [0, 360> */
@@ -908,7 +906,14 @@ int nmeaQsortPRNCompact(const void *p1, const void *p2) {
     return 0;
   }
 
-  return nmeaQsortPRNCompare(p1, p2);
+  if (!prn1) {
+    prn1 += 1000;
+  }
+  if (!prn2) {
+    prn2 += 1000;
+  }
+
+  return (prn1 - prn2);
 }
 
 int nmeaQsortSatelliteCompare(const void *s1, const void *s2) {
