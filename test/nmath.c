@@ -17,13 +17,9 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
+#include <nmealib/nmath.h>
 #include <CUnit/Basic.h>
 #include <float.h>
-#include <nmealib/nmath.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
 #include <string.h>
 
 int nmathSuiteSetup(void);

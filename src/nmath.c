@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <assert.h>
-#include <math.h>
 #include <nmealib/nmath.h>
+
+#include <math.h>
 
 double nmeaMathDegreeToRadian(const double v) {
   return (v * NMEALIB_PI180);

@@ -18,7 +18,6 @@
 #include <nmealib/validate.h>
 
 #include <nmealib/context.h>
-#include <ctype.h>
 
 /** Invalid NMEA character: non-ASCII */
 static const NmeaInvalidCharacter nmealibInvalidNonAsciiCharsName = {

@@ -15,14 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <nmealib/info.h>
 #include <nmealib/context.h>
-#include <nmealib/parser.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <libgen.h>
+#include <nmealib/info.h>
 #include <nmealib/nmath.h>
+#include <nmealib/parser.h>
+#include <libgen.h>
+#include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 static const char * traceStr = "Trace: ";
 static const char * errorStr = "Error: ";

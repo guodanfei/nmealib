@@ -18,10 +18,8 @@
 #ifndef __NMEALIB_TOK_H__
 #define __NMEALIB_TOK_H__
 
-#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <string.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -42,7 +40,7 @@ extern "C" {
 /** The power-of-2 chunk size of a buffer allocation */
 #define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
 
-#define NMEALIB_RANDOM_MAX LONG_MAX
+#define NMEALIB_RANDOM_MAX        (LONG_MAX)
 
 void nmeaRandomInit(void);
 

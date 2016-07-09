@@ -17,15 +17,9 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
 #include <nmealib/parser.h>
-
 #include <CUnit/Basic.h>
-#include <float.h>
-#include <stdbool.h>
 #include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
 
 int parserSuiteSetup(void);
 

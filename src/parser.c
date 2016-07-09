@@ -18,7 +18,6 @@
 #include <nmealib/parser.h>
 
 #include <nmealib/sentence.h>
-#include <nmealib/util.h>
 #include <nmealib/validate.h>
 #include <assert.h>
 #include <ctype.h>

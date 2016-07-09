@@ -24,6 +24,8 @@
 #define __NMEALIB_GPGSV_H__
 
 #include <nmealib/info.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #ifdef  __cplusplus

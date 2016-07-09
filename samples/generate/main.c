@@ -18,7 +18,6 @@
 #include <nmealib/info.h>
 #include <nmealib/nmath.h>
 #include <nmealib/sentence.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

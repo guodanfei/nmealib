@@ -18,10 +18,9 @@
 #include <nmealib/generator.h>
 
 #include <nmealib/context.h>
-#include <nmealib/sentence.h>
-#include <nmealib/util.h>
-#include <math.h>
 #include <nmealib/nmath.h>
+#include <nmealib/sentence.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -477,7 +476,7 @@ void nmeaGeneratorAdd(NmeaGenerator *to, NmeaGenerator *gen) {
   next->next = gen;
 }
 
-size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, int generate_mask) {
+size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, unsigned int generate_mask) {
   size_t retval;
 
   if ((retval = nmeaGeneratorLoop(gen, info)))

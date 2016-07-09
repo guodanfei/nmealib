@@ -17,14 +17,11 @@
 
 #include <nmealib/info.h>
 
-#include <nmealib/sentence.h>
-#include <nmealib/util.h>
-#include <math.h>
 #include <nmealib/nmath.h>
-#include <stdbool.h>
+#include <nmealib/sentence.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
 #include <time.h>
 
 const char * nmeaInfoSigToString(NmeaSignal sig) {

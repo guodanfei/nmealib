@@ -16,8 +16,8 @@
  */
 
 #include <nmealib/generator.h>
+#include <nmealib/info.h>
 #include <nmealib/sentence.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

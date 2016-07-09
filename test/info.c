@@ -17,19 +17,13 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
-#include <nmealib/gpvtg.h>
 #include <nmealib/info.h>
+#include <nmealib/nmath.h>
 #include <nmealib/sentence.h>
-
 #include <CUnit/Basic.h>
 #include <float.h>
-#include <nmealib/nmath.h>
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
 #include <time.h>
 
 int infoSuiteSetup(void);

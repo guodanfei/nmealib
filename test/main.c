@@ -15,9 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <CUnit/CUnit.h>
-#include <CUnit/Basic.h>
 #include <nmealib/util.h>
+#include <CUnit/Basic.h>
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);

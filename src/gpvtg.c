@@ -18,16 +18,10 @@
 #include <nmealib/gpvtg.h>
 
 #include <nmealib/context.h>
-#include <nmealib/info.h>
-#include <nmealib/sentence.h>
-#include <nmealib/util.h>
-#include <nmealib/validate.h>
-#include <ctype.h>
-#include <limits.h>
-#include <math.h>
 #include <nmealib/nmath.h>
+#include <nmealib/sentence.h>
+#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {

@@ -18,9 +18,8 @@
 #include "mockContext.h"
 
 #include <nmealib/context.h>
-
 #include <CUnit/Basic.h>
-#include <stdio.h>
+#include <stddef.h>
 
 int nmeaTraceCalls = 0;
 int nmeaErrorCalls = 0;

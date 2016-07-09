@@ -24,6 +24,8 @@
 #define __NMEALIB_GPVTG_H__
 
 #include <nmealib/info.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #ifdef  __cplusplus

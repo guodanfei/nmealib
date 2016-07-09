@@ -18,7 +18,6 @@
 #ifndef __NMEALIB_CONTEXT_H__
 #define __NMEALIB_CONTEXT_H__
 
-#include <stdbool.h>
 #include <stddef.h>
 
 #ifdef  __cplusplus

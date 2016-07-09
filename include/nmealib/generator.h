@@ -19,6 +19,8 @@
 #define __NMEALIB_GENERATOR_H__
 
 #include <nmealib/info.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -139,7 +141,7 @@ void nmeaGeneratorAdd(NmeaGenerator *to, NmeaGenerator *gen);
  * @param generate_mask The mask (smask) of sentences to generate
  * @return The total length of the generated sentences
  */
-size_t nmeaGeneratorGenerateFrom(char **buf, NmeaInfo *info, NmeaGenerator *gen, int generate_mask);
+size_t nmeaGeneratorGenerateFrom(char **buf, NmeaInfo *info, NmeaGenerator *gen, unsigned int generate_mask);
 
 /**
  * Create the generator and initialise it.

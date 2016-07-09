@@ -17,15 +17,10 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
+#include <nmealib/util.h>
 #include <CUnit/Basic.h>
 #include <float.h>
 #include <limits.h>
-#include <nmealib/util.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
 
 int utilSuiteSetup(void);
 

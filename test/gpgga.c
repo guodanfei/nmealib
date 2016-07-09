@@ -17,16 +17,10 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
 #include <nmealib/gpgga.h>
-#include <nmealib/info.h>
 #include <nmealib/sentence.h>
-
 #include <CUnit/Basic.h>
 #include <float.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <string.h>
 
 int gpggaSuiteSetup(void);
 

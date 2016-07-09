@@ -17,15 +17,8 @@
 
 #include "testHelpers.h"
 
-#include <nmealib/context.h>
 #include <nmealib/validate.h>
-
 #include <CUnit/Basic.h>
-#include <float.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
 
 int validateSuiteSetup(void);
 

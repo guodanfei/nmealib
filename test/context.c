@@ -16,8 +16,8 @@
  */
 
 #include <nmealib/context.h>
-#include <CUnit/CUnit.h>
 #include <nmealib/util.h>
+#include <CUnit/Basic.h>
 #include <stdlib.h>
 
 /*
