@@ -130,7 +130,7 @@ void nmeaGeneratorDestroy(NmeaGenerator *gen);
  * @param to The generators to add to
  * @param gen The generator to add
  */
-void nmeaGeneratorAdd(NmeaGenerator *to, NmeaGenerator *gen);
+void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen);
 
 /**
  * Run a new generation loop on the generator

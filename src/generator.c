@@ -437,7 +437,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
     case NMEALIB_GENERATOR_ROTATE:
     default:
       gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_SAT_ROTATE, info);
-      nmeaGeneratorAdd(gen, nmeaGeneratorCreate(NMEALIB_GENERATOR_POS_RANDMOVE, info));
+      nmeaGeneratorAppend(gen, nmeaGeneratorCreate(NMEALIB_GENERATOR_POS_RANDMOVE, info));
       break;
   };
 
@@ -449,51 +449,78 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
 }
 
 bool nmeaGeneratorReset(NmeaGenerator *gen, NmeaInfo *info) {
-  bool RetVal = 1;
+  bool r = true;
 
-  if (gen->reset_call)
-    RetVal = (*gen->reset_call)(gen, info);
+  if (!gen) {
+    return false;
+  }
 
-  return RetVal;
+  if (gen->reset_call) {
+    r = (*gen->reset_call)(gen, info);
+  }
+
+  return r;
 }
 
 void nmeaGeneratorDestroy(NmeaGenerator *gen) {
-  if (gen->next) {
-    nmeaGeneratorDestroy(gen->next);
-    gen->next = 0;
+  if (!gen) {
+    return;
   }
 
-  if (gen->destroy_call)
+  if (gen->next) {
+    nmeaGeneratorDestroy(gen->next);
+    gen->next = NULL;
+  }
+
+  if (gen->destroy_call) {
     (*gen->destroy_call)(gen);
+  }
 
   free(gen);
 }
 
 bool nmeaGeneratorLoop(NmeaGenerator *gen, NmeaInfo *info) {
-  bool retVal = true;
+  bool r = true;
 
-  if (gen->loop_call)
-    retVal = (*gen->loop_call)(gen, info);
+  if (!gen) {
+    return false;
+  }
 
-  if (retVal && gen->next)
-    retVal = nmeaGeneratorLoop(gen->next, info);
+  if (gen->loop_call) {
+    r = (*gen->loop_call)(gen, info);
+  }
 
-  return retVal;
+  if (r //
+      && gen->next) {
+    r = nmeaGeneratorLoop(gen->next, info);
+  }
+
+  return r;
 }
 
-void nmeaGeneratorAdd(NmeaGenerator *to, NmeaGenerator *gen) {
-  NmeaGenerator * next = to;
-  while (next->next)
+void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen) {
+  NmeaGenerator * next;
+
+  if (!to //
+      || !gen) {
+    return;
+  }
+
+  next = to;
+  while (next->next) {
     next = to->next;
+  }
 
   next->next = gen;
 }
 
 size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, unsigned int generate_mask) {
-  size_t retval;
+  size_t r;
 
-  if ((retval = nmeaGeneratorLoop(gen, info)))
-    retval = nmeaSentenceFromInfo(s, info, generate_mask);
+  r = nmeaGeneratorLoop(gen, info);
+  if (r) {
+    r = nmeaSentenceFromInfo(s, info, generate_mask);
+  }
 
-  return retval;
+  return r;
 }

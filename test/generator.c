@@ -88,7 +88,7 @@ static void test_nmeaGeneratorDestroy(void) {
   // FIXME
 }
 
-static void test_nmeaGeneratorAdd(void) {
+static void test_nmeaGeneratorAppend(void) {
   // FIXME
 }
 
@@ -123,7 +123,7 @@ int generatorSuiteSetup(void) {
       || (!CU_add_test(pSuite, "nmeaGeneratorLoop", test_nmeaGeneratorLoop)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorReset", test_nmeaGeneratorReset)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorDestroy", test_nmeaGeneratorDestroy)) //
-      || (!CU_add_test(pSuite, "nmeaGeneratorAdd", test_nmeaGeneratorAdd)) //
+      || (!CU_add_test(pSuite, "nmeaGeneratorAppend", test_nmeaGeneratorAppend)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorGenerateFrom", test_nmeaGeneratorGenerateFrom)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorCreate", test_nmeaGeneratorCreate)) //
       ) {
