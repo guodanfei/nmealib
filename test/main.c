@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 extern int contextSuiteSetup(void);
-// FIXME generator
+extern int generatorSuiteSetup(void);
 extern int gpggaSuiteSetup(void);
 extern int gpgsaSuiteSetup(void);
 extern int gpgsvSuiteSetup(void);
@@ -42,7 +42,7 @@ int main(void) {
 
   if ( //
       (contextSuiteSetup() != CUE_SUCCESS) //
-      // FIXME generator
+      || (generatorSuiteSetup() != CUE_SUCCESS) //
       || (gpggaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsaSuiteSetup() != CUE_SUCCESS) //
       || (gpgsvSuiteSetup() != CUE_SUCCESS) //

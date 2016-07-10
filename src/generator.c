@@ -24,6 +24,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+bool nmeaGeneratorLoopNoise(NmeaGenerator *gen, NmeaInfo *info);
+
+bool nmeaGeneratorLoopStatic(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorResetStatic(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info);
+
+bool nmeaGeneratorLoopRotate(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorResetRotate(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorInitRotate(NmeaGenerator *gen, NmeaInfo *info);
+
+bool nmeaGeneratorInitRandomMove(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorLoopRandomMove(NmeaGenerator *gen, NmeaInfo *info);
+
 /*
  * NOISE generator
  */
@@ -36,7 +49,7 @@
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   size_t it;
   size_t in_use;
 
@@ -107,7 +120,7 @@ static bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), 
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorLoopStatic(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorLoopStatic(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   nmeaTimeSet(&info->utc, &info->present, NULL);
   return true;
 }
@@ -120,7 +133,7 @@ static bool nmeaGeneratorLoopStatic(NmeaGenerator *gen __attribute__ ((unused)),
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorResetStatic(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorResetStatic(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   info->satinfo.inUseCount = 4;
   info->satinfo.inViewCount = 4;
 
@@ -164,7 +177,7 @@ static bool nmeaGeneratorResetStatic(NmeaGenerator *gen __attribute__ ((unused))
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info) {
+bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
@@ -187,7 +200,7 @@ static bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   int it;
   int count = info->satinfo.inViewCount;
   double deg = 360.0 / (count ?
@@ -219,7 +232,7 @@ static bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)),
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   int it;
   double deg = 360 / 8;
   double srt = 0;
@@ -252,7 +265,7 @@ static bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused))
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorInitRotate(NmeaGenerator *gen, NmeaInfo *info) {
+bool nmeaGeneratorInitRotate(NmeaGenerator *gen, NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
 
@@ -276,7 +289,7 @@ static bool nmeaGeneratorInitRotate(NmeaGenerator *gen, NmeaInfo *info) {
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorInitRandomMove(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorInitRandomMove(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   info->sig = NMEALIB_SIG_SENSITIVE;
   info->fix = NMEALIB_FIX_3D;
   info->speed = 20;
@@ -301,7 +314,7 @@ static bool nmeaGeneratorInitRandomMove(NmeaGenerator *gen __attribute__ ((unuse
  * @param info a pointer to an nmeaINFO structure to use during generation
  * @return true on success, false otherwise
  */
-static bool nmeaGeneratorLoopRandomMove(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
+bool nmeaGeneratorLoopRandomMove(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
   NmeaPosition crd;
 
   info->track += nmeaRandom(-10, 10);
