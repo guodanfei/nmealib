@@ -55,14 +55,14 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
       timeBuf, //
       &pack->sigSelection, //
       &pack->latitude, //
-      &pack->ns, //
+      &pack->latitudeNS, //
       &pack->longitude, //
-      &pack->ew, //
+      &pack->longitudeEW, //
       &pack->speedN, //
       &pack->track, //
       dateBuf, //
       &pack->magvar, //
-      &pack->magvar_ew, //
+      &pack->magvarEW, //
       &pack->sig);
 
   /* see that there are enough tokens */
@@ -122,25 +122,25 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(pack->ns, true, NMEALIB_GPRMC_PREFIX, s)) {
+    if (!nmeaValidateNSEW(pack->latitudeNS, true, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
   } else {
     pack->latitude = 0.0;
-    pack->ns = '\0';
+    pack->latitudeNS = '\0';
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(pack->ew, false, NMEALIB_GPRMC_PREFIX, s)) {
+    if (!nmeaValidateNSEW(pack->longitudeEW, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);
   } else {
     pack->longitude = 0.0;
-    pack->ew = '\0';
+    pack->longitudeEW = '\0';
   }
 
   if (!isnan(pack->speedN)) {
@@ -169,14 +169,14 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (!isnan(pack->magvar)) {
-    if (!nmeaValidateNSEW(pack->magvar_ew, false, NMEALIB_GPRMC_PREFIX, s)) {
+    if (!nmeaValidateNSEW(pack->magvarEW, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_MAGVAR);
   } else {
     pack->magvar = 0.0;
-    pack->magvar_ew = '\0';
+    pack->magvarEW = '\0';
   }
 
   return true;
@@ -227,14 +227,14 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
-    info->latitude = ((pack->ns == 'N') ?
+    info->latitude = ((pack->latitudeNS == 'N') ?
         pack->latitude :
         -pack->latitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
-    info->longitude = ((pack->ew == 'E') ?
+    info->longitude = ((pack->longitudeEW == 'E') ?
         pack->longitude :
         -pack->longitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
@@ -258,7 +258,7 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_MAGVAR)) {
-    info->magvar = ((pack->magvar_ew == 'E') ?
+    info->magvar = ((pack->magvarEW == 'E') ?
         pack->magvar :
         -pack->magvar);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_MAGVAR);
@@ -293,7 +293,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     pack->latitude = fabs(info->latitude);
-    pack->ns = ((info->latitude >= 0.0) ?
+    pack->latitudeNS = ((info->latitude >= 0.0) ?
         'N' :
         'S');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
@@ -301,7 +301,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
     pack->longitude = fabs(info->longitude);
-    pack->ew = ((info->longitude >= 0.0) ?
+    pack->longitudeEW = ((info->longitude >= 0.0) ?
         'E' :
         'W');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);
@@ -326,7 +326,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MAGVAR)) {
     pack->magvar = fabs(info->magvar);
-    pack->magvar_ew = ((info->magvar >= 0.0) ?
+    pack->magvarEW = ((info->magvar >= 0.0) ?
         'E' :
         'W');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_MAGVAR);
@@ -366,8 +366,8 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
     chars += snprintf(dst, available, ",%09.4f", pack->latitude);
-    if (pack->ns) {
-      chars += snprintf(dst, available, ",%c", pack->ns);
+    if (pack->latitudeNS) {
+      chars += snprintf(dst, available, ",%c", pack->latitudeNS);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -377,8 +377,8 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
     chars += snprintf(dst, available, ",%010.4f", pack->longitude);
-    if (pack->ew) {
-      chars += snprintf(dst, available, ",%c", pack->ew);
+    if (pack->longitudeEW) {
+      chars += snprintf(dst, available, ",%c", pack->longitudeEW);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -410,8 +410,8 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_MAGVAR)) {
     chars += snprintf(dst, available, ",%03.1f", pack->magvar);
-    if (pack->magvar_ew) {
-      chars += snprintf(dst, available, ",%c", pack->magvar_ew);
+    if (pack->magvarEW) {
+      chars += snprintf(dst, available, ",%c", pack->magvarEW);
     } else {
       chars += snprintf(dst, available, ",");
     }

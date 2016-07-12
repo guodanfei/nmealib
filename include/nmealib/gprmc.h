@@ -78,13 +78,13 @@ typedef struct _NmeaGPRMC {
   NmeaTime utc;
   char     sigSelection;
   double   latitude;
-  char     ns;
+  char     latitudeNS;
   double   longitude;
-  char     ew;
+  char     longitudeEW;
   double   speedN;
   double   track;
   double   magvar;
-  char     magvar_ew;
+  char     magvarEW;
   char     sig;
 } NmeaGPRMC;
 
