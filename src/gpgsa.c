@@ -51,18 +51,18 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
           "%F,%F,%F*", //
       &pack->sig, //
       &pack->fix, //
-      &pack->satPrn[0], //
-      &pack->satPrn[1], //
-      &pack->satPrn[2], //
-      &pack->satPrn[3], //
-      &pack->satPrn[4], //
-      &pack->satPrn[5], //
-      &pack->satPrn[6], //
-      &pack->satPrn[7], //
-      &pack->satPrn[8], //
-      &pack->satPrn[9], //
-      &pack->satPrn[10], //
-      &pack->satPrn[11], //
+      &pack->prn[0], //
+      &pack->prn[1], //
+      &pack->prn[2], //
+      &pack->prn[3], //
+      &pack->prn[4], //
+      &pack->prn[5], //
+      &pack->prn[6], //
+      &pack->prn[7], //
+      &pack->prn[8], //
+      &pack->prn[9], //
+      &pack->prn[10], //
+      &pack->prn[11], //
       &pack->pdop, //
       &pack->hdop, //
       &pack->vdop);
@@ -97,9 +97,9 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     pack->fix = NMEALIB_FIX_BAD;
   }
 
-  qsort(pack->satPrn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(unsigned int), nmeaQsortPRNCompact);
-  if (!pack->satPrn[0]) {
-    memset(pack->satPrn, 0, sizeof(pack->satPrn));
+  qsort(pack->prn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(unsigned int), nmeaQsortPRNCompact);
+  if (!pack->prn[0]) {
+    memset(pack->prn, 0, sizeof(pack->prn));
   } else {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINUSE);
   }
@@ -164,7 +164,7 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
     memset(&info->satellites.inUse, 0, sizeof(info->satellites.inUse[0]));
 
     for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++) {
-      unsigned int prn = pack->satPrn[packIndex];
+      unsigned int prn = pack->prn[packIndex];
       if (prn) {
         info->satellites.inUse[infoIndex++] = prn;
         info->satellites.inUseCount++;
@@ -221,7 +221,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
     for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
       unsigned int prn = info->satellites.inUse[infoIndex];
       if (prn) {
-        pack->satPrn[packIndex++] = prn;
+        pack->prn[packIndex++] = prn;
       }
     }
 
@@ -275,7 +275,7 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack) {
 
   satInUse = nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINUSE);
   for (i = 0; i < NMEALIB_GPGSA_SATS_IN_SENTENCE; i++) {
-    unsigned int prn = pack->satPrn[i];
+    unsigned int prn = pack->prn[i];
     if (satInUse && prn) {
       chars += snprintf(dst, available, ",%d", prn);
     } else {

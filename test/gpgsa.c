@@ -98,18 +98,18 @@ static void test_nmeaGPGSAParse(void) {
   r = nmeaGPGSAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINUSE);
-  CU_ASSERT_EQUAL(pack.satPrn[0], 12);
-  CU_ASSERT_EQUAL(pack.satPrn[1], 11);
-  CU_ASSERT_EQUAL(pack.satPrn[2], 10);
-  CU_ASSERT_EQUAL(pack.satPrn[3], 5);
-  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
-  CU_ASSERT_EQUAL(pack.satPrn[5], 8);
-  CU_ASSERT_EQUAL(pack.satPrn[6], 4);
-  CU_ASSERT_EQUAL(pack.satPrn[7], 3);
-  CU_ASSERT_EQUAL(pack.satPrn[8], 2);
-  CU_ASSERT_EQUAL(pack.satPrn[9], 1);
-  CU_ASSERT_EQUAL(pack.satPrn[10], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[11], 0);
+  CU_ASSERT_EQUAL(pack.prn[0], 12);
+  CU_ASSERT_EQUAL(pack.prn[1], 11);
+  CU_ASSERT_EQUAL(pack.prn[2], 10);
+  CU_ASSERT_EQUAL(pack.prn[3], 5);
+  CU_ASSERT_EQUAL(pack.prn[4], 7);
+  CU_ASSERT_EQUAL(pack.prn[5], 8);
+  CU_ASSERT_EQUAL(pack.prn[6], 4);
+  CU_ASSERT_EQUAL(pack.prn[7], 3);
+  CU_ASSERT_EQUAL(pack.prn[8], 2);
+  CU_ASSERT_EQUAL(pack.prn[9], 1);
+  CU_ASSERT_EQUAL(pack.prn[10], 0);
+  CU_ASSERT_EQUAL(pack.prn[11], 0);
 
   /* pdop */
 
@@ -231,18 +231,18 @@ static void test_nmeaGPGSAToInfo(void) {
 
   /* satPrn */
 
-  pack.satPrn[0] = 1;
-  pack.satPrn[1] = 2;
-  pack.satPrn[2] = 0;
-  pack.satPrn[3] = 0;
-  pack.satPrn[4] = 5;
-  pack.satPrn[5] = 6;
-  pack.satPrn[6] = 7;
-  pack.satPrn[7] = 8;
-  pack.satPrn[8] = 0;
-  pack.satPrn[9] = 10;
-  pack.satPrn[10] = 11;
-  pack.satPrn[11] = 12;
+  pack.prn[0] = 1;
+  pack.prn[1] = 2;
+  pack.prn[2] = 0;
+  pack.prn[3] = 0;
+  pack.prn[4] = 5;
+  pack.prn[5] = 6;
+  pack.prn[6] = 7;
+  pack.prn[7] = 8;
+  pack.prn[8] = 0;
+  pack.prn[9] = 10;
+  pack.prn[10] = 11;
+  pack.prn[11] = 12;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINUSE);
 
   nmeaGPGSAToInfo(&pack, &info);
@@ -409,18 +409,18 @@ static void test_nmeaGPGSAFromInfo(void) {
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINUSE);
-  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
-  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
-  CU_ASSERT_EQUAL(pack.satPrn[2], 5);
-  CU_ASSERT_EQUAL(pack.satPrn[3], 6);
-  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
-  CU_ASSERT_EQUAL(pack.satPrn[5], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[6], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[7], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[8], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[9], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[10], 0);
-  CU_ASSERT_EQUAL(pack.satPrn[11], 0);
+  CU_ASSERT_EQUAL(pack.prn[0], 1);
+  CU_ASSERT_EQUAL(pack.prn[1], 2);
+  CU_ASSERT_EQUAL(pack.prn[2], 5);
+  CU_ASSERT_EQUAL(pack.prn[3], 6);
+  CU_ASSERT_EQUAL(pack.prn[4], 7);
+  CU_ASSERT_EQUAL(pack.prn[5], 0);
+  CU_ASSERT_EQUAL(pack.prn[6], 0);
+  CU_ASSERT_EQUAL(pack.prn[7], 0);
+  CU_ASSERT_EQUAL(pack.prn[8], 0);
+  CU_ASSERT_EQUAL(pack.prn[9], 0);
+  CU_ASSERT_EQUAL(pack.prn[10], 0);
+  CU_ASSERT_EQUAL(pack.prn[11], 0);
   memset(&info, 0, sizeof(info));
 
   info.satellites.inUse[0] = 1;
@@ -442,18 +442,18 @@ static void test_nmeaGPGSAFromInfo(void) {
   nmeaGPGSAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINUSE);
-  CU_ASSERT_EQUAL(pack.satPrn[0], 1);
-  CU_ASSERT_EQUAL(pack.satPrn[1], 2);
-  CU_ASSERT_EQUAL(pack.satPrn[2], 5);
-  CU_ASSERT_EQUAL(pack.satPrn[3], 6);
-  CU_ASSERT_EQUAL(pack.satPrn[4], 7);
-  CU_ASSERT_EQUAL(pack.satPrn[5], 9);
-  CU_ASSERT_EQUAL(pack.satPrn[6], 10);
-  CU_ASSERT_EQUAL(pack.satPrn[7], 11);
-  CU_ASSERT_EQUAL(pack.satPrn[8], 14);
-  CU_ASSERT_EQUAL(pack.satPrn[9], 15);
-  CU_ASSERT_EQUAL(pack.satPrn[10], 16);
-  CU_ASSERT_EQUAL(pack.satPrn[11], 17);
+  CU_ASSERT_EQUAL(pack.prn[0], 1);
+  CU_ASSERT_EQUAL(pack.prn[1], 2);
+  CU_ASSERT_EQUAL(pack.prn[2], 5);
+  CU_ASSERT_EQUAL(pack.prn[3], 6);
+  CU_ASSERT_EQUAL(pack.prn[4], 7);
+  CU_ASSERT_EQUAL(pack.prn[5], 9);
+  CU_ASSERT_EQUAL(pack.prn[6], 10);
+  CU_ASSERT_EQUAL(pack.prn[7], 11);
+  CU_ASSERT_EQUAL(pack.prn[8], 14);
+  CU_ASSERT_EQUAL(pack.prn[9], 15);
+  CU_ASSERT_EQUAL(pack.prn[10], 16);
+  CU_ASSERT_EQUAL(pack.prn[11], 17);
   memset(&info, 0, sizeof(info));
 
   /* pdop */
@@ -561,15 +561,15 @@ static void test_nmeaGPGSAGenerate(void) {
 
   /* satPrn */
 
-  pack.satPrn[0] = 1;
-  pack.satPrn[1] = 2;
-  pack.satPrn[2] = 3;
-  pack.satPrn[4] = 5;
-  pack.satPrn[5] = 6;
-  pack.satPrn[6] = 7;
-  pack.satPrn[9] = 10;
-  pack.satPrn[10] = 11;
-  pack.satPrn[11] = 12;
+  pack.prn[0] = 1;
+  pack.prn[1] = 2;
+  pack.prn[2] = 3;
+  pack.prn[4] = 5;
+  pack.prn[5] = 6;
+  pack.prn[6] = 7;
+  pack.prn[9] = 10;
+  pack.prn[10] = 11;
+  pack.prn[11] = 12;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINUSE);
 
   r = nmeaGPGSAGenerate(buf, sizeof(buf), &pack);
