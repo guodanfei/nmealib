@@ -98,7 +98,6 @@ static void test_nmeaGeneratorLoopNoise(void) {
   CU_ASSERT_EQUAL(info.magvar <= 360.0, true);
   CU_ASSERT_EQUAL(info.dgpsAge >= 0.0, true);
   CU_ASSERT_EQUAL(info.dgpsAge <= 100.0, true);
-  CU_ASSERT_EQUAL(info.dgpsSid >= 0, true);
   CU_ASSERT_EQUAL(info.dgpsSid <= 100, true);
 
   CU_ASSERT_EQUAL(info.satinfo.inUseCount <= NMEALIB_MAX_SATELLITES, true);

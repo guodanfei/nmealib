@@ -986,12 +986,6 @@ static void test_nmeaInfoSanitise(void) {
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_DGPSSID;
-  info.dgpsSid = -42;
-  nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.dgpsSid, 42);
-
-  memset(&info, 0, sizeof(info));
-  info.present = NMEALIB_PRESENT_DGPSSID;
   info.dgpsSid = 42;
   nmeaInfoSanitise(&info);
   CU_ASSERT_EQUAL(info.dgpsSid, 42);

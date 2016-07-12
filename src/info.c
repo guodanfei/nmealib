@@ -729,9 +729,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
    * dgpsSid
    */
 
-  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_DGPSSID)) {
-    info->dgpsSid = abs(info->dgpsSid);
-  }
+  /* nothing to do for dgpsSid */
 
   /*
    * satinfo

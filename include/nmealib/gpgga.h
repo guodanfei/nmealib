@@ -95,7 +95,7 @@ typedef struct _NmeaGPGGA {
   double       height;
   char         heightUnit;
   double       dgpsAge;
-  int          dgpsSid;
+  unsigned int dgpsSid;
 } NmeaGPGGA;
 
 /**

@@ -184,7 +184,7 @@ static void test_nmeaGPGGAParse(void) {
 
   /* dgpsSid */
 
-  s = "$GPGGA,,,,,,,,,,,,,,-42";
+  s = "$GPGGA,,,,,,,,,,,,,,42";
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_DGPSSID);

@@ -72,7 +72,7 @@ bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInf
   info->mtrack = nmeaRandom(0.0, 360.0);
   info->magvar = nmeaRandom(0.0, 360.0);
   info->dgpsAge = nmeaRandom(0.0, 100.0);
-  info->dgpsSid = (int) lrint(nmeaRandom(0.0, 100.0));
+  info->dgpsSid = (unsigned int) lrint(nmeaRandom(0.0, 100.0));
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_FIX);

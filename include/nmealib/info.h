@@ -203,7 +203,7 @@ typedef struct _NmeaInfo {
   double         mtrack;   /**< Magnetic Track angle in degrees true north                      */
   double         magvar;   /**< Magnetic variation degrees                                      */
   double         dgpsAge;  /**< Time since last DGPS update, in seconds                         */
-  int            dgpsSid;  /**< DGPS station ID number                                          */
+  unsigned int   dgpsSid;  /**< DGPS station ID number                                          */
   NmeaSatellites satinfo;  /**< Satellites information                                          */
   NmeaProgress   progress; /**< Progress information                                            */
   bool           metric;   /**< When true then units are metric                                 */

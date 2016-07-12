@@ -49,11 +49,11 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   pack->elevation = NAN;
   pack->height = NAN;
   pack->dgpsAge = NAN;
-  pack->dgpsSid = INT_MAX;
+  pack->dgpsSid = UINT_MAX;
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%u,%F,%f,%C,%f,%C,%F,%d*", //
+      "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%u,%F,%f,%C,%f,%C,%F,%u*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -162,8 +162,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->dgpsAge = 0.0;
   }
 
-  if (pack->dgpsSid != INT_MAX) {
-    pack->dgpsSid = abs(pack->dgpsSid);
+  if (pack->dgpsSid != UINT_MAX) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_DGPSSID);
   } else {
     pack->dgpsSid = 0;
@@ -411,7 +410,7 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_DGPSSID)) {
-    chars += snprintf(dst, available, ",%d", pack->dgpsSid);
+    chars += snprintf(dst, available, ",%u", pack->dgpsSid);
   } else {
     chars += snprintf(dst, available, ",");
   }
