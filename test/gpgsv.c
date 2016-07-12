@@ -61,11 +61,11 @@ static void test_nmeaGPGSVParse(void) {
 
   /* invalid inputs */
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   r = nmeaGPGSVParse(NULL, 1, &pack);
   validateParsePack(&pack, r, false, 0, 0, true);
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   r = nmeaGPGSVParse(s, 0, &pack);
   validateParsePack(&pack, r, false, 0, 0, true);
 
@@ -144,18 +144,18 @@ static void test_nmeaGPGSVParse(void) {
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(pack.sentences, 1);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 1);
   CU_ASSERT_EQUAL(pack.sentence, 1);
-  CU_ASSERT_EQUAL(pack.satellites, 4);
-  CU_ASSERT_EQUAL(pack.satellite[0].prn, 11);
-  CU_ASSERT_EQUAL(pack.satellite[0].elevation, 0);
-  CU_ASSERT_EQUAL(pack.satellite[0].azimuth, 0);
-  CU_ASSERT_EQUAL(pack.satellite[0].snr, 45);
-  CU_ASSERT_EQUAL(pack.satellite[1].prn, 12);
-  CU_ASSERT_EQUAL(pack.satellite[1].elevation, 13);
-  CU_ASSERT_EQUAL(pack.satellite[1].azimuth, 0);
-  CU_ASSERT_EQUAL(pack.satellite[1].snr, 0);
-  checkSatellitesEmpty(pack.satellite, 2, 3, 0);
+  CU_ASSERT_EQUAL(pack.inViewCount, 4);
+  CU_ASSERT_EQUAL(pack.inView[0].prn, 11);
+  CU_ASSERT_EQUAL(pack.inView[0].elevation, 0);
+  CU_ASSERT_EQUAL(pack.inView[0].azimuth, 0);
+  CU_ASSERT_EQUAL(pack.inView[0].snr, 45);
+  CU_ASSERT_EQUAL(pack.inView[1].prn, 12);
+  CU_ASSERT_EQUAL(pack.inView[1].elevation, 13);
+  CU_ASSERT_EQUAL(pack.inView[1].azimuth, 0);
+  CU_ASSERT_EQUAL(pack.inView[1].snr, 0);
+  checkSatellitesEmpty(pack.inView, 2, 3, 0);
 
   /* valid satellites */
 
@@ -163,14 +163,14 @@ static void test_nmeaGPGSVParse(void) {
   r = nmeaGPGSVParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(pack.sentences, 1);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 1);
   CU_ASSERT_EQUAL(pack.sentence, 1);
-  CU_ASSERT_EQUAL(pack.satellites, 4);
-  CU_ASSERT_EQUAL(pack.satellite[0].prn, 1);
-  CU_ASSERT_EQUAL(pack.satellite[0].elevation, 2);
-  CU_ASSERT_EQUAL(pack.satellite[0].azimuth, 3);
-  CU_ASSERT_EQUAL(pack.satellite[0].snr, 4);
-  checkSatellitesEmpty(pack.satellite, 1, 3, 0);
+  CU_ASSERT_EQUAL(pack.inViewCount, 4);
+  CU_ASSERT_EQUAL(pack.inView[0].prn, 1);
+  CU_ASSERT_EQUAL(pack.inView[0].elevation, 2);
+  CU_ASSERT_EQUAL(pack.inView[0].azimuth, 3);
+  CU_ASSERT_EQUAL(pack.inView[0].snr, 4);
+  checkSatellitesEmpty(pack.inView, 1, 3, 0);
 }
 
 static void test_nmeaGPGSVToInfo(void) {
@@ -196,7 +196,7 @@ static void test_nmeaGPGSVToInfo(void) {
 
   /* too many satellites */
 
-  pack.satellites = NMEALIB_MAX_SATELLITES + 1;
+  pack.inViewCount = NMEALIB_MAX_SATELLITES + 1;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -204,7 +204,7 @@ static void test_nmeaGPGSVToInfo(void) {
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
-  pack.satellites = NMEALIB_MAX_SATELLITES + 1;
+  pack.inViewCount = NMEALIB_MAX_SATELLITES + 1;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -212,7 +212,7 @@ static void test_nmeaGPGSVToInfo(void) {
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
-  pack.satellites = NMEALIB_MAX_SATELLITES + 1;
+  pack.inViewCount = NMEALIB_MAX_SATELLITES + 1;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -222,7 +222,7 @@ static void test_nmeaGPGSVToInfo(void) {
 
   /* invalid sentences */
 
-  pack.sentences = 0;
+  pack.sentenceCount = 0;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -230,7 +230,7 @@ static void test_nmeaGPGSVToInfo(void) {
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
-  pack.sentences = NMEALIB_GPGSV_MAX_SENTENCES + 1;
+  pack.sentenceCount = NMEALIB_GPGSV_MAX_SENTENCES + 1;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -238,8 +238,8 @@ static void test_nmeaGPGSVToInfo(void) {
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
-  pack.sentences = 5;
-  pack.satellites = 10;
+  pack.sentenceCount = 5;
+  pack.inViewCount = 10;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -250,8 +250,8 @@ static void test_nmeaGPGSVToInfo(void) {
   /* invalid sentence */
 
   pack.sentence = 0;
-  pack.sentences = 3;
-  pack.satellites = 10;
+  pack.sentenceCount = 3;
+  pack.inViewCount = 10;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -260,8 +260,8 @@ static void test_nmeaGPGSVToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.sentence = 4;
-  pack.sentences = 3;
-  pack.satellites = 10;
+  pack.sentenceCount = 3;
+  pack.inViewCount = 10;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -283,7 +283,7 @@ static void test_nmeaGPGSVToInfo(void) {
 
   /* only satellite count */
 
-  pack.satellites = 12;
+  pack.inViewCount = 12;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
   nmeaGPGSVToInfo(&pack, &info);
@@ -299,12 +299,12 @@ static void test_nmeaGPGSVToInfo(void) {
   /* only satellites, only sentence */
 
   pack.sentence = 1;
-  pack.sentences = 1;
-  pack.satellites = 1;
-  pack.satellite[0].prn = 11;
-  pack.satellite[0].elevation = 15;
-  pack.satellite[0].azimuth = 30;
-  pack.satellite[0].snr = 45;
+  pack.sentenceCount = 1;
+  pack.inViewCount = 1;
+  pack.inView[0].prn = 11;
+  pack.inView[0].elevation = 15;
+  pack.inView[0].azimuth = 30;
+  pack.inView[0].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
   memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
@@ -325,16 +325,16 @@ static void test_nmeaGPGSVToInfo(void) {
   /* only satellites, only sentence and sparse input */
 
   pack.sentence = 1;
-  pack.sentences = 1;
-  pack.satellites = 2;
-  pack.satellite[0].prn = 10;
-  pack.satellite[0].elevation = 1;
-  pack.satellite[0].azimuth = 3;
-  pack.satellite[0].snr = 5;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.sentenceCount = 1;
+  pack.inViewCount = 2;
+  pack.inView[0].prn = 10;
+  pack.inView[0].elevation = 1;
+  pack.inView[0].azimuth = 3;
+  pack.inView[0].snr = 5;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
   memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
@@ -360,12 +360,12 @@ static void test_nmeaGPGSVToInfo(void) {
   /* only satellites, first sentence and sparse input */
 
   pack.sentence = 1;
-  pack.sentences = 2;
-  pack.satellites = 7;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.sentenceCount = 2;
+  pack.inViewCount = 7;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
   memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
@@ -387,12 +387,12 @@ static void test_nmeaGPGSVToInfo(void) {
   /* only satellites, middle sentence and sparse input */
 
   pack.sentence = 2;
-  pack.sentences = 3;
-  pack.satellites = 10;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.sentenceCount = 3;
+  pack.inViewCount = 10;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
   memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
@@ -416,12 +416,12 @@ static void test_nmeaGPGSVToInfo(void) {
   /* only satellites, last sentence and sparse input */
 
   pack.sentence = 3;
-  pack.sentences = 3;
-  pack.satellites = 10;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.sentenceCount = 3;
+  pack.inViewCount = 10;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
   memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
@@ -454,7 +454,7 @@ static void test_nmeaGPGSVFromInfo(void) {
 
   /* invalid inputs */
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   nmeaGPGSVFromInfo(NULL, &pack, 0);
   validateInfoToPack(&pack, 0, 0, true);
   memset(&info, 0, sizeof(info));
@@ -465,14 +465,14 @@ static void test_nmeaGPGSVFromInfo(void) {
 
   /* empty */
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   nmeaGPGSVFromInfo(&info, &pack, 0);
   validateInfoToPack(&pack, 0, 0, true);
   memset(&info, 0, sizeof(info));
 
   /* no satellites in view */
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   info.satellites.inViewCount = 0;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
@@ -482,7 +482,7 @@ static void test_nmeaGPGSVFromInfo(void) {
 
   /* invalid sentence */
 
-  pack.satellites = 10;
+  pack.inViewCount = 10;
   info.satellites.inViewCount = 2;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
@@ -498,10 +498,10 @@ static void test_nmeaGPGSVFromInfo(void) {
   nmeaGPGSVFromInfo(&info, &pack, 1);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
-  CU_ASSERT_EQUAL(pack.satellites, 10);
-  CU_ASSERT_EQUAL(pack.sentences, 3);
+  CU_ASSERT_EQUAL(pack.inViewCount, 10);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 3);
   CU_ASSERT_EQUAL(pack.sentence, 0);
-  checkSatellitesEmpty(pack.satellite, 0, NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - 1, 0);
+  checkSatellitesEmpty(pack.inView, 0, NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - 1, 0);
   memset(&info, 0, sizeof(info));
 
   /* satellites, first sentence */
@@ -532,18 +532,18 @@ static void test_nmeaGPGSVFromInfo(void) {
   nmeaGPGSVFromInfo(&info, &pack, 0);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(pack.satellites, 10);
-  CU_ASSERT_EQUAL(pack.sentences, 3);
+  CU_ASSERT_EQUAL(pack.inViewCount, 10);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 3);
   CU_ASSERT_EQUAL(pack.sentence, 1);
-  CU_ASSERT_EQUAL(pack.satellite[0].prn, 1);
-  CU_ASSERT_EQUAL(pack.satellite[0].elevation, 2);
-  CU_ASSERT_EQUAL(pack.satellite[0].azimuth, 3);
-  CU_ASSERT_EQUAL(pack.satellite[0].snr, 4);
-  checkSatellitesEmpty(pack.satellite, 1, 2, 0);
-  CU_ASSERT_EQUAL(pack.satellite[3].prn, 5);
-  CU_ASSERT_EQUAL(pack.satellite[3].elevation, 6);
-  CU_ASSERT_EQUAL(pack.satellite[3].azimuth, 7);
-  CU_ASSERT_EQUAL(pack.satellite[3].snr, 8);
+  CU_ASSERT_EQUAL(pack.inView[0].prn, 1);
+  CU_ASSERT_EQUAL(pack.inView[0].elevation, 2);
+  CU_ASSERT_EQUAL(pack.inView[0].azimuth, 3);
+  CU_ASSERT_EQUAL(pack.inView[0].snr, 4);
+  checkSatellitesEmpty(pack.inView, 1, 2, 0);
+  CU_ASSERT_EQUAL(pack.inView[3].prn, 5);
+  CU_ASSERT_EQUAL(pack.inView[3].elevation, 6);
+  CU_ASSERT_EQUAL(pack.inView[3].azimuth, 7);
+  CU_ASSERT_EQUAL(pack.inView[3].snr, 8);
   memset(&info, 0, sizeof(info));
 
   /* satellites, middle sentence */
@@ -574,14 +574,14 @@ static void test_nmeaGPGSVFromInfo(void) {
   nmeaGPGSVFromInfo(&info, &pack, 1);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(pack.satellites, 10);
-  CU_ASSERT_EQUAL(pack.sentences, 3);
+  CU_ASSERT_EQUAL(pack.inViewCount, 10);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 3);
   CU_ASSERT_EQUAL(pack.sentence, 2);
-  CU_ASSERT_EQUAL(pack.satellite[0].prn, 9);
-  CU_ASSERT_EQUAL(pack.satellite[0].elevation, 10);
-  CU_ASSERT_EQUAL(pack.satellite[0].azimuth, 11);
-  CU_ASSERT_EQUAL(pack.satellite[0].snr, 12);
-  checkSatellitesEmpty(pack.satellite, 1, 3, 0);
+  CU_ASSERT_EQUAL(pack.inView[0].prn, 9);
+  CU_ASSERT_EQUAL(pack.inView[0].elevation, 10);
+  CU_ASSERT_EQUAL(pack.inView[0].azimuth, 11);
+  CU_ASSERT_EQUAL(pack.inView[0].snr, 12);
+  checkSatellitesEmpty(pack.inView, 1, 3, 0);
   memset(&info, 0, sizeof(info));
 
   /* satellites, last sentence */
@@ -612,19 +612,19 @@ static void test_nmeaGPGSVFromInfo(void) {
   nmeaGPGSVFromInfo(&info, &pack, 2);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
-  CU_ASSERT_EQUAL(pack.satellites, 10);
-  CU_ASSERT_EQUAL(pack.sentences, 3);
+  CU_ASSERT_EQUAL(pack.inViewCount, 10);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 3);
   CU_ASSERT_EQUAL(pack.sentence, 3);
-  checkSatellitesEmpty(pack.satellite, 0, 0, 0);
-  CU_ASSERT_EQUAL(pack.satellite[1].prn, 13);
-  CU_ASSERT_EQUAL(pack.satellite[1].elevation, 14);
-  CU_ASSERT_EQUAL(pack.satellite[1].azimuth, 15);
-  CU_ASSERT_EQUAL(pack.satellite[1].snr, 16);
-  CU_ASSERT_EQUAL(pack.satellite[2].prn, 17);
-  CU_ASSERT_EQUAL(pack.satellite[2].elevation, 18);
-  CU_ASSERT_EQUAL(pack.satellite[2].azimuth, 19);
-  CU_ASSERT_EQUAL(pack.satellite[2].snr, 20);
-  checkSatellitesEmpty(pack.satellite, 3, 3, 0);
+  checkSatellitesEmpty(pack.inView, 0, 0, 0);
+  CU_ASSERT_EQUAL(pack.inView[1].prn, 13);
+  CU_ASSERT_EQUAL(pack.inView[1].elevation, 14);
+  CU_ASSERT_EQUAL(pack.inView[1].azimuth, 15);
+  CU_ASSERT_EQUAL(pack.inView[1].snr, 16);
+  CU_ASSERT_EQUAL(pack.inView[2].prn, 17);
+  CU_ASSERT_EQUAL(pack.inView[2].elevation, 18);
+  CU_ASSERT_EQUAL(pack.inView[2].azimuth, 19);
+  CU_ASSERT_EQUAL(pack.inView[2].snr, 20);
+  checkSatellitesEmpty(pack.inView, 3, 3, 0);
   memset(&info, 0, sizeof(info));
 }
 
@@ -668,8 +668,8 @@ static void test_nmeaGPGSVGenerate(void) {
 
   /* only satellite count */
 
-  pack.satellites = 10;
-  pack.sentences = 7;
+  pack.inViewCount = 10;
+  pack.sentenceCount = 7;
   pack.sentence = 2;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
@@ -681,17 +681,17 @@ static void test_nmeaGPGSVGenerate(void) {
 
   /* only satellites */
 
-  pack.satellites = 10;
-  pack.sentences = 7;
+  pack.inViewCount = 10;
+  pack.sentenceCount = 7;
   pack.sentence = 2;
-  pack.satellite[0].prn = 10;
-  pack.satellite[0].elevation = 1;
-  pack.satellite[0].azimuth = 3;
-  pack.satellite[0].snr = 5;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.inView[0].prn = 10;
+  pack.inView[0].elevation = 1;
+  pack.inView[0].azimuth = 3;
+  pack.inView[0].snr = 5;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
 
   r = nmeaGPGSVGenerate(buf, sizeof(buf), &pack);
@@ -702,17 +702,17 @@ static void test_nmeaGPGSVGenerate(void) {
 
   /* all */
 
-  pack.satellites = 10;
-  pack.sentences = 7;
+  pack.inViewCount = 10;
+  pack.sentenceCount = 7;
   pack.sentence = 2;
-  pack.satellite[0].prn = 10;
-  pack.satellite[0].elevation = 1;
-  pack.satellite[0].azimuth = 3;
-  pack.satellite[0].snr = 5;
-  pack.satellite[2].prn = 11;
-  pack.satellite[2].elevation = 15;
-  pack.satellite[2].azimuth = 30;
-  pack.satellite[2].snr = 45;
+  pack.inView[0].prn = 10;
+  pack.inView[0].elevation = 1;
+  pack.inView[0].azimuth = 3;
+  pack.inView[0].snr = 5;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
   r = nmeaGPGSVGenerate(buf, sizeof(buf), &pack);
