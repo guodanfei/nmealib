@@ -196,16 +196,16 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 11);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 45);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].prn, 12);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].elevation, 13);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].azimuth, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].snr, 0);
-  checkSatellitesEmpty(info.satinfo.inView, 2, 3, 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 4);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 11);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 45);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].prn, 12);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].elevation, 13);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].snr, 0);
+  checkSatellitesEmpty(info.satellites.inView, 2, 3, 0);
   memset(&info, 0, sizeof(info));
 
   /* GPRMC */
@@ -301,7 +301,7 @@ static void test_nmeaSentenceFromInfo(void) {
 
   /* GPGSV */
 
-  info.satinfo.inViewCount = 5;
+  info.satellites.inViewCount = 5;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(r, 54);

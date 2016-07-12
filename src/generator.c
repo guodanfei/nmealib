@@ -63,9 +63,9 @@ bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInf
   info->pdop = nmeaRandom(0.0, 9.0);
   info->hdop = nmeaRandom(0.0, 9.0);
   info->vdop = nmeaRandom(0.0, 9.0);
-  info->lat = nmeaRandom(0.0, 100.0);
-  info->lon = nmeaRandom(0.0, 100.0);
-  info->elv = nmeaRandom(-100.0, 100.0);
+  info->latitude = nmeaRandom(0.0, 100.0);
+  info->longitude = nmeaRandom(0.0, 100.0);
+  info->elevation = nmeaRandom(-100.0, 100.0);
   info->height = nmeaRandom(-100.0, 100.0);
   info->speed = nmeaRandom(0.0, 100.0);
   info->track = nmeaRandom(0.0, 360.0);
@@ -90,27 +90,27 @@ bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInf
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_DGPSAGE);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_DGPSSID);
 
-  info->satinfo.inUseCount = 0;
-  info->satinfo.inViewCount = 0;
+  info->satellites.inUseCount = 0;
+  info->satellites.inViewCount = 0;
 
   for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
     in_use = (size_t) labs(lrint(nmeaRandom(0.0, 3.0)));
 
-    info->satinfo.inUse[it] = in_use ?
+    info->satellites.inUse[it] = in_use ?
         (unsigned int) it :
         0;
     if (in_use) {
-      info->satinfo.inUseCount++;
+      info->satellites.inUseCount++;
     }
 
-    info->satinfo.inView[it].prn = (unsigned int) it;
-    info->satinfo.inView[it].elevation = (int) lrint(nmeaRandom(0.0, 90.0));
-    info->satinfo.inView[it].azimuth = (unsigned int) lrint(nmeaRandom(0.0, 359.0));
-    info->satinfo.inView[it].snr = in_use ?
+    info->satellites.inView[it].prn = (unsigned int) it;
+    info->satellites.inView[it].elevation = (int) lrint(nmeaRandom(0.0, 90.0));
+    info->satellites.inView[it].azimuth = (unsigned int) lrint(nmeaRandom(0.0, 359.0));
+    info->satellites.inView[it].snr = in_use ?
         (unsigned int) lrint(nmeaRandom(40.0, 99.0)) :
         (unsigned int) lrint(nmeaRandom(0.0, 40.0));
-    if (info->satinfo.inView[it].snr) {
-      info->satinfo.inViewCount++;
+    if (info->satellites.inView[it].snr) {
+      info->satellites.inViewCount++;
     }
   }
 
@@ -159,32 +159,32 @@ bool nmeaGeneratorResetStatic(NmeaGenerator *gen __attribute__ ((unused)), NmeaI
     return false;
   }
 
-  info->satinfo.inUseCount = 4;
-  info->satinfo.inViewCount = 4;
+  info->satellites.inUseCount = 4;
+  info->satellites.inViewCount = 4;
 
-  info->satinfo.inUse[0] = 1;
-  info->satinfo.inView[0].prn = 1;
-  info->satinfo.inView[0].elevation = 50;
-  info->satinfo.inView[0].azimuth = 0;
-  info->satinfo.inView[0].snr = 99;
+  info->satellites.inUse[0] = 1;
+  info->satellites.inView[0].prn = 1;
+  info->satellites.inView[0].elevation = 50;
+  info->satellites.inView[0].azimuth = 0;
+  info->satellites.inView[0].snr = 99;
 
-  info->satinfo.inUse[1] = 2;
-  info->satinfo.inView[1].prn = 2;
-  info->satinfo.inView[1].elevation = 50;
-  info->satinfo.inView[1].azimuth = 90;
-  info->satinfo.inView[1].snr = 99;
+  info->satellites.inUse[1] = 2;
+  info->satellites.inView[1].prn = 2;
+  info->satellites.inView[1].elevation = 50;
+  info->satellites.inView[1].azimuth = 90;
+  info->satellites.inView[1].snr = 99;
 
-  info->satinfo.inUse[2] = 3;
-  info->satinfo.inView[2].prn = 3;
-  info->satinfo.inView[2].elevation = 50;
-  info->satinfo.inView[2].azimuth = 180;
-  info->satinfo.inView[2].snr = 99;
+  info->satellites.inUse[2] = 3;
+  info->satellites.inView[2].prn = 3;
+  info->satellites.inView[2].elevation = 50;
+  info->satellites.inView[2].azimuth = 180;
+  info->satellites.inView[2].snr = 99;
 
-  info->satinfo.inUse[3] = 4;
-  info->satinfo.inView[3].prn = 4;
-  info->satinfo.inView[3].elevation = 50;
-  info->satinfo.inView[3].azimuth = 270;
-  info->satinfo.inView[3].snr = 99;
+  info->satellites.inUse[3] = 4;
+  info->satellites.inView[3].prn = 4;
+  info->satellites.inView[3].elevation = 50;
+  info->satellites.inView[3].azimuth = 270;
+  info->satellites.inView[3].snr = 99;
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSECOUNT);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINUSE);
@@ -241,12 +241,12 @@ bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaIn
     return false;
   }
 
-  count = info->satinfo.inViewCount;
+  count = info->satellites.inViewCount;
   deg = 360.0 / (count ?
       (double) count :
       1.0);
   srt = (count ?
-      (info->satinfo.inView[0].azimuth) :
+      (info->satellites.inView[0].azimuth) :
       0) + 5;
 
   nmeaTimeSet(&info->utc, &info->present, NULL);
@@ -255,7 +255,7 @@ bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaIn
     while (srt >= 360.0) {
       srt -= 360.0;
     }
-    info->satinfo.inView[it].azimuth = (unsigned int) srt;
+    info->satellites.inView[it].azimuth = (unsigned int) srt;
     srt += deg;
   }
 
@@ -281,15 +281,15 @@ bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaI
     return false;
   }
 
-  info->satinfo.inUseCount = 8;
-  info->satinfo.inViewCount = 8;
+  info->satellites.inUseCount = 8;
+  info->satellites.inViewCount = 8;
 
-  for (it = 0; it < info->satinfo.inViewCount; it++) {
-    info->satinfo.inUse[it] = (unsigned int) (it + 1);
-    info->satinfo.inView[it].prn = (unsigned int) (it + 1);
-    info->satinfo.inView[it].elevation = 5;
-    info->satinfo.inView[it].azimuth = (unsigned int) srt;
-    info->satinfo.inView[it].snr = 80;
+  for (it = 0; it < info->satellites.inViewCount; it++) {
+    info->satellites.inUse[it] = (unsigned int) (it + 1);
+    info->satellites.inView[it].prn = (unsigned int) (it + 1);
+    info->satellites.inView[it].elevation = 5;
+    info->satellites.inView[it].azimuth = (unsigned int) srt;
+    info->satellites.inView[it].snr = 80;
     srt += deg;
   }
 
@@ -444,8 +444,8 @@ bool nmeaGeneratorInit(NmeaGenerator *gen, NmeaInfo *info) {
   info->smask = smask;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
-  info->lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
-  info->lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+  info->latitude = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  info->longitude = NMEALIB_LONGITUDE_DEFAULT_NDEG;
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
 

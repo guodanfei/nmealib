@@ -195,14 +195,14 @@ void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
-    info->lat = ((pack->ns == 'S') ?
+    info->latitude = ((pack->ns == 'S') ?
         -pack->latitude :
         pack->latitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
-    info->lon = ((pack->ew == 'W') ?
+    info->longitude = ((pack->ew == 'W') ?
         -pack->longitude :
         pack->longitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
@@ -214,7 +214,7 @@ void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satinfo.inViewCount = pack->satellitesInView;
+    info->satellites.inViewCount = pack->satellitesInView;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -224,7 +224,7 @@ void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_ELV)) {
-    info->elv = pack->elevation;
+    info->elevation = pack->elevation;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_ELV);
   }
 
@@ -261,16 +261,16 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
-    pack->latitude = fabs(info->lat);
-    pack->ns = ((info->lat >= 0.0) ?
+    pack->latitude = fabs(info->latitude);
+    pack->ns = ((info->latitude >= 0.0) ?
         'N' :
         'S');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
-    pack->longitude = fabs(info->lon);
-    pack->ew = ((info->lon >= 0.0) ?
+    pack->longitude = fabs(info->longitude);
+    pack->ew = ((info->longitude >= 0.0) ?
         'E' :
         'W');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);
@@ -284,7 +284,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    pack->satellitesInView = info->satinfo.inViewCount;
+    pack->satellitesInView = info->satellites.inViewCount;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -294,7 +294,7 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_ELV)) {
-    pack->elevation = info->elv;
+    pack->elevation = info->elevation;
     pack->elevationUnit = 'M';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_ELV);
   }

@@ -32,10 +32,10 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
 	info.sig = NMEALIB_SIG_SENSITIVE;
 	info.fix = NMEALIB_FIX_3D;
-	info.lat = 5000.0;
-	info.lon = 3600.0;
+	info.latitude = 5000.0;
+	info.longitude = 3600.0;
 	info.speed = 2.14 * NMEALIB_TUS_MS;
-	info.elv = 10.86;
+	info.elevation = 10.86;
 	info.track = 45;
 	info.mtrack = 55;
 	info.magvar = 55;
@@ -56,19 +56,19 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
 
-	info.satinfo.inUseCount = NMEALIB_MAX_SATELLITES;
+	info.satellites.inUseCount = NMEALIB_MAX_SATELLITES;
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.inUse[it] = (unsigned int) (it + 1);
+		info.satellites.inUse[it] = (unsigned int) (it + 1);
 	}
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
-	info.satinfo.inViewCount = NMEALIB_MAX_SATELLITES;
+	info.satellites.inViewCount = NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.inView[it].prn = (unsigned int) it + 1;
-		info.satinfo.inView[it].elevation = (int) (it * 10);
-		info.satinfo.inView[it].azimuth = (unsigned int) (it + 1);
-		info.satinfo.inView[it].snr = 99 - (unsigned int) it;
+		info.satellites.inView[it].prn = (unsigned int) it + 1;
+		info.satellites.inView[it].elevation = (int) (it * 10);
+		info.satellites.inView[it].azimuth = (unsigned int) (it + 1);
+		info.satellites.inView[it].snr = 99 - (unsigned int) it;
 	}
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 

@@ -227,14 +227,14 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
-    info->lat = ((pack->ns == 'N') ?
+    info->latitude = ((pack->ns == 'N') ?
         pack->latitude :
         -pack->latitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
-    info->lon = ((pack->ew == 'E') ?
+    info->longitude = ((pack->ew == 'E') ?
         pack->longitude :
         -pack->longitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
@@ -292,16 +292,16 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
-    pack->latitude = fabs(info->lat);
-    pack->ns = ((info->lat >= 0.0) ?
+    pack->latitude = fabs(info->latitude);
+    pack->ns = ((info->latitude >= 0.0) ?
         'N' :
         'S');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
-    pack->longitude = fabs(info->lon);
-    pack->ew = ((info->lon >= 0.0) ?
+    pack->longitude = fabs(info->longitude);
+    pack->ew = ((info->longitude >= 0.0) ?
         'E' :
         'W');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);

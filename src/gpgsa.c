@@ -160,14 +160,14 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
     size_t packIndex = 0;
     size_t infoIndex = 0;
 
-    info->satinfo.inUseCount = 0;
-    memset(&info->satinfo.inUse, 0, sizeof(info->satinfo.inUse[0]));
+    info->satellites.inUseCount = 0;
+    memset(&info->satellites.inUse, 0, sizeof(info->satellites.inUse[0]));
 
     for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++) {
       unsigned int prn = pack->satPrn[packIndex];
       if (prn) {
-        info->satinfo.inUse[infoIndex++] = prn;
-        info->satinfo.inUseCount++;
+        info->satellites.inUse[infoIndex++] = prn;
+        info->satellites.inUseCount++;
       }
     }
 
@@ -219,7 +219,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
     size_t packIndex = 0;
 
     for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
-      unsigned int prn = info->satinfo.inUse[infoIndex];
+      unsigned int prn = info->satellites.inUse[infoIndex];
       if (prn) {
         pack->satPrn[packIndex++] = prn;
       }

@@ -224,7 +224,7 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
 
     if (pack->sentence == 1) {
       /* first sentence; clear info satellites */
-      memset(info->satinfo.inView, 0, sizeof(info->satinfo.inView));
+      memset(info->satellites.inView, 0, sizeof(info->satellites.inView));
     }
 
     info->progress.gpgsvInProgress = (pack->sentence != pack->sentences);
@@ -234,9 +234,9 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
     for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
       const NmeaSatellite *src = &pack->satellite[packIndex];
       if (!src->prn) {
-        memset(&info->satinfo.inView[infoIndex], 0, sizeof(info->satinfo.inView[infoIndex]));
+        memset(&info->satellites.inView[infoIndex], 0, sizeof(info->satellites.inView[infoIndex]));
       } else {
-        info->satinfo.inView[infoIndex] = *src;
+        info->satellites.inView[infoIndex] = *src;
       }
     }
 
@@ -244,7 +244,7 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satinfo.inViewCount = pack->satellites;
+    info->satellites.inViewCount = pack->satellites;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -255,7 +255,7 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
 }
 
 void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
-  size_t satellites;
+  size_t inViewCount;
   size_t sentences;
 
   if (!pack) {
@@ -266,18 +266,18 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
 
   if (!info //
       || !nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT) //
-      || !info->satinfo.inViewCount) {
+      || !info->satellites.inViewCount) {
     return;
   }
 
-  satellites = info->satinfo.inViewCount;
-  sentences = nmeaGPGSVsatellitesToSentencesCount(satellites);
+  inViewCount = info->satellites.inViewCount;
+  sentences = nmeaGPGSVsatellitesToSentencesCount(inViewCount);
 
   if (sentence >= sentences) {
     return;
   }
 
-  pack->satellites = (unsigned int) satellites;
+  pack->satellites = (unsigned int) inViewCount;
   pack->sentences =  (unsigned int) sentences;
   nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
@@ -291,8 +291,8 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
     infoIndex = sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
     for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
-      if (info->satinfo.inView[infoIndex].prn) {
-        pack->satellite[packIndex] = info->satinfo.inView[infoIndex];
+      if (info->satellites.inView[infoIndex].prn) {
+        pack->satellite[packIndex] = info->satellites.inView[infoIndex];
       }
     }
 

@@ -184,13 +184,13 @@ static void test_nmeaMathInfoToPosition(void) {
 
   memset(&info, 0xaa, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = 12345.67;
-  info.lon = 8910.11;
+  info.latitude = 12345.67;
+  info.longitude = 8910.11;
   memset(&pos, 0xaa, sizeof(pos));
   memcpy(&infoExp, &info, sizeof(infoExp));
   memcpy(&posExp, &pos, sizeof(posExp));
-  posExp.lat = nmeaMathNdegToRadian(info.lat);
-  posExp.lon = nmeaMathNdegToRadian(info.lon);
+  posExp.lat = nmeaMathNdegToRadian(info.latitude);
+  posExp.lon = nmeaMathNdegToRadian(info.longitude);
   nmeaMathInfoToPosition(&info, &pos);
   CU_ASSERT_EQUAL(memcmp(&info, &infoExp, sizeof(info)), 0);
   CU_ASSERT_DOUBLE_EQUAL(pos.lat, posExp.lat, DBL_EPSILON);
@@ -211,8 +211,8 @@ static void test_nmeaMathPositionToInfo(void) {
   memcpy(&infoExp, &info, sizeof(infoExp));
   nmeaMathPositionToInfo(NULL, NULL);
   CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, infoExp.latitude, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, infoExp.longitude, DBL_EPSILON);
 
   /* no pos */
 
@@ -220,12 +220,12 @@ static void test_nmeaMathPositionToInfo(void) {
   memset(&info, 0xaa, sizeof(info));
   memcpy(&posExp, &pos, sizeof(posExp));
   memcpy(&infoExp, &info, sizeof(infoExp));
-  infoExp.lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
-  infoExp.lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+  infoExp.latitude = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  infoExp.longitude = NMEALIB_LONGITUDE_DEFAULT_NDEG;
   nmeaMathPositionToInfo(NULL, &info);
   CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, infoExp.latitude, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, infoExp.longitude, DBL_EPSILON);
 
   /* pos position */
 
@@ -236,12 +236,12 @@ static void test_nmeaMathPositionToInfo(void) {
   memcpy(&posExp, &pos, sizeof(posExp));
   memcpy(&infoExp, &info, sizeof(infoExp));
   infoExp.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  infoExp.lat = nmeaMathRadianToNdeg(pos.lat);
-  infoExp.lon = nmeaMathRadianToNdeg(pos.lon);
+  infoExp.latitude = nmeaMathRadianToNdeg(pos.lat);
+  infoExp.longitude = nmeaMathRadianToNdeg(pos.lon);
   nmeaMathPositionToInfo(&pos, &info);
   CU_ASSERT_EQUAL(memcmp(&pos, &posExp, sizeof(pos)), 0);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, infoExp.lat, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, infoExp.lon, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, infoExp.latitude, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, infoExp.longitude, DBL_EPSILON);
 }
 
 static void test_nmeaMathDistance(void) {

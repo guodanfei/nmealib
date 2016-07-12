@@ -74,11 +74,11 @@ void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
-    pos->lat = nmeaMathNdegToRadian(info->lat);
+    pos->lat = nmeaMathNdegToRadian(info->latitude);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
-    pos->lon = nmeaMathNdegToRadian(info->lon);
+    pos->lon = nmeaMathNdegToRadian(info->longitude);
   }
 }
 
@@ -87,15 +87,15 @@ void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {
     return;
   }
 
-  info->lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
-  info->lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+  info->latitude = NMEALIB_LATITUDE_DEFAULT_NDEG;
+  info->longitude = NMEALIB_LONGITUDE_DEFAULT_NDEG;
 
   if (!pos) {
     return;
   }
 
-  info->lat = nmeaMathRadianToNdeg(pos->lat);
-  info->lon = nmeaMathRadianToNdeg(pos->lon);
+  info->latitude = nmeaMathRadianToNdeg(pos->lat);
+  info->longitude = nmeaMathRadianToNdeg(pos->lon);
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON);
 }
 

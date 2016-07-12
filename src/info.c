@@ -408,15 +408,15 @@ void nmeaInfoSanitise(NmeaInfo *info) {
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
-    info->lat = NMEALIB_LATITUDE_DEFAULT_NDEG;
+    info->latitude = NMEALIB_LATITUDE_DEFAULT_NDEG;
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
-    info->lon = NMEALIB_LONGITUDE_DEFAULT_NDEG;
+    info->longitude = NMEALIB_LONGITUDE_DEFAULT_NDEG;
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_ELV)) {
-    info->elv = 0.0;
+    info->elevation = 0.0;
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HEIGHT)) {
@@ -448,20 +448,20 @@ void nmeaInfoSanitise(NmeaInfo *info) {
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
-    info->satinfo.inUseCount = 0;
+    info->satellites.inUseCount = 0;
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
-    memset(&info->satinfo.inUse, 0, sizeof(info->satinfo.inUse));
+    memset(&info->satellites.inUse, 0, sizeof(info->satellites.inUse));
   }
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satinfo.inViewCount = 0;
+    info->satellites.inViewCount = 0;
   }
 
   if (!info->progress.gpgsvInProgress //
       && !nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW)) {
-    memset(&info->satinfo.inView, 0, sizeof(info->satinfo.inView));
+    memset(&info->satellites.inView, 0, sizeof(info->satellites.inView));
   }
 
   /*
@@ -555,8 +555,8 @@ void nmeaInfoSanitise(NmeaInfo *info) {
    * lat
    */
 
-  lat = info->lat;
-  lon = info->lon;
+  lat = info->latitude;
+  lon = info->longitude;
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     /* force lat in [-18000, 18000] */
@@ -590,7 +590,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
     /* lat is now in [-9000, 9000] */
 
     if (latAdjusted) {
-      info->lat = lat;
+      info->latitude = lat;
     }
   }
 
@@ -612,7 +612,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
     /* lon is now in [-18000, 18000] */
 
     if (lonAdjusted) {
-      info->lon = lon;
+      info->longitude = lon;
     }
   }
 
@@ -738,17 +738,17 @@ void nmeaInfoSanitise(NmeaInfo *info) {
   /* nothing to do for inUseCount */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
-    qsort(info->satinfo.inUse, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inUse[0]), nmeaQsortPRNCompact);
+    qsort(info->satellites.inUse, NMEALIB_MAX_SATELLITES, sizeof(info->satellites.inUse[0]), nmeaQsortPRNCompact);
   }
 
   /* nothing to do for inViewCount */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW) //
       && !info->progress.gpgsvInProgress) {
-    qsort(info->satinfo.inView, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inView[0]), nmeaQsortSatelliteCompact);
+    qsort(info->satellites.inView, NMEALIB_MAX_SATELLITES, sizeof(info->satellites.inView[0]), nmeaQsortSatelliteCompact);
 
     for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
-      NmeaSatellite *sat = &info->satinfo.inView[i];
+      NmeaSatellite *sat = &info->satellites.inView[i];
       if (!sat->prn) {
         break;
       }
@@ -834,17 +834,17 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     if (toMetric) {
-      info->lat = nmeaMathNdegToDegree(info->lat);
+      info->latitude = nmeaMathNdegToDegree(info->latitude);
     } else {
-      info->lat = nmeaMathDegreeToNdeg(info->lat);
+      info->latitude = nmeaMathDegreeToNdeg(info->latitude);
     }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
     if (toMetric) {
-      info->lon = nmeaMathNdegToDegree(info->lon);
+      info->longitude = nmeaMathNdegToDegree(info->longitude);
     } else {
-      info->lon = nmeaMathDegreeToNdeg(info->lon);
+      info->longitude = nmeaMathDegreeToNdeg(info->longitude);
     }
   }
 

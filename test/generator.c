@@ -80,12 +80,12 @@ static void test_nmeaGeneratorLoopNoise(void) {
   CU_ASSERT_EQUAL(info.hdop <= 9.0, true);
   CU_ASSERT_EQUAL(info.vdop >= 0.0, true);
   CU_ASSERT_EQUAL(info.vdop <= 9.0, true);
-  CU_ASSERT_EQUAL(info.lat >= 0.0, true);
-  CU_ASSERT_EQUAL(info.lat <= 100.0, true);
-  CU_ASSERT_EQUAL(info.lon >= 0.0, true);
-  CU_ASSERT_EQUAL(info.lon <= 100.0, true);
-  CU_ASSERT_EQUAL(info.elv >= -100.0, true);
-  CU_ASSERT_EQUAL(info.elv <= 100.0, true);
+  CU_ASSERT_EQUAL(info.latitude >= 0.0, true);
+  CU_ASSERT_EQUAL(info.latitude <= 100.0, true);
+  CU_ASSERT_EQUAL(info.longitude >= 0.0, true);
+  CU_ASSERT_EQUAL(info.longitude <= 100.0, true);
+  CU_ASSERT_EQUAL(info.elevation >= -100.0, true);
+  CU_ASSERT_EQUAL(info.elevation <= 100.0, true);
   CU_ASSERT_EQUAL(info.height >= -100.0, true);
   CU_ASSERT_EQUAL(info.height <= 100.0, true);
   CU_ASSERT_EQUAL(info.speed >= 0.0, true);
@@ -100,15 +100,15 @@ static void test_nmeaGeneratorLoopNoise(void) {
   CU_ASSERT_EQUAL(info.dgpsAge <= 100.0, true);
   CU_ASSERT_EQUAL(info.dgpsSid <= 100, true);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount <= NMEALIB_MAX_SATELLITES, true);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount <= NMEALIB_MAX_SATELLITES, true);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount <= NMEALIB_MAX_SATELLITES, true);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount <= NMEALIB_MAX_SATELLITES, true);
 
   for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].prn, it);
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].elevation >= 0, true);
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].elevation <= 90, true);
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].azimuth <= 359, true);
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].snr <= 99, true);
+    CU_ASSERT_EQUAL(info.satellites.inView[it].prn, it);
+    CU_ASSERT_EQUAL(info.satellites.inView[it].elevation >= 0, true);
+    CU_ASSERT_EQUAL(info.satellites.inView[it].elevation <= 90, true);
+    CU_ASSERT_EQUAL(info.satellites.inView[it].azimuth <= 359, true);
+    CU_ASSERT_EQUAL(info.satellites.inView[it].snr <= 99, true);
   }
 }
 
@@ -147,9 +147,9 @@ static void test_nmeaGeneratorLoopStatic(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -158,10 +158,10 @@ static void test_nmeaGeneratorLoopStatic(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
 static void test_nmeaGeneratorResetStatic(void) {
@@ -197,9 +197,9 @@ static void test_nmeaGeneratorResetStatic(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -208,34 +208,34 @@ static void test_nmeaGeneratorResetStatic(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  infoEmpty.satinfo.inUse[0] = 1;
-  infoEmpty.satinfo.inView[0].prn = 1;
-  infoEmpty.satinfo.inView[0].elevation = 50;
-  infoEmpty.satinfo.inView[0].azimuth = 0;
-  infoEmpty.satinfo.inView[0].snr = 99;
+  infoEmpty.satellites.inUse[0] = 1;
+  infoEmpty.satellites.inView[0].prn = 1;
+  infoEmpty.satellites.inView[0].elevation = 50;
+  infoEmpty.satellites.inView[0].azimuth = 0;
+  infoEmpty.satellites.inView[0].snr = 99;
 
-  infoEmpty.satinfo.inUse[1] = 2;
-  infoEmpty.satinfo.inView[1].prn = 2;
-  infoEmpty.satinfo.inView[1].elevation = 50;
-  infoEmpty.satinfo.inView[1].azimuth = 90;
-  infoEmpty.satinfo.inView[1].snr = 99;
+  infoEmpty.satellites.inUse[1] = 2;
+  infoEmpty.satellites.inView[1].prn = 2;
+  infoEmpty.satellites.inView[1].elevation = 50;
+  infoEmpty.satellites.inView[1].azimuth = 90;
+  infoEmpty.satellites.inView[1].snr = 99;
 
-  infoEmpty.satinfo.inUse[2] = 3;
-  infoEmpty.satinfo.inView[2].prn = 3;
-  infoEmpty.satinfo.inView[2].elevation = 50;
-  infoEmpty.satinfo.inView[2].azimuth = 180;
-  infoEmpty.satinfo.inView[2].snr = 99;
+  infoEmpty.satellites.inUse[2] = 3;
+  infoEmpty.satellites.inView[2].prn = 3;
+  infoEmpty.satellites.inView[2].elevation = 50;
+  infoEmpty.satellites.inView[2].azimuth = 180;
+  infoEmpty.satellites.inView[2].snr = 99;
 
-  infoEmpty.satinfo.inUse[3] = 4;
-  infoEmpty.satinfo.inView[3].prn = 4;
-  infoEmpty.satinfo.inView[3].elevation = 50;
-  infoEmpty.satinfo.inView[3].azimuth = 270;
-  infoEmpty.satinfo.inView[3].snr = 99;
+  infoEmpty.satellites.inUse[3] = 4;
+  infoEmpty.satellites.inView[3].prn = 4;
+  infoEmpty.satellites.inView[3].elevation = 50;
+  infoEmpty.satellites.inView[3].azimuth = 270;
+  infoEmpty.satellites.inView[3].snr = 99;
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 4);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 4);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 4);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
 static void test_nmeaGeneratorInitStatic(void) {
@@ -301,9 +301,9 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -312,16 +312,16 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 
   /* normal, 2 sats */
 
-  info.satinfo.inViewCount = 2;
-  info.satinfo.inView[0].prn = 1;
-  info.satinfo.inView[1].prn = 2;
+  info.satellites.inViewCount = 2;
+  info.satellites.inView[0].prn = 1;
+  info.satellites.inView[1].prn = 2;
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorLoopRotate(NULL, &info);
@@ -342,9 +342,9 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -353,22 +353,22 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  infoEmpty.satinfo.inView[0].prn = 1;
-  infoEmpty.satinfo.inView[0].azimuth = 5;
-  infoEmpty.satinfo.inView[1].prn = 2;
-  infoEmpty.satinfo.inView[1].azimuth = 185;
+  infoEmpty.satellites.inView[0].prn = 1;
+  infoEmpty.satellites.inView[0].azimuth = 5;
+  infoEmpty.satellites.inView[1].prn = 2;
+  infoEmpty.satellites.inView[1].azimuth = 185;
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 2);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 2);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 
   /* again */
 
-  info.satinfo.inViewCount = 2;
-  info.satinfo.inView[0].prn = 1;
-  info.satinfo.inView[1].prn = 2;
-  info.satinfo.inView[0].azimuth = 400;
+  info.satellites.inViewCount = 2;
+  info.satellites.inView[0].prn = 1;
+  info.satellites.inView[1].prn = 2;
+  info.satellites.inView[0].azimuth = 400;
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorLoopRotate(NULL, &info);
@@ -389,9 +389,9 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -400,15 +400,15 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  infoEmpty.satinfo.inView[0].prn = 1;
-  infoEmpty.satinfo.inView[0].azimuth = 45;
-  infoEmpty.satinfo.inView[1].prn = 2;
-  infoEmpty.satinfo.inView[1].azimuth = 225;
+  infoEmpty.satellites.inView[0].prn = 1;
+  infoEmpty.satellites.inView[0].azimuth = 45;
+  infoEmpty.satellites.inView[1].prn = 2;
+  infoEmpty.satellites.inView[1].azimuth = 225;
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 2);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 2);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
 static void test_nmeaGeneratorResetRotate(void) {
@@ -446,9 +446,9 @@ static void test_nmeaGeneratorResetRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -457,48 +457,48 @@ static void test_nmeaGeneratorResetRotate(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 8);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 8);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 8);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 8);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 1);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 1);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].prn, 2);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].azimuth, 45);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].prn, 2);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].azimuth, 45);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[2].prn, 3);
-  CU_ASSERT_EQUAL(info.satinfo.inView[2].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[2].azimuth, 90);
-  CU_ASSERT_EQUAL(info.satinfo.inView[2].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].prn, 3);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].azimuth, 90);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[3].prn, 4);
-  CU_ASSERT_EQUAL(info.satinfo.inView[3].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[3].azimuth, 135);
-  CU_ASSERT_EQUAL(info.satinfo.inView[3].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[3].prn, 4);
+  CU_ASSERT_EQUAL(info.satellites.inView[3].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[3].azimuth, 135);
+  CU_ASSERT_EQUAL(info.satellites.inView[3].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[4].prn, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[4].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[4].azimuth, 180);
-  CU_ASSERT_EQUAL(info.satinfo.inView[4].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[4].prn, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[4].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[4].azimuth, 180);
+  CU_ASSERT_EQUAL(info.satellites.inView[4].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[5].prn, 6);
-  CU_ASSERT_EQUAL(info.satinfo.inView[5].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[5].azimuth, 225);
-  CU_ASSERT_EQUAL(info.satinfo.inView[5].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[5].prn, 6);
+  CU_ASSERT_EQUAL(info.satellites.inView[5].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[5].azimuth, 225);
+  CU_ASSERT_EQUAL(info.satellites.inView[5].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[6].prn, 7);
-  CU_ASSERT_EQUAL(info.satinfo.inView[6].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[6].azimuth, 270);
-  CU_ASSERT_EQUAL(info.satinfo.inView[6].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[6].prn, 7);
+  CU_ASSERT_EQUAL(info.satellites.inView[6].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[6].azimuth, 270);
+  CU_ASSERT_EQUAL(info.satellites.inView[6].snr, 80);
 
-  CU_ASSERT_EQUAL(info.satinfo.inView[7].prn, 8);
-  CU_ASSERT_EQUAL(info.satinfo.inView[7].elevation, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[7].azimuth, 315);
-  CU_ASSERT_EQUAL(info.satinfo.inView[7].snr, 80);
+  CU_ASSERT_EQUAL(info.satellites.inView[7].prn, 8);
+  CU_ASSERT_EQUAL(info.satellites.inView[7].elevation, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[7].azimuth, 315);
+  CU_ASSERT_EQUAL(info.satellites.inView[7].snr, 80);
 }
 
 static void test_nmeaGeneratorInitRotate(void) {
@@ -559,7 +559,7 @@ static void test_nmeaGeneratorInitRandomMove(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
 
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 20.0, DBL_EPSILON);
@@ -567,10 +567,10 @@ static void test_nmeaGeneratorInitRandomMove(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, DBL_EPSILON);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
 static void test_nmeaGeneratorLoopRandomMove(void) {
@@ -609,7 +609,7 @@ static void test_nmeaGeneratorLoopRandomMove(void) {
     CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
     CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
     CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+    CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
     CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
     CU_ASSERT_EQUAL(info.speed >= 1.0, true);
     CU_ASSERT_EQUAL(info.speed <= 40.0, true);
@@ -619,10 +619,10 @@ static void test_nmeaGeneratorLoopRandomMove(void) {
     CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
     CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-    CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-    CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-    CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-    CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+    CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+    CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+    CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+    CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
   }
 }
 
@@ -669,7 +669,7 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -678,10 +678,10 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 
   /* normal, with calls */
 
@@ -708,7 +708,7 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -717,34 +717,34 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-  infoEmpty.satinfo.inUse[0] = 1;
-  infoEmpty.satinfo.inView[0].prn = 1;
-  infoEmpty.satinfo.inView[0].elevation = 50;
-  infoEmpty.satinfo.inView[0].azimuth = 0;
-  infoEmpty.satinfo.inView[0].snr = 99;
+  infoEmpty.satellites.inUse[0] = 1;
+  infoEmpty.satellites.inView[0].prn = 1;
+  infoEmpty.satellites.inView[0].elevation = 50;
+  infoEmpty.satellites.inView[0].azimuth = 0;
+  infoEmpty.satellites.inView[0].snr = 99;
 
-  infoEmpty.satinfo.inUse[1] = 2;
-  infoEmpty.satinfo.inView[1].prn = 2;
-  infoEmpty.satinfo.inView[1].elevation = 50;
-  infoEmpty.satinfo.inView[1].azimuth = 90;
-  infoEmpty.satinfo.inView[1].snr = 99;
+  infoEmpty.satellites.inUse[1] = 2;
+  infoEmpty.satellites.inView[1].prn = 2;
+  infoEmpty.satellites.inView[1].elevation = 50;
+  infoEmpty.satellites.inView[1].azimuth = 90;
+  infoEmpty.satellites.inView[1].snr = 99;
 
-  infoEmpty.satinfo.inUse[2] = 3;
-  infoEmpty.satinfo.inView[2].prn = 3;
-  infoEmpty.satinfo.inView[2].elevation = 50;
-  infoEmpty.satinfo.inView[2].azimuth = 180;
-  infoEmpty.satinfo.inView[2].snr = 99;
+  infoEmpty.satellites.inUse[2] = 3;
+  infoEmpty.satellites.inView[2].prn = 3;
+  infoEmpty.satellites.inView[2].elevation = 50;
+  infoEmpty.satellites.inView[2].azimuth = 180;
+  infoEmpty.satellites.inView[2].snr = 99;
 
-  infoEmpty.satinfo.inUse[3] = 4;
-  infoEmpty.satinfo.inView[3].prn = 4;
-  infoEmpty.satinfo.inView[3].elevation = 50;
-  infoEmpty.satinfo.inView[3].azimuth = 270;
-  infoEmpty.satinfo.inView[3].snr = 99;
+  infoEmpty.satellites.inUse[3] = 4;
+  infoEmpty.satellites.inView[3].prn = 4;
+  infoEmpty.satellites.inView[3].elevation = 50;
+  infoEmpty.satellites.inView[3].azimuth = 270;
+  infoEmpty.satellites.inView[3].snr = 99;
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 4);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 4);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 4);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 
   nmeaGeneratorDestroy(g);
 }
@@ -846,8 +846,8 @@ static void test_nmeaGeneratorReset(void) {
   CU_ASSERT_PTR_NOT_NULL_FATAL(g);
   r = nmeaGeneratorReset(g, &info);
   CU_ASSERT_EQUAL(r, true);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
 
   /* normal, reset call */
 
@@ -855,8 +855,8 @@ static void test_nmeaGeneratorReset(void) {
   CU_ASSERT_PTR_NOT_NULL_FATAL(g);
   r = nmeaGeneratorReset(g, &info);
   CU_ASSERT_EQUAL(r, true);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 4);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 4);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 4);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 4);
 }
 
 static void test_nmeaGeneratorDestroy(void) {

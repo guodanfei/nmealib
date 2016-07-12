@@ -634,9 +634,9 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -644,10 +644,10 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmptyFF.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmptyFF.satellites.inView, sizeof(info.satellites.inView)), 0);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, true);
   CU_ASSERT_EQUAL(info.metric, false);
 
@@ -670,9 +670,9 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elv, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
@@ -680,10 +680,10 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, DBL_EPSILON);
   CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inUse, infoEmpty.satinfo.inUse, sizeof(info.satinfo.inUse)), 0);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 0);
-  CU_ASSERT_EQUAL(memcmp(info.satinfo.inView, infoEmpty.satinfo.inView, sizeof(info.satinfo.inView)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
   CU_ASSERT_EQUAL(info.metric, false);
 
@@ -826,55 +826,55 @@ static void test_nmeaInfoSanitise(void) {
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = -4200.45;
-  info.lon = -4200.45;
+  info.latitude = -4200.45;
+  info.longitude = -4200.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -4200.45, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, -4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -4200.45, DBL_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = 4200.45;
-  info.lon = 4200.45;
+  info.latitude = 4200.45;
+  info.longitude = 4200.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 4200.45, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 4200.45, DBL_EPSILON);
 
   /* lat out of range */
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = -22200.5;
-  info.lon = -4200.5;
+  info.latitude = -22200.5;
+  info.longitude = -4200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = 22200.5;
-  info.lon = -4200.5;
+  info.latitude = 22200.5;
+  info.longitude = -4200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
 
   /* lon out of range */
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = -4200.5;
-  info.lon = -22200.5;
+  info.latitude = -4200.5;
+  info.longitude = -22200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
-  info.lat = -4200.5;
-  info.lon = 22200.5;
+  info.latitude = -4200.5;
+  info.longitude = 22200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, -13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -13799.5, DBL_EPSILON);
 
   /* elv: no range adjustments */
 
@@ -994,113 +994,113 @@ static void test_nmeaInfoSanitise(void) {
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINUSECOUNT;
-  info.satinfo.inUseCount = 42;
+  info.satellites.inUseCount = 42;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 42);
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 42);
 
   /* sat in use */
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINUSE;
-  info.satinfo.inUse[0] = 0;
-  info.satinfo.inUse[1] = 10;
-  info.satinfo.inUse[2] = 5;
-  info.satinfo.inUse[3] = 4;
-  info.satinfo.inUse[4] = 3;
-  info.satinfo.inUse[5] = 22;
+  info.satellites.inUse[0] = 0;
+  info.satellites.inUse[1] = 10;
+  info.satellites.inUse[2] = 5;
+  info.satellites.inUse[3] = 4;
+  info.satellites.inUse[4] = 3;
+  info.satellites.inUse[5] = 22;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[0], 10);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[1], 5);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[2], 4);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[3], 3);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[4], 22);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[5], 0);
+  CU_ASSERT_EQUAL(info.satellites.inUse[0], 10);
+  CU_ASSERT_EQUAL(info.satellites.inUse[1], 5);
+  CU_ASSERT_EQUAL(info.satellites.inUse[2], 4);
+  CU_ASSERT_EQUAL(info.satellites.inUse[3], 3);
+  CU_ASSERT_EQUAL(info.satellites.inUse[4], 22);
+  CU_ASSERT_EQUAL(info.satellites.inUse[5], 0);
 
   /* sat in view count */
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEWCOUNT;
-  info.satinfo.inViewCount = 42;
+  info.satellites.inViewCount = 42;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 42);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 42);
 
   /* sat in view */
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 0;
-  info.satinfo.inView[1].prn = 10;
-  info.satinfo.inView[2].prn = 5;
-  info.satinfo.inView[3].prn = 4;
-  info.satinfo.inView[4].prn = 3;
-  info.satinfo.inView[5].prn = 22;
+  info.satellites.inView[0].prn = 0;
+  info.satellites.inView[1].prn = 10;
+  info.satellites.inView[2].prn = 5;
+  info.satellites.inView[3].prn = 4;
+  info.satellites.inView[4].prn = 3;
+  info.satellites.inView[5].prn = 22;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[1].prn, 5);
-  CU_ASSERT_EQUAL(info.satinfo.inView[2].prn, 4);
-  CU_ASSERT_EQUAL(info.satinfo.inView[3].prn, 3);
-  CU_ASSERT_EQUAL(info.satinfo.inView[4].prn, 22);
-  CU_ASSERT_EQUAL(info.satinfo.inView[5].prn, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[1].prn, 5);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].prn, 4);
+  CU_ASSERT_EQUAL(info.satellites.inView[3].prn, 3);
+  CU_ASSERT_EQUAL(info.satellites.inView[4].prn, 22);
+  CU_ASSERT_EQUAL(info.satellites.inView[5].prn, 0);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = 20;
-  info.satinfo.inView[0].azimuth = 30;
-  info.satinfo.inView[0].snr = 40;
+  info.satellites.inView[0].prn = 10;
+  info.satellites.inView[0].elevation = 20;
+  info.satellites.inView[0].azimuth = 30;
+  info.satellites.inView[0].snr = 40;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 30);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 40);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 20);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 30);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 40);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = -200;
-  info.satinfo.inView[0].azimuth = 30;
-  info.satinfo.inView[0].snr = 40;
+  info.satellites.inView[0].prn = 10;
+  info.satellites.inView[0].elevation = -200;
+  info.satellites.inView[0].azimuth = 30;
+  info.satellites.inView[0].snr = 40;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 210);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 40);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 20);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 210);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 40);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = 200;
-  info.satinfo.inView[0].azimuth = 30;
-  info.satinfo.inView[0].snr = 40;
+  info.satellites.inView[0].prn = 10;
+  info.satellites.inView[0].elevation = 200;
+  info.satellites.inView[0].azimuth = 30;
+  info.satellites.inView[0].snr = 40;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, -20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 210);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 40);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, -20);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 210);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 40);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = 20;
-  info.satinfo.inView[0].azimuth = 390;
-  info.satinfo.inView[0].snr = 40;
+  info.satellites.inView[0].prn = 10;
+  info.satellites.inView[0].elevation = 20;
+  info.satellites.inView[0].azimuth = 390;
+  info.satellites.inView[0].snr = 40;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 30);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 40);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 20);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 30);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 40);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = 20;
-  info.satinfo.inView[0].azimuth = 30;
-  info.satinfo.inView[0].snr = 140;
+  info.satellites.inView[0].prn = 10;
+  info.satellites.inView[0].elevation = 20;
+  info.satellites.inView[0].azimuth = 30;
+  info.satellites.inView[0].snr = 140;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 30);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 99);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].prn, 10);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 20);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 30);
+  CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 99);
 }
 
 static void test_nmeaInfoUnitConversion(void) {
@@ -1122,9 +1122,9 @@ static void test_nmeaInfoUnitConversion(void) {
   infoClean.pdop = 1.1;
   infoClean.hdop = 2.2;
   infoClean.vdop = 3.3;
-  infoClean.lat = 4.4;
-  infoClean.lon = 5.5;
-  infoClean.elv = 6.6;
+  infoClean.latitude = 4.4;
+  infoClean.longitude = 5.5;
+  infoClean.elevation = 6.6;
   infoClean.height = 7.7;
   infoClean.speed = 8.8;
   infoClean.track = 9.9;
@@ -1132,7 +1132,7 @@ static void test_nmeaInfoUnitConversion(void) {
   infoClean.magvar = 12.12;
   infoClean.dgpsAge = 13.13;
   infoClean.dgpsSid = 114;
-  memset(&infoClean.satinfo, 0xaa, sizeof(infoClean.satinfo));
+  memset(&infoClean.satellites, 0xaa, sizeof(infoClean.satellites));
   infoClean.progress.gpgsvInProgress = true;
 
   /* invalid inputs */
@@ -1168,8 +1168,8 @@ static void test_nmeaInfoUnitConversion(void) {
   infoExpected.pdop = nmeaMathDopToMeters(infoExpected.pdop);
   infoExpected.hdop = nmeaMathDopToMeters(infoExpected.hdop);
   infoExpected.vdop = nmeaMathDopToMeters(infoExpected.vdop);
-  infoExpected.lat = nmeaMathNdegToDegree(infoExpected.lat);
-  infoExpected.lon = nmeaMathNdegToDegree(infoExpected.lon);
+  infoExpected.latitude = nmeaMathNdegToDegree(infoExpected.latitude);
+  infoExpected.longitude = nmeaMathNdegToDegree(infoExpected.longitude);
   nmeaInfoUnitConversion(&info, true);
   CU_ASSERT_EQUAL(memcmp(&info, &infoExpected, sizeof(info)), 0);
 
@@ -1182,8 +1182,8 @@ static void test_nmeaInfoUnitConversion(void) {
   infoExpected.pdop = nmeaMathMetersToDop(infoExpected.pdop);
   infoExpected.hdop = nmeaMathMetersToDop(infoExpected.hdop);
   infoExpected.vdop = nmeaMathMetersToDop(infoExpected.vdop);
-  infoExpected.lat = nmeaMathDegreeToNdeg(infoExpected.lat);
-  infoExpected.lon = nmeaMathDegreeToNdeg(infoExpected.lon);
+  infoExpected.latitude = nmeaMathDegreeToNdeg(infoExpected.latitude);
+  infoExpected.longitude = nmeaMathDegreeToNdeg(infoExpected.longitude);
   nmeaInfoUnitConversion(&info, false);
   CU_ASSERT_EQUAL(memcmp(&info, &infoExpected, sizeof(info)), 0);
 

@@ -250,17 +250,17 @@ static void test_nmeaGPGSAToInfo(void) {
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINUSECOUNT | NMEALIB_PRESENT_SATINUSE);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSA);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUse[0], 1);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[1], 2);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[2], 5);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[3], 6);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[4], 7);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[5], 8);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[6], 10);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[7], 11);
-  CU_ASSERT_EQUAL(info.satinfo.inUse[8], 12);
+  CU_ASSERT_EQUAL(info.satellites.inUse[0], 1);
+  CU_ASSERT_EQUAL(info.satellites.inUse[1], 2);
+  CU_ASSERT_EQUAL(info.satellites.inUse[2], 5);
+  CU_ASSERT_EQUAL(info.satellites.inUse[3], 6);
+  CU_ASSERT_EQUAL(info.satellites.inUse[4], 7);
+  CU_ASSERT_EQUAL(info.satellites.inUse[5], 8);
+  CU_ASSERT_EQUAL(info.satellites.inUse[6], 10);
+  CU_ASSERT_EQUAL(info.satellites.inUse[7], 11);
+  CU_ASSERT_EQUAL(info.satellites.inUse[8], 12);
   for (i = 9; i < NMEALIB_MAX_SATELLITES; i++) {
-    CU_ASSERT_EQUAL(info.satinfo.inUse[i], 0);
+    CU_ASSERT_EQUAL(info.satellites.inUse[i], 0);
   }
 
   memset(&pack, 0, sizeof(pack));
@@ -399,11 +399,11 @@ static void test_nmeaGPGSAFromInfo(void) {
 
   /* satPrn */
 
-  info.satinfo.inUse[0] = 1;
-  info.satinfo.inUse[1] = 2;
-  info.satinfo.inUse[2] = 5;
-  info.satinfo.inUse[3] = 6;
-  info.satinfo.inUse[4] = 7;
+  info.satellites.inUse[0] = 1;
+  info.satellites.inUse[1] = 2;
+  info.satellites.inUse[2] = 5;
+  info.satellites.inUse[3] = 6;
+  info.satellites.inUse[4] = 7;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
   nmeaGPGSAFromInfo(&info, &pack);
@@ -423,20 +423,20 @@ static void test_nmeaGPGSAFromInfo(void) {
   CU_ASSERT_EQUAL(pack.satPrn[11], 0);
   memset(&info, 0, sizeof(info));
 
-  info.satinfo.inUse[0] = 1;
-  info.satinfo.inUse[1] = 2;
-  info.satinfo.inUse[2] = 5;
-  info.satinfo.inUse[3] = 6;
-  info.satinfo.inUse[4] = 7;
-  info.satinfo.inUse[5] = 9;
-  info.satinfo.inUse[6] = 10;
-  info.satinfo.inUse[7] = 11;
-  info.satinfo.inUse[8] = 14;
-  info.satinfo.inUse[9] = 15;
-  info.satinfo.inUse[10] = 16;
-  info.satinfo.inUse[11] = 17;
-  info.satinfo.inUse[12] = 18;
-  info.satinfo.inUse[13] = 19;
+  info.satellites.inUse[0] = 1;
+  info.satellites.inUse[1] = 2;
+  info.satellites.inUse[2] = 5;
+  info.satellites.inUse[3] = 6;
+  info.satellites.inUse[4] = 7;
+  info.satellites.inUse[5] = 9;
+  info.satellites.inUse[6] = 10;
+  info.satellites.inUse[7] = 11;
+  info.satellites.inUse[8] = 14;
+  info.satellites.inUse[9] = 15;
+  info.satellites.inUse[10] = 16;
+  info.satellites.inUse[11] = 17;
+  info.satellites.inUse[12] = 18;
+  info.satellites.inUse[13] = 19;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
   nmeaGPGSAFromInfo(&info, &pack);

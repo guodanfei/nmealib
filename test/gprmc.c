@@ -366,7 +366,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -378,7 +378,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -390,7 +390,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -402,7 +402,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lat, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -416,7 +416,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -428,7 +428,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -440,7 +440,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -452,7 +452,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.lon, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, DBL_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -620,7 +620,7 @@ static void test_nmeaGPRMCFromInfo(void) {
 
   /* latitude  */
 
-  info.lat = -1232.5523;
+  info.latitude = -1232.5523;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -631,7 +631,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   CU_ASSERT_EQUAL(pack.ns, 'S');
   memset(&info, 0, sizeof(info));
 
-  info.lat = 1232.5523;
+  info.latitude = 1232.5523;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -644,7 +644,7 @@ static void test_nmeaGPRMCFromInfo(void) {
 
   /* longitude */
 
-  info.lon = -1232.5523;
+  info.longitude = -1232.5523;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -655,7 +655,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   CU_ASSERT_EQUAL(pack.ew, 'W');
   memset(&info, 0, sizeof(info));
 
-  info.lon = 1232.5523;
+  info.longitude = 1232.5523;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
 
   nmeaGPRMCFromInfo(&info, &pack);
@@ -719,7 +719,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   CU_ASSERT_EQUAL(pack.magvar_ew, 'W');
   memset(&info, 0, sizeof(info));
 
-  info.lon = 1232.5523;
+  info.longitude = 1232.5523;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
 
   nmeaGPRMCFromInfo(&info, &pack);
