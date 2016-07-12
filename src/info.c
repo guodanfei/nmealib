@@ -737,17 +737,13 @@ void nmeaInfoSanitise(NmeaInfo *info) {
    * satinfo
    */
 
-  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSECOUNT)) {
-    info->satinfo.inUseCount = abs(info->satinfo.inUseCount);
-  }
+  /* nothing to do for inUseCount */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
     qsort(info->satinfo.inUse, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inUse[0]), nmeaQsortPRNCompact);
   }
 
-  if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satinfo.inViewCount = abs(info->satinfo.inViewCount);
-  }
+  /* nothing to do for inViewCount */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW) //
       && !info->progress.gpgsvInProgress) {

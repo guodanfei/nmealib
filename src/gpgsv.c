@@ -244,7 +244,7 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satinfo.inViewCount = (int) pack->satellites;
+    info->satinfo.inViewCount = pack->satellites;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -270,7 +270,7 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
     return;
   }
 
-  satellites = (size_t) info->satinfo.inViewCount;
+  satellites = info->satinfo.inViewCount;
   sentences = nmeaGPGSVsatellitesToSentencesCount(satellites);
 
   if (sentence >= sentences) {

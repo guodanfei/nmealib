@@ -44,7 +44,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   pack->latitude = NAN;
   pack->longitude = NAN;
   pack->signal = INT_MAX;
-  pack->satellitesInView = INT_MAX;
+  pack->satellitesInView = UINT_MAX;
   pack->hdop = NAN;
   pack->elevation = NAN;
   pack->height = NAN;
@@ -53,7 +53,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%d,%F,%f,%C,%f,%C,%F,%d*", //
+      "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%u,%F,%f,%C,%f,%C,%F,%d*", //
       timeBuf, //
       &pack->latitude, //
       &pack->ns, //
@@ -120,8 +120,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->signal = NMEALIB_SIG_INVALID;
   }
 
-  if (pack->satellitesInView != INT_MAX) {
-    pack->satellitesInView = abs(pack->satellitesInView);
+  if (pack->satellitesInView != UINT_MAX) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   } else {
     pack->satellitesInView = 0;
@@ -372,7 +371,7 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    chars += snprintf(dst, available, ",%02d", pack->satellitesInView);
+    chars += snprintf(dst, available, ",%02u", pack->satellitesInView);
   } else {
     chars += snprintf(dst, available, ",");
   }

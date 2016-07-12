@@ -1000,12 +1000,6 @@ static void test_nmeaInfoSanitise(void) {
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINUSECOUNT;
-  info.satinfo.inUseCount = -42;
-  nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount, 42);
-
-  memset(&info, 0, sizeof(info));
-  info.present = NMEALIB_PRESENT_SATINUSECOUNT;
   info.satinfo.inUseCount = 42;
   nmeaInfoSanitise(&info);
   CU_ASSERT_EQUAL(info.satinfo.inUseCount, 42);
@@ -1029,12 +1023,6 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_EQUAL(info.satinfo.inUse[5], 0);
 
   /* sat in view count */
-
-  memset(&info, 0, sizeof(info));
-  info.present = NMEALIB_PRESENT_SATINVIEWCOUNT;
-  info.satinfo.inViewCount = -42;
-  nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount, 42);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SATINVIEWCOUNT;

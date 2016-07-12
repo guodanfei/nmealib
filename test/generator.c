@@ -101,10 +101,8 @@ static void test_nmeaGeneratorLoopNoise(void) {
   CU_ASSERT_EQUAL(info.dgpsSid >= 0, true);
   CU_ASSERT_EQUAL(info.dgpsSid <= 100, true);
 
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount >= 0, true);
-  CU_ASSERT_EQUAL(info.satinfo.inUseCount <= (int) NMEALIB_MAX_SATELLITES, true);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount >= 0, true);
-  CU_ASSERT_EQUAL(info.satinfo.inViewCount <= (int) NMEALIB_MAX_SATELLITES, true);
+  CU_ASSERT_EQUAL(info.satinfo.inUseCount <= NMEALIB_MAX_SATELLITES, true);
+  CU_ASSERT_EQUAL(info.satinfo.inViewCount <= NMEALIB_MAX_SATELLITES, true);
 
   for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
     CU_ASSERT_EQUAL(info.satinfo.inView[it].prn, it);

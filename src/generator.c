@@ -232,8 +232,8 @@ bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info) {
  * @return True on success
  */
 bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
-  int it;
-  int count;
+  size_t it;
+  size_t count;
   double deg;
   double srt;
 
@@ -243,8 +243,8 @@ bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaIn
 
   count = info->satinfo.inViewCount;
   deg = 360.0 / (count ?
-      count :
-      1);
+      (double) count :
+      1.0);
   srt = (count ?
       (info->satinfo.inView[0].azimuth) :
       0) + 5;
@@ -284,7 +284,7 @@ bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaI
   info->satinfo.inUseCount = 8;
   info->satinfo.inViewCount = 8;
 
-  for (it = 0; it < (size_t) info->satinfo.inViewCount; it++) {
+  for (it = 0; it < info->satinfo.inViewCount; it++) {
     info->satinfo.inUse[it] = (unsigned int) (it + 1);
     info->satinfo.inView[it].prn = (unsigned int) (it + 1);
     info->satinfo.inView[it].elevation = 5;

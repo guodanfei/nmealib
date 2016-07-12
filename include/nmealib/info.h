@@ -169,9 +169,9 @@ typedef struct _NmeaSatellite {
  * Information about all tracked satellites
  */
 typedef struct _NmeaSatellites {
-  int           inUseCount;                     /**< The number of satellites in use (not those in view) */
+  unsigned int  inUseCount;                     /**< The number of satellites in use (not those in view) */
   unsigned int  inUse[NMEALIB_MAX_SATELLITES];  /**< The PRNs of satellites in use   (not those in view) */
-  int           inViewCount;                    /**< The number of satellites in view                    */
+  unsigned int  inViewCount;                    /**< The number of satellites in view                    */
   NmeaSatellite inView[NMEALIB_MAX_SATELLITES]; /**< Satellites information (in view)                    */
 } NmeaSatellites;
 

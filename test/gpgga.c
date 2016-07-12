@@ -126,7 +126,7 @@ static void test_nmeaGPGGAParse(void) {
 
   /* satellites */
 
-  s = "$GPGGA,,,,,,,-8,,,,,,,";
+  s = "$GPGGA,,,,,,,8,,,,,,,";
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);

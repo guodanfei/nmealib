@@ -56,14 +56,14 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
 
-	info.satinfo.inUseCount = (int) NMEALIB_MAX_SATELLITES;
+	info.satinfo.inUseCount = NMEALIB_MAX_SATELLITES;
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.inUse[it] = (unsigned int) (it + 1);
 	}
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
-	info.satinfo.inViewCount = (int) NMEALIB_MAX_SATELLITES;
+	info.satinfo.inViewCount = NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
 		info.satinfo.inView[it].prn = (unsigned int) it + 1;
 		info.satinfo.inView[it].elevation = (int) (it * 10);
