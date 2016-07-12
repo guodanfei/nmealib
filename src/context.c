@@ -26,8 +26,8 @@
  * The structure with the nmealib context.
  */
 typedef struct _NmeaContext {
-  volatile nmeaContextPrintFunction traceFunction;
-  volatile nmeaContextPrintFunction errorFunction;
+  volatile NmeaContextPrintFunction traceFunction;
+  volatile NmeaContextPrintFunction errorFunction;
 } NmeaContext;
 
 /** The nmealib context */
@@ -35,26 +35,26 @@ static NmeaContext nmealibContext = {
     .traceFunction = NULL,
     .errorFunction = NULL };
 
-nmeaContextPrintFunction nmeaContextSetTraceFunction(nmeaContextPrintFunction traceFunction) {
-  nmeaContextPrintFunction r = nmealibContext.traceFunction;
+NmeaContextPrintFunction nmeaContextSetTraceFunction(NmeaContextPrintFunction traceFunction) {
+  NmeaContextPrintFunction r = nmealibContext.traceFunction;
   nmealibContext.traceFunction = traceFunction;
   return r;
 }
 
-nmeaContextPrintFunction nmeaContextSetErrorFunction(nmeaContextPrintFunction errorFunction) {
-  nmeaContextPrintFunction r = nmealibContext.errorFunction;
+NmeaContextPrintFunction nmeaContextSetErrorFunction(NmeaContextPrintFunction errorFunction) {
+  NmeaContextPrintFunction r = nmealibContext.errorFunction;
   nmealibContext.errorFunction = errorFunction;
   return r;
 }
 
 void nmeaContextTraceBuffer(const char *s, size_t sz) {
-  nmeaContextPrintFunction func = nmealibContext.traceFunction;
-  if (func && s && sz) {
-    (*func)(s, sz);
+  NmeaContextPrintFunction f = nmealibContext.traceFunction;
+  if (f && s && sz) {
+    (*f)(s, sz);
   }
 }
 
-#define enlarge(buf, sz) { \
+#define nmeaContextBufferEnlarge(buf, sz) { \
   if (!(buf = realloc(buf, sz))) { \
     /* can't be covered in a test */ \
     goto out; \
@@ -62,72 +62,72 @@ void nmeaContextTraceBuffer(const char *s, size_t sz) {
 }
 
 void nmeaContextTrace(const char *s, ...) {
-  nmeaContextPrintFunction func = nmealibContext.traceFunction;
-  if (s && func) {
+  NmeaContextPrintFunction f = nmealibContext.traceFunction;
+  if (s && f) {
     va_list args;
-    va_list args2;
+    va_list argsCopy;
     char *buf = NULL;
-    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
-    int chars;
+    size_t bufSz = NMEALIB_BUFFER_CHUNK_SIZE;
+    int printedChars;
 
     va_start(args, s);
-    va_copy(args2, args);
+    va_copy(argsCopy, args);
 
-    enlarge(buf, bufSize);
+    nmeaContextBufferEnlarge(buf, bufSz);
     buf[0] = '\0';
 
-    chars = vsnprintf(buf, bufSize, s, args);
-    if (chars <= 0) {
+    printedChars = vsnprintf(buf, bufSz, s, args);
+    if (printedChars <= 0) {
       goto out;
     }
-    if ((size_t) chars >= bufSize) {
-      bufSize = (size_t) chars + 1;
-      enlarge(buf, bufSize);
-      chars = vsnprintf(buf, bufSize, s, args2);
+    if ((size_t) printedChars >= bufSz) {
+      bufSz = (size_t) printedChars + 1;
+      nmeaContextBufferEnlarge(buf, bufSz);
+      printedChars = vsnprintf(buf, bufSz, s, argsCopy);
     }
 
-    buf[bufSize - 1] = '\0';
+    buf[bufSz - 1] = '\0';
 
-    (*func)(buf, (size_t) chars);
+    (*f)(buf, (size_t) printedChars);
 
 out:
-    va_end(args2);
+    va_end(argsCopy);
     va_end(args);
     free(buf);
   }
 }
 
 void nmeaContextError(const char *s, ...) {
-  nmeaContextPrintFunction func = nmealibContext.errorFunction;
-  if (s && func) {
+  NmeaContextPrintFunction f = nmealibContext.errorFunction;
+  if (s && f) {
     va_list args;
-    va_list args2;
+    va_list argsCopy;
     char *buf = NULL;
-    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
-    int chars;
+    size_t bufSz = NMEALIB_BUFFER_CHUNK_SIZE;
+    int printedChars;
 
     va_start(args, s);
-    va_copy(args2, args);
+    va_copy(argsCopy, args);
 
-    enlarge(buf, bufSize);
+    nmeaContextBufferEnlarge(buf, bufSz);
     buf[0] = '\0';
 
-    chars = vsnprintf(buf, bufSize, s, args);
-    if (chars <= 0) {
+    printedChars = vsnprintf(buf, bufSz, s, args);
+    if (printedChars <= 0) {
       goto out;
     }
-    if ((size_t) chars >= bufSize) {
-      bufSize = (size_t) chars + 1;
-      enlarge(buf, bufSize);
-      chars = vsnprintf(buf, bufSize, s, args2);
+    if ((size_t) printedChars >= bufSz) {
+      bufSz = (size_t) printedChars + 1;
+      nmeaContextBufferEnlarge(buf, bufSz);
+      printedChars = vsnprintf(buf, bufSz, s, argsCopy);
     }
 
-    buf[bufSize - 1] = '\0';
+    buf[bufSz - 1] = '\0';
 
-    (*func)(buf, (size_t) chars);
+    (*f)(buf, (size_t) printedChars);
 
 out:
-    va_end(args2);
+    va_end(argsCopy);
     va_end(args);
     free(buf);
   }

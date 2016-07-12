@@ -60,7 +60,7 @@ static void reset(void) {
 static void test_nmeaContextTrace(void) {
   const char * s = "some string";
   char * buf = NULL;
-  nmeaContextPrintFunction prev = nmeaContextSetTraceFunction(NULL);
+  NmeaContextPrintFunction prev = nmeaContextSetTraceFunction(NULL);
 
   CU_ASSERT_PTR_NOT_NULL(prev);
 
@@ -101,7 +101,7 @@ static void test_nmeaContextTrace(void) {
 static void test_nmeaContextError(void) {
   const char * s = "some string";
   char * buf = NULL;
-  nmeaContextPrintFunction prev = nmeaContextSetErrorFunction(NULL);
+  NmeaContextPrintFunction prev = nmeaContextSetErrorFunction(NULL);
 
   CU_ASSERT_PTR_NOT_NULL(prev);
 
@@ -144,7 +144,7 @@ static void test_nmeaContextError(void) {
  */
 
 static int suiteInit(void) {
-  nmeaContextPrintFunction prev;
+  NmeaContextPrintFunction prev;
 
   prev = nmeaContextSetTraceFunction(traceFunction);
   if (prev) {

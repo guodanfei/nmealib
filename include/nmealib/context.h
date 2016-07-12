@@ -30,13 +30,13 @@ extern "C" {
  * @param s The string to trace or log an error with
  * @param sz The length of the string
  */
-typedef void (*nmeaContextPrintFunction)(const char *s, size_t sz);
+typedef void (*NmeaContextPrintFunction)(const char *s, size_t sz);
 
 /**
  * Set the trace function
  *
  * Note that only 1 trace function is accepted, it will overwrite
- * any trace function that was previously set, use the return value
+ * any trace function that was previously set, so use the return value
  * for function chaining.
  *
  * Setting the function to NULL disables tracing.
@@ -46,13 +46,13 @@ typedef void (*nmeaContextPrintFunction)(const char *s, size_t sz);
  * @param function The trace function
  * @return The overwritten trace function
  */
-nmeaContextPrintFunction nmeaContextSetTraceFunction(nmeaContextPrintFunction function);
+NmeaContextPrintFunction nmeaContextSetTraceFunction(NmeaContextPrintFunction function);
 
 /**
  * Set the error logging function
  *
  * Note that only 1 error logging function is accepted, it will overwrite
- * any error logging function that was previously set, use the return value
+ * any error logging function that was previously set, so use the return value
  * for function chaining.
  *
  * Setting the function to NULL disables error logging.
@@ -62,7 +62,7 @@ nmeaContextPrintFunction nmeaContextSetTraceFunction(nmeaContextPrintFunction fu
  * @param function The error logging function
  * @return The overwritten error logging function
  */
-nmeaContextPrintFunction nmeaContextSetErrorFunction(nmeaContextPrintFunction function);
+NmeaContextPrintFunction nmeaContextSetErrorFunction(NmeaContextPrintFunction function);
 
 /**
  * Trace a buffer (a sized string)

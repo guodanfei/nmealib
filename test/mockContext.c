@@ -38,7 +38,7 @@ static void errorFunction(const char *s __attribute__((unused)), size_t sz __att
 }
 
 int mockContextSuiteInit(void) {
-  nmeaContextPrintFunction prev;
+  NmeaContextPrintFunction prev;
 
   prev = nmeaContextSetTraceFunction(traceFunction);
   if (prev) {
