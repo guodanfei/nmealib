@@ -43,8 +43,8 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   memset(pack, 0, sizeof(*pack));
   pack->latitude = NAN;
   pack->longitude = NAN;
-  pack->signal = INT_MAX;
-  pack->satellitesInView = UINT_MAX;
+  pack->sig = INT_MAX;
+  pack->inViewCount = UINT_MAX;
   pack->hdop = NAN;
   pack->elevation = NAN;
   pack->height = NAN;
@@ -56,16 +56,16 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
       "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%u,%F,%f,%C,%f,%C,%F,%u*", //
       timeBuf, //
       &pack->latitude, //
-      &pack->ns, //
+      &pack->latitudeNS, //
       &pack->longitude, //
-      &pack->ew, //
-      &pack->signal, //
-      &pack->satellitesInView, //
+      &pack->longitudeEW, //
+      &pack->sig, //
+      &pack->inViewCount, //
       &pack->hdop, //
       &pack->elevation, //
-      &pack->elevationUnit, //
+      &pack->elevationM, //
       &pack->height, //
-      &pack->heightUnit, //
+      &pack->heightM, //
       &pack->dgpsAge, //
       &pack->dgpsSid);
 
@@ -78,52 +78,52 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   /* determine which fields are present and validate them */
 
   if (*timeBuf) {
-    if (!nmeaTimeParseTime(timeBuf, &pack->time) //
-        || !nmeaValidateTime(&pack->time, NMEALIB_GPGGA_PREFIX, s)) {
+    if (!nmeaTimeParseTime(timeBuf, &pack->utc) //
+        || !nmeaValidateTime(&pack->utc, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_UTCTIME);
   } else {
-    memset(&pack->time, 0, sizeof(pack->time));
+    memset(&pack->utc, 0, sizeof(pack->utc));
   }
 
   if (!isnan(pack->latitude)) {
-    if (!nmeaValidateNSEW(pack->ns, true, NMEALIB_GPGGA_PREFIX, s)) {
+    if (!nmeaValidateNSEW(pack->latitudeNS, true, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
   } else {
     pack->latitude = 0.0;
-    pack->ns = '\0';
+    pack->latitudeNS = '\0';
   }
 
   if (!isnan(pack->longitude)) {
-    if (!nmeaValidateNSEW(pack->ew, false, NMEALIB_GPGGA_PREFIX, s)) {
+    if (!nmeaValidateNSEW(pack->longitudeEW, false, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);
   } else {
     pack->longitude = 0.0;
-    pack->ew = '\0';
+    pack->longitudeEW = '\0';
   }
 
-  if (pack->signal != INT_MAX) {
-    if (!nmeaValidateSignal(pack->signal, NMEALIB_GPGGA_PREFIX, s)) {
+  if (pack->sig != INT_MAX) {
+    if (!nmeaValidateSignal(pack->sig, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SIG);
   } else {
-    pack->signal = NMEALIB_SIG_INVALID;
+    pack->sig = NMEALIB_SIG_INVALID;
   }
 
-  if (pack->satellitesInView != UINT_MAX) {
+  if (pack->inViewCount != UINT_MAX) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   } else {
-    pack->satellitesInView = 0;
+    pack->inViewCount = 0;
   }
 
   if (!isnan(pack->hdop)) {
@@ -133,27 +133,27 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   }
 
   if (!isnan(pack->elevation)) {
-    if (pack->elevationUnit != 'M') {
-      nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid elevation unit '%c' in '%s'", pack->elevationUnit, s);
+    if (pack->elevationM != 'M') {
+      nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid elevation unit '%c' in '%s'", pack->elevationM, s);
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_ELV);
   } else {
     pack->elevation = 0.0;
-    pack->elevationUnit = '\0';
+    pack->elevationM = '\0';
   }
 
   if (!isnan(pack->height)) {
-    if (pack->heightUnit != 'M') {
-      nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid height unit '%c' in '%s'", pack->heightUnit, s);
+    if (pack->heightM != 'M') {
+      nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid height unit '%c' in '%s'", pack->heightM, s);
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HEIGHT);
   } else {
     pack->height = 0.0;
-    pack->heightUnit = '\0';
+    pack->heightM = '\0';
   }
 
   if (!isnan(pack->dgpsAge)) {
@@ -172,7 +172,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
 
 err:
   memset(pack, 0, sizeof(*pack));
-  pack->signal = NMEALIB_SIG_INVALID;
+  pack->sig = NMEALIB_SIG_INVALID;
   return false;
 }
 
@@ -187,34 +187,34 @@ void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info) {
   info->smask |= NMEALIB_SENTENCE_GPGGA;
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_UTCTIME)) {
-    info->utc.hour = pack->time.hour;
-    info->utc.min = pack->time.min;
-    info->utc.sec = pack->time.sec;
-    info->utc.hsec = pack->time.hsec;
+    info->utc.hour = pack->utc.hour;
+    info->utc.min = pack->utc.min;
+    info->utc.sec = pack->utc.sec;
+    info->utc.hsec = pack->utc.hsec;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_UTCTIME);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
-    info->latitude = ((pack->ns == 'S') ?
+    info->latitude = ((pack->latitudeNS == 'S') ?
         -pack->latitude :
         pack->latitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LAT);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
-    info->longitude = ((pack->ew == 'W') ?
+    info->longitude = ((pack->longitudeEW == 'W') ?
         -pack->longitude :
         pack->longitude);
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_LON);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG)) {
-    info->sig = pack->signal;
+    info->sig = pack->sig;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    info->satellites.inViewCount = pack->satellitesInView;
+    info->satellites.inViewCount = pack->inViewCount;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -253,16 +253,16 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
   memset(pack, 0, sizeof(*pack));
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCTIME)) {
-    pack->time.hour = info->utc.hour;
-    pack->time.min = info->utc.min;
-    pack->time.sec = info->utc.sec;
-    pack->time.hsec = info->utc.hsec;
+    pack->utc.hour = info->utc.hour;
+    pack->utc.min = info->utc.min;
+    pack->utc.sec = info->utc.sec;
+    pack->utc.hsec = info->utc.hsec;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_UTCTIME);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LAT)) {
     pack->latitude = fabs(info->latitude);
-    pack->ns = ((info->latitude >= 0.0) ?
+    pack->latitudeNS = ((info->latitude >= 0.0) ?
         'N' :
         'S');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LAT);
@@ -270,21 +270,21 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_LON)) {
     pack->longitude = fabs(info->longitude);
-    pack->ew = ((info->longitude >= 0.0) ?
+    pack->longitudeEW = ((info->longitude >= 0.0) ?
         'E' :
         'W');
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_LON);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SIG)) {
-    pack->signal = info->sig;
+    pack->sig = info->sig;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SIG);
   } else {
-    pack->signal = NMEALIB_SIG_INVALID;
+    pack->sig = NMEALIB_SIG_INVALID;
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    pack->satellitesInView = info->satellites.inViewCount;
+    pack->inViewCount = info->satellites.inViewCount;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
 
@@ -295,13 +295,13 @@ void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_ELV)) {
     pack->elevation = info->elevation;
-    pack->elevationUnit = 'M';
+    pack->elevationM = 'M';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_ELV);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_HEIGHT)) {
     pack->height = info->height;
-    pack->heightUnit = 'M';
+    pack->heightM = 'M';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HEIGHT);
   }
 
@@ -333,18 +333,18 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_UTCTIME)) {
     chars += snprintf(dst, available, //
         ",%02u%02u%02u.%02u", //
-        pack->time.hour, //
-        pack->time.min, //
-        pack->time.sec, //
-        pack->time.hsec);
+        pack->utc.hour, //
+        pack->utc.min, //
+        pack->utc.sec, //
+        pack->utc.hsec);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LAT)) {
     chars += snprintf(dst, available, ",%09.4f", pack->latitude);
-    if (pack->ns) {
-      chars += snprintf(dst, available, ",%c", pack->ns);
+    if (pack->latitudeNS) {
+      chars += snprintf(dst, available, ",%c", pack->latitudeNS);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -354,8 +354,8 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_LON)) {
     chars += snprintf(dst, available, ",%010.4f", pack->longitude);
-    if (pack->ew) {
-      chars += snprintf(dst, available, ",%c", pack->ew);
+    if (pack->longitudeEW) {
+      chars += snprintf(dst, available, ",%c", pack->longitudeEW);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -364,13 +364,13 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG)) {
-    chars += snprintf(dst, available, ",%d", pack->signal);
+    chars += snprintf(dst, available, ",%d", pack->sig);
   } else {
     chars += snprintf(dst, available, ",");
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
-    chars += snprintf(dst, available, ",%02u", pack->satellitesInView);
+    chars += snprintf(dst, available, ",%02u", pack->inViewCount);
   } else {
     chars += snprintf(dst, available, ",");
   }
@@ -383,8 +383,8 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_ELV)) {
     chars += snprintf(dst, available, ",%03.1f", pack->elevation);
-    if (pack->elevationUnit) {
-      chars += snprintf(dst, available, ",%c", pack->elevationUnit);
+    if (pack->elevationM) {
+      chars += snprintf(dst, available, ",%c", pack->elevationM);
     } else {
       chars += snprintf(dst, available, ",");
     }
@@ -394,8 +394,8 @@ size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack) {
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_HEIGHT)) {
     chars += snprintf(dst, available, ",%03.1f", pack->height);
-    if (pack->heightUnit) {
-      chars += snprintf(dst, available, ",%c", pack->heightUnit);
+    if (pack->heightM) {
+      chars += snprintf(dst, available, ",%c", pack->heightM);
     } else {
       chars += snprintf(dst, available, ",");
     }

@@ -82,18 +82,18 @@ extern "C" {
  */
 typedef struct _NmeaGPGGA {
   uint32_t     present;
-  NmeaTime     time;
+  NmeaTime     utc;
   double       latitude;
-  char         ns;
+  char         latitudeNS;
   double       longitude;
-  char         ew;
-  NmeaSignal   signal;
-  unsigned int satellitesInView;
+  char         longitudeEW;
+  NmeaSignal   sig;
+  unsigned int inViewCount;
   double       hdop;
   double       elevation;
-  char         elevationUnit;
+  char         elevationM;
   double       height;
-  char         heightUnit;
+  char         heightM;
   double       dgpsAge;
   unsigned int dgpsSid;
 } NmeaGPGGA;

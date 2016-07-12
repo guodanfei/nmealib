@@ -73,10 +73,10 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_UTCTIME);
-  CU_ASSERT_EQUAL(pack.time.hour, 10);
-  CU_ASSERT_EQUAL(pack.time.min, 45);
-  CU_ASSERT_EQUAL(pack.time.sec, 59);
-  CU_ASSERT_EQUAL(pack.time.hsec, 64);
+  CU_ASSERT_EQUAL(pack.utc.hour, 10);
+  CU_ASSERT_EQUAL(pack.utc.min, 45);
+  CU_ASSERT_EQUAL(pack.utc.sec, 59);
+  CU_ASSERT_EQUAL(pack.utc.hsec, 64);
 
   /* lat */
 
@@ -93,7 +93,7 @@ static void test_nmeaGPGGAParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(pack.latitude, 1242.55);
-  CU_ASSERT_EQUAL(pack.ns, 'S');
+  CU_ASSERT_EQUAL(pack.latitudeNS, 'S');
 
   /* lon */
 
@@ -110,7 +110,7 @@ static void test_nmeaGPGGAParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(pack.longitude, 1242.55);
-  CU_ASSERT_EQUAL(pack.ew, 'E');
+  CU_ASSERT_EQUAL(pack.longitudeEW, 'E');
 
   /* sig */
 
@@ -122,7 +122,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SIG);
-  CU_ASSERT_EQUAL(pack.signal, 2);
+  CU_ASSERT_EQUAL(pack.sig, 2);
 
   /* satellites */
 
@@ -130,7 +130,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
-  CU_ASSERT_EQUAL(pack.satellitesInView, 8);
+  CU_ASSERT_EQUAL(pack.inViewCount, 8);
 
   /* hdop */
 
@@ -155,7 +155,7 @@ static void test_nmeaGPGGAParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_ELV);
   CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -42, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.elevationUnit, 'M');
+  CU_ASSERT_EQUAL(pack.elevationM, 'M');
 
   /* diff */
 
@@ -172,7 +172,7 @@ static void test_nmeaGPGGAParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HEIGHT);
   CU_ASSERT_DOUBLE_EQUAL(pack.height, -42, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.heightUnit, 'M');
+  CU_ASSERT_EQUAL(pack.heightM, 'M');
 
   /* dgpsAge */
 
@@ -223,10 +223,10 @@ static void test_nmeaGPGGAToInfo(void) {
 
   /* time */
 
-  pack.time.hour = 12;
-  pack.time.min = 42;
-  pack.time.sec = 43;
-  pack.time.hsec = 44;
+  pack.utc.hour = 12;
+  pack.utc.min = 42;
+  pack.utc.sec = 43;
+  pack.utc.hsec = 44;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_UTCTIME);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -243,7 +243,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* latitude  */
 
   pack.latitude = -1232.5523;
-  pack.ns = 'N';
+  pack.latitudeNS = 'N';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -255,7 +255,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.latitude = 1232.5523;
-  pack.ns = 'N';
+  pack.latitudeNS = 'N';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -267,7 +267,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.latitude = -1232.5523;
-  pack.ns = 'S';
+  pack.latitudeNS = 'S';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -279,7 +279,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.latitude = 1232.5523;
-  pack.ns = 'S';
+  pack.latitudeNS = 'S';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -293,7 +293,7 @@ static void test_nmeaGPGGAToInfo(void) {
   /* longitude */
 
   pack.longitude = -1232.5523;
-  pack.ew = 'E';
+  pack.longitudeEW = 'E';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -306,7 +306,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.longitude = 1232.5523;
-  pack.ew = 'E';
+  pack.longitudeEW = 'E';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -318,7 +318,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.longitude = -1232.5523;
-  pack.ew = 'W';
+  pack.longitudeEW = 'W';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -329,7 +329,7 @@ static void test_nmeaGPGGAToInfo(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.longitude = 1232.5523;
-  pack.ew = 'W';
+  pack.longitudeEW = 'W';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -342,7 +342,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   /* signal */
 
-  pack.signal = NMEALIB_SIG_FLOAT_RTK;
+  pack.sig = NMEALIB_SIG_FLOAT_RTK;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -355,7 +355,7 @@ static void test_nmeaGPGGAToInfo(void) {
 
   /* satellites */
 
-  pack.satellitesInView = 42;
+  pack.inViewCount = 42;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
   nmeaGPGGAToInfo(&pack, &info);
@@ -512,10 +512,10 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_UTCTIME);
-  CU_ASSERT_EQUAL(pack.time.hour, 12);
-  CU_ASSERT_EQUAL(pack.time.min, 42);
-  CU_ASSERT_EQUAL(pack.time.sec, 43);
-  CU_ASSERT_EQUAL(pack.time.hsec, 44);
+  CU_ASSERT_EQUAL(pack.utc.hour, 12);
+  CU_ASSERT_EQUAL(pack.utc.min, 42);
+  CU_ASSERT_EQUAL(pack.utc.sec, 43);
+  CU_ASSERT_EQUAL(pack.utc.hsec, 44);
   memset(&info, 0, sizeof(info));
 
   /* latitude  */
@@ -527,7 +527,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LAT);
   CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.ns, 'S');
+  CU_ASSERT_EQUAL(pack.latitudeNS, 'S');
   memset(&info, 0, sizeof(info));
 
   info.latitude = 1232.5523;
@@ -537,7 +537,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LAT);
   CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.ns, 'N');
+  CU_ASSERT_EQUAL(pack.latitudeNS, 'N');
   memset(&info, 0, sizeof(info));
 
   /* longitude */
@@ -549,7 +549,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LON);
   CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.ew, 'W');
+  CU_ASSERT_EQUAL(pack.longitudeEW, 'W');
   memset(&info, 0, sizeof(info));
 
   info.longitude = 1232.5523;
@@ -559,7 +559,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LON);
   CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.ew, 'E');
+  CU_ASSERT_EQUAL(pack.longitudeEW, 'E');
   memset(&info, 0, sizeof(info));
 
   /* signal */
@@ -570,7 +570,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SIG);
-  CU_ASSERT_EQUAL(pack.signal, NMEALIB_SIG_MANUAL);
+  CU_ASSERT_EQUAL(pack.sig, NMEALIB_SIG_MANUAL);
   memset(&info, 0, sizeof(info));
 
   /* satellites */
@@ -581,7 +581,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
-  CU_ASSERT_EQUAL(pack.satellitesInView, 42);
+  CU_ASSERT_EQUAL(pack.inViewCount, 42);
   memset(&info, 0, sizeof(info));
 
   /* hdop */
@@ -604,7 +604,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_ELV);
   CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.elevationUnit, 'M');
+  CU_ASSERT_EQUAL(pack.elevationM, 'M');
   memset(&info, 0, sizeof(info));
 
   /* height */
@@ -616,7 +616,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HEIGHT);
   CU_ASSERT_DOUBLE_EQUAL(pack.height, -1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.heightUnit, 'M');
+  CU_ASSERT_EQUAL(pack.heightM, 'M');
   memset(&info, 0, sizeof(info));
 
   /* dgpsAge */
@@ -682,10 +682,10 @@ static void test_nmeaGPGGAGenerate(void) {
 
   /* time */
 
-  pack.time.hour = 12;
-  pack.time.min = 42;
-  pack.time.sec = 43;
-  pack.time.hsec = 44;
+  pack.utc.hour = 12;
+  pack.utc.min = 42;
+  pack.utc.sec = 43;
+  pack.utc.hsec = 44;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_UTCTIME);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -697,7 +697,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* latitude */
 
   pack.latitude = 1242.55;
-  pack.ns = 'N';
+  pack.latitudeNS = 'N';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -707,7 +707,7 @@ static void test_nmeaGPGGAGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.latitude = 1242.55;
-  pack.ns = '\0';
+  pack.latitudeNS = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LAT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -719,7 +719,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* longitude */
 
   pack.longitude = 1242.55;
-  pack.ew = 'E';
+  pack.longitudeEW = 'E';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -729,7 +729,7 @@ static void test_nmeaGPGGAGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.longitude = 1242.55;
-  pack.ew = '\0';
+  pack.longitudeEW = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_LON);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -740,7 +740,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   /* signal */
 
-  pack.signal = NMEALIB_SIG_MANUAL;
+  pack.sig = NMEALIB_SIG_MANUAL;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -751,7 +751,7 @@ static void test_nmeaGPGGAGenerate(void) {
 
   /* satellites */
 
-  pack.satellitesInView = 42;
+  pack.inViewCount = 42;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -774,7 +774,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* elv */
 
   pack.elevation = 42.64;
-  pack.elevationUnit = 'M';
+  pack.elevationM = 'M';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_ELV);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -784,7 +784,7 @@ static void test_nmeaGPGGAGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.elevation = 42.64;
-  pack.elevationUnit = '\0';
+  pack.elevationM = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_ELV);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -796,7 +796,7 @@ static void test_nmeaGPGGAGenerate(void) {
   /* height */
 
   pack.height = 42.64;
-  pack.heightUnit = 'M';
+  pack.heightM = 'M';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_HEIGHT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
@@ -806,7 +806,7 @@ static void test_nmeaGPGGAGenerate(void) {
   memset(&pack, 0, sizeof(pack));
 
   pack.height = 42.64;
-  pack.heightUnit = '\0';
+  pack.heightM = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_HEIGHT);
 
   r = nmeaGPGGAGenerate(buf, sizeof(buf), &pack);
