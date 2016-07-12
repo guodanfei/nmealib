@@ -1125,18 +1125,6 @@ static void test_nmeaInfoSanitise(void) {
   info.satinfo.inView[0].prn = 10;
   info.satinfo.inView[0].elevation = 20;
   info.satinfo.inView[0].azimuth = 30;
-  info.satinfo.inView[0].snr = -40;
-  nmeaInfoSanitise(&info);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].elevation, 20);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].azimuth, 30);
-  CU_ASSERT_EQUAL(info.satinfo.inView[0].snr, 0);
-
-  memset(&info, 0, sizeof(info));
-  info.present = NMEALIB_PRESENT_SATINVIEW;
-  info.satinfo.inView[0].prn = 10;
-  info.satinfo.inView[0].elevation = 20;
-  info.satinfo.inView[0].azimuth = 30;
   info.satinfo.inView[0].snr = 140;
   nmeaInfoSanitise(&info);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);

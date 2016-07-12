@@ -793,9 +793,6 @@ void nmeaInfoSanitise(NmeaInfo *info) {
       /* azimuth is now in [0, 360> */
 
       /* force snr in [0, 99] */
-      if (sat->snr < 0) {
-        sat->snr = 0;
-      }
       if (sat->snr > 99) {
         sat->snr = 99;
       }

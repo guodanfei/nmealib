@@ -112,7 +112,6 @@ static void test_nmeaGeneratorLoopNoise(void) {
     CU_ASSERT_EQUAL(info.satinfo.inView[it].elevation <= 90, true);
     CU_ASSERT_EQUAL(info.satinfo.inView[it].azimuth >= 0, true);
     CU_ASSERT_EQUAL(info.satinfo.inView[it].azimuth <= 359, true);
-    CU_ASSERT_EQUAL(info.satinfo.inView[it].snr >= 0, true);
     CU_ASSERT_EQUAL(info.satinfo.inView[it].snr <= 99, true);
   }
 }

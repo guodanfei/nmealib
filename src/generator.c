@@ -107,9 +107,9 @@ bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInf
     info->satinfo.inView[it].elevation = (int) lrint(nmeaRandom(0.0, 90.0));
     info->satinfo.inView[it].azimuth = (int) lrint(nmeaRandom(0.0, 359.0));
     info->satinfo.inView[it].snr = in_use ?
-        (int) lrint(nmeaRandom(40.0, 99.0)) :
-        (int) lrint(nmeaRandom(0.0, 40.0));
-    if (info->satinfo.inView[it].snr > 0) {
+        (unsigned int) lrint(nmeaRandom(40.0, 99.0)) :
+        (unsigned int) lrint(nmeaRandom(0.0, 40.0));
+    if (info->satinfo.inView[it].snr) {
       info->satinfo.inViewCount++;
     }
   }

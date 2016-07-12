@@ -68,7 +68,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 		info.satinfo.inView[it].prn = (unsigned int) it + 1;
 		info.satinfo.inView[it].elevation = (int) (it * 10);
 		info.satinfo.inView[it].azimuth = (int) it + 1;
-		info.satinfo.inView[it].snr = 99 - (int) it;
+		info.satinfo.inView[it].snr = 99 - (unsigned int) it;
 	}
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 

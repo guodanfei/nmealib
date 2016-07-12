@@ -462,12 +462,6 @@ static void test_nmeaValidateSatellite(void) {
   validateContext(0, 1);
   memset(&sat, 0, sizeof(sat));
 
-  sat.snr = -1;
-  r = nmeaValidateSatellite(&sat, "GPGGA", s);
-  CU_ASSERT_EQUAL(r, false);
-  validateContext(0, 1);
-  memset(&sat, 0, sizeof(sat));
-
   sat.snr = 100;
   r = nmeaValidateSatellite(&sat, "GPGGA", s);
   CU_ASSERT_EQUAL(r, false);

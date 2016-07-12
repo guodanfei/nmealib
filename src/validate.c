@@ -218,9 +218,8 @@ bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s
     return false;
   }
 
-  if ((sat->snr < 0) //
-      || (sat->snr > 99)) {
-    nmeaContextError("%s parse error: invalid satellite signal %d in '%s'", prefix, sat->snr, s);
+  if (sat->snr > 99) {
+    nmeaContextError("%s parse error: invalid satellite signal %u in '%s'", prefix, sat->snr, s);
     return false;
   }
 
