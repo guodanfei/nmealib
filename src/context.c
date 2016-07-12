@@ -54,24 +54,27 @@ void nmeaContextTraceBuffer(const char *s, size_t sz) {
   }
 }
 
+#define enlarge(buf, sz) { \
+  if (!(buf = realloc(buf, sz))) { \
+    /* can't be covered in a test */ \
+    goto out; \
+  } \
+}
+
 void nmeaContextTrace(const char *s, ...) {
   nmeaContextPrintFunction func = nmealibContext.traceFunction;
   if (s && func) {
-    char *buf;
-    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     va_list args;
     va_list args2;
+    char *buf = NULL;
+    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     int chars;
-
-    buf = malloc(bufSize);
-    if (!buf) {
-      /* can't be covered in a test */
-      return;
-    }
-    buf[0] = '\0';
 
     va_start(args, s);
     va_copy(args2, args);
+
+    enlarge(buf, bufSize);
+    buf[0] = '\0';
 
     chars = vsnprintf(buf, bufSize, s, args);
     if (chars <= 0) {
@@ -79,11 +82,7 @@ void nmeaContextTrace(const char *s, ...) {
     }
     if ((size_t) chars >= bufSize) {
       bufSize = (size_t) chars + 1;
-      if (!realloc(buf, bufSize)) {
-        /* can't be covered in a test */
-        goto out;
-      }
-
+      enlarge(buf, bufSize);
       chars = vsnprintf(buf, bufSize, s, args2);
     }
 
@@ -101,21 +100,17 @@ out:
 void nmeaContextError(const char *s, ...) {
   nmeaContextPrintFunction func = nmealibContext.errorFunction;
   if (s && func) {
-    char *buf;
-    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     va_list args;
     va_list args2;
+    char *buf = NULL;
+    size_t bufSize = NMEALIB_BUFFER_CHUNK_SIZE;
     int chars;
-
-    buf = malloc(bufSize);
-    if (!buf) {
-      /* can't be covered in a test */
-      return;
-    }
-    buf[0] = '\0';
 
     va_start(args, s);
     va_copy(args2, args);
+
+    enlarge(buf, bufSize);
+    buf[0] = '\0';
 
     chars = vsnprintf(buf, bufSize, s, args);
     if (chars <= 0) {
@@ -123,11 +118,7 @@ void nmeaContextError(const char *s, ...) {
     }
     if ((size_t) chars >= bufSize) {
       bufSize = (size_t) chars + 1;
-      if (!realloc(buf, bufSize)) {
-        /* can't be covered in a test */
-        goto out;
-      }
-
+      enlarge(buf, bufSize);
       chars = vsnprintf(buf, bufSize, s, args2);
     }
 
