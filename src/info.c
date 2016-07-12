@@ -784,9 +784,6 @@ void nmeaInfoSanitise(NmeaInfo *info) {
       /* elv is now in [-90, 90] */
 
       /* force azimuth in [0, 360> */
-      while (sat->azimuth < 0) {
-        sat->azimuth += 360;
-      }
       while (sat->azimuth >= 360) {
         sat->azimuth -= 360;
       }

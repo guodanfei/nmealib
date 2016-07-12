@@ -75,10 +75,10 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
       "$" NMEALIB_GPGSV_PREFIX ",%u,%u,%u" //
-      ",%u,%d,%d,%u"//
-      ",%u,%d,%d,%u"//
-      ",%u,%d,%d,%u"//
-      ",%u,%d,%d,%u*",//
+      ",%u,%d,%u,%u"//
+      ",%u,%d,%u,%u"//
+      ",%u,%d,%u,%u"//
+      ",%u,%d,%u,%u*",//
       &pack->sentences, &pack->sentence, &pack->satellites, //
       &pSat0.prn, &pSat0.elevation, &pSat0.azimuth, &pSat0.snr, //
       &pSat1.prn, &pSat1.elevation, &pSat1.azimuth, &pSat1.snr, //
@@ -342,7 +342,7 @@ size_t nmeaGPGSVGenerate(char *s, const size_t sz, const NmeaGPGSV *pack) {
     for (i = 0; i < satellitesInSentence; i++) {
       const NmeaSatellite *sat = &pack->satellite[i];
       if (sat->prn) {
-        chars += snprintf(dst, available, ",%u,%d,%d,%u", sat->prn, sat->elevation, sat->azimuth, sat->snr);
+        chars += snprintf(dst, available, ",%u,%d,%u,%u", sat->prn, sat->elevation, sat->azimuth, sat->snr);
       } else {
         chars += snprintf(dst, available, ",,,,");
       }

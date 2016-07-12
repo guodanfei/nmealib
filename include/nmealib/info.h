@@ -161,7 +161,7 @@ typedef struct _NmeaPosition {
 typedef struct _NmeaSatellite {
   unsigned int prn;       /**< Satellite PRN number             - [1, inf) */
   int          elevation; /**< Elevation, in degrees            - [0,  90] */
-  int          azimuth;   /**< Azimuth, degrees from true north - [0, 359] */
+  unsigned int azimuth;   /**< Azimuth, degrees from true north - [0, 359] */
   unsigned int snr;       /**< Signal-to-Noise-Ratio            - [0,  99] */
 } NmeaSatellite;
 

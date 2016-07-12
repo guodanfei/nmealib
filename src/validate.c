@@ -212,9 +212,8 @@ bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s
     return false;
   }
 
-  if ((sat->azimuth < 0) //
-      || (sat->azimuth > 359)) {
-    nmeaContextError("%s parse error: invalid satellite azimuth %d in '%s'", prefix, sat->azimuth, s);
+  if (sat->azimuth > 359) {
+    nmeaContextError("%s parse error: invalid satellite azimuth %u in '%s'", prefix, sat->azimuth, s);
     return false;
   }
 
