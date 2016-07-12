@@ -46,7 +46,9 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
 
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
-      "$" NMEALIB_GPGSA_PREFIX ",%C,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%F,%F,%F*", //
+      "$" NMEALIB_GPGSA_PREFIX ",%C,%d," //
+          "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u," //
+          "%F,%F,%F*", //
       &pack->sig, //
       &pack->fix, //
       &pack->satPrn[0], //
@@ -95,7 +97,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     pack->fix = NMEALIB_FIX_BAD;
   }
 
-  qsort(pack->satPrn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(int), nmeaQsortPRNCompact);
+  qsort(pack->satPrn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(unsigned int), nmeaQsortPRNCompact);
   if (!pack->satPrn[0]) {
     memset(pack->satPrn, 0, sizeof(pack->satPrn));
   } else {
@@ -162,7 +164,7 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
     memset(&info->satinfo.inUse, 0, sizeof(info->satinfo.inUse[0]));
 
     for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++) {
-      int prn = pack->satPrn[packIndex];
+      unsigned int prn = pack->satPrn[packIndex];
       if (prn) {
         info->satinfo.inUse[infoIndex++] = prn;
         info->satinfo.inUseCount++;
@@ -217,7 +219,7 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
     size_t packIndex = 0;
 
     for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
-      int prn = info->satinfo.inUse[infoIndex];
+      unsigned int prn = info->satinfo.inUse[infoIndex];
       if (prn) {
         pack->satPrn[packIndex++] = prn;
       }
@@ -273,7 +275,7 @@ size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack) {
 
   satInUse = nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINUSE);
   for (i = 0; i < NMEALIB_GPGSA_SATS_IN_SENTENCE; i++) {
-    int prn = pack->satPrn[i];
+    unsigned int prn = pack->satPrn[i];
     if (satInUse && prn) {
       chars += snprintf(dst, available, ",%d", prn);
     } else {

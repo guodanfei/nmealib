@@ -59,13 +59,13 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 	info.satinfo.inUseCount = (int) NMEALIB_MAX_SATELLITES;
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.inUse[it] = (int) it + 1;
+		info.satinfo.inUse[it] = (unsigned int) (it + 1);
 	}
 	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
 	info.satinfo.inViewCount = (int) NMEALIB_MAX_SATELLITES;
 	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satinfo.inView[it].prn = (int) it + 1;
+		info.satinfo.inView[it].prn = (unsigned int) it + 1;
 		info.satinfo.inView[it].elevation = (int) (it * 10);
 		info.satinfo.inView[it].azimuth = (int) it + 1;
 		info.satinfo.inView[it].snr = 99 - (int) it;

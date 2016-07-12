@@ -743,14 +743,6 @@ void nmeaInfoSanitise(NmeaInfo *info) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
     qsort(info->satinfo.inUse, NMEALIB_MAX_SATELLITES, sizeof(info->satinfo.inUse[0]), nmeaQsortPRNCompact);
-
-    for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
-      if (!info->satinfo.inUse[i]) {
-        break;
-      }
-
-      info->satinfo.inUse[i] = abs(info->satinfo.inUse[i]);
-    }
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEWCOUNT)) {
@@ -766,8 +758,6 @@ void nmeaInfoSanitise(NmeaInfo *info) {
       if (!sat->prn) {
         break;
       }
-
-      sat->prn = abs(sat->prn);
 
       /* force elv in [-180, 180] */
       while (sat->elevation < -180) {
@@ -882,8 +872,8 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
 }
 
 int nmeaQsortPRNCompare(const void *p1, const void *p2) {
-  int prn1 = *((const int *) p1);
-  int prn2 = *((const int *) p2);
+  unsigned int prn1 = *((const unsigned int *) p1);
+  unsigned int prn2 = *((const unsigned int *) p2);
 
   if (!prn1) {
     prn1 += 1000;
@@ -892,12 +882,12 @@ int nmeaQsortPRNCompare(const void *p1, const void *p2) {
     prn2 += 1000;
   }
 
-  return (prn1 - prn2);
+  return (int)((long long) prn1 - (long long) prn2);
 }
 
 int nmeaQsortPRNCompact(const void *p1, const void *p2) {
-  int prn1 = *((const int *) p1);
-  int prn2 = *((const int *) p2);
+  unsigned int prn1 = *((const unsigned int *) p1);
+  unsigned int prn2 = *((const unsigned int *) p2);
 
   if (prn1 && prn2) {
     return 0;
@@ -910,7 +900,7 @@ int nmeaQsortPRNCompact(const void *p1, const void *p2) {
     prn2 += 1000;
   }
 
-  return (prn1 - prn2);
+  return (int) ((long long) prn1 - (long long) prn2);
 }
 
 int nmeaQsortSatelliteCompare(const void *s1, const void *s2) {

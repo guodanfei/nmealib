@@ -97,13 +97,13 @@ bool nmeaGeneratorLoopNoise(NmeaGenerator *gen __attribute__ ((unused)), NmeaInf
     in_use = (size_t) labs(lrint(nmeaRandom(0.0, 3.0)));
 
     info->satinfo.inUse[it] = in_use ?
-        (int) it :
+        (unsigned int) it :
         0;
     if (in_use) {
       info->satinfo.inUseCount++;
     }
 
-    info->satinfo.inView[it].prn = (int) it;
+    info->satinfo.inView[it].prn = (unsigned int) it;
     info->satinfo.inView[it].elevation = (int) lrint(nmeaRandom(0.0, 90.0));
     info->satinfo.inView[it].azimuth = (int) lrint(nmeaRandom(0.0, 359.0));
     info->satinfo.inView[it].snr = in_use ?
@@ -273,7 +273,7 @@ bool nmeaGeneratorLoopRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaIn
  * @return True on success
  */
 bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaInfo *info) {
-  int it;
+  size_t it;
   double deg = 360 / 8;
   double srt = 0;
 
@@ -284,9 +284,9 @@ bool nmeaGeneratorResetRotate(NmeaGenerator *gen __attribute__ ((unused)), NmeaI
   info->satinfo.inUseCount = 8;
   info->satinfo.inViewCount = 8;
 
-  for (it = 0; it < info->satinfo.inViewCount; it++) {
-    info->satinfo.inUse[it] = it + 1;
-    info->satinfo.inView[it].prn = it + 1;
+  for (it = 0; it < (size_t) info->satinfo.inViewCount; it++) {
+    info->satinfo.inUse[it] = (unsigned int) (it + 1);
+    info->satinfo.inView[it].prn = (unsigned int) (it + 1);
     info->satinfo.inView[it].elevation = 5;
     info->satinfo.inView[it].azimuth = (int) srt;
     info->satinfo.inView[it].snr = 80;

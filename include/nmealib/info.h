@@ -159,19 +159,19 @@ typedef struct _NmeaPosition {
  * Information about satellite
  */
 typedef struct _NmeaSatellite {
-  int prn;       /**< Satellite PRN number             - [1, inf) */
-  int elevation; /**< Elevation, in degrees            - [0,  90] */
-  int azimuth;   /**< Azimuth, degrees from true north - [0, 359] */
-  int snr;       /**< Signal-to-Noise-Ratio            - [0,  99] */
+  unsigned int prn;       /**< Satellite PRN number             - [1, inf) */
+  int          elevation; /**< Elevation, in degrees            - [0,  90] */
+  int          azimuth;   /**< Azimuth, degrees from true north - [0, 359] */
+  int          snr;       /**< Signal-to-Noise-Ratio            - [0,  99] */
 } NmeaSatellite;
 
 /**
  * Information about all tracked satellites
  */
 typedef struct _NmeaSatellites {
-  int inUseCount;                               /**< The number of satellites in use (not those in view) */
-  int inUse[NMEALIB_MAX_SATELLITES];            /**< The PRNs of satellites in use   (not those in view) */
-  int inViewCount;                              /**< The number of satellites in view                    */
+  int           inUseCount;                     /**< The number of satellites in use (not those in view) */
+  unsigned int  inUse[NMEALIB_MAX_SATELLITES];  /**< The PRNs of satellites in use   (not those in view) */
+  int           inViewCount;                    /**< The number of satellites in view                    */
   NmeaSatellite inView[NMEALIB_MAX_SATELLITES]; /**< Satellites information (in view)                    */
 } NmeaSatellites;
 

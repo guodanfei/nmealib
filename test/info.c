@@ -1016,9 +1016,9 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_SATINUSE;
   info.satinfo.inUse[0] = 0;
   info.satinfo.inUse[1] = 10;
-  info.satinfo.inUse[2] = -5;
+  info.satinfo.inUse[2] = 5;
   info.satinfo.inUse[3] = 4;
-  info.satinfo.inUse[4] = -3;
+  info.satinfo.inUse[4] = 3;
   info.satinfo.inUse[5] = 22;
   nmeaInfoSanitise(&info);
   CU_ASSERT_EQUAL(info.satinfo.inUse[0], 10);
@@ -1048,9 +1048,9 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_SATINVIEW;
   info.satinfo.inView[0].prn = 0;
   info.satinfo.inView[1].prn = 10;
-  info.satinfo.inView[2].prn = -5;
+  info.satinfo.inView[2].prn = 5;
   info.satinfo.inView[3].prn = 4;
-  info.satinfo.inView[4].prn = -3;
+  info.satinfo.inView[4].prn = 3;
   info.satinfo.inView[5].prn = 22;
   nmeaInfoSanitise(&info);
   CU_ASSERT_EQUAL(info.satinfo.inView[0].prn, 10);

@@ -206,11 +206,6 @@ bool nmeaValidateSatellite(NmeaSatellite *sat, const char *prefix, const char *s
     return false;
   }
 
-  if ((sat->prn < 0)) {
-    nmeaContextError("%s parse error: invalid satellite PRN %d in '%s'", prefix, sat->prn, s);
-    return false;
-  }
-
   if ((sat->elevation < -180) //
       || (sat->elevation > 180)) {
     nmeaContextError("%s parse error: invalid satellite elevation %d in '%s'", prefix, sat->elevation, s);
