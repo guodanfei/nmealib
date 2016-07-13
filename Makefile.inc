@@ -99,8 +99,6 @@ else
 CFLAGS += -O0
 endif
 
-CFLAGS += -mfpmath=sse -msse2
-
 LDFLAGS = -shared -Wl,--warn-common -fPIC
 
 # 32/64 cross compilation
