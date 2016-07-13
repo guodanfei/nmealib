@@ -141,7 +141,6 @@ static void test_nmeaGeneratorLoopStatic(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, 0);
   CU_ASSERT_EQUAL(info.fix, 0);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -295,7 +294,6 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, 0);
   CU_ASSERT_EQUAL(info.fix, 0);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -336,7 +334,6 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, 0);
   CU_ASSERT_EQUAL(info.fix, 0);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -383,7 +380,6 @@ static void test_nmeaGeneratorLoopRotate(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, 0);
   CU_ASSERT_EQUAL(info.fix, 0);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -663,7 +659,6 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_BAD);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -702,7 +697,6 @@ static void test_nmeaGeneratorInit(void) {
   CU_ASSERT_EQUAL(info.utc.hour, tt.tm_hour);
   CU_ASSERT_EQUAL(info.utc.min, tt.tm_min);
   CU_ASSERT_EQUAL(info.utc.sec, tt.tm_sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, tp.tv_usec / 10000);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_SENSITIVE);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
