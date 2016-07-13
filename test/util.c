@@ -1032,36 +1032,36 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%f,%f,%f", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5";
   r = nmeaScanf(s, strlen(s), "%f,%f,%f*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5*11";
   r = nmeaScanf(s, strlen(s), "%f,%f,%f*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5*11\r\n";
   r = nmeaScanf(s, strlen(s), "%f,%f,%f*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, -1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   /* empty fields */
 
@@ -1108,7 +1108,7 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%32f,%32f,%32f", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 1);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(isinf(f2), true);
   CU_ASSERT_EQUAL(isinf(f3), true);
 
@@ -1119,8 +1119,8 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%f,%6f,%f", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 2);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, -1.212, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, -1.212, FLT_EPSILON);
   CU_ASSERT_EQUAL(isinf(f3), true);
 
   /* size larger than empty fields */
@@ -1167,36 +1167,36 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%F,%F,%F", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5";
   r = nmeaScanf(s, strlen(s), "%F,%F,%F*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5*11";
   r = nmeaScanf(s, strlen(s), "%F,%F,%F*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   f1 = f2 = f3 = INFINITY;
   s = "0.0,-1.2,42.5*11\r\n";
   r = nmeaScanf(s, strlen(s), "%F,%F,%F*", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 3);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, 1.2, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f3, 42.5, FLT_EPSILON);
 
   /* empty fields */
 
@@ -1243,7 +1243,7 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%32F,%32F,%32F", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 1);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(isinf(f2), true);
   CU_ASSERT_EQUAL(isinf(f3), true);
 
@@ -1254,8 +1254,8 @@ static void test_nmeaScanf(void) {
   r = nmeaScanf(s, strlen(s), "%F,%6F,%F", &f1, &f2, &f3);
   CU_ASSERT_EQUAL(r, 2);
   validateContext(0, 0);
-  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(f2, 1.212, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f1, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(f2, 1.212, FLT_EPSILON);
   CU_ASSERT_EQUAL(isinf(f3), true);
 
   /* size larger than empty fields */

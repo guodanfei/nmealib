@@ -630,18 +630,18 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_EQUAL(info.utc.sec, utc.sec);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_BAD);
-  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
   CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
   CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
@@ -665,18 +665,18 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_EQUAL(info.utc.sec, utc.sec);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_BAD);
-  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, NMEALIB_LATITUDE_DEFAULT_NDEG, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, NMEALIB_LONGITUDE_DEFAULT_NDEG, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 0.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(info.dgpsSid, 0);
   CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
   CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
@@ -784,13 +784,13 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_PDOP;
   info.pdop = -42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 42.45, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_PDOP;
   info.pdop = 42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 42.45, FLT_EPSILON);
 
   /* hdop */
 
@@ -798,13 +798,13 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_HDOP;
   info.hdop = -42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 42.45, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_HDOP;
   info.hdop = 42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 42.45, FLT_EPSILON);
 
   /* vdop */
 
@@ -812,13 +812,13 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_VDOP;
   info.vdop = -42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 42.45, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_VDOP;
   info.vdop = 42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 42.45, FLT_EPSILON);
 
   /* lat & lon normal */
 
@@ -827,16 +827,16 @@ static void test_nmeaInfoSanitise(void) {
   info.latitude = -4200.45;
   info.longitude = -4200.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.45, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.45, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -4200.45, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
   info.latitude = 4200.45;
   info.longitude = 4200.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.45, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 4200.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.45, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 4200.45, FLT_EPSILON);
 
   /* lat out of range */
 
@@ -845,16 +845,16 @@ static void test_nmeaInfoSanitise(void) {
   info.latitude = -22200.5;
   info.longitude = -4200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 4200.5, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
   info.latitude = 22200.5;
   info.longitude = -4200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, FLT_EPSILON);
 
   /* lon out of range */
 
@@ -863,16 +863,16 @@ static void test_nmeaInfoSanitise(void) {
   info.latitude = -4200.5;
   info.longitude = -22200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 13799.5, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON;
   info.latitude = -4200.5;
   info.longitude = 22200.5;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -13799.5, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -4200.5, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -13799.5, FLT_EPSILON);
 
   /* elv: no range adjustments */
 
@@ -886,9 +886,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = 45.0;
   info.mtrack = 55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, FLT_EPSILON);
 
   /* speed */
 
@@ -898,9 +898,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = 45.0;
   info.mtrack = 55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 225.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 235.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 225.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 235.0, FLT_EPSILON);
 
   /* track */
 
@@ -910,9 +910,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = -45.0;
   info.mtrack = 55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 315.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 315.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK | NMEALIB_PRESENT_MTRACK;
@@ -920,9 +920,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = 405.0;
   info.mtrack = 55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, FLT_EPSILON);
 
   /* mtrack */
 
@@ -932,9 +932,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = 45.0;
   info.mtrack = -55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 305.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 305.0, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK | NMEALIB_PRESENT_MTRACK;
@@ -942,9 +942,9 @@ static void test_nmeaInfoSanitise(void) {
   info.track = 45.0;
   info.mtrack = 415.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, DBL_EPSILON);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 45.0, FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 55.0, FLT_EPSILON);
 
   /* magvar */
 
@@ -952,19 +952,19 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_MAGVAR;
   info.magvar = 55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 55.0, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_MAGVAR;
   info.magvar = -55.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 305.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 305.0, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_MAGVAR;
   info.magvar = 415.0;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 55.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, 55.0, FLT_EPSILON);
 
   /* dgpsAge */
 
@@ -972,13 +972,13 @@ static void test_nmeaInfoSanitise(void) {
   info.present = NMEALIB_PRESENT_DGPSAGE;
   info.dgpsAge = -42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 42.45, FLT_EPSILON);
 
   memset(&info, 0, sizeof(info));
   info.present = NMEALIB_PRESENT_DGPSAGE;
   info.dgpsAge = 42.45;
   nmeaInfoSanitise(&info);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 42.45, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 42.45, FLT_EPSILON);
 
   /* dgpsSid */
 

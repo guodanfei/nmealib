@@ -138,7 +138,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HDOP);
-  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 12.128, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 12.128, FLT_EPSILON);
 
   /* elv */
 
@@ -154,7 +154,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_ELV);
-  CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -42, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -42, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.elevationM, 'M');
 
   /* diff */
@@ -171,7 +171,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HEIGHT);
-  CU_ASSERT_DOUBLE_EQUAL(pack.height, -42, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.height, -42, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.heightM, 'M');
 
   /* dgpsAge */
@@ -180,7 +180,7 @@ static void test_nmeaGPGGAParse(void) {
   r = nmeaGPGGAParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_DGPSAGE);
-  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1.250, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1.250, FLT_EPSILON);
 
   /* dgpsSid */
 
@@ -250,7 +250,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -262,7 +262,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -274,7 +274,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -286,7 +286,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LAT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.latitude, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -300,7 +300,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
   memset(&info, 0, sizeof(info));
@@ -313,7 +313,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -325,7 +325,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
 
   pack.longitude = 1232.5523;
@@ -336,7 +336,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_LON);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.longitude, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -375,7 +375,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_HDOP);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -386,7 +386,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_HDOP);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -399,7 +399,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_ELV);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.elevation, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -410,7 +410,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_ELV);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -423,7 +423,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_HEIGHT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.height, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -434,7 +434,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_HEIGHT);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.height, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -447,7 +447,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_DGPSAGE);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, -1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -458,7 +458,7 @@ static void test_nmeaGPGGAToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_DGPSAGE);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGGA);
-  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 1232.5523, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -526,7 +526,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LAT);
-  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.latitudeNS, 'S');
   memset(&info, 0, sizeof(info));
 
@@ -536,7 +536,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LAT);
-  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.latitude, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.latitudeNS, 'N');
   memset(&info, 0, sizeof(info));
 
@@ -548,7 +548,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LON);
-  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.longitudeEW, 'W');
   memset(&info, 0, sizeof(info));
 
@@ -558,7 +558,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_LON);
-  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.longitude, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.longitudeEW, 'E');
   memset(&info, 0, sizeof(info));
 
@@ -592,7 +592,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HDOP);
-  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.hdop, 1232.5523, FLT_EPSILON);
   memset(&info, 0, sizeof(info));
 
   /* elv */
@@ -603,7 +603,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_ELV);
-  CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.elevation, -1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.elevationM, 'M');
   memset(&info, 0, sizeof(info));
 
@@ -615,7 +615,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_HEIGHT);
-  CU_ASSERT_DOUBLE_EQUAL(pack.height, -1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.height, -1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.heightM, 'M');
   memset(&info, 0, sizeof(info));
 
@@ -627,7 +627,7 @@ static void test_nmeaGPGGAFromInfo(void) {
   nmeaGPGGAFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_DGPSAGE);
-  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.dgpsAge, 1232.5523, FLT_EPSILON);
   memset(&info, 0, sizeof(info));
 
   /* dgpsSid */

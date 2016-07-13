@@ -244,7 +244,7 @@ static void test_nmeaSentenceToInfo(void) {
   validatePackToInfo(&info, 1, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 4.25, FLT_EPSILON);
   memset(&info, 0, sizeof(info));
 }
 

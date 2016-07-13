@@ -75,7 +75,7 @@ static void test_nmeaGPVTGParse(void) {
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_TRACK);
-  CU_ASSERT_DOUBLE_EQUAL(pack.track, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.track, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.trackT, 'T');
 
   /* mtrack */
@@ -92,7 +92,7 @@ static void test_nmeaGPVTGParse(void) {
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_MTRACK);
-  CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.mtrackM, 'M');
 
   /* speed knots */
@@ -109,9 +109,9 @@ static void test_nmeaGPVTGParse(void) {
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');
 
   /* speed kph */
@@ -128,9 +128,9 @@ static void test_nmeaGPVTGParse(void) {
   r = nmeaGPVTGParse(s, strlen(s), &pack);
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.spk, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spk, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEALIB_TUD_KNOTS), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
 }
 
@@ -173,7 +173,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_TRACK);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.track, 42.75, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.track, 42.75, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -186,7 +186,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_MTRACK);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 42.75, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.mtrack, 42.75, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -202,7 +202,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -216,7 +216,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -230,7 +230,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -244,7 +244,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, 10.0, FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 }
@@ -282,7 +282,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_TRACK);
-  CU_ASSERT_DOUBLE_EQUAL(pack.track, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.track, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.trackT, 'T');
   memset(&info, 0, sizeof(info));
 
@@ -294,7 +294,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_MTRACK);
-  CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 1232.5523, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 1232.5523, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.mtrackM, 'M');
   memset(&info, 0, sizeof(info));
 
@@ -306,9 +306,9 @@ static void test_nmeaGPVTGFromInfo(void) {
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEALIB_TUD_KNOTS), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spk, 10.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spk, 10.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');
   memset(&info, 0, sizeof(info));
 }
