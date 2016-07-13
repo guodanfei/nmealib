@@ -21,6 +21,7 @@
 #include <nmealib/validate.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define NMEALIB_PARSER_EOL_CHAR_1 ('\r')
 #define NMEALIB_PARSER_EOL_CHAR_2 ('\n')
@@ -28,19 +29,6 @@
 void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state);
 bool nmeaParserIsHexCharacter(char c);
 bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c);
-
-void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state) {
-  if (!parser) {
-    return;
-  }
-
-  memset(&parser->sentence, 0, sizeof(parser->sentence));
-  parser->buffer[0] = '\0';
-  parser->buffer[NMEALIB_PARSER_SENTENCE_SIZE - 1] = '\0';
-  parser->bufferLength = 0;
-  parser->sentence.checksumPresent = false;
-  parser->sentence.state = new_state;
-}
 
 bool nmeaParserIsHexCharacter(char c) {
   switch (tolower(c)) {
@@ -67,8 +55,30 @@ bool nmeaParserIsHexCharacter(char c) {
   }
 }
 
-bool nmeaParserInit(NmeaParser *parser) {
+void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state) {
   if (!parser) {
+    return;
+  }
+
+  memset(&parser->sentence, 0, sizeof(parser->sentence));
+  parser->sentence.state = new_state;
+
+  if (parser->buffer) {
+    parser->buffer[0] = '\0';
+    parser->buffer[parser->bufferSize - 1] = '\0';
+  }
+  parser->bufferLength = 0;
+}
+
+bool nmeaParserInit(NmeaParser *parser, size_t sz) {
+  if (!parser) {
+    return false;
+  }
+
+  parser->bufferSize = !sz ? NMEALIB_PARSER_SENTENCE_SIZE : sz;
+  parser->buffer = malloc(parser->bufferSize);
+  if (!parser->buffer) {
+    /* can't be covered in a test */
     return false;
   }
 
@@ -76,9 +86,23 @@ bool nmeaParserInit(NmeaParser *parser) {
   return true;
 }
 
+bool nmeaParserDestroy(NmeaParser *parser) {
+  if (!parser) {
+    return false;
+  }
+
+  nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
+
+  free(parser->buffer);
+  parser->buffer = NULL;
+
+  return true;
+}
+
 bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
   if (!parser //
-      || !c) {
+      || !c //
+      || !parser->buffer) {
     return false;
   }
 
@@ -97,7 +121,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
   /* this character belongs to the sentence */
 
   /* check whether the sentence still fits in the buffer */
-  if (parser->bufferLength >= (NMEALIB_PARSER_SENTENCE_SIZE - 1)) {
+  if (parser->bufferLength >= (parser->bufferSize - 1)) {
     nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
     return false;
   }
@@ -189,7 +213,8 @@ size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t sz, NmeaInfo 
   if (!parser //
       || !s //
       || !sz //
-      || !info) {
+      || !info //
+      || !parser->buffer) {
     return 0;
   }
 

@@ -72,7 +72,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   nmeaContextSetErrorFunction(&error);
 
   nmeaInfoClear(&info);
-  nmeaParserInit(&parser);
+  nmeaParserInit(&parser, 0);
 
   while (!feof(file)) {
     size_t size = fread(&buff[0], 1, 100, file);
@@ -91,6 +91,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
    */
 
   fclose(file);
+
+  nmeaParserDestroy(&parser);
 
   return 0;
 }

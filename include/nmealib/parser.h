@@ -27,11 +27,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 #ifdef NMEALIB_MAX_SENTENCE_LENGTH
-  /* override the default maximum sentence length */
-#define NMEALIB_PARSER_SENTENCE_SIZE (NMEALIB_MAX_SENTENCE_LENGTH)
+  #define NMEALIB_PARSER_SENTENCE_SIZE (NMEALIB_MAX_SENTENCE_LENGTH)
 #else
-  /* we need to be able to parse much longer sentences than specified in the (original) specification */
-#define NMEALIB_PARSER_SENTENCE_SIZE (4096 * 1)
+  #define NMEALIB_PARSER_SENTENCE_SIZE (NMEALIB_BUFFER_CHUNK_SIZE)
 #endif
 
 typedef enum _NmeaParserSentenceState {
@@ -64,16 +62,31 @@ typedef struct _NmeaParserSentence {
 typedef struct _NmeaParser {
     NmeaParserSentence sentence;
     size_t bufferLength;
-    char buffer[NMEALIB_PARSER_SENTENCE_SIZE];
+    char *buffer;
+    size_t bufferSize;
 } NmeaParser;
 
 /**
- * Initialise the parser.
+ * Initialise the parser
+ *
+ * Allocates memory for the parse buffer.
+ *
+ * @param parser The parser
+ * @param sz The size for the allocated parse buffer, If zero then
+ * NMEALIB_PARSER_SENTENCE_SIZE is used
+ * @return True on success
+ */
+bool nmeaParserInit(NmeaParser *parser, size_t sz);
+
+/**
+ * Destroy the parser
+ *
+ * Frees memory of the parse buffer.
  *
  * @param parser The parser
  * @return True on success
  */
-bool nmeaParserInit(NmeaParser *parser);
+bool nmeaParserDestroy(NmeaParser *parser);
 
 /**
  * Parse NMEA sentences from a (string) buffer and store the results in the

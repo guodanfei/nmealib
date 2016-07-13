@@ -37,7 +37,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   int it = 0;
 
   NmeaParser parser;
-  nmeaParserInit(&parser);
+  nmeaParserInit(&parser, 0);
 
   for (it = 0; it < NUM_POINTS; it++) {
     NmeaInfo info;
@@ -81,6 +81,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     printf("Move     P0 to P%d\toriginal:         lat:%+010.6lf° lon:%+011.6lf°\n", it,
         nmeaMathRadianToDegree(pos[it].lat), nmeaMathRadianToDegree(pos[it].lon));
   }
+
+  nmeaParserDestroy(&parser);
 
   return 0;
 }

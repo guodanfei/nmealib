@@ -37,7 +37,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   NmeaPosition dpos;
 
   nmeaInfoClear(&info);
-  nmeaParserInit(&parser);
+  nmeaParserInit(&parser, 0);
 
   for (it = 0; it < 6; it++) {
     nmeaParserParse(&parser, buff[it], strlen(buff[it]), &info);
@@ -45,6 +45,8 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     nmeaMathInfoToPosition(&info, &dpos);
     printf("%03d, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", it, dpos.lat, dpos.lon, info.sig, info.fix);
   }
+
+  nmeaParserDestroy(&parser);
 
   return 0;
 }

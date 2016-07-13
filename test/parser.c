@@ -20,6 +20,7 @@
 #include <nmealib/parser.h>
 #include <CUnit/Basic.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 int parserSuiteSetup(void);
 
@@ -30,29 +31,6 @@ extern bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c);
 /*
  * Tests
  */
-
-static void test_nmeaParserReset(void) {
-  NmeaParser parserEmpty;
-  NmeaParser parser;
-
-  memset(&parserEmpty, 0xff, sizeof(parserEmpty));
-  memset(&parser, 0xff, sizeof(parser));
-
-  /* invalid input */
-
-  nmeaParserReset(NULL, 0);
-  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
-  memset(&parser, 0, sizeof(parser));
-
-  /* normal */
-
-  memset(&parserEmpty, 0, sizeof(parserEmpty));
-  parserEmpty.sentence.state = NMEALIB_SENTENCE_STATE_READ_CHECKSUM;
-
-  nmeaParserReset(&parser, NMEALIB_SENTENCE_STATE_READ_CHECKSUM);
-  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
-  memset(&parser, 0, sizeof(parser));
-}
 
 static void test_nmeaParserIsHexCharacter(void) {
   bool r;
@@ -130,6 +108,43 @@ static void test_nmeaParserIsHexCharacter(void) {
   CU_ASSERT_EQUAL(r, true);
 }
 
+static void test_nmeaParserReset(void) {
+  NmeaParser parserEmpty;
+  NmeaParser parser;
+
+  memset(&parserEmpty, 0xff, sizeof(parserEmpty));
+  memset(&parser, 0xff, sizeof(parser));
+
+  /* invalid input */
+
+  nmeaParserReset(NULL, 0);
+  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
+  memset(&parser, 0, sizeof(parser));
+
+  /* normal, without allocated buffer */
+
+  memset(&parserEmpty, 0, sizeof(parserEmpty));
+  parserEmpty.sentence.state = NMEALIB_SENTENCE_STATE_READ_CHECKSUM;
+
+  nmeaParserReset(&parser, NMEALIB_SENTENCE_STATE_READ_CHECKSUM);
+  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
+  memset(&parser, 0, sizeof(parser));
+
+  /* normal, with allocated buffer */
+
+  parser.buffer = malloc(NMEALIB_PARSER_SENTENCE_SIZE);
+  CU_ASSERT_PTR_NOT_NULL_FATAL(parser.buffer);
+
+  memset(&parserEmpty, 0, sizeof(parserEmpty));
+  parserEmpty.buffer = parser.buffer;
+  parserEmpty.sentence.state = NMEALIB_SENTENCE_STATE_READ_EOL;
+
+  nmeaParserReset(&parser, NMEALIB_SENTENCE_STATE_READ_EOL);
+  CU_ASSERT_EQUAL(memcmp(&parser, &parserEmpty, sizeof(parser)), 0);
+  free(parser.buffer);
+  memset(&parser, 0, sizeof(parser));
+}
+
 static void test_nmeaParserInit(void) {
   NmeaParser parser;
   bool r;
@@ -138,15 +153,37 @@ static void test_nmeaParserInit(void) {
 
   /* invalid input */
 
-  r = nmeaParserInit(NULL);
+  r = nmeaParserInit(NULL, 0);
   CU_ASSERT_EQUAL(r, false);
   memset(&parser, 0, sizeof(parser));
 
   /* normal */
 
-  r = nmeaParserInit(&parser);
+  r = nmeaParserInit(&parser, 0);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(parser.sentence.state, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
+  nmeaParserDestroy(&parser);
+  memset(&parser, 0, sizeof(parser));
+}
+
+static void test_nmeaParserDestroy(void) {
+  NmeaParser parser;
+  bool r;
+
+  memset(&parser, 0, sizeof(parser));
+
+  /* invalid input */
+
+  r = nmeaParserDestroy(NULL);
+  CU_ASSERT_EQUAL(r, false);
+  memset(&parser, 0, sizeof(parser));
+
+  /* normal */
+
+  r = nmeaParserDestroy(&parser);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(parser.sentence.state, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
+  nmeaParserDestroy(&parser);
   memset(&parser, 0, sizeof(parser));
 }
 
@@ -156,7 +193,7 @@ static void test_nmeaParserProcessCharacter(void) {
   bool r;
   size_t i;
 
-  nmeaParserInit(&parser);
+  memset(&parser, 0, sizeof(parser));
 
   /* invalid inputs */
 
@@ -167,6 +204,12 @@ static void test_nmeaParserProcessCharacter(void) {
   r = nmeaParserProcessCharacter(&parser, NULL);
   CU_ASSERT_EQUAL(r, false);
   CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  nmeaParserInit(&parser, 0);
 
   /* keep looking for the start of a new sentence */
 
@@ -453,6 +496,8 @@ static void test_nmeaParserProcessCharacter(void) {
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(parser.bufferLength, 1);
   CU_ASSERT_STRING_EQUAL(parser.buffer, "$");
+
+  nmeaParserDestroy(&parser);
 }
 
 static void test_nmeaParserParse(void) {
@@ -461,7 +506,7 @@ static void test_nmeaParserParse(void) {
   const char *s = "$GPGGA,,,,,,,,,,,,,,*56\r\n";
   size_t r;
 
-  nmeaParserInit(&parser);
+  memset(&parser, 0, sizeof(parser));
 
   /* invalid inputs */
 
@@ -476,6 +521,11 @@ static void test_nmeaParserParse(void) {
 
   r = nmeaParserParse(&parser, s, strlen(s), NULL);
   CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaParserParse(&parser, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 0);
+
+  nmeaParserInit(&parser, 0);
 
   /* parse */
 
@@ -495,6 +545,7 @@ static void test_nmeaParserParse(void) {
   r = nmeaParserParse(&parser, s, strlen(s), &info);
   CU_ASSERT_EQUAL(r, 2);
 
+  nmeaParserDestroy(&parser);
 }
 
 /*
@@ -508,9 +559,10 @@ int parserSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaParserReset", test_nmeaParserReset)) //
-      || (!CU_add_test(pSuite, "nmeaParserIsHexCharacter", test_nmeaParserIsHexCharacter)) //
+      (!CU_add_test(pSuite, "nmeaParserIsHexCharacter", test_nmeaParserIsHexCharacter)) //
+      || (!CU_add_test(pSuite, "nmeaParserReset", test_nmeaParserReset)) //
       || (!CU_add_test(pSuite, "nmeaParserInit", test_nmeaParserInit)) //
+      || (!CU_add_test(pSuite, "nmeaParserDestroy", test_nmeaParserDestroy)) //
       || (!CU_add_test(pSuite, "nmeaParserProcessCharacter", test_nmeaParserProcessCharacter)) //
       || (!CU_add_test(pSuite, "nmeaParserParse", test_nmeaParserParse)) //
       ) {
