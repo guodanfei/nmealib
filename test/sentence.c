@@ -20,6 +20,7 @@
 #include <nmealib/sentence.h>
 #include <CUnit/Basic.h>
 #include <float.h>
+#include <stdlib.h>
 
 int sentenceSuiteSetup(void);
 
@@ -288,6 +289,7 @@ static void test_nmeaSentenceFromInfo(void) {
   CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
+  free(buf);
 
   /* GPGSA */
 
@@ -298,6 +300,7 @@ static void test_nmeaSentenceFromInfo(void) {
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
+  free(buf);
 
   /* GPGSV */
 
@@ -308,6 +311,7 @@ static void test_nmeaSentenceFromInfo(void) {
   CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
+  free(buf);
 
   /* GPRMC */
 
@@ -321,6 +325,7 @@ static void test_nmeaSentenceFromInfo(void) {
   CU_ASSERT_STRING_EQUAL(buf, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
+  free(buf);
 
   /* GPVTG */
 
@@ -331,6 +336,7 @@ static void test_nmeaSentenceFromInfo(void) {
   CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
+  free(buf);
 
   /* invalid mask */
 
@@ -341,6 +347,7 @@ static void test_nmeaSentenceFromInfo(void) {
   validateContext(0, 0);
   CU_ASSERT_PTR_NULL(buf);
   memset(&info, 0, sizeof(info));
+  free(buf);
 }
 
 /*
