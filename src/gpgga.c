@@ -27,7 +27,7 @@
 #include <string.h>
 
 bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
-  size_t fieldCount;
+  size_t tokenCount;
   char timeBuf[16];
 
   if (!s //
@@ -52,7 +52,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   pack->dgpsSid = UINT_MAX;
 
   /* parse */
-  fieldCount = nmeaScanf(s, sz, //
+  tokenCount = nmeaScanf(s, sz, //
       "$" NMEALIB_GPGGA_PREFIX ",%16s,%F,%C,%F,%C,%d,%u,%F,%f,%C,%f,%C,%F,%u*", //
       timeBuf, //
       &pack->latitude, //
@@ -70,8 +70,8 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
       &pack->dgpsSid);
 
   /* see that there are enough tokens */
-  if (fieldCount != 14) {
-    nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount,
+  if (tokenCount != 14) {
+    nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) tokenCount,
         s);
     goto err;
   }

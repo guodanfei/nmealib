@@ -55,8 +55,8 @@ extern "C" {
  * | signal      | Signal quality (see the NMEALIB_SIG_* defines)         | SIG            |
  * | satellites  | Number of satellites being tracked                     | SATINVIEWCOUNT |
  * | hdop        | Horizontal dilution of position                        | HDOP           |
- * | elv         | Altitude above mean sea level, in meters               | ELV (3)        |
- * | elv unit    | Unit of altitude ('M')                                 | ELV (3)        |
+ * | elv         | Elevation above mean sea level, in meters              | ELV (3)        |
+ * | elv unit    | Unit of elevation ('M')                                | ELV (3)        |
  * | height      | Height of geoid (mean sea level) above WGS84 ellipsoid | - (4)          |
  * | height unit | Unit of height ('M')                                   | - (4)          |
  * | dgps age    | Time since last DGPS update, in seconds                | - (4)          |
@@ -65,7 +65,7 @@ extern "C" {
  *
  * (1) These fields are both required for a valid latitude<br/>
  * (2) These fields are both required for a valid longitude<br/>
- * (3) These fields are both required for a valid altitude<br/>
+ * (3) These fields are both required for a valid elevation<br/>
  * (4) Not supported yet<br/>
  * (5) Supported formats: HHMMSS, HHMMSS.t, HHMMSS.hh, HHMMSS.mmm<br/>
  *
@@ -75,10 +75,10 @@ extern "C" {
  * $GPGGA,123519.43,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
  * </pre>
  *
- * Note that if the height of geoid is missing then the altitude should be
- * suspect. Some non-standard implementations report altitude with respect to
- * the ellipsoid rather than geoid altitude. Some units do not report negative
- * altitudes at all. This is the only sentence that reports altitude.
+ * Note that if the height of geoid is missing then the elevation should be
+ * suspect. Some non-standard implementations report elevation with respect to
+ * the ellipsoid rather than geoid elevation. Some units do not report negative
+ * elevations at all. This is the only sentence that reports elevation.
  */
 typedef struct _NmeaGPGGA {
   uint32_t     present;
@@ -112,25 +112,27 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack);
  * Update an unsanitised nmeaINFO structure from a GPGGA packet structure
  *
  * @param pack The GPGGA packet structure
- * @param info The nmeaINFO structure
+ * @param info The unsanitised nmeaINFO structure
  */
 void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a nmeaGPGGA structure
+ * Convert a sanitised nmeaINFO structure into a NmeaGPGGA structure
  *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPGGA structure
+ * @param info The sanitised nmeaINFO structure
+ * @param pack The NmeaGPGGA structure
  */
 void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack);
 
 /**
- * Generate a GPGGA sentence from a nmeaGPGGA structure
+ * Generate a GPGGA sentence
  *
  * @param s The buffer to generate the sentence in
  * @param sz The size of the buffer
- * @param pack The nmeaGPGGA structure
- * @return The length of the generated sentence
+ * @param pack The NmeaGPGGA structure
+ * @return The length of the generated sentence; less than zero on failure,
+ * larger than sz when the size of the buffer is too small to generate the
+ * sentence in
  */
 size_t nmeaGPGGAGenerate(char *s, const size_t sz, const NmeaGPGGA *pack);
 
