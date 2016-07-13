@@ -227,7 +227,7 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from, const NmeaPosition *t
 }
 
 bool nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth, double distance) {
-  NmeaPosition p1;
+  NmeaPosition pos;
 
   if (!from //
       || !to) {
@@ -241,12 +241,12 @@ bool nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth
     return false;
   }
 
-  p1 = *from;
+  pos = *from;
   distance /= NMEALIB_EARTHRADIUS_KM; /* Angular distance covered on earth's surface */
   azimuth = nmeaMathDegreeToRadian(azimuth);
 
-  to->lat = asin(sin(p1.lat) * cos(distance) + cos(p1.lat) * sin(distance) * cos(azimuth));
-  to->lon = p1.lon + atan2(sin(azimuth) * sin(distance) * cos(p1.lat), cos(distance) - sin(p1.lat) * sin(to->lat));
+  to->lat = asin(sin(pos.lat) * cos(distance) + cos(pos.lat) * sin(distance) * cos(azimuth));
+  to->lon = pos.lon + atan2(sin(azimuth) * sin(distance) * cos(pos.lat), cos(distance) - sin(pos.lat) * sin(to->lat));
 
   return true;
 }

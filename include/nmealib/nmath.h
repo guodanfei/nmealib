@@ -25,25 +25,25 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define NMEALIB_TUD_YARDS              (1.0936133)                          /**< Yards, meter * NMEALIB_TUD_YARDS = yard           */
-#define NMEALIB_TUD_KNOTS              (1.852)                              /**< Knots, kilometer / NMEALIB_TUD_KNOTS = knot       */
-#define NMEALIB_TUD_MILES              (1.609344)                           /**< Miles, kilometer / NMEALIB_TUD_MILES = mile       */
-#define NMEALIB_TUS_MS                 (3.6)                                /**< Meters per seconds, (k/h) / NMEALIB_TUS_MS= (m/s) */
-#define NMEALIB_PI                     (3.141592653589793)                  /**< PI value                                          */
-#define NMEALIB_PI180                  (NMEALIB_PI / 180.0)                 /**< PI division by 180                                */
-#define NMEALIB_EARTHRADIUS_KM         (6378.0)                             /**< Earth's mean radius in km                         */
-#define NMEALIB_EARTHRADIUS_M          (NMEALIB_EARTHRADIUS_KM * 1000.0)    /**< Earth's mean radius in m                          */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_M  (6378137.0)                          /**< Earth's semi-major axis in m according WGS84      */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_KM (NMEALIB_EARTHMAJORAXIS_KM / 1000.0) /**< Earth's semi-major axis in km according WGS 84    */
-#define NMEALIB_EARTH_FLATTENING       (1.0 / 298.257223563)                /**< Earth's flattening according WGS 84               */
-#define NMEALIB_DOP_FACTOR             (5.0)                                /**< Factor for translating DOP to meters              */
+#define NMEALIB_TUD_YARDS              (1.0936133)                          /**< Yards: meters * NMEALIB_TUD_YARDS = yards      */
+#define NMEALIB_TUD_KNOTS              (1.852)                              /**< Knots: kilometers / NMEALIB_TUD_KNOTS = knots  */
+#define NMEALIB_TUD_MILES              (1.609344)                           /**< Miles: kilometers / NMEALIB_TUD_MILES = miles  */
+#define NMEALIB_TUS_MS                 (3.6)                                /**< Meters per seconds: kph / NMEALIB_TUS_MS = mps */
+#define NMEALIB_PI                     (3.141592653589793)                  /**< PI                                             */
+#define NMEALIB_PI180                  (NMEALIB_PI / 180.0)                 /**< PI divided by 180                              */
+#define NMEALIB_EARTHRADIUS_KM         (6378.0)                             /**< Earth's mean radius in km                      */
+#define NMEALIB_EARTHRADIUS_M          (NMEALIB_EARTHRADIUS_KM * 1000.0)    /**< Earth's mean radius in m                       */
+#define NMEALIB_EARTH_SEMIMAJORAXIS_M  (6378137.0)                          /**< Earth's semi-major axis in m according WGS84   */
+#define NMEALIB_EARTH_SEMIMAJORAXIS_KM (NMEALIB_EARTHMAJORAXIS_KM / 1000.0) /**< Earth's semi-major axis in km according WGS 84 */
+#define NMEALIB_EARTH_FLATTENING       (1.0 / 298.257223563)                /**< Earth's flattening according WGS 84            */
+#define NMEALIB_DOP_FACTOR             (5.0)                                /**< Factor for translating DOP to meters           */
 
 /*
- * Degree and Radians
+ * Degrees and Radians
  */
 
 /**
- * Convert degrees to radians
+ * Convert decimal degrees to radians
  *
  * @param v Degrees
  * @return Radians
@@ -51,7 +51,7 @@ extern "C" {
 double nmeaMathDegreeToRadian(const double v);
 
 /**
- * Convert radians to degrees
+ * Convert radians to decimal degrees
  *
  * @param v Radians
  * @return Degrees
@@ -63,17 +63,17 @@ double nmeaMathRadianToDegree(const double v);
  */
 
 /**
- * Convert NDEG (NMEA degrees) to decimal (fractional) degrees
+ * Convert NDEG (NMEA degrees) to decimal degrees
  *
  * @param v NDEG (NMEA degrees)
- * @return Decimal (fractional) degrees
+ * @return Decimal degrees
  */
 double nmeaMathNdegToDegree(const double v);
 
 /**
- * Convert decimal (fractional) degrees to NDEG (NMEA degrees)
+ * Convert decimal degrees to NDEG (NMEA degrees)
  *
- * @param v Decimal (fractional) degrees
+ * @param v Decimal degrees
  * @return NDEG (NMEA degrees)
  */
 double nmeaMathDegreeToNdeg(const double v);
@@ -128,23 +128,23 @@ double nmeaMathMetersToDop(const double meters);
  */
 
 /**
- * Convert a position from INFO to radians position
+ * Convert a NmeaInfo position to a radians position
  *
- * @param info The position
+ * @param info The NmeaInfo position
  * @param pos The radians position
  */
 void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos);
 
 /**
- * Convert a radians position to a position from INFO
+ * Convert a radians position to a NmeaInfo position
  *
  * @param pos The radians position
- * @param info The position
+ * @param info The NmeaInfo position
  */
 void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info);
 
 /**
- * Calculate distance between two points
+ * Calculate the distance between two points
  *
  * @param from The 'from' position (in radians)
  * @param to The 'to' position (in radians)
@@ -153,11 +153,11 @@ void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info);
 double nmeaMathDistance(const NmeaPosition *from, const NmeaPosition *to);
 
 /**
- * Calculate the distance between two points.
+ * Calculate the distance between two points
  *
  * This function uses an algorithm for an oblate spheroid earth model.
  * The algorithm is described here:
- * http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
+ *   http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
  *
  * @param from The 'from' position (in radians)
  * @param to The 'to' position (in radians)
@@ -184,7 +184,7 @@ bool nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth
  *
  * This function uses an algorithm for an oblate spheroid earth model.
  * The algorithm is described here:
- * http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
+ *   http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
  *
  * @param from The 'from' position (in radians)
  * @param to The 'to' position (in radians)
