@@ -1108,6 +1108,7 @@ static void test_nmeaInfoUnitConversion(void) {
   NmeaInfo infoClean;
   NmeaInfo infoExpected;
 
+  memset(&infoClean, 0xaa, sizeof(infoClean));
   infoClean.present = NMEALIB_INFO_PRESENT_MASK;
   infoClean.smask = NMEALIB_SENTENCE_MASK;
   infoClean.utc.day = 23;
