@@ -19,7 +19,6 @@
 
 #include <nmealib/sentence.h>
 #include <nmealib/validate.h>
-#include <assert.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -37,6 +36,7 @@ void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state) {
 
   memset(&parser->sentence, 0, sizeof(parser->sentence));
   parser->buffer[0] = '\0';
+  parser->buffer[NMEALIB_PARSER_SENTENCE_SIZE - 1] = '\0';
   parser->bufferLength = 0;
   parser->sentence.checksumPresent = false;
   parser->sentence.state = new_state;
@@ -77,7 +77,10 @@ bool nmeaParserInit(NmeaParser *parser) {
 }
 
 bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
-  assert(parser);
+  if (!parser //
+      || !c) {
+    return false;
+  }
 
   /* always reset when we encounter a start-of-sentence character */
   if (*c == '$') {
@@ -94,7 +97,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
   /* this character belongs to the sentence */
 
   /* check whether the sentence still fits in the buffer */
-  if (parser->bufferLength >= NMEALIB_PARSER_SENTENCE_SIZE) {
+  if (parser->bufferLength >= (NMEALIB_PARSER_SENTENCE_SIZE - 1)) {
     nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
     return false;
   }
@@ -102,6 +105,8 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
   parser->buffer[parser->bufferLength++] = *c;
 
   switch (parser->sentence.state) {
+    case NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START: /* can't occur but keep compiler happy */
+    default: /* can't occur but keep compiler happy */
     case NMEALIB_SENTENCE_STATE_READ_SENTENCE:
       if (*c == '*') {
         parser->sentence.state = NMEALIB_SENTENCE_STATE_READ_CHECKSUM;
@@ -111,35 +116,34 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
         parser->sentence.eolCharactersCount = 1;
       } else if (nmeaValidateIsInvalidCharacter(*c)) {
         nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
+        return false;
       } else {
         parser->sentence.checksumCalculated ^= (int) *c;
       }
+
       break;
 
     case NMEALIB_SENTENCE_STATE_READ_CHECKSUM:
       if (!nmeaParserIsHexCharacter(*c)) {
         nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
-      } else {
-        switch (parser->sentence.checksumCharactersCount) {
-          case 0:
-            parser->sentence.checksumCharacters[0] = *c;
-            parser->sentence.checksumCharacters[1] = 0;
-            parser->sentence.checksumCharactersCount = 1;
-            break;
+        return false;
+      }
 
-          case 1:
-            parser->sentence.checksumCharacters[1] = *c;
-            parser->sentence.checksumCharactersCount = 2;
-            parser->sentence.checksumRead = nmeaStringToInteger(parser->sentence.checksumCharacters, 2,
-                16);
-            parser->sentence.checksumPresent = true;
-            parser->sentence.state = NMEALIB_SENTENCE_STATE_READ_EOL;
-            break;
+      switch (parser->sentence.checksumCharactersCount) {
+        case 0:
+          parser->sentence.checksumCharacters[0] = *c;
+          parser->sentence.checksumCharacters[1] = 0;
+          parser->sentence.checksumCharactersCount = 1;
+          break;
 
-          default:
-            nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
-            break;
-        }
+        case 1:
+        default: /* can't occur but keep compiler happy */
+          parser->sentence.checksumCharacters[1] = *c;
+          parser->sentence.checksumCharactersCount = 2;
+          parser->sentence.checksumRead = nmeaStringToInteger(parser->sentence.checksumCharacters, 2, 16);
+          parser->sentence.checksumPresent = true;
+          parser->sentence.state = NMEALIB_SENTENCE_STATE_READ_EOL;
+          break;
       }
       break;
 
@@ -148,53 +152,48 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
         case 0:
           if (*c != NMEALIB_PARSER_EOL_CHAR_1) {
             nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
-          } else {
-            parser->sentence.eolCharactersCount = 1;
+            return false;
           }
+
+          parser->sentence.eolCharactersCount = 1;
           break;
 
         case 1:
+        default: /* can't occur but keep compiler happy */
           if (*c != NMEALIB_PARSER_EOL_CHAR_2) {
             nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
-          } else {
-            parser->sentence.eolCharactersCount = 2;
-
-            /* strip off the end-of-line characters */
-            parser->bufferLength -= parser->sentence.eolCharactersCount;
-            parser->buffer[parser->bufferLength] = '\0';
-
-            parser->sentence.state = NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START;
-            return (!parser->sentence.checksumCharactersCount
-                || (parser->sentence.checksumCharactersCount
-                    && (parser->sentence.checksumRead == parser->sentence.checksumCalculated)));
+            return false;
           }
-          break;
 
-        default:
-          nmeaParserReset(parser, NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START);
-          break;
+          parser->sentence.eolCharactersCount = 2;
+
+          /* strip off the end-of-line characters */
+          parser->bufferLength -= parser->sentence.eolCharactersCount;
+          parser->buffer[parser->bufferLength] = '\0';
+
+          parser->sentence.state = NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START;
+          return (!parser->sentence.checksumCharactersCount
+                  || (parser->sentence.checksumCharactersCount
+                      && (parser->sentence.checksumRead == parser->sentence.checksumCalculated)));
       }
       break;
-
-      /* can't occur, but keep compiler happy */
-    case NMEALIB_SENTENCE_STATE_SKIP_UNTIL_START:
-    default:
-      break;
-
   }
 
   return false;
 }
 
-size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t len, NmeaInfo * info) {
+size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t sz, NmeaInfo * info) {
   size_t sentences_count = 0;
   size_t charIndex = 0;
 
-  assert(parser);
-  assert(s);
-  assert(info);
+  if (!parser //
+      || !s //
+      || !sz //
+      || !info) {
+    return 0;
+  }
 
-  for (charIndex = 0; charIndex < len; charIndex++) {
+  for (charIndex = 0; charIndex < sz; charIndex++) {
     bool sentence_read_successfully = nmeaParserProcessCharacter(parser, &s[charIndex]);
     if (sentence_read_successfully) {
       if (nmeaSentenceToInfo(parser->buffer, parser->bufferLength, info)) {

@@ -151,11 +151,351 @@ static void test_nmeaParserInit(void) {
 }
 
 static void test_nmeaParserProcessCharacter(void) {
-  // FIXME test_nmeaParserProcessCharacter
+  NmeaParser parser;
+  char c;
+  bool r;
+  size_t i;
+
+  nmeaParserInit(&parser);
+
+  /* invalid inputs */
+
+  r = nmeaParserProcessCharacter(NULL, NULL);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  r = nmeaParserProcessCharacter(&parser, NULL);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* keep looking for the start of a new sentence */
+
+  c = '\0';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* completely fill read buffer */
+
+  for (i = 0; i < NMEALIB_PARSER_SENTENCE_SIZE - 2; i++) {
+    c = 'G';
+    r = nmeaParserProcessCharacter(&parser, &c);
+    CU_ASSERT_EQUAL(r, false);
+    CU_ASSERT_EQUAL(parser.bufferLength, 2 + i);
+  }
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+
+  /* keep looking for the start of a new sentence */
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* continue new sentence */
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  /* invalid character */
+
+  c = '~';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* continue new sentence */
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* continue new sentence */
+
+  c = 'G';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 3);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  /* not a hex char */
+
+  c = 'g';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 3);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+
+  /* not an EOL */
+
+  c = 'g';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 3);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+
+  /* EOL 1 */
+
+  c = '\r';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 5);
+
+  /* not an EOL */
+
+  c = 'g';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 0);
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 3);
+
+  c = '1';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+
+  /* EOL 1 */
+
+  c = '\r';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 5);
+
+  /* EOL 2 */
+
+  c = '\n';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+  CU_ASSERT_STRING_EQUAL(parser.buffer, "$*11");
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* start checksum */
+
+  c = '*';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  c = '0';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 3);
+
+  c = '0';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+
+  /* EOL 1 */
+
+  c = '\r';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 5);
+
+  /* EOL 2 */
+
+  c = '\n';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(parser.bufferLength, 4);
+  CU_ASSERT_STRING_EQUAL(parser.buffer, "$*00");
+
+  /* start a new sentence */
+
+  c = '$';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+
+  /* EOL 1 */
+
+  c = '\r';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, false);
+  CU_ASSERT_EQUAL(parser.bufferLength, 2);
+
+  /* EOL 2 */
+
+  c = '\n';
+  r = nmeaParserProcessCharacter(&parser, &c);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(parser.bufferLength, 1);
+  CU_ASSERT_STRING_EQUAL(parser.buffer, "$");
 }
 
 static void test_nmeaParserParse(void) {
-  // FIXME test_nmeaParserParse
+  NmeaParser parser;
+  NmeaInfo info;
+  const char *s = "$GPGGA,,,,,,,,,,,,,,*56\r\n";
+  size_t r;
+
+  nmeaParserInit(&parser);
+
+  /* invalid inputs */
+
+  r = nmeaParserParse(NULL, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaParserParse(&parser, NULL, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaParserParse(&parser, s, 0, &info);
+  CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaParserParse(&parser, s, strlen(s), NULL);
+  CU_ASSERT_EQUAL(r, 0);
+
+  /* parse */
+
+  s = "$GPGGA,,,,,,,,,,,,,,*00\r\n";
+  r = nmeaParserParse(&parser, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 0);
+
+  s = "$GPGGA,,,,,,,,,,,,,,*56\r\n";
+  r = nmeaParserParse(&parser, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 1);
+
+  s = "$GPGGA,,,,,,,,,,,,,,*56\r\n$GPGGA,,,,,,,,,,,,,,*56\r\n$GPGGA,,,,,,,,,,,,,,*56\r\n";
+  r = nmeaParserParse(&parser, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 3);
+
+  s = "$GPGGA,,,,,,,,,,,,,,*56\r\n$GPGGA,,,,,,$,,,,,,,,*56\r\n$GPGGA,,,,,,,,,,,,,,*56\r\n";
+  r = nmeaParserParse(&parser, s, strlen(s), &info);
+  CU_ASSERT_EQUAL(r, 2);
+
 }
 
 /*
