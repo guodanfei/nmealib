@@ -98,9 +98,10 @@ const char * nmeaSentenceToPrefix(NmeaSentence sentence);
 
 /**
  * Determine the sentence type from the start of the specified NMEA
- * sentence. If the first character of the string is equal
- * to the NMEA start-of-line character ('$') then that character is
- * skipped.
+ * sentence
+ *
+ * If the first character of the string is equal to the NMEA start-of-line
+ * character ('$') then that character is skipped.
  *
  * @param s The NMEA sentence
  * @param sz The length of the NMEA sentence
@@ -121,7 +122,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
 /**
  * Generate NMEA sentences from a sanitised NmeaInfo structure.
  *
- * Allocates buffer memory as needed.
+ * Allocates memory as needed.
  *
  * @param buf The location where to store the pointer to the allocated buffer.
  * Will be null when there is no output.
