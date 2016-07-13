@@ -192,7 +192,7 @@ static void test_nmeaGPRMCParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.speedN, 4.25, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.speed, 4.25, DBL_EPSILON);
 
   /* track */
 
@@ -458,7 +458,7 @@ static void test_nmeaGPRMCToInfo(void) {
 
   /* speed */
 
-  pack.speedN = 42.75;
+  pack.speed = 42.75;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   nmeaGPRMCToInfo(&pack, &info);
@@ -675,7 +675,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.speedN, (42.55 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.speed, (42.55 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
   memset(&info, 0, sizeof(info));
 
   /* track */
@@ -969,7 +969,7 @@ static void test_nmeaGPRMCGenerate(void) {
 
   /* speed */
 
-  pack.speedN = 42.6;
+  pack.speed = 42.6;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   pack.v23 = false;
@@ -979,7 +979,7 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
-  pack.speedN = 42.6;
+  pack.speed = 42.6;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   pack.v23 = true;

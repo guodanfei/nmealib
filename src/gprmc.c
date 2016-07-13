@@ -26,9 +26,9 @@
 #include <string.h>
 
 bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
-  size_t fieldCount;
+  size_t tokenCount;
   char timeBuf[16];
-  char dateBuf[8];
+  char dateBuf[16];
   bool v23Saved;
 
   if (!s //
@@ -45,20 +45,20 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   memset(pack, 0, sizeof(*pack));
   pack->latitude = NAN;
   pack->longitude = NAN;
-  pack->speedN = NAN;
+  pack->speed = NAN;
   pack->track = NAN;
   pack->magvar = NAN;
 
   /* parse */
-  fieldCount = nmeaScanf(s, sz, //
-      "$GPRMC,%16s,%C,%F,%C,%F,%C,%f,%f,%8s,%F,%C,%C*", //
+  tokenCount = nmeaScanf(s, sz, //
+      "$GPRMC,%16s,%C,%F,%C,%F,%C,%f,%f,%16s,%F,%C,%C*", //
       timeBuf, //
       &pack->sigSelection, //
       &pack->latitude, //
       &pack->latitudeNS, //
       &pack->longitude, //
       &pack->longitudeEW, //
-      &pack->speedN, //
+      &pack->speed, //
       &pack->track, //
       dateBuf, //
       &pack->magvar, //
@@ -66,14 +66,14 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
       &pack->sig);
 
   /* see that there are enough tokens */
-  if ((fieldCount != 11) //
-      && (fieldCount != 12)) {
+  if ((tokenCount != 11) //
+      && (tokenCount != 12)) {
     nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: need 11 or 12 tokens, got %lu in '%s'",
-        (long unsigned) fieldCount, s);
+        (long unsigned) tokenCount, s);
     goto err;
   }
 
-  pack->v23 = (fieldCount == 12);
+  pack->v23 = (tokenCount == 12);
 
   /* determine which fields are present and validate them */
 
@@ -92,8 +92,8 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   }
 
   if (pack->sigSelection //
-      && !((pack->sigSelection == 'A') //
-          || (pack->sigSelection == 'V'))) {
+      && (pack->sigSelection != 'A') //
+      && (pack->sigSelection != 'V')) {
     nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: invalid status '%c' in '%s'", pack->sigSelection, s);
     goto err;
   }
@@ -144,10 +144,10 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     pack->longitudeEW = '\0';
   }
 
-  if (!isnan(pack->speedN)) {
+  if (!isnan(pack->speed)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   } else {
-    pack->speedN = 0.0;
+    pack->speed = 0.0;
   }
 
   if (!isnan(pack->track)) {
@@ -242,7 +242,7 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SPEED)) {
-    info->speed = pack->speedN * NMEALIB_TUD_KNOTS;
+    info->speed = pack->speed * NMEALIB_TUD_KNOTS;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
   }
 
@@ -309,7 +309,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
-    pack->speedN = info->speed / NMEALIB_TUD_KNOTS;
+    pack->speed = info->speed / NMEALIB_TUD_KNOTS;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   }
 
@@ -359,7 +359,8 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
     chars += snprintf(dst, available, ",");
   }
 
-  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) && pack->sigSelection) {
+  if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
+      && pack->sigSelection) {
     chars += snprintf(dst, available, ",%c", pack->sigSelection);
   } else {
     chars += snprintf(dst, available, ",");
@@ -388,7 +389,7 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SPEED)) {
-    chars += snprintf(dst, available, ",%03.1f", pack->speedN);
+    chars += snprintf(dst, available, ",%03.1f", pack->speed);
   } else {
     chars += snprintf(dst, available, ",");
   }
@@ -421,7 +422,8 @@ size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack) {
   }
 
   if (pack->v23) {
-    if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) && pack->sig) {
+    if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SIG) //
+        && pack->sig) {
       chars += snprintf(dst, available, ",%c", pack->sig);
     } else {
       chars += snprintf(dst, available, ",");

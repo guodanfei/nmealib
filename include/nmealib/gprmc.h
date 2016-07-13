@@ -81,7 +81,7 @@ typedef struct _NmeaGPRMC {
   char     latitudeNS;
   double   longitude;
   char     longitudeEW;
-  double   speedN;
+  double   speed;
   double   track;
   double   magvar;
   char     magvarEW;
@@ -102,25 +102,27 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack);
  * Update an unsanitised nmeaINFO structure from a GPRMC packet structure
  *
  * @param pack The GPRMC packet structure
- * @param info The nmeaINFO structure
+ * @param info The unsanitised nmeaINFO structure
  */
 void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a nmeaGPRMC structure
+ * Convert a sanitised nmeaINFO structure into a NmeaGPRMC structure
  *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPRMC structure
+ * @param info The sanitised nmeaINFO structure
+ * @param pack The NmeaGPRMC structure
  */
 void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack);
 
 /**
- * Generate a GPRMC sentence from a nmeaGPRMC structure
+ * Generate a GPRMC sentence
  *
  * @param s The buffer to generate the sentence in
  * @param sz The size of the buffer
- * @param pack The nmeaGPRMC structure
- * @return The length of the generated sentence
+ * @param pack The NmeaGPRMC structure
+ * @return The length of the generated sentence; less than zero on failure,
+ * larger than sz when the size of the buffer is too small to generate the
+ * sentence in
  */
 size_t nmeaGPRMCGenerate(char *s, const size_t sz, const NmeaGPRMC *pack);
 
