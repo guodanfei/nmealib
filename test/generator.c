@@ -758,6 +758,9 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_NOISE, NULL);
   CU_ASSERT_PTR_NULL(gen);
 
+  gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_LAST + 1, &info);
+  CU_ASSERT_PTR_NULL(gen);
+
   /* noise */
 
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_NOISE, &info);

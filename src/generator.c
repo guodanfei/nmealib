@@ -468,7 +468,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
 
   gen = calloc(1, sizeof(NmeaGenerator));
   if (!gen) {
-    /* can;t be covered in a test */
+    /* can't be covered in a test */
     return NULL;
   }
 
@@ -484,10 +484,15 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
       gen->reset = nmeaGeneratorResetStatic;
       break;
 
+    case NMEALIB_GENERATOR_ROTATE:
     case NMEALIB_GENERATOR_SAT_ROTATE:
       gen->init = nmeaGeneratorInitRotate;
       gen->loop = nmeaGeneratorLoopRotate;
       gen->reset = nmeaGeneratorResetRotate;
+
+      if (type == NMEALIB_GENERATOR_ROTATE) {
+        nmeaGeneratorAppend(gen, nmeaGeneratorCreate(NMEALIB_GENERATOR_POS_RANDMOVE, info));
+      }
       break;
 
     case NMEALIB_GENERATOR_POS_RANDMOVE:
@@ -495,11 +500,9 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
       gen->loop = nmeaGeneratorLoopRandomMove;
       break;
 
-    case NMEALIB_GENERATOR_ROTATE:
     default:
-      gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_SAT_ROTATE, info);
-      nmeaGeneratorAppend(gen, nmeaGeneratorCreate(NMEALIB_GENERATOR_POS_RANDMOVE, info));
-      break;
+      free(gen);
+      return NULL;
   };
 
   nmeaGeneratorInit(gen, info);
@@ -587,7 +590,7 @@ size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, N
 
   r = nmeaGeneratorLoop(gen, info);
   if (!r) {
-    /* can;t be covered in a test */
+    /* can't be covered in a test */
     return 0;
   }
 
