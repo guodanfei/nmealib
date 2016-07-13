@@ -23,7 +23,6 @@
 #include <CUnit/Basic.h>
 #include <float.h>
 #include <string.h>
-#include <stdlib.h> // FIXME remove
 
 int gpvtgSuiteSetup(void);
 
