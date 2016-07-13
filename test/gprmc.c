@@ -831,7 +831,7 @@ static void test_nmeaGPRMCGenerate(void) {
 
   /* sig & mode */
 
-  pack.sigSelection= '\0';
+  pack.sigSelection = '\0';
   pack.sig = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 
@@ -842,7 +842,7 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
-  pack.sigSelection= '\0';
+  pack.sigSelection = '\0';
   pack.sig = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 
@@ -853,7 +853,7 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
-  pack.sigSelection= 'A';
+  pack.sigSelection = 'A';
   pack.sig = 'M';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 
@@ -864,7 +864,7 @@ static void test_nmeaGPRMCGenerate(void) {
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
-  pack.sigSelection= 'A';
+  pack.sigSelection = 'A';
   pack.sig = 'M';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SIG);
 

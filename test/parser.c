@@ -201,7 +201,6 @@ static void test_nmeaParserProcessCharacter(void) {
   CU_ASSERT_EQUAL(r, false);
   CU_ASSERT_EQUAL(parser.bufferLength, 0);
 
-
   /* keep looking for the start of a new sentence */
 
   c = 'G';

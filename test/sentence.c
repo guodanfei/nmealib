@@ -263,14 +263,14 @@ static void test_nmeaSentenceFromInfo(void) {
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
 
-  buf = (void *)&info;
+  buf = (void *) &info;
   r = nmeaSentenceFromInfo(&buf, NULL, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
   CU_ASSERT_PTR_NULL(buf);
   memset(&info, 0, sizeof(info));
 
-  buf = (void *)&info;
+  buf = (void *) &info;
   r = nmeaSentenceFromInfo(&buf, &info, 0);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
