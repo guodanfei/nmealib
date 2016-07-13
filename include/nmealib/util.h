@@ -40,10 +40,18 @@ extern "C" {
 /** The power-of-2 chunk size of a buffer allocation */
 #define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
 
-#define NMEALIB_RANDOM_MAX        (LONG_MAX)
-
+/**
+ * Initialise the random number generation
+ */
 void nmeaRandomInit(void);
 
+/**
+ * Generate a random number
+ *
+ * @param min The minimum value of the generated random number
+ * @param max The maximum value of the generated random number
+ * @return A random number in the range [min, max]
+ */
 double nmeaRandom(const double min, const double max);
 
 /**

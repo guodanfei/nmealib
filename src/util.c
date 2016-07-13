@@ -58,7 +58,7 @@ double nmeaRandom(const double min, const double max) {
     close(randomFile);
   }
 
-  return min + ((fabs((double) value) * range) / (double) NMEALIB_RANDOM_MAX);
+  return min + ((fabs((double) value) * range) / (double) LONG_MAX);
 }
 
 size_t nmeaStringTrim(const char **s) {
