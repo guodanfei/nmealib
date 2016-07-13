@@ -32,7 +32,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-  /** The NMEA prefix */
+/** The NMEA prefix */
 #define NMEALIB_GPGGA_PREFIX "GPGGA"
 
 /**
