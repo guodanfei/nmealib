@@ -848,6 +848,7 @@ static void test_nmeaGeneratorReset(void) {
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
   CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  nmeaGeneratorDestroy(g);
 
   /* normal, reset call */
 
@@ -857,6 +858,7 @@ static void test_nmeaGeneratorReset(void) {
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.satellites.inUseCount, 4);
   CU_ASSERT_EQUAL(info.satellites.inViewCount, 4);
+  nmeaGeneratorDestroy(g);
 }
 
 static void test_nmeaGeneratorDestroy(void) {
@@ -955,6 +957,8 @@ static void test_nmeaGeneratorAppend(void) {
   CU_ASSERT_PTR_EQUAL(gen->next->next, gen2);
   CU_ASSERT_PTR_EQUAL(gen->next->next->next, gen2->next);
   CU_ASSERT_PTR_NULL(gen->next->next->next->next);
+
+  nmeaGeneratorDestroy(gen);
 }
 
 static void test_nmeaGeneratorGenerateFrom(void) {
@@ -986,6 +990,7 @@ static void test_nmeaGeneratorGenerateFrom(void) {
   CU_ASSERT_EQUAL(r, 28);
   CU_ASSERT_STRING_EQUAL(s, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
 
+  nmeaGeneratorDestroy(gen);
   free(s);
 }
 
