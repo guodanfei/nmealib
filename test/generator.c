@@ -586,7 +586,6 @@ static void test_nmeaGeneratorInitRandomMove(void) {
 }
 
 static void test_nmeaGeneratorInvokeRandomMove(void) {
-  size_t i = 500;
   NmeaInfo infoEmpty;
   NmeaInfo info;
   bool r;
@@ -601,41 +600,112 @@ static void test_nmeaGeneratorInvokeRandomMove(void) {
 
   /* normal */
 
-  while (i-- > 0) {
-    info.speed = nmeaRandom(-10.0, 60.0);
-    r = nmeaGeneratorInvokeRandomMove(NULL, &info);
-    CU_ASSERT_EQUAL(r, true);
-    CU_ASSERT_EQUAL(info.present,
-        NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON | NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK
-            | NMEALIB_PRESENT_MTRACK | NMEALIB_PRESENT_MAGVAR);
-    CU_ASSERT_EQUAL(info.smask, 0);
-    CU_ASSERT_EQUAL(info.utc.year, 0);
-    CU_ASSERT_EQUAL(info.utc.mon, 0);
-    CU_ASSERT_EQUAL(info.utc.day, 0);
-    CU_ASSERT_EQUAL(info.utc.hour, 0);
-    CU_ASSERT_EQUAL(info.utc.min, 0);
-    CU_ASSERT_EQUAL(info.utc.sec, 0);
-    CU_ASSERT_EQUAL(info.utc.hsec, 0);
-    CU_ASSERT_EQUAL(info.sig, 0);
-    CU_ASSERT_EQUAL(info.fix, 0);
-    CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
-    CU_ASSERT_EQUAL(info.speed >= 1.0, true);
-    CU_ASSERT_EQUAL(info.speed <= 40.0, true);
-    CU_ASSERT_EQUAL((info.track >= 0.0) && (info.track < 360.0), true);
-    CU_ASSERT_EQUAL((info.mtrack >= 0.0) && (info.mtrack < 360.0), true);
-    CU_ASSERT_DOUBLE_EQUAL(info.magvar, info.track, DBL_EPSILON);
-    CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
-    CU_ASSERT_EQUAL(info.dgpsSid, 0);
+  info.track = 100.0;
+  info.mtrack = 100.0;
+  info.speed = 20.0;
+  r = nmeaGeneratorInvokeRandomMove(NULL, &info);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(info.present,
+      NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON | NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK
+          | NMEALIB_PRESENT_MTRACK | NMEALIB_PRESENT_MAGVAR);
+  CU_ASSERT_EQUAL(info.smask, 0);
+  CU_ASSERT_EQUAL(info.utc.year, 0);
+  CU_ASSERT_EQUAL(info.utc.mon, 0);
+  CU_ASSERT_EQUAL(info.utc.day, 0);
+  CU_ASSERT_EQUAL(info.utc.hour, 0);
+  CU_ASSERT_EQUAL(info.utc.min, 0);
+  CU_ASSERT_EQUAL(info.utc.sec, 0);
+  CU_ASSERT_EQUAL(info.utc.hsec, 0);
+  CU_ASSERT_EQUAL(info.sig, 0);
+  CU_ASSERT_EQUAL(info.fix, 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.speed >= 1.0, true);
+  CU_ASSERT_EQUAL(info.speed <= 40.0, true);
+  CU_ASSERT_EQUAL((info.track >= 0.0) && (info.track < 360.0), true);
+  CU_ASSERT_EQUAL((info.mtrack >= 0.0) && (info.mtrack < 360.0), true);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, info.track, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.dgpsSid, 0);
 
-    CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
-    CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
-    CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
-    CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
-  }
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
+
+  /* underflows */
+
+  info.track = -100.0;
+  info.mtrack = -100.0;
+  info.speed = -20.0;
+  r = nmeaGeneratorInvokeRandomMove(NULL, &info);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(info.present,
+      NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON | NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK
+          | NMEALIB_PRESENT_MTRACK | NMEALIB_PRESENT_MAGVAR);
+  CU_ASSERT_EQUAL(info.smask, 0);
+  CU_ASSERT_EQUAL(info.utc.year, 0);
+  CU_ASSERT_EQUAL(info.utc.mon, 0);
+  CU_ASSERT_EQUAL(info.utc.day, 0);
+  CU_ASSERT_EQUAL(info.utc.hour, 0);
+  CU_ASSERT_EQUAL(info.utc.min, 0);
+  CU_ASSERT_EQUAL(info.utc.sec, 0);
+  CU_ASSERT_EQUAL(info.utc.hsec, 0);
+  CU_ASSERT_EQUAL(info.sig, 0);
+  CU_ASSERT_EQUAL(info.fix, 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.speed >= 1.0, true);
+  CU_ASSERT_EQUAL(info.speed <= 40.0, true);
+  CU_ASSERT_EQUAL((info.track >= 0.0) && (info.track < 360.0), true);
+  CU_ASSERT_EQUAL((info.mtrack >= 0.0) && (info.mtrack < 360.0), true);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, info.track, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.dgpsSid, 0);
+
+  /* overflows */
+
+  info.track = 400.0;
+  info.mtrack = 400.0;
+  info.speed = 100.0;
+  r = nmeaGeneratorInvokeRandomMove(NULL, &info);
+  CU_ASSERT_EQUAL(r, true);
+  CU_ASSERT_EQUAL(info.present,
+      NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON | NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK
+          | NMEALIB_PRESENT_MTRACK | NMEALIB_PRESENT_MAGVAR);
+  CU_ASSERT_EQUAL(info.smask, 0);
+  CU_ASSERT_EQUAL(info.utc.year, 0);
+  CU_ASSERT_EQUAL(info.utc.mon, 0);
+  CU_ASSERT_EQUAL(info.utc.day, 0);
+  CU_ASSERT_EQUAL(info.utc.hour, 0);
+  CU_ASSERT_EQUAL(info.utc.min, 0);
+  CU_ASSERT_EQUAL(info.utc.sec, 0);
+  CU_ASSERT_EQUAL(info.utc.hsec, 0);
+  CU_ASSERT_EQUAL(info.sig, 0);
+  CU_ASSERT_EQUAL(info.fix, 0);
+  CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.hdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.vdop, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.elevation, 0.0, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.height, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.speed >= 1.0, true);
+  CU_ASSERT_EQUAL(info.speed <= 40.0, true);
+  CU_ASSERT_EQUAL((info.track >= 0.0) && (info.track < 360.0), true);
+  CU_ASSERT_EQUAL((info.mtrack >= 0.0) && (info.mtrack < 360.0), true);
+  CU_ASSERT_DOUBLE_EQUAL(info.magvar, info.track, DBL_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.dgpsAge, 0.0, DBL_EPSILON);
+  CU_ASSERT_EQUAL(info.dgpsSid, 0);
+
+  CU_ASSERT_EQUAL(info.satellites.inUseCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inUse, infoEmpty.satellites.inUse, sizeof(info.satellites.inUse)), 0);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
 static void test_nmeaGeneratorInit(void) {

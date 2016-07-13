@@ -390,6 +390,7 @@ bool nmeaGeneratorInvokeRandomMove(NmeaGenerator *gen __attribute__ ((unused)), 
   if (info->track >= 360.0) {
     info->track -= 360.0;
   }
+
   if (info->mtrack < 0.0) {
     info->mtrack = 360.0 + info->mtrack;
   }
@@ -397,13 +398,13 @@ bool nmeaGeneratorInvokeRandomMove(NmeaGenerator *gen __attribute__ ((unused)), 
     info->mtrack -= 360.0;
   }
 
+  if (info->speed < 1.0) {
+    info->speed = 1.0;
+  }
   if (info->speed > 40.0) {
     info->speed = 40.0;
   }
 
-  if (info->speed < 1.0) {
-    info->speed = 1.0;
-  }
 
   nmeaMathInfoToPosition(info, &pos);
   nmeaMathMoveFlat(&pos, &pos, info->track, info->speed / 3600.0);
