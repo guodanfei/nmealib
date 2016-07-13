@@ -466,7 +466,7 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
     return NULL;
   }
 
-  gen = malloc(sizeof(NmeaGenerator));
+  gen = calloc(1, sizeof(NmeaGenerator));
   if (!gen) {
     /* can;t be covered in a test */
     return NULL;
@@ -474,27 +474,23 @@ NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
 
   switch (type) {
     case NMEALIB_GENERATOR_NOISE:
-      memset(gen, 0, sizeof(NmeaGenerator));
       gen->loop = nmeaGeneratorLoopNoise;
       break;
 
     case NMEALIB_GENERATOR_STATIC:
     case NMEALIB_GENERATOR_SAT_STATIC:
-      memset(gen, 0, sizeof(NmeaGenerator));
       gen->init = nmeaGeneratorInitStatic;
       gen->loop = nmeaGeneratorLoopStatic;
       gen->reset = nmeaGeneratorResetStatic;
       break;
 
     case NMEALIB_GENERATOR_SAT_ROTATE:
-      memset(gen, 0, sizeof(NmeaGenerator));
       gen->init = nmeaGeneratorInitRotate;
       gen->loop = nmeaGeneratorLoopRotate;
       gen->reset = nmeaGeneratorResetRotate;
       break;
 
     case NMEALIB_GENERATOR_POS_RANDMOVE:
-      memset(gen, 0, sizeof(NmeaGenerator));
       gen->init = nmeaGeneratorInitRandomMove;
       gen->loop = nmeaGeneratorLoopRandomMove;
       break;
