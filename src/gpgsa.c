@@ -27,7 +27,9 @@
 #include <string.h>
 
 bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
-  size_t fieldCount;
+  size_t tokenCount;
+  size_t i;
+  bool noPrns;
 
   if (!s //
       || !sz //
@@ -45,7 +47,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   pack->vdop = NAN;
 
   /* parse */
-  fieldCount = nmeaScanf(s, sz, //
+  tokenCount = nmeaScanf(s, sz, //
       "$" NMEALIB_GPGSA_PREFIX ",%C,%d," //
       "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,"//
       "%F,%F,%F*",//
@@ -68,8 +70,8 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
       &pack->vdop);
 
   /* see that there are enough tokens */
-  if (fieldCount != 17) {
-    nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount,
+  if (tokenCount != 17) {
+    nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) tokenCount,
         s);
     goto err;
   }
@@ -77,8 +79,8 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   /* determine which fields are present and validate them */
 
   if (pack->sig) {
-    if (!((pack->sig == 'A') //
-        || (pack->sig == 'M'))) {
+    if ((pack->sig != 'A') //
+        && (pack->sig != 'M')) {
       nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: invalid selection mode '%c' in '%s'", pack->sig, s);
       goto err;
     }
@@ -98,10 +100,14 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     pack->fix = NMEALIB_FIX_BAD;
   }
 
-  qsort(pack->prn, NMEALIB_GPGSA_SATS_IN_SENTENCE, sizeof(unsigned int), nmeaQsortPRNCompact);
-  if (!pack->prn[0]) {
-    memset(pack->prn, 0, sizeof(pack->prn));
-  } else {
+  noPrns = true;
+  for (i = 0; i < NMEALIB_GPGSA_SATS_IN_SENTENCE; i++) {
+    noPrns = (pack->prn[i] == 0);
+    if (!noPrns) {
+      break;
+    }
+  }
+  if (!noPrns) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINUSE);
   }
 
@@ -158,17 +164,16 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SATINUSE)) {
-    size_t packIndex = 0;
-    size_t infoIndex = 0;
+    size_t p = 0;
+    size_t i = 0;
 
     info->satellites.inUseCount = 0;
     memset(&info->satellites.inUse, 0, sizeof(info->satellites.inUse[0]));
 
-    for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES);
-        packIndex++) {
-      unsigned int prn = pack->prn[packIndex];
+    for (p = 0; (p < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (i < NMEALIB_MAX_SATELLITES); p++) {
+      unsigned int prn = pack->prn[p];
       if (prn) {
-        info->satellites.inUse[infoIndex++] = prn;
+        info->satellites.inUse[i++] = prn;
         info->satellites.inUseCount++;
       }
     }
@@ -217,14 +222,13 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINUSE)) {
-    size_t infoIndex = 0;
-    size_t packIndex = 0;
+    size_t i = 0;
+    size_t p = 0;
 
-    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE);
-        infoIndex++) {
-      unsigned int prn = info->satellites.inUse[infoIndex];
+    for (i = 0; (i < NMEALIB_MAX_SATELLITES) && (p < NMEALIB_GPGSA_SATS_IN_SENTENCE); i++) {
+      unsigned int prn = info->satellites.inUse[i];
       if (prn) {
-        pack->prn[packIndex++] = prn;
+        pack->prn[p++] = prn;
       }
     }
 

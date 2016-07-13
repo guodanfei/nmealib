@@ -47,20 +47,20 @@ extern "C" {
  * $GPGSA,sig,fix,prn1,prn2,prn3,,,,,,,,,prn12,pdop,hdop,vdop*checksum
  * </pre>
  *
- * | Field       | Description                                      | present      |
- * | :---------: | ------------------------------------------------ | :----------: |
- * | $GPGSA      | NMEA prefix                                      | -            |
- * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG          |
- * | fix         | Fix, see NMEALIB_FIX_* defines                   | FIX          |
- * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE (1) |
- * | pdop        | Dilution of position                             | PDOP         |
- * | hdop        | Horizontal dilution of position                  | HDOP         |
- * | vdop        | Vertical dilution of position                    | VDOP         |
- * | checksum    | NMEA checksum                                    | -            |
+ * | Field       | Description                                      | present                      |
+ * | :---------: | ------------------------------------------------ | :--------------------------: |
+ * | $GPGSA      | NMEA prefix                                      | -                            |
+ * | sig         | Selection of 2D or 3D fix (A = auto, M = manual) | SIG                          |
+ * | fix         | Fix, see NMEALIB_FIX_* defines                   | FIX                          |
+ * | prn1..prn12 | PRNs of satellites used for fix (12 PRNs)        | SATINUSE | SATINUSECOUNT (1) |
+ * | pdop        | Dilution of position                             | PDOP                         |
+ * | hdop        | Horizontal dilution of position                  | HDOP                         |
+ * | vdop        | Vertical dilution of position                    | VDOP                         |
+ * | checksum    | NMEA checksum                                    | -                            |
  *
- * (1) Also sets SATINUSECOUNT when parsing and when converting from nmeaGPGSA
- *     to nmeaINFO. SATINUSECOUNT is <b>not</b> used when converting from
- *     nmeaINFO to nmeaGPGSA or when generating.<br/>
+ * (1) Also sets SATINUSECOUNT when parsing and when converting from NmeaGPGSA
+ *     to NmeaInfo. SATINUSECOUNT is <b>not</b> used when converting from
+ *     NmeaInfo to NmeaGPGSA nor when generating.<br/>
  *
  * This sentence provides details on the nature of the fix. It includes the
  * numbers of the satellites being used in the current solution and the DOP.
@@ -79,7 +79,7 @@ extern "C" {
  * might output all of the satellites used at the beginning of the sentence with
  * the null field all stacked up at the end. This difference accounts for some
  * satellite display programs not always being able to display the satellites
- * being tracked. Some units may show all satellites that have ephemeris data
+ * being tracked. Some units may show all satellites that have ephemeral data
  * without regard to their use as part of the solution but this is non-standard.
  *
  * Example:
@@ -112,25 +112,27 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack);
  * Update an unsanitised nmeaINFO structure from a GPGSA packet structure
  *
  * @param pack The GPGSA packet structure
- * @param info The nmeaINFO structure
+ * @param info The unsanitised nmeaINFO structure
  */
 void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a nmeaGPGSA structure
+ * Convert a sanitised nmeaINFO structure into a NmeaGPGSA structure
  *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPGSA structure
+ * @param info The sanitised nmeaINFO structure
+ * @param pack The NmeaGPGSA structure
  */
 void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack);
 
 /**
- * Generate a GPGSA sentence from a nmeaGPGSA structure
+ * Generate a GPGSA sentence
  *
  * @param s The buffer to generate the sentence in
  * @param sz The size of the buffer
- * @param pack The nmeaGPGSA structure
- * @return The length of the generated sentence
+ * @param pack The NmeaGPGSA structure
+ * @return The length of the generated sentence; less than zero on failure,
+ * larger than sz when the size of the buffer is too small to generate the
+ * sentence in
  */
 size_t nmeaGPGSAGenerate(char *s, const size_t sz, const NmeaGPGSA *pack);
 

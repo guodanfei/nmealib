@@ -102,14 +102,14 @@ static void test_nmeaGPGSAParse(void) {
   CU_ASSERT_EQUAL(pack.prn[1], 11);
   CU_ASSERT_EQUAL(pack.prn[2], 10);
   CU_ASSERT_EQUAL(pack.prn[3], 5);
-  CU_ASSERT_EQUAL(pack.prn[4], 7);
-  CU_ASSERT_EQUAL(pack.prn[5], 8);
-  CU_ASSERT_EQUAL(pack.prn[6], 4);
-  CU_ASSERT_EQUAL(pack.prn[7], 3);
-  CU_ASSERT_EQUAL(pack.prn[8], 2);
-  CU_ASSERT_EQUAL(pack.prn[9], 1);
-  CU_ASSERT_EQUAL(pack.prn[10], 0);
-  CU_ASSERT_EQUAL(pack.prn[11], 0);
+  CU_ASSERT_EQUAL(pack.prn[4], 0);
+  CU_ASSERT_EQUAL(pack.prn[5], 7);
+  CU_ASSERT_EQUAL(pack.prn[6], 8);
+  CU_ASSERT_EQUAL(pack.prn[7], 0);
+  CU_ASSERT_EQUAL(pack.prn[8], 4);
+  CU_ASSERT_EQUAL(pack.prn[9], 3);
+  CU_ASSERT_EQUAL(pack.prn[10], 2);
+  CU_ASSERT_EQUAL(pack.prn[11], 1);
 
   /* pdop */
 
