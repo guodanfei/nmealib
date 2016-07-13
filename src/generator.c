@@ -550,7 +550,8 @@ bool nmeaGeneratorLoop(NmeaGenerator *gen, NmeaInfo *info) {
     r = (*gen->loop)(gen, info);
   }
 
-  if (r && gen->next) {
+  if (r //
+      && gen->next) {
     r = nmeaGeneratorLoop(gen->next, info);
   }
 
@@ -588,9 +589,9 @@ size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, N
     return 0;
   }
 
+  *s = NULL;
   r = nmeaGeneratorLoop(gen, info);
   if (!r) {
-    /* can't be covered in a test */
     return 0;
   }
 
