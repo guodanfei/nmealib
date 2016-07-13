@@ -27,18 +27,18 @@
 
 int generatorSuiteSetup(void);
 
-extern bool nmeaGeneratorLoopNoise(NmeaGenerator *gen, NmeaInfo *info);
+extern bool nmeaGeneratorInvokeNoise(NmeaGenerator *gen, NmeaInfo *info);
 
-extern bool nmeaGeneratorLoopStatic(NmeaGenerator *gen, NmeaInfo *info);
+extern bool nmeaGeneratorInvokeStatic(NmeaGenerator *gen, NmeaInfo *info);
 extern bool nmeaGeneratorResetStatic(NmeaGenerator *gen, NmeaInfo *info);
 extern bool nmeaGeneratorInitStatic(NmeaGenerator *gen, NmeaInfo *info);
 
-extern bool nmeaGeneratorLoopRotate(NmeaGenerator *gen, NmeaInfo *info);
+extern bool nmeaGeneratorInvokeRotate(NmeaGenerator *gen, NmeaInfo *info);
 extern bool nmeaGeneratorResetRotate(NmeaGenerator *gen, NmeaInfo *info);
 extern bool nmeaGeneratorInitRotate(NmeaGenerator *gen, NmeaInfo *info);
 
 extern bool nmeaGeneratorInitRandomMove(NmeaGenerator *gen, NmeaInfo *info);
-extern bool nmeaGeneratorLoopRandomMove(NmeaGenerator *gen, NmeaInfo *info);
+extern bool nmeaGeneratorInvokeRandomMove(NmeaGenerator *gen, NmeaInfo *info);
 
 /*
  * Failing generator
@@ -48,7 +48,7 @@ static bool failInit(NmeaGenerator *gen __attribute__((unused)), NmeaInfo *info 
   return false;
 }
 
-static bool failLoop(NmeaGenerator *gen __attribute__((unused)), NmeaInfo *info __attribute__((unused))) {
+static bool failInvoke(NmeaGenerator *gen __attribute__((unused)), NmeaInfo *info __attribute__((unused))) {
   return false;
 }
 
@@ -60,7 +60,7 @@ static bool failReset(NmeaGenerator *gen __attribute__((unused)), NmeaInfo *info
  * Tests
  */
 
-static void test_nmeaGeneratorLoopNoise(void) {
+static void test_nmeaGeneratorInvokeNoise(void) {
   size_t it;
   NmeaInfo info;
   bool r;
@@ -69,12 +69,12 @@ static void test_nmeaGeneratorLoopNoise(void) {
 
   /* invalid inputs */
 
-  r = nmeaGeneratorLoopNoise(NULL, NULL);
+  r = nmeaGeneratorInvokeNoise(NULL, NULL);
   CU_ASSERT_EQUAL(r, false);
 
   /* normal */
 
-  r = nmeaGeneratorLoopNoise(NULL, &info);
+  r = nmeaGeneratorInvokeNoise(NULL, &info);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
       NMEALIB_INFO_PRESENT_MASK & ~(NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME));
@@ -128,7 +128,7 @@ static void test_nmeaGeneratorLoopNoise(void) {
   }
 }
 
-static void test_nmeaGeneratorLoopStatic(void) {
+static void test_nmeaGeneratorInvokeStatic(void) {
   NmeaInfo infoEmpty;
   NmeaInfo info;
   bool r;
@@ -140,13 +140,13 @@ static void test_nmeaGeneratorLoopStatic(void) {
 
   /* invalid inputs */
 
-  r = nmeaGeneratorLoopStatic(NULL, NULL);
+  r = nmeaGeneratorInvokeStatic(NULL, NULL);
   CU_ASSERT_EQUAL(r, false);
 
   /* normal */
 
   gettimeofday(&tp, NULL);
-  r = nmeaGeneratorLoopStatic(NULL, &info);
+  r = nmeaGeneratorInvokeStatic(NULL, &info);
   gmtime_r(&tp.tv_sec, &tt);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
@@ -280,7 +280,7 @@ static void test_nmeaGeneratorInitStatic(void) {
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_3D);
 }
 
-static void test_nmeaGeneratorLoopRotate(void) {
+static void test_nmeaGeneratorInvokeRotate(void) {
   NmeaInfo infoEmpty;
   NmeaInfo info;
   bool r;
@@ -292,13 +292,13 @@ static void test_nmeaGeneratorLoopRotate(void) {
 
   /* invalid inputs */
 
-  r = nmeaGeneratorLoopRotate(NULL, NULL);
+  r = nmeaGeneratorInvokeRotate(NULL, NULL);
   CU_ASSERT_EQUAL(r, false);
 
   /* normal, no sats */
 
   gettimeofday(&tp, NULL);
-  r = nmeaGeneratorLoopRotate(NULL, &info);
+  r = nmeaGeneratorInvokeRotate(NULL, &info);
   gmtime_r(&tp.tv_sec, &tt);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
@@ -338,7 +338,7 @@ static void test_nmeaGeneratorLoopRotate(void) {
   info.satellites.inView[1].prn = 2;
 
   gettimeofday(&tp, NULL);
-  r = nmeaGeneratorLoopRotate(NULL, &info);
+  r = nmeaGeneratorInvokeRotate(NULL, &info);
   gmtime_r(&tp.tv_sec, &tt);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
@@ -384,7 +384,7 @@ static void test_nmeaGeneratorLoopRotate(void) {
   info.satellites.inView[0].azimuth = 400;
 
   gettimeofday(&tp, NULL);
-  r = nmeaGeneratorLoopRotate(NULL, &info);
+  r = nmeaGeneratorInvokeRotate(NULL, &info);
   gmtime_r(&tp.tv_sec, &tt);
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
@@ -585,7 +585,7 @@ static void test_nmeaGeneratorInitRandomMove(void) {
   CU_ASSERT_EQUAL(memcmp(info.satellites.inView, infoEmpty.satellites.inView, sizeof(info.satellites.inView)), 0);
 }
 
-static void test_nmeaGeneratorLoopRandomMove(void) {
+static void test_nmeaGeneratorInvokeRandomMove(void) {
   size_t i = 500;
   NmeaInfo infoEmpty;
   NmeaInfo info;
@@ -596,14 +596,14 @@ static void test_nmeaGeneratorLoopRandomMove(void) {
 
   /* invalid inputs */
 
-  r = nmeaGeneratorLoopRandomMove(NULL, NULL);
+  r = nmeaGeneratorInvokeRandomMove(NULL, NULL);
   CU_ASSERT_EQUAL(r, false);
 
   /* normal */
 
   while (i-- > 0) {
     info.speed = nmeaRandom(-10.0, 60.0);
-    r = nmeaGeneratorLoopRandomMove(NULL, &info);
+    r = nmeaGeneratorInvokeRandomMove(NULL, &info);
     CU_ASSERT_EQUAL(r, true);
     CU_ASSERT_EQUAL(info.present,
         NMEALIB_PRESENT_LAT | NMEALIB_PRESENT_LON | NMEALIB_PRESENT_SPEED | NMEALIB_PRESENT_TRACK
@@ -788,7 +788,7 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_NOISE, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_PTR_NULL(gen->init);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopNoise);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeNoise);
   CU_ASSERT_PTR_NULL(gen->reset);
   CU_ASSERT_PTR_NULL(gen->next);
   nmeaGeneratorDestroy(gen);
@@ -798,7 +798,7 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_STATIC, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_EQUAL(gen->init, nmeaGeneratorInitStatic);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopStatic);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeStatic);
   CU_ASSERT_EQUAL(gen->reset, nmeaGeneratorResetStatic);
   CU_ASSERT_PTR_NULL(gen->next);
   nmeaGeneratorDestroy(gen);
@@ -808,7 +808,7 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_SAT_STATIC, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_EQUAL(gen->init, nmeaGeneratorInitStatic);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopStatic);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeStatic);
   CU_ASSERT_EQUAL(gen->reset, nmeaGeneratorResetStatic);
   CU_ASSERT_PTR_NULL(gen->next);
   nmeaGeneratorDestroy(gen);
@@ -818,7 +818,7 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_SAT_ROTATE, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_EQUAL(gen->init, nmeaGeneratorInitRotate);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopRotate);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeRotate);
   CU_ASSERT_EQUAL(gen->reset, nmeaGeneratorResetRotate);
   CU_ASSERT_PTR_NULL(gen->next);
   nmeaGeneratorDestroy(gen);
@@ -828,7 +828,7 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_POS_RANDMOVE, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_EQUAL(gen->init, nmeaGeneratorInitRandomMove);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopRandomMove);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeRandomMove);
   CU_ASSERT_PTR_NULL(gen->reset);
   CU_ASSERT_PTR_NULL(gen->next);
   nmeaGeneratorDestroy(gen);
@@ -838,11 +838,11 @@ static void test_nmeaGeneratorCreate(void) {
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
   CU_ASSERT_EQUAL(gen->init, nmeaGeneratorInitRotate);
-  CU_ASSERT_EQUAL(gen->loop, nmeaGeneratorLoopRotate);
+  CU_ASSERT_EQUAL(gen->invoke, nmeaGeneratorInvokeRotate);
   CU_ASSERT_EQUAL(gen->reset, nmeaGeneratorResetRotate);
   CU_ASSERT_PTR_NOT_NULL(gen->next);
   CU_ASSERT_EQUAL(gen->next->init, nmeaGeneratorInitRandomMove);
-  CU_ASSERT_EQUAL(gen->next->loop, nmeaGeneratorLoopRandomMove);
+  CU_ASSERT_EQUAL(gen->next->invoke, nmeaGeneratorInvokeRandomMove);
   CU_ASSERT_PTR_NULL(gen->next->reset);
   CU_ASSERT_PTR_NULL(gen->next->next);
   nmeaGeneratorDestroy(gen);
@@ -916,7 +916,7 @@ static void test_nmeaGeneratorDestroy(void) {
   nmeaGeneratorDestroy(gen);
 }
 
-static void test_nmeaGeneratorLoop(void) {
+static void test_nmeaGeneratorInvoke(void) {
   NmeaInfo info;
   NmeaGenerator *gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_STATIC, &info);
   bool r;
@@ -927,15 +927,15 @@ static void test_nmeaGeneratorLoop(void) {
 
   /* invalid inputs */
 
-  r = nmeaGeneratorLoop(NULL, NULL);
+  r = nmeaGeneratorInvoke(NULL, NULL);
   CU_ASSERT_EQUAL(r, false);
 
-  r = nmeaGeneratorLoop(gen, NULL);
+  r = nmeaGeneratorInvoke(gen, NULL);
   CU_ASSERT_EQUAL(r, false);
 
   /* normal */
 
-  r = nmeaGeneratorLoop(gen, &info);
+  r = nmeaGeneratorInvoke(gen, &info);
   CU_ASSERT_EQUAL(r, true);
 
   nmeaGeneratorDestroy(gen);
@@ -944,16 +944,16 @@ static void test_nmeaGeneratorLoop(void) {
 
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info);
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
-  r = nmeaGeneratorLoop(gen, &info);
+  r = nmeaGeneratorInvoke(gen, &info);
   CU_ASSERT_EQUAL(r, true);
 
   nmeaGeneratorDestroy(gen);
 
-  /* failed loop */
+  /* failed invoke */
 
   gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info);
-  gen->loop = failLoop;
-  r = nmeaGeneratorLoop(gen, &info);
+  gen->invoke = failInvoke;
+  r = nmeaGeneratorInvoke(gen, &info);
   CU_ASSERT_EQUAL(r, false);
 
   nmeaGeneratorDestroy(gen);
@@ -1034,9 +1034,9 @@ static void test_nmeaGeneratorGenerateFrom(void) {
   CU_ASSERT_STRING_EQUAL(s, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
   free(s);
 
-  /* loop fail */
+  /* invoke fail */
 
-  gen->loop = failLoop;
+  gen->invoke = failInvoke;
   r = nmeaGeneratorGenerateFrom(&s, &info, gen, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_PTR_NULL(s);
   CU_ASSERT_EQUAL(r, 0);
@@ -1056,20 +1056,20 @@ int generatorSuiteSetup(void) {
   }
 
   if ( //
-      (!CU_add_test(pSuite, "nmeaGeneratorLoopNoise", test_nmeaGeneratorLoopNoise)) //
-      || (!CU_add_test(pSuite, "nmeaGeneratorLoopStatic", test_nmeaGeneratorLoopStatic)) //
+      (!CU_add_test(pSuite, "nmeaGeneratorInvokeNoise", test_nmeaGeneratorInvokeNoise)) //
+      || (!CU_add_test(pSuite, "nmeaGeneratorInvokeStatic", test_nmeaGeneratorInvokeStatic)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorResetStatic", test_nmeaGeneratorResetStatic)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorInitStatic", test_nmeaGeneratorInitStatic)) //
-      || (!CU_add_test(pSuite, "nmeaGeneratorLoopRotate", test_nmeaGeneratorLoopRotate)) //
+      || (!CU_add_test(pSuite, "nmeaGeneratorInvokeRotate", test_nmeaGeneratorInvokeRotate)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorResetRotate", test_nmeaGeneratorResetRotate)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorInitRotate", test_nmeaGeneratorInitRotate)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorInitRandomMove", test_nmeaGeneratorInitRandomMove)) //
-      || (!CU_add_test(pSuite, "nmeaGeneratorLoopRandomMove", test_nmeaGeneratorLoopRandomMove)) //
+      || (!CU_add_test(pSuite, "nmeaGeneratorInvokeRandomMove", test_nmeaGeneratorInvokeRandomMove)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorInit", test_nmeaGeneratorInit)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorCreate", test_nmeaGeneratorCreate)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorReset", test_nmeaGeneratorReset)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorDestroy", test_nmeaGeneratorDestroy)) //
-      || (!CU_add_test(pSuite, "nmeaGeneratorLoop", test_nmeaGeneratorLoop)) //
+      || (!CU_add_test(pSuite, "nmeaGeneratorInvoke", test_nmeaGeneratorInvoke)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorAppend", test_nmeaGeneratorAppend)) //
       || (!CU_add_test(pSuite, "nmeaGeneratorGenerateFrom", test_nmeaGeneratorGenerateFrom)) //
       ) {

@@ -31,10 +31,11 @@ extern "C" {
 typedef struct _NmeaGenerator NmeaGenerator;
 
 /**
- * Generator Type enum
+ * Generator Type
  */
 typedef enum _NmeaGeneratorType {
   NMEALIB_GENERATOR_NOISE        = 0u,
+  NMEALIB_GENERATOR_FIRST        = NMEALIB_GENERATOR_NOISE,
   NMEALIB_GENERATOR_STATIC       = 1u,
   NMEALIB_GENERATOR_ROTATE       = 2u,
   NMEALIB_GENERATOR_SAT_STATIC   = 3u,
@@ -44,7 +45,7 @@ typedef enum _NmeaGeneratorType {
 } NmeaGeneratorType;
 
 /**
- * Generator initialiser function definition.
+ * Generator initialiser function definition
  *
  * @param gen The generator
  * @param info The info structure to use during generation
@@ -53,16 +54,16 @@ typedef enum _NmeaGeneratorType {
 typedef bool (*NmeaGeneratorInit)(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
- * Generator loop function definition.
+ * Generator invoke function definition
  *
  * @param gen The generator
  * @param info The info structure to use during generation
  * @return True on success
  */
-typedef bool (*NmeaGeneratorLoop)(NmeaGenerator *gen, NmeaInfo *info);
+typedef bool (*NmeaGeneratorInvoke)(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
- * Generator reset function definition.
+ * Generator reset function definition
  *
  * @param gen The generator
  * @param info The info structure to use during generation
@@ -74,12 +75,31 @@ typedef bool (*NmeaGeneratorReset)(NmeaGenerator *gen, NmeaInfo *info);
  * Generator structure
  */
 typedef struct _NmeaGenerator {
-    void                 *gen_data; /**< generator data       */
-    NmeaGeneratorInit     init;     /**< initialiser function */
-    NmeaGeneratorLoop     loop;     /**< loop function        */
-    NmeaGeneratorReset    reset;    /**< reset function       */
-    NmeaGenerator        *next;     /**< the next generator   */
+    NmeaGeneratorInit     init;   /**< initialiser function */
+    NmeaGeneratorInvoke   invoke; /**< invoke function      */
+    NmeaGeneratorReset    reset;  /**< reset function       */
+    NmeaGenerator        *next;   /**< the next generator   */
 } NmeaGenerator;
+
+/**
+ * Create a generator and initialise it
+ *
+ * Allocates memory for the generator.
+ *
+ * @param type The type of the generator to create
+ * @param info The info structure to use during generation
+ * @return The generator, or NULL on failure
+ */
+NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info);
+
+/**
+ * Destroy the generator
+ *
+ * Frees the allocated generator memory too.
+ *
+ * @param gen The generator
+ */
+void nmeaGeneratorDestroy(NmeaGenerator *gen);
 
 /**
  * Initialise the generator
@@ -91,16 +111,16 @@ typedef struct _NmeaGenerator {
 bool nmeaGeneratorInit(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
- * Loop the generator.
+ * Invoke the generator
  *
  * @param gen The generator
  * @param info The info structure to use during generation
  * @return True on success
  */
-bool nmeaGeneratorLoop(NmeaGenerator *gen, NmeaInfo *info);
+bool nmeaGeneratorInvoke(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
- * Reset the generator.
+ * Reset the generator
  *
  * @param gen The generator
  * @param info The info structure to use during generation
@@ -109,14 +129,7 @@ bool nmeaGeneratorLoop(NmeaGenerator *gen, NmeaInfo *info);
 bool nmeaGeneratorReset(NmeaGenerator *gen, NmeaInfo *info);
 
 /**
- * Destroy the generator.
- *
- * @param gen The generator
- */
-void nmeaGeneratorDestroy(NmeaGenerator *gen);
-
-/**
- * Add a generator to the existing ones.
+ * Append a generator to another generator
  *
  * @param to The generator to add to
  * @param gen The generator to add
@@ -124,24 +137,17 @@ void nmeaGeneratorDestroy(NmeaGenerator *gen);
 void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen);
 
 /**
- * Run a new generation loop on the generator
+ * Invoke the generator and generate sentences from the result
  *
- * @param buf The string buffer in which to generate
+ * Allocates memory for the generated sentences.
+ *
+ * @param buf The string buffer variable, will be NULL on failure
  * @param info The info structure to use during generation
  * @param gen The generator
  * @param mask The mask (smask) of sentences to generate
  * @return The total length of the generated sentences
  */
 size_t nmeaGeneratorGenerateFrom(char **buf, NmeaInfo *info, NmeaGenerator *gen, NmeaSentence mask);
-
-/**
- * Create the generator and initialise it.
- *
- * @param type The type of the generator to create
- * @param info The info structure to use during generation
- * @return The generator
- */
-NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info);
 
 #ifdef  __cplusplus
 }
