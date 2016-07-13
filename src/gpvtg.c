@@ -25,7 +25,7 @@
 #include <string.h>
 
 bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
-  size_t fieldCount;
+  size_t tokenCount;
   bool speedK = false;
   bool speedN = false;
 
@@ -45,20 +45,20 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
   pack->spk = NAN;
 
   /* parse */
-  fieldCount = nmeaScanf(s, sz, //
+  tokenCount = nmeaScanf(s, sz, //
       "$" NMEALIB_GPVTG_PREFIX ",%f,%C,%f,%C,%f,%C,%f,%C*", //
       &pack->track, //
-      &pack->track_t, //
+      &pack->trackT, //
       &pack->mtrack, //
-      &pack->mtrack_m, //
+      &pack->mtrackM, //
       &pack->spn, //
-      &pack->spn_n, //
+      &pack->spnN, //
       &pack->spk, //
-      &pack->spk_k);
+      &pack->spkK);
 
   /* see that there are enough tokens */
-  if (fieldCount != 8) {
-    nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: need 8 tokens, got %lu in '%s'", (long unsigned) fieldCount,
+  if (tokenCount != 8) {
+    nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: need 8 tokens, got %lu in '%s'", (long unsigned) tokenCount,
         s);
     goto err;
   }
@@ -66,34 +66,34 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
   /* determine which fields are present and validate them */
 
   if (!isnan(pack->track)) {
-    if (pack->track_t != 'T') {
-      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid track unit, got '%c', expected 'T'", pack->track_t);
+    if (pack->trackT != 'T') {
+      nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid track unit, got '%c', expected 'T'", pack->trackT);
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_TRACK);
   } else {
     pack->track = 0.0;
-    pack->track_t = '\0';
+    pack->trackT = '\0';
   }
 
   if (!isnan(pack->mtrack)) {
-    if (pack->mtrack_m != 'M') {
+    if (pack->mtrackM != 'M') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid mtrack unit, got '%c', expected 'M'",
-          pack->mtrack_m);
+          pack->mtrackM);
       goto err;
     }
 
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_MTRACK);
   } else {
     pack->mtrack = 0.0;
-    pack->mtrack_m = '\0';
+    pack->mtrackM = '\0';
   }
 
   if (!isnan(pack->spn)) {
-    if (pack->spn_n != 'N') {
+    if (pack->spnN != 'N') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid knots speed unit, got '%c', expected 'N'",
-          pack->spn_n);
+          pack->spnN);
       goto err;
     }
 
@@ -101,13 +101,13 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   } else {
     pack->spn = 0.0;
-    pack->spn_n = '\0';
+    pack->spnN = '\0';
   }
 
   if (!isnan(pack->spk)) {
-    if (pack->spk_k != 'K') {
+    if (pack->spkK != 'K') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid kph speed unit, got '%c', expected 'K'",
-          pack->spk_k);
+          pack->spkK);
       goto err;
     }
 
@@ -115,15 +115,15 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   } else {
     pack->spk = 0.0;
-    pack->spk_k = '\0';
+    pack->spkK = '\0';
   }
 
   if (!speedK && speedN) {
     pack->spk = pack->spn * NMEALIB_TUD_KNOTS;
-    pack->spk_k = 'K';
+    pack->spkK = 'K';
   } else if (speedK && !speedN) {
     pack->spn = pack->spk / NMEALIB_TUD_KNOTS;
-    pack->spn_n = 'N';
+    pack->spnN = 'N';
   }
 
   return true;
@@ -154,13 +154,11 @@ void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SPEED)) {
-    double speed;
-    if (pack->spk_k) {
-      speed = pack->spk;
+    if (pack->spkK) {
+      info->speed = pack->spk;
     } else {
-      speed = pack->spn * NMEALIB_TUD_KNOTS;
+      info->speed = pack->spn * NMEALIB_TUD_KNOTS;
     }
-    info->speed = speed;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
   }
 }
@@ -175,21 +173,21 @@ void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_TRACK)) {
     pack->track = info->track;
-    pack->track_t = 'T';
+    pack->trackT = 'T';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_TRACK);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_MTRACK)) {
     pack->mtrack = info->mtrack;
-    pack->mtrack_m = 'M';
+    pack->mtrackM = 'M';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_MTRACK);
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
     pack->spn = info->speed / NMEALIB_TUD_KNOTS;
-    pack->spn_n = 'N';
+    pack->spnN = 'N';
     pack->spk = info->speed;
-    pack->spk_k = 'K';
+    pack->spkK = 'K';
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   }
 }
@@ -209,27 +207,40 @@ size_t nmeaGPVTGGenerate(char *s, const size_t sz, const NmeaGPVTG *pack) {
   chars += snprintf(dst, available, "$" NMEALIB_GPVTG_PREFIX);
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_TRACK)) {
-    chars += snprintf(dst, available, ",%03.1f,%c", pack->track, pack->track_t);
+    chars += snprintf(dst, available, ",%03.1f", pack->track);
+    if (pack->trackT) {
+      chars += snprintf(dst, available, ",%c", pack->trackT);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_MTRACK)) {
-    chars += snprintf(dst, available, ",%03.1f,%c", pack->mtrack, pack->mtrack_m);
+    chars += snprintf(dst, available, ",%03.1f", pack->mtrack);
+    if (pack->mtrackM) {
+      chars += snprintf(dst, available, ",%c", pack->mtrackM);
+    } else {
+      chars += snprintf(dst, available, ",");
+    }
   } else {
     chars += snprintf(dst, available, ",,");
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SPEED)) {
-    if (pack->spn_n) {
-      chars += snprintf(dst, available, ",%03.1f,N", pack->spn);
+    chars += snprintf(dst, available, ",%03.1f", pack->spn);
+    if (pack->spnN) {
+      chars += snprintf(dst, available, ",%c", pack->spnN);
     } else {
-      chars += snprintf(dst, available, ",,");
+      chars += snprintf(dst, available, ",");
     }
-    if (pack->spk_k) {
-      chars += snprintf(dst, available, ",%03.1f,K", pack->spk);
+
+    chars += snprintf(dst, available, ",%03.1f", pack->spk);
+    if (pack->spkK) {
+      chars += snprintf(dst, available, ",%c", pack->spkK);
     } else {
-      chars += snprintf(dst, available, ",,");
+      chars += snprintf(dst, available, ",");
     }
   } else {
     chars += snprintf(dst, available, ",,,,");

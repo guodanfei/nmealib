@@ -69,13 +69,13 @@ extern "C" {
 typedef struct _NmeaGPVTG {
   uint32_t present;
   double   track;
-  char     track_t;
+  char     trackT;
   double   mtrack;
-  char     mtrack_m;
+  char     mtrackM;
   double   spn;
-  char     spn_n;
+  char     spnN;
   double   spk;
-  char     spk_k;
+  char     spkK;
 } NmeaGPVTG;
 
 /**
@@ -92,25 +92,27 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack);
  * Update an unsanitised nmeaINFO structure from a GPVTG packet structure
  *
  * @param pack The GPVTG packet structure
- * @param info The nmeaINFO structure
+ * @param info The unsanitised nmeaINFO structure
  */
 void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a nmeaGPVTG structure
+ * Convert a sanitised nmeaINFO structure into a NmeaGPVTG structure
  *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPVTG structure
+ * @param info The sanitised nmeaINFO structure
+ * @param pack The NmeaGPVTG structure
  */
 void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack);
 
 /**
- * Generate a GPVTG sentence from a nmeaGPVTG structure
+ * Generate a GPVTG sentence
  *
  * @param s The buffer to generate the sentence in
  * @param sz The size of the buffer
- * @param pack The nmeaGPVTG structure
- * @return The length of the generated sentence
+ * @param pack The NmeaGPVTG structure
+ * @return The length of the generated sentence; less than zero on failure,
+ * larger than sz when the size of the buffer is too small to generate the
+ * sentence in
  */
 size_t nmeaGPVTGGenerate(char *s, const size_t sz, const NmeaGPVTG *pack);
 

@@ -23,6 +23,7 @@
 #include <CUnit/Basic.h>
 #include <float.h>
 #include <string.h>
+#include <stdlib.h> // FIXME remove
 
 int gpvtgSuiteSetup(void);
 
@@ -76,7 +77,7 @@ static void test_nmeaGPVTGParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_TRACK);
   CU_ASSERT_DOUBLE_EQUAL(pack.track, 4.25, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.track_t, 'T');
+  CU_ASSERT_EQUAL(pack.trackT, 'T');
 
   /* mtrack */
 
@@ -93,7 +94,7 @@ static void test_nmeaGPVTGParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_MTRACK);
   CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 4.25, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.mtrack_m, 'M');
+  CU_ASSERT_EQUAL(pack.mtrackM, 'M');
 
   /* speed knots */
 
@@ -110,9 +111,9 @@ static void test_nmeaGPVTGParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spn, 4.25, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spn_n, 'N');
+  CU_ASSERT_EQUAL(pack.spnN, 'N');
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_TUD_KNOTS), DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spk_k, 'K');
+  CU_ASSERT_EQUAL(pack.spkK, 'K');
 
   /* speed kph */
 
@@ -129,9 +130,9 @@ static void test_nmeaGPVTGParse(void) {
   validateParsePack(&pack, r, true, 1, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 4.25, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spk_k, 'K');
+  CU_ASSERT_EQUAL(pack.spkK, 'K');
   CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spn_n, 'N');
+  CU_ASSERT_EQUAL(pack.spnN, 'N');
 }
 
 static void test_nmeaGPVTGToInfo(void) {
@@ -193,9 +194,9 @@ static void test_nmeaGPVTGToInfo(void) {
   /* speed */
 
   pack.spn = 42.75;
-  pack.spn_n = '\0';
+  pack.spnN = '\0';
   pack.spk = 10.0;
-  pack.spk_k = '\0';
+  pack.spkK = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
@@ -207,9 +208,9 @@ static void test_nmeaGPVTGToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.spn = 42.75;
-  pack.spn_n = 'N';
+  pack.spnN = 'N';
   pack.spk = 10.0;
-  pack.spk_k = '\0';
+  pack.spkK = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
@@ -221,9 +222,9 @@ static void test_nmeaGPVTGToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.spn = 42.75;
-  pack.spn_n = '\0';
+  pack.spnN = '\0';
   pack.spk = 10.0;
-  pack.spk_k = 'K';
+  pack.spkK = 'K';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
@@ -235,9 +236,9 @@ static void test_nmeaGPVTGToInfo(void) {
   memset(&info, 0, sizeof(info));
 
   pack.spn = 42.75;
-  pack.spn_n = 'N';
+  pack.spnN = 'N';
   pack.spk = 10.0;
-  pack.spk_k = 'K';
+  pack.spkK = 'K';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   nmeaGPVTGToInfo(&pack, &info);
@@ -283,7 +284,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_TRACK);
   CU_ASSERT_DOUBLE_EQUAL(pack.track, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.track_t, 'T');
+  CU_ASSERT_EQUAL(pack.trackT, 'T');
   memset(&info, 0, sizeof(info));
 
   /* mtrack */
@@ -295,7 +296,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_MTRACK);
   CU_ASSERT_DOUBLE_EQUAL(pack.mtrack, 1232.5523, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.mtrack_m, 'M');
+  CU_ASSERT_EQUAL(pack.mtrackM, 'M');
   memset(&info, 0, sizeof(info));
 
   /* speed */
@@ -307,9 +308,9 @@ static void test_nmeaGPVTGFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEALIB_TUD_KNOTS), DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spn_n, 'N');
+  CU_ASSERT_EQUAL(pack.spnN, 'N');
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 10.0, DBL_EPSILON);
-  CU_ASSERT_EQUAL(pack.spk_k, 'K');
+  CU_ASSERT_EQUAL(pack.spkK, 'K');
   memset(&info, 0, sizeof(info));
 }
 
@@ -354,7 +355,17 @@ static void test_nmeaGPVTGGenerate(void) {
   /* track */
 
   pack.track = 42.6;
-  pack.track_t = 'T';
+  pack.trackT = '\0';
+  nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_TRACK);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 23);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,42.6,,,,,,,*4C\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.track = 42.6;
+  pack.trackT = 'T';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_TRACK);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
@@ -366,7 +377,17 @@ static void test_nmeaGPVTGGenerate(void) {
   /* mtrack */
 
   pack.mtrack = 42.6;
-  pack.mtrack_m = 'M';
+  pack.mtrackM = '\0';
+  nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_MTRACK);
+
+  r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
+  CU_ASSERT_EQUAL(r, 23);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,42.6,,,,,*4C\r\n");
+  memset(buf, 0, sizeof(buf));
+  memset(&pack, 0, sizeof(pack));
+
+  pack.mtrack = 42.6;
+  pack.mtrackM = 'M';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_MTRACK);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
@@ -378,44 +399,44 @@ static void test_nmeaGPVTGGenerate(void) {
   /* speed knots */
 
   pack.spn = 42.6;
-  pack.spn_n = '\0';
+  pack.spnN = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
-  CU_ASSERT_EQUAL(r, 19);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,,*52\r\n");
+  CU_ASSERT_EQUAL(r, 26);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,42.6,,0.0,*62\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
   pack.spn = 42.6;
-  pack.spn_n = 'N';
+  pack.spnN = 'N';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
-  CU_ASSERT_EQUAL(r, 24);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,42.6,N,,*02\r\n");
+  CU_ASSERT_EQUAL(r, 27);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,42.6,N,0.0,*2C\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
   /* speed kph */
 
   pack.spk = 42.6;
-  pack.spk_k = '\0';
+  pack.spkK = '\0';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
-  CU_ASSERT_EQUAL(r, 19);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,,*52\r\n");
+  CU_ASSERT_EQUAL(r, 26);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,0.0,,42.6,*62\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
   pack.spk = 42.6;
-  pack.spk_k = 'K';
+  pack.spkK = 'K';
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SPEED);
 
   r = nmeaGPVTGGenerate(buf, sizeof(buf), &pack);
-  CU_ASSERT_EQUAL(r, 24);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,,,42.6,K*07\r\n");
+  CU_ASSERT_EQUAL(r, 27);
+  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,0.0,,42.6,K*29\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 }
