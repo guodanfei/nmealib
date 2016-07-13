@@ -35,102 +35,102 @@ int infoSuiteSetup(void);
 static void test_nmeaInfoSigToString(void) {
   const char * r;
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_INVALID);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_INVALID);
   CU_ASSERT_STRING_EQUAL(r, "INVALID");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_FIX);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_FIX);
   CU_ASSERT_STRING_EQUAL(r, "FIX");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_DIFFERENTIAL);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_DIFFERENTIAL);
   CU_ASSERT_STRING_EQUAL(r, "DIFFERENTIAL");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_SENSITIVE);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_SENSITIVE);
   CU_ASSERT_STRING_EQUAL(r, "SENSITIVE");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_RTKIN);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_RTKIN);
   CU_ASSERT_STRING_EQUAL(r, "REAL TIME KINEMATIC");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_FLOAT_RTK);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_FLOAT_RTK);
   CU_ASSERT_STRING_EQUAL(r, "FLOAT REAL TIME KINEMATIC");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_ESTIMATED);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_ESTIMATED);
   CU_ASSERT_STRING_EQUAL(r, "ESTIMATED (DEAD RECKONING)");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_MANUAL);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_MANUAL);
   CU_ASSERT_STRING_EQUAL(r, "MANUAL");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_SIMULATION);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_SIMULATION);
   CU_ASSERT_STRING_EQUAL(r, "SIMULATION");
 
-  r = nmeaInfoSigToString(NMEALIB_SIG_LAST + 1);
+  r = nmeaInfoSignalToString(NMEALIB_SIG_LAST + 1);
   CU_ASSERT_PTR_NULL(r);
 }
 
 static void test_nmeaInfoModeToSig(void) {
   int r;
 
-  r = nmeaInfoModeToSig('N');
+  r = nmeaInfoModeToSignal('N');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_INVALID);
 
-  r = nmeaInfoModeToSig('A');
+  r = nmeaInfoModeToSignal('A');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_FIX);
 
-  r = nmeaInfoModeToSig('D');
+  r = nmeaInfoModeToSignal('D');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_DIFFERENTIAL);
 
-  r = nmeaInfoModeToSig('P');
+  r = nmeaInfoModeToSignal('P');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_SENSITIVE);
 
-  r = nmeaInfoModeToSig('R');
+  r = nmeaInfoModeToSignal('R');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_RTKIN);
 
-  r = nmeaInfoModeToSig('F');
+  r = nmeaInfoModeToSignal('F');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_FLOAT_RTK);
 
-  r = nmeaInfoModeToSig('E');
+  r = nmeaInfoModeToSignal('E');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_ESTIMATED);
 
-  r = nmeaInfoModeToSig('M');
+  r = nmeaInfoModeToSignal('M');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_MANUAL);
 
-  r = nmeaInfoModeToSig('S');
+  r = nmeaInfoModeToSignal('S');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_SIMULATION);
 
-  r = nmeaInfoModeToSig('\1');
+  r = nmeaInfoModeToSignal('\1');
   CU_ASSERT_EQUAL(r, NMEALIB_SIG_INVALID);
 }
 
 static void test_nmeaInfoSigToMode(void) {
   char r;
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_INVALID);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(r, 'N');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_FIX);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_FIX);
   CU_ASSERT_EQUAL(r, 'A');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_DIFFERENTIAL);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_DIFFERENTIAL);
   CU_ASSERT_EQUAL(r, 'D');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_SENSITIVE);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_SENSITIVE);
   CU_ASSERT_EQUAL(r, 'P');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_RTKIN);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_RTKIN);
   CU_ASSERT_EQUAL(r, 'R');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_FLOAT_RTK);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_FLOAT_RTK);
   CU_ASSERT_EQUAL(r, 'F');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_ESTIMATED);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_ESTIMATED);
   CU_ASSERT_EQUAL(r, 'E');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_MANUAL);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_MANUAL);
   CU_ASSERT_EQUAL(r, 'M');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_SIMULATION);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_SIMULATION);
   CU_ASSERT_EQUAL(r, 'S');
 
-  r = nmeaInfoSigToMode(NMEALIB_SIG_LAST + 1);
+  r = nmeaInfoSignalToMode(NMEALIB_SIG_LAST + 1);
   CU_ASSERT_EQUAL(r, 'N');
 }
 
@@ -1199,7 +1199,11 @@ static void test_nmeaInfoUnitConversion(void) {
 }
 
 static void test_nmeaQsortPRNCompare(void) {
-  int prn[] = {
+  unsigned int prn1;
+  unsigned int prn2;
+  int r;
+
+  unsigned int prn[] = {
       2,
       3,
       4,
@@ -1214,7 +1218,7 @@ static void test_nmeaQsortPRNCompare(void) {
       0,
       7,
       0 };
-  int exp[] = {
+  unsigned int exp[] = {
       1,
       2,
       3,
@@ -1232,13 +1236,47 @@ static void test_nmeaQsortPRNCompare(void) {
 
   qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortPRNCompare);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
+
+  prn1 = 0;
+  prn2 = 0;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
+
+  prn1 = 1;
+  prn2 = 0;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, -1);
+
+  prn1 = 0;
+  prn2 = 1;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 1);
+
+  prn1 = 1;
+  prn2 = 1;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
+
+  prn1 = 1;
+  prn2 = 2;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, -1);
+
+  prn1 = 2;
+  prn2 = 1;
+  r = nmeaQsortPRNCompare(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 1);
 }
 
 static void test_nmeaQsortPRNCompact(void) {
-  int prn[] = {
+  unsigned int prn1;
+  unsigned int prn2;
+  int r;
+
+  unsigned int prn[] = {
       2,
-      3,
       4,
+      3,
       0,
       1,
       11,
@@ -1250,10 +1288,10 @@ static void test_nmeaQsortPRNCompact(void) {
       0,
       7,
       0 };
-  int exp[] = {
+  unsigned int exp[] = {
       2,
-      3,
       4,
+      3,
       1,
       11,
       14,
@@ -1268,6 +1306,36 @@ static void test_nmeaQsortPRNCompact(void) {
 
   qsort(&prn, sizeof(prn) / sizeof(prn[0]), sizeof(prn[0]), nmeaQsortPRNCompact);
   CU_ASSERT_EQUAL(memcmp(prn, exp, sizeof(prn)), 0);
+
+  prn1 = 0;
+  prn2 = 0;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
+
+  prn1 = 1;
+  prn2 = 0;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, -1);
+
+  prn1 = 0;
+  prn2 = 1;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 1);
+
+  prn1 = 1;
+  prn2 = 1;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
+
+  prn1 = 1;
+  prn2 = 2;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
+
+  prn1 = 2;
+  prn2 = 1;
+  r = nmeaQsortPRNCompact(&prn1, &prn2);
+  CU_ASSERT_EQUAL(r, 0);
 }
 
 static void test_nmeaQsortSatelliteCompare(void) {

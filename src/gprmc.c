@@ -221,7 +221,7 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
       if (pack->sigSelection != 'A') {
         info->sig = NMEALIB_SIG_INVALID;
       } else {
-        info->sig = nmeaInfoModeToSig(pack->sig);
+        info->sig = nmeaInfoModeToSignal(pack->sig);
       }
       nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SIG);
     }
@@ -288,7 +288,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
     pack->sigSelection = ((info->sig != NMEALIB_SIG_INVALID) ?
         'A' :
         'V');
-    pack->sig = nmeaInfoSigToMode(info->sig);
+    pack->sig = nmeaInfoSignalToMode(info->sig);
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SIG);
   }
 

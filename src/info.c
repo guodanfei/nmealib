@@ -24,7 +24,7 @@
 #include <string.h>
 #include <time.h>
 
-const char * nmeaInfoSigToString(NmeaSignal sig) {
+const char * nmeaInfoSignalToString(NmeaSignal sig) {
   switch (sig) {
     case NMEALIB_SIG_INVALID:
       return "INVALID";
@@ -58,7 +58,7 @@ const char * nmeaInfoSigToString(NmeaSignal sig) {
   }
 }
 
-NmeaSignal nmeaInfoModeToSig(char mode) {
+NmeaSignal nmeaInfoModeToSignal(char mode) {
   switch (mode) {
     case 'N':
       return NMEALIB_SIG_INVALID;
@@ -92,7 +92,7 @@ NmeaSignal nmeaInfoModeToSig(char mode) {
   }
 }
 
-char nmeaInfoSigToMode(NmeaSignal sig) {
+char nmeaInfoSignalToMode(NmeaSignal sig) {
   switch (sig) {
     case NMEALIB_SIG_INVALID:
       return 'N';
@@ -216,7 +216,7 @@ const char * nmeaInfoFieldToString(NmeaPresence field) {
 }
 
 bool nmeaTimeParseTime(const char *s, NmeaTime *time) {
-  const char *tm;
+  const char *t;
   size_t sz;
 
   if (!s //
@@ -224,20 +224,20 @@ bool nmeaTimeParseTime(const char *s, NmeaTime *time) {
     return false;
   }
 
-  tm = s;
-  sz = nmeaStringTrim(&tm);
+  t = s;
+  sz = nmeaStringTrim(&t);
 
-  if (nmeaStringContainsWhitespace(tm, sz)) {
+  if (nmeaStringContainsWhitespace(t, sz)) {
     return false;
   }
 
   if (sz == 6) { // HHMMSS
     time->hsec = 0;
-    return (3 == nmeaScanf(tm, sz, "%2u%2u%2u", &time->hour, &time->min, &time->sec));
+    return (3 == nmeaScanf(t, sz, "%2u%2u%2u", &time->hour, &time->min, &time->sec));
   }
 
   if (sz == 8) { // HHMMSS.t
-    if (4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec)) {
+    if (4 == nmeaScanf(t, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec)) {
       time->hsec *= 10;
       return true;
     }
@@ -245,11 +245,11 @@ bool nmeaTimeParseTime(const char *s, NmeaTime *time) {
   }
 
   if (sz == 9) { // HHMMSS.hh
-    return (4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec));
+    return (4 == nmeaScanf(t, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec));
   }
 
   if (sz == 10) { // HHMMSS.mmm
-    if ((4 == nmeaScanf(tm, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec))) {
+    if ((4 == nmeaScanf(t, sz, "%2u%2u%2u.%u", &time->hour, &time->min, &time->sec, &time->hsec))) {
       time->hsec = (time->hsec + 5) / 10;
       return true;
     }
@@ -293,8 +293,8 @@ bool nmeaTimeParseDate(const char *s, NmeaTime *date) {
 }
 
 void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
-  struct timeval tp;
-  struct tm tt;
+  struct timeval tv;
+  struct tm tm;
   long usec;
 
   if (!utc) {
@@ -302,20 +302,20 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
   }
 
   if (timeval) {
-    gmtime_r(&timeval->tv_sec, &tt);
+    gmtime_r(&timeval->tv_sec, &tm);
     usec = timeval->tv_usec;
   } else {
-    gettimeofday(&tp, NULL);
-    gmtime_r(&tp.tv_sec, &tt);
-    usec = tp.tv_usec;
+    gettimeofday(&tv, NULL);
+    gmtime_r(&tv.tv_sec, &tm);
+    usec = tv.tv_usec;
   }
 
-  utc->year = (unsigned int) tt.tm_year + 1900;
-  utc->mon = (unsigned int) tt.tm_mon + 1;
-  utc->day = (unsigned int) tt.tm_mday;
-  utc->hour = (unsigned int) tt.tm_hour;
-  utc->min = (unsigned int) tt.tm_min;
-  utc->sec = (unsigned int) tt.tm_sec;
+  utc->year = (unsigned int) tm.tm_year + 1900;
+  utc->mon = (unsigned int) tm.tm_mon + 1;
+  utc->day = (unsigned int) tm.tm_mday;
+  utc->hour = (unsigned int) tm.tm_hour;
+  utc->min = (unsigned int) tm.tm_min;
+  utc->sec = (unsigned int) tm.tm_sec;
   utc->hsec = (unsigned int) (usec / 10000);
   if (present) {
     nmeaInfoSetPresent(present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
@@ -863,32 +863,42 @@ int nmeaQsortPRNCompare(const void *p1, const void *p2) {
   unsigned int prn1 = *((const unsigned int *) p1);
   unsigned int prn2 = *((const unsigned int *) p2);
 
-  if (!prn1) {
-    prn1 += 1000;
-  }
-  if (!prn2) {
-    prn2 += 1000;
+  if (prn1 == prn2) {
+    return 0;
   }
 
-  return (int) ((long long) prn1 - (long long) prn2);
+  if (!prn1) {
+    return 1;
+  }
+
+  if (!prn2) {
+    return -1;
+  }
+
+  if (prn1 < prn2) {
+    return -1;
+  }
+
+  return 1;
 }
 
 int nmeaQsortPRNCompact(const void *p1, const void *p2) {
   unsigned int prn1 = *((const unsigned int *) p1);
   unsigned int prn2 = *((const unsigned int *) p2);
 
-  if (prn1 && prn2) {
+  if (prn1 == prn2) {
     return 0;
   }
 
   if (!prn1) {
-    prn1 += 1000;
-  }
-  if (!prn2) {
-    prn2 += 1000;
+    return 1;
   }
 
-  return (int) ((long long) prn1 - (long long) prn2);
+  if (!prn2) {
+    return -1;
+  }
+
+  return 0;
 }
 
 int nmeaQsortSatelliteCompare(const void *s1, const void *s2) {

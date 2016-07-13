@@ -32,7 +32,8 @@ extern "C" {
  */
 
 /**
- * Enumeration for the signal names.
+ * Enumeration for the signal names
+ *
  * The values are used in the 'sig' field.
  */
 typedef enum _NmeaSignal {
@@ -50,30 +51,30 @@ typedef enum _NmeaSignal {
 } NmeaSignal;
 
 /**
- * Convert a NMEALIB_SIG_* define into a string
+ * Convert a NMEALIB_SIG_* signal into a string
  *
- * @param sig The NMEALIB_SIG_* define
- * @return The corresponding string, or NULL when the define is unknown
+ * @param sig The NMEALIB_SIG_* signal
+ * @return The corresponding string, or NULL when the signal is unknown
  */
-const char * nmeaInfoSigToString(NmeaSignal sig);
+const char * nmeaInfoSignalToString(NmeaSignal sig);
 
 /**
- * Convert a mode character into the corresponding NMEALIB_SIG_* define
+ * Convert a mode character into the corresponding NMEALIB_SIG_* signal
  *
  * @param mode The mode character
- * @return The corresponding NMEALIB_SIG_* define, or NMEALIB_SIG_INVALID when the
+ * @return The corresponding NMEALIB_SIG_* signal, or NMEALIB_SIG_INVALID when the
  * mode is unknown
  */
-NmeaSignal nmeaInfoModeToSig(char mode);
+NmeaSignal nmeaInfoModeToSignal(char mode);
 
 /**
- * Convert a NMEALIB_SIG_* define into the corresponding mode character
+ * Convert a NMEALIB_SIG_* signal into the corresponding mode character
  *
- * @param sig The NMEALIB_SIG_* define
- * @return The corresponding mode character, or 'N' when the NMEALIB_SIG_* define
+ * @param sig The NMEALIB_SIG_* signal
+ * @return The corresponding mode character, or 'N' when the NMEALIB_SIG_* signal
  * is unknown
  */
-char nmeaInfoSigToMode(NmeaSignal sig);
+char nmeaInfoSignalToMode(NmeaSignal sig);
 
 /*
  * FIX
@@ -88,10 +89,10 @@ typedef enum _NmeaFix {
 } NmeaFix;
 
 /**
- * Convert a NMEALIB_FIX_* define into a string
+ * Convert a NMEALIB_FIX_* fix into a string
  *
- * @param fix The NMEALIB_FIX_* define
- * @return The corresponding string, or NULL when the NMEALIB_FIX_* define is
+ * @param fix The NMEALIB_FIX_* fix
+ * @return The corresponding string, or NULL when the NMEALIB_FIX_* fix is
  * unknown
  */
 const char * nmeaInfoFixToString(NmeaFix fix);
@@ -100,7 +101,7 @@ const char * nmeaInfoFixToString(NmeaFix fix);
  * Limits and defaults
  */
 
-/** The maximum number of satellites, must be a multiple of NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4) */
+/** The maximum number of satellites (must be a multiple of NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) */
 #define NMEALIB_MAX_SATELLITES              (72u)
 
 /** The default latitude */
@@ -123,7 +124,7 @@ typedef struct _NmeaTime {
 } NmeaTime;
 
 /**
- * Parse a NMEA time into a nmeaTIME structure (time only, no date).
+ * Parse a NMEA time into a NmeaTime structure (time only, no date).
  *
  * The format that is used (HHMMSS, HHMMSS.t, HHMMSS.hh or HHMMSS.mmm) is
  * determined by the length of the string.
@@ -135,11 +136,7 @@ typedef struct _NmeaTime {
 bool nmeaTimeParseTime(const char *s, NmeaTime *time);
 
 /**
- * Parse a NMEA date into a nmeaTIME structure (date only, no time).
- *
- * The month is adjusted (decremented by 1) to comply with the nmeaTIME month
- * range of [0, 11]. The year is adjusted (incremented by 100) for years
- * before 90 to comply with the nmeaTIME year range of [90, 189].
+ * Parse a NMEA date into a NmeaTime structure (date only, no time).
  *
  * @param s The date (DDMMYY)
  * @param date The structure in which to store the parsed date
@@ -148,7 +145,7 @@ bool nmeaTimeParseTime(const char *s, NmeaTime *time);
 bool nmeaTimeParseDate(const char *s, NmeaTime *date);
 
 /**
- * Position data in fractional degrees or radians
+ * Position data in decimal degrees or radians
  */
 typedef struct _NmeaPosition {
   double lat; /**< Latitude  */
@@ -183,25 +180,25 @@ typedef struct _NmeaProgress {
 } NmeaProgress;
 
 /**
- * GPS information from all supported sentences, used also for generating NMEA sentences
+ * GPS information from all supported sentences
  */
 typedef struct _NmeaInfo {
   uint32_t       present;    /**< Bit-mask specifying which fields are present                    */
   uint32_t       smask;      /**< Bit-mask specifying from which sentences data has been obtained */
   NmeaTime       utc;        /**< UTC of the position data                                        */
-  NmeaSignal     sig;        /**< Signal quality, see NMEALIB_SIG_* defines                       */
-  NmeaFix        fix;        /**< Operating mode, see NMEALIB_FIX_* defines                       */
+  NmeaSignal     sig;        /**< Signal quality, see NMEALIB_SIG_* signals                       */
+  NmeaFix        fix;        /**< Operating mode, see NMEALIB_FIX_* fixes                         */
   double         pdop;       /**< Position Dilution Of Precision                                  */
   double         hdop;       /**< Horizontal Dilution Of Precision                                */
   double         vdop;       /**< Vertical Dilution Of Precision                                  */
   double         latitude;   /**< Latitude,  in NDEG: +/-[degree][min].[sec/60]                   */
   double         longitude;  /**< Longitude, in NDEG: +/-[degree][min].[sec/60]                   */
   double         elevation;  /**< Elevation above/below mean sea level (geoid), in meters         */
-  double         height;     /**< Height of geoid (elv) above WGS84 ellipsoid, in meters          */
+  double         height;     /**< Height of geoid (elevation) above WGS84 ellipsoid, in meters    */
   double         speed;      /**< Speed over the ground in kph                                    */
   double         track;      /**< Track angle in degrees true north                               */
   double         mtrack;     /**< Magnetic Track angle in degrees true north                      */
-  double         magvar;     /**< Magnetic variation degrees                                      */
+  double         magvar;     /**< Magnetic variation in degrees                                   */
   double         dgpsAge;    /**< Time since last DGPS update, in seconds                         */
   unsigned int   dgpsSid;    /**< DGPS station ID number                                          */
   NmeaSatellites satellites; /**< Satellites information                                          */
@@ -210,7 +207,8 @@ typedef struct _NmeaInfo {
 } NmeaInfo;
 
 /**
- * Enumeration for the fields names of a nmeaINFO structure.
+ * Enumeration for the fields names of a NmeaInfo structure
+ *
  * The values are used in the 'present' bit-mask.
  */
 typedef enum _NmeaPresence {
@@ -250,21 +248,20 @@ typedef enum _NmeaPresence {
 #define NMEALIB_INFO_PRESENT_MASK ((NMEALIB_PRESENT_LAST << 1) - 1)
 
 /**
- * Convert a nmeaINFO_FIELD into a string
+ * Convert a NmeaPresence into a string
  *
- * @param field The nmeaINFO_FIELD
- * @return The corresponding string, or NULL when the nmeaINFO_FIELD is
- * unknown
+ * @param field The NmeaPresence
+ * @return The corresponding string, or NULL when the NmeaPresence is unknown
  */
 const char * nmeaInfoFieldToString(NmeaPresence field);
 
 /**
- * Determine if a 'present' bit-mask indicates presence of a certain
- * nmeaINFO_FIELD
+ * Determine if a 'present' bit-mask indicates presence of all of the
+ * indicated NmeaPresence field names
  *
  * @param present The 'present' field
- * @param fieldName The nmeaINFO_FIELD to check for presence
- * @return True when the nmeaINFO_FIELD is present
+ * @param fieldName The NmeaPresence to check for presence
+ * @return True when all of the NmeaPresence field names are present
  */
 static INLINE bool nmeaInfoIsPresentAll(uint32_t present, NmeaPresence fieldName) {
   return ((present & fieldName) == fieldName);
@@ -272,11 +269,11 @@ static INLINE bool nmeaInfoIsPresentAll(uint32_t present, NmeaPresence fieldName
 
 /**
  * Determine if a 'present' bit-mask indicates presence of any of the
- * indicated nmeaINFO_FIELD field names
+ * indicated NmeaPresence field names
  *
  * @param present The 'present' field
- * @param fieldName The nmeaINFO_FIELD bit-mask to check for presence
- * @return True when any of the nmeaINFO_FIELD field names is present
+ * @param fieldName The NmeaPresence bit-mask to check for presence
+ * @return True when any of the NmeaPresence field names are present
  */
 static INLINE bool nmeaInfoIsPresentAny(uint32_t present, NmeaPresence fieldName) {
   return ((present & fieldName) != 0);
@@ -284,10 +281,10 @@ static INLINE bool nmeaInfoIsPresentAny(uint32_t present, NmeaPresence fieldName
 
 /**
  * Adjust a 'present' bit-mask to indicate presence of a certain
- * nmeaINFO_FIELD
+ * NmeaPresence
  *
  * @param present The 'present' field
- * @param fieldName The nmeaINFO_FIELD to indicate presence of
+ * @param fieldName The NmeaPresence to indicate presence of
  */
 static INLINE void nmeaInfoSetPresent(uint32_t * present, NmeaPresence fieldName) {
   if (present) {
@@ -296,10 +293,10 @@ static INLINE void nmeaInfoSetPresent(uint32_t * present, NmeaPresence fieldName
 }
 
 /**
- * Adjust a 'present' bit-mask to indicate absence of a certain nmeaINFO_FIELD
+ * Adjust a 'present' bit-mask to indicate absence of a certain NmeaPresence
  *
  * @param present The 'present' field
- * @param fieldName The nmeaINFO_FIELD to absence presence of
+ * @param fieldName The NmeaPresence to absence presence of
  */
 static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldName) {
   if (present) {
@@ -313,7 +310,8 @@ static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldNa
  * @param utc The time
  * @param present The 'present' field (when non-NULL then the UTCDATE and
  * UTCTIME flags are set in it)
- * @param timeval If non-NULL then use this provided time, otherwise use 'gettimeofday'
+ * @param timeval If non-NULL then use this provided time, otherwise the
+ * 'gettimeofday' c-library function is used to obtain it
  */
 void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval);
 
@@ -358,7 +356,7 @@ void nmeaInfoClear(NmeaInfo *info);
  *     - azimuth is in the range [0, 359]
  *     - snr is in the range [0, 99]
  *
- * Fields are reset to their defaults (0) when not signalled as being present.
+ * Fields are reset to their defaults when not signalled as being present.
  *
  * @param info The NMEA info structure to sanitise
  */
@@ -368,14 +366,17 @@ void nmeaInfoSanitise(NmeaInfo *info);
  * Converts the position fields to degrees and DOP fields to meters so that
  * all fields use normal metric units or original units.
  *
- * @param info The nmeaINFO
+ * If the NmeaInfo information is already in the requested format then
+ * this function does nothing.
+ *
+ * @param info The NmeaInfo
  * @param toMetric Convert to metric units (from original units) when true,
  * convert to original units (from metric units) when false
  */
 void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric);
 
 /**
- * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)
+ * Compare 2 satellite PRNs and put zeroes last
  *
  * @param p1 The first satellite PRN
  * @param p2 The second satellite PRN
@@ -385,8 +386,7 @@ void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric);
 int nmeaQsortPRNCompare(const void *p1, const void *p2);
 
 /**
- * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
- * those to be 1000)
+ * Compact 2 satellite PRNs (do not reorder) and put zeroes last
  *
  * @param p1 The first satellite PRN
  * @param p2 The second satellite PRN
@@ -396,7 +396,7 @@ int nmeaQsortPRNCompare(const void *p1, const void *p2);
 int nmeaQsortPRNCompact(const void *p1, const void *p2);
 
 /**
- * Compare 2 satellite PRNs and put zeroes last (consider those to be 1000)
+ * Compare 2 satellite PRNs and put zeroes last
  *
  * @param s1 The first satellite
  * @param s2 The second satellite
@@ -406,8 +406,7 @@ int nmeaQsortPRNCompact(const void *p1, const void *p2);
 int nmeaQsortSatelliteCompare(const void *s1, const void *s2);
 
 /**
- * Compact 2 satellite PRNs (do not reorder) and put zeroes last (consider
- * those to be 1000)
+ * Compact 2 satellite PRNs (do not reorder) and put zeroes last
  *
  * @param s1 The first satellite
  * @param s2 The second satellite
