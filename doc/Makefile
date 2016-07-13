@@ -1,5 +1,7 @@
 include ../Makefile.inc
 
+GITVERSION = $(shell git describe --dirty='-dirty')
+
 .PHONY: all clean version doc doc-pdf
 
 all: clean nmea.doxygen doc doc-pdf
