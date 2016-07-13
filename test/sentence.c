@@ -202,11 +202,12 @@ static void test_nmeaSentenceToInfo(void) {
   CU_ASSERT_EQUAL(info.satellites.inView[0].elevation, 0);
   CU_ASSERT_EQUAL(info.satellites.inView[0].azimuth, 0);
   CU_ASSERT_EQUAL(info.satellites.inView[0].snr, 45);
-  CU_ASSERT_EQUAL(info.satellites.inView[1].prn, 12);
-  CU_ASSERT_EQUAL(info.satellites.inView[1].elevation, 13);
-  CU_ASSERT_EQUAL(info.satellites.inView[1].azimuth, 0);
-  CU_ASSERT_EQUAL(info.satellites.inView[1].snr, 0);
-  checkSatellitesEmpty(info.satellites.inView, 2, 3, 0);
+  checkSatellitesEmpty(info.satellites.inView, 1, 1, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].prn, 12);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].elevation, 13);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].azimuth, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[2].snr, 0);
+  checkSatellitesEmpty(info.satellites.inView, 3, 3, 0);
   memset(&info, 0, sizeof(info));
 
   /* GPRMC */

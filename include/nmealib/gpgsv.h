@@ -35,13 +35,13 @@ extern "C" {
 /** The NMEA prefix */
 #define NMEALIB_GPGSV_PREFIX "GPGSV"
 
-/** The maximum number of satellites per sentence, must be a power of 2 */
+/** The maximum number of satellites per sentence (must be a power of 2) */
 #define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4u)
 
 /** The maximum number of satellites per sentence, expressed as shift */
 #define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT (2u)
 
-/** The maximum number of satellites per sentence mod mask */
+/** The maximum number of satellites per sentence modulo mask */
 #define NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_MOD_MASK (NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - 1)
 
 /** The maximum number of GPGSV sentences (depends on the maximum number of satellites tracked) */
@@ -81,7 +81,7 @@ extern "C" {
  * Shows data about the satellites that the unit might be able to find based on
  * its viewing mask and almanac data. It also shows current ability to track
  * this data. Note that one GPGSV sentence only can provide data for up to 4
- * satellites and thus there may need to be 3 sentences for the full
+ * satellites and thus there may need to be multiple sentences for the full
  * information. It is reasonable for the GPGSV sentence to contain more satellites
  * than GPGGA might indicate since GPGSV may include satellites that are not used as
  * part of the solution. It is not a requirement that the GPGSV sentences all
@@ -136,26 +136,28 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack);
  * Update an unsanitised nmeaINFO structure from a GPGSV packet structure
  *
  * @param pack The GPGSV packet structure
- * @param info The nmeaINFO structure
+ * @param info The unsanitised nmeaINFO structure
  */
 void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a nmeaGPGSV structure
+ * Convert a sanitised nmeaINFO structure into a NmeaGPGSV structure
  *
- * @param info The nmeaINFO structure
- * @param pack The nmeaGPGSV structure
- * @param sentence The sentence index of the nmeaGPGSV structure (zero based)
+ * @param info The sanitised nmeaINFO structure
+ * @param pack The NmeaGPGSV structure
+ * @param sentence The sentence index of the NmeaGPGSV structure (zero based)
  */
 void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence);
 
 /**
- * Generate a GPGSV sentence from a nmeaGPGSV structure
+ * Generate a GPGSV sentence
  *
  * @param s The buffer to generate the sentence in
  * @param sz The size of the buffer
- * @param pack The nmeaGPGSV structure
- * @return The length of the generated sentence
+ * @param pack The NmeaGPGSV structure
+ * @return The length of the generated sentence; less than zero on failure,
+ * larger than sz when the size of the buffer is too small to generate the
+ * sentence in
  */
 size_t nmeaGPGSVGenerate(char *s, const size_t sz, const NmeaGPGSV *pack);
 

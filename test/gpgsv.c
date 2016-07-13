@@ -130,7 +130,12 @@ static void test_nmeaGPGSVParse(void) {
 
   s = "$GPGSV,1,1,4,,,,,,,,,,,,,,,,";
   r = nmeaGPGSVParse(s, strlen(s), &pack);
-  validateParsePack(&pack, r, false, 1, 0, true);
+  validateParsePack(&pack, r, true, 1, 0, false);
+  CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
+  CU_ASSERT_EQUAL(pack.sentenceCount, 1);
+  CU_ASSERT_EQUAL(pack.sentence, 1);
+  CU_ASSERT_EQUAL(pack.inViewCount, 4);
+  checkSatellitesEmpty(pack.inView, 0, 3, 0);
 
   /* invalid satellite */
 
@@ -151,11 +156,12 @@ static void test_nmeaGPGSVParse(void) {
   CU_ASSERT_EQUAL(pack.inView[0].elevation, 0);
   CU_ASSERT_EQUAL(pack.inView[0].azimuth, 0);
   CU_ASSERT_EQUAL(pack.inView[0].snr, 45);
-  CU_ASSERT_EQUAL(pack.inView[1].prn, 12);
-  CU_ASSERT_EQUAL(pack.inView[1].elevation, 13);
-  CU_ASSERT_EQUAL(pack.inView[1].azimuth, 0);
-  CU_ASSERT_EQUAL(pack.inView[1].snr, 0);
-  checkSatellitesEmpty(pack.inView, 2, 3, 0);
+  checkSatellitesEmpty(pack.inView, 1, 1, 0);
+  CU_ASSERT_EQUAL(pack.inView[2].prn, 12);
+  CU_ASSERT_EQUAL(pack.inView[2].elevation, 13);
+  CU_ASSERT_EQUAL(pack.inView[2].azimuth, 0);
+  CU_ASSERT_EQUAL(pack.inView[2].snr, 0);
+  checkSatellitesEmpty(pack.inView, 3, 3, 0);
 
   /* valid satellites */
 
@@ -166,11 +172,11 @@ static void test_nmeaGPGSVParse(void) {
   CU_ASSERT_EQUAL(pack.sentenceCount, 1);
   CU_ASSERT_EQUAL(pack.sentence, 1);
   CU_ASSERT_EQUAL(pack.inViewCount, 4);
-  CU_ASSERT_EQUAL(pack.inView[0].prn, 1);
-  CU_ASSERT_EQUAL(pack.inView[0].elevation, 2);
-  CU_ASSERT_EQUAL(pack.inView[0].azimuth, 3);
-  CU_ASSERT_EQUAL(pack.inView[0].snr, 4);
-  checkSatellitesEmpty(pack.inView, 1, 3, 0);
+  checkSatellitesEmpty(pack.inView, 0, 2, 0);
+  CU_ASSERT_EQUAL(pack.inView[3].prn, 1);
+  CU_ASSERT_EQUAL(pack.inView[3].elevation, 2);
+  CU_ASSERT_EQUAL(pack.inView[3].azimuth, 3);
+  CU_ASSERT_EQUAL(pack.inView[3].snr, 4);
 }
 
 static void test_nmeaGPGSVToInfo(void) {
@@ -662,7 +668,7 @@ static void test_nmeaGPGSVGenerate(void) {
 
   r = nmeaGPGSVGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 17);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,0,0,0*49\r\n");
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,1,1,0*49\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
@@ -675,7 +681,7 @@ static void test_nmeaGPGSVGenerate(void) {
 
   r = nmeaGPGSVGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 18);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,7,0,10*7F\r\n");
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,7,1,10*7E\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 
@@ -696,7 +702,7 @@ static void test_nmeaGPGSVGenerate(void) {
 
   r = nmeaGPGSVGenerate(buf, sizeof(buf), &pack);
   CU_ASSERT_EQUAL(r, 46);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,0,2,0,10,1,3,5,,,,,11,15,30,45,,,,*7B\r\n");
+  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,1,2,0,10,1,3,5,,,,,11,15,30,45,,,,*7A\r\n");
   memset(buf, 0, sizeof(buf));
   memset(&pack, 0, sizeof(pack));
 

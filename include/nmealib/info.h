@@ -100,7 +100,7 @@ const char * nmeaInfoFixToString(NmeaFix fix);
  * Limits and defaults
  */
 
-/** The maximum number of satellites, must be a multiple of NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE */
+/** The maximum number of satellites, must be a multiple of NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE (4) */
 #define NMEALIB_MAX_SATELLITES              (72u)
 
 /** The default latitude */
