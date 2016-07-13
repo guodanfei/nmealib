@@ -24,8 +24,8 @@
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
   NmeaInfo info;
-  char *buff;
-  size_t it;
+  char *buf;
+  size_t i;
 
   nmeaInfoClear(&info);
   nmeaTimeSet(&info.utc, &info.present, NULL);
@@ -58,28 +58,31 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
 
   info.satellites.inUseCount = NMEALIB_MAX_SATELLITES;
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
-  for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-    info.satellites.inUse[it] = (unsigned int) (it + 1);
+  for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
+    info.satellites.inUse[i] = (unsigned int) (i + 1);
   }
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
   info.satellites.inViewCount = NMEALIB_MAX_SATELLITES;
-  for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-    info.satellites.inView[it].prn = (unsigned int) it + 1;
-    info.satellites.inView[it].elevation = (int) (it * 10);
-    info.satellites.inView[it].azimuth = (unsigned int) (it + 1);
-    info.satellites.inView[it].snr = 99 - (unsigned int) it;
+  for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
+    info.satellites.inView[i].prn = (unsigned int) i + 1;
+    info.satellites.inView[i].elevation = (int) ((i * 10) % 90);
+    info.satellites.inView[i].azimuth = (unsigned int) (i + 1);
+    info.satellites.inView[i].snr = 99 - (unsigned int) i;
   }
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
-  for (it = 0; it < 10; it++) {
-    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info,
-        NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC
-            | NMEALIB_SENTENCE_GPVTG);
-    if (gen_sz && buff) {
-      printf("%s\n", buff);
-      free(buff);
-      buff = NULL;
+  for (i = 0; i < 10; i++) {
+    size_t gen_sz = nmeaSentenceFromInfo(&buf, &info, //
+        NMEALIB_SENTENCE_GPGGA //
+        | NMEALIB_SENTENCE_GPGSA //
+        | NMEALIB_SENTENCE_GPGSV //
+        | NMEALIB_SENTENCE_GPRMC //
+        | NMEALIB_SENTENCE_GPVTG);
+    if (gen_sz && buf) {
+      printf("%s\n", buf);
+      free(buf);
+      buf = NULL;
       usleep(500000);
       info.speed += .1;
     }

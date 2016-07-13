@@ -25,8 +25,8 @@
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
   NmeaGenerator *gen;
   NmeaInfo info;
-  char *buff;
-  size_t it;
+  char *buf;
+  size_t i;
 
   nmeaInfoClear(&info);
   nmeaTimeSet(&info.utc, &info.present, NULL);
@@ -36,17 +36,22 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
 
-  if (0 == (gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info)))
+  gen = nmeaGeneratorCreate(NMEALIB_GENERATOR_ROTATE, &info);
+  if (!gen) {
     return -1;
+  }
 
-  for (it = 0; it < 10000; it++) {
-    size_t gen_sz = nmeaGeneratorGenerateFrom(&buff, &info, gen,
-        NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC
-            | NMEALIB_SENTENCE_GPVTG);
-    if (gen_sz && buff) {
-      printf("%s\n", buff);
-      free(buff);
-      buff = NULL;
+  for (i = 0; i < 10000; i++) {
+    size_t gen_sz = nmeaGeneratorGenerateFrom(&buf, &info, gen, //
+        NMEALIB_SENTENCE_GPGGA //
+        | NMEALIB_SENTENCE_GPGSA //
+        | NMEALIB_SENTENCE_GPGSV //
+        | NMEALIB_SENTENCE_GPRMC //
+        | NMEALIB_SENTENCE_GPVTG);
+    if (gen_sz && buf) {
+      printf("%s\n", buf);
+      free(buf);
+      buf = NULL;
       usleep(500000);
     }
   }
