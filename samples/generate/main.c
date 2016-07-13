@@ -23,57 +23,59 @@
 #include <unistd.h>
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
-	NmeaInfo info;
-	char *buff;
-	size_t it;
+  NmeaInfo info;
+  char *buff;
+  size_t it;
 
-	nmeaInfoClear(&info);
-	nmeaTimeSet(&info.utc, &info.present, NULL);
+  nmeaInfoClear(&info);
+  nmeaTimeSet(&info.utc, &info.present, NULL);
 
-	info.sig = NMEALIB_SIG_SENSITIVE;
-	info.fix = NMEALIB_FIX_3D;
-	info.latitude = 5000.0;
-	info.longitude = 3600.0;
-	info.speed = 2.14 * NMEALIB_TUS_MS;
-	info.elevation = 10.86;
-	info.track = 45;
-	info.mtrack = 55;
-	info.magvar = 55;
-	info.hdop = 2.3;
-	info.vdop = 1.2;
-	info.pdop = 2.594224354;
+  info.sig = NMEALIB_SIG_SENSITIVE;
+  info.fix = NMEALIB_FIX_3D;
+  info.latitude = 5000.0;
+  info.longitude = 3600.0;
+  info.speed = 2.14 * NMEALIB_TUS_MS;
+  info.elevation = 10.86;
+  info.track = 45;
+  info.mtrack = 55;
+  info.magvar = 55;
+  info.hdop = 2.3;
+  info.vdop = 1.2;
+  info.pdop = 2.594224354;
 
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SIG);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LAT);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_TRACK);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MTRACK);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MAGVAR);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_HDOP);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SIG);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LAT);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_LON);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_ELV);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_TRACK);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MTRACK);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_MAGVAR);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_HDOP);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_VDOP);
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_PDOP);
 
-	info.satellites.inUseCount = NMEALIB_MAX_SATELLITES;
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
-	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satellites.inUse[it] = (unsigned int) (it + 1);
-	}
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
+  info.satellites.inUseCount = NMEALIB_MAX_SATELLITES;
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSECOUNT);
+  for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
+    info.satellites.inUse[it] = (unsigned int) (it + 1);
+  }
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINUSE);
 
-	info.satellites.inViewCount = NMEALIB_MAX_SATELLITES;
-	for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
-		info.satellites.inView[it].prn = (unsigned int) it + 1;
-		info.satellites.inView[it].elevation = (int) (it * 10);
-		info.satellites.inView[it].azimuth = (unsigned int) (it + 1);
-		info.satellites.inView[it].snr = 99 - (unsigned int) it;
-	}
-	nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
+  info.satellites.inViewCount = NMEALIB_MAX_SATELLITES;
+  for (it = 0; it < NMEALIB_MAX_SATELLITES; it++) {
+    info.satellites.inView[it].prn = (unsigned int) it + 1;
+    info.satellites.inView[it].elevation = (int) (it * 10);
+    info.satellites.inView[it].azimuth = (unsigned int) (it + 1);
+    info.satellites.inView[it].snr = 99 - (unsigned int) it;
+  }
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
 
   for (it = 0; it < 10; it++) {
-    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info, NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC | NMEALIB_SENTENCE_GPVTG);
+    size_t gen_sz = nmeaSentenceFromInfo(&buff, &info,
+        NMEALIB_SENTENCE_GPGGA | NMEALIB_SENTENCE_GPGSA | NMEALIB_SENTENCE_GPGSV | NMEALIB_SENTENCE_GPRMC
+            | NMEALIB_SENTENCE_GPVTG);
     if (gen_sz && buff) {
       printf("%s\n", buff);
       free(buff);
@@ -83,5 +85,5 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
     }
   }
 
-	return 0;
+  return 0;
 }

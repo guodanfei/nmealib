@@ -29,67 +29,68 @@ static const char * errorStr = "Error: ";
 static const char * eol = "\n";
 
 static void trace(const char *str, size_t str_size) {
-	write(1, traceStr, strlen(traceStr));
-	write(1, str, str_size);
-	write(1, eol, strlen(eol));
+  write(1, traceStr, strlen(traceStr));
+  write(1, str, str_size);
+  write(1, eol, strlen(eol));
 }
 static void error(const char *str, size_t str_size) {
-	write(1, errorStr, strlen(errorStr));
-	write(1, str, str_size);
-	write(1, eol, strlen(eol));
+  write(1, errorStr, strlen(errorStr));
+  write(1, str, str_size);
+  write(1, eol, strlen(eol));
 }
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
-	char fn[2048];
-	const char * filename = &fn[0];
-	const char * deffile;
-	const char * dn;
-	NmeaInfo info;
-	NmeaParser parser;
-	FILE *file;
-	char buff[2048];
-	size_t it = 0;
-	NmeaPosition dpos;
+  char fn[2048];
+  const char * filename = &fn[0];
+  const char * deffile;
+  const char * dn;
+  NmeaInfo info;
+  NmeaParser parser;
+  FILE *file;
+  char buff[2048];
+  size_t it = 0;
+  NmeaPosition dpos;
 
-	if (argc <= 1) {
-		dn = dirname(argv[0]);
-		deffile="/../../samples/parse_file/gpslog.txt";
-	} else {
-		dn="";
-		deffile = argv[1];
-	}
-	snprintf(&fn[0], sizeof(fn),"%s%s", dn, deffile);
-	printf("Using file %s\n", filename);
+  if (argc <= 1) {
+    dn = dirname(argv[0]);
+    deffile = "/../../samples/parse_file/gpslog.txt";
+  } else {
+    dn = "";
+    deffile = argv[1];
+  }
+  snprintf(&fn[0], sizeof(fn), "%s%s", dn, deffile);
+  printf("Using file %s\n", filename);
 
-	file = fopen(filename, "rb");
+  file = fopen(filename, "rb");
 
-	if (!file) {
-		printf("Could not open file %s\n", filename);
-		return -1;
-	}
+  if (!file) {
+    printf("Could not open file %s\n", filename);
+    return -1;
+  }
 
-	nmeaContextSetTraceFunction(&trace);
-	nmeaContextSetErrorFunction(&error);
+  nmeaContextSetTraceFunction(&trace);
+  nmeaContextSetErrorFunction(&error);
 
-	nmeaInfoClear(&info);
-	nmeaParserInit(&parser);
+  nmeaInfoClear(&info);
+  nmeaParserInit(&parser);
 
-	while (!feof(file)) {
-	  size_t size = fread(&buff[0], 1, 100, file);
+  while (!feof(file)) {
+    size_t size = fread(&buff[0], 1, 100, file);
 
-		nmeaParserParse(&parser, &buff[0], size, &info);
-		nmeaMathInfoToPosition(&info, &dpos);
+    nmeaParserParse(&parser, &buff[0], size, &info);
+    nmeaMathInfoToPosition(&info, &dpos);
 
-		printf("*** %03lu, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", (unsigned long) it++, dpos.lat, dpos.lon, info.sig, info.fix);
-	}
+    printf("*** %03lu, Lat: %f, Lon: %f, Sig: %d, Fix: %d\n", (unsigned long) it++, dpos.lat, dpos.lon, info.sig,
+        info.fix);
+  }
 
-	fseek(file, 0, SEEK_SET);
+  fseek(file, 0, SEEK_SET);
 
-	/*
-	 }
-	 */
+  /*
+   }
+   */
 
-	fclose(file);
+  fclose(file);
 
-	return 0;
+  return 0;
 }
