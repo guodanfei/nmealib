@@ -96,6 +96,7 @@ static void test_nmeaContextTrace(void) {
 
   nmeaContextTrace("%s", buf);
   validateContext(1, 0);
+  free(buf);
 }
 
 static void test_nmeaContextError(void) {
@@ -137,6 +138,7 @@ static void test_nmeaContextError(void) {
 
   nmeaContextError("%s", buf);
   validateContext(0, 1);
+  free(buf);
 }
 
 /*
