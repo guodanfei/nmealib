@@ -27,7 +27,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
- * The type definition for an invalid NMEA character/description
+ * The type definition for an invalid NMEA character/description pair
  */
 typedef struct _NmeaInvalidCharacter {
   const char  character;
@@ -39,8 +39,8 @@ typedef struct _NmeaInvalidCharacter {
  *
  * @param c The character to check
  *
- * @return The invalid character name/description when the string has invalid
- * characters, NULL otherwise
+ * @return The invalid character character/description pair when the string
+ * has invalid characters, NULL otherwise
  */
 const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
 
@@ -51,8 +51,8 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
  * @param s The string to check
  * @param sz The length of the string to check
  *
- * @return The invalid character name/description when the string has invalid
- * characters, NULL otherwise
+ * @return The invalid character character/description pair when the string
+ * has invalid characters, NULL otherwise
  */
 const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz);
 
@@ -168,8 +168,6 @@ bool nmeaValidateMode(char c, const char *prefix, const char *s);
  *
  * Expects:
  * <pre>
- *   prn      : either zero (other condiction are not check), or non-zero (othe
- *              conditions are checked)
  *   elevation: in the range [-180, 180]
  *   azimuth  : in the range [   0, 359]
  *   signal   : in the range [   0,  99]

@@ -25,7 +25,7 @@ static const NmeaInvalidCharacter nmealibInvalidNonAsciiCharsName = {
     .description = "non-ASCII character" //
     };
 
-/** Invalid NMEA characters */
+/** Invalid NMEA character/description pairs */
 static const NmeaInvalidCharacter nmealibInvalidCharacters[] = {
     {
         .character = '$', //
@@ -59,15 +59,14 @@ static const NmeaInvalidCharacter nmealibInvalidCharacters[] = {
 
 const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c) {
   size_t i = 0;
-  char ch = c;
 
-  if ((ch < 32) //
-      || (ch > 126)) {
+  if ((c < 32) //
+      || (c > 126)) {
     return &nmealibInvalidNonAsciiCharsName;
   }
 
   while (nmealibInvalidCharacters[i].description) {
-    if (ch == nmealibInvalidCharacters[i].character) {
+    if (c == nmealibInvalidCharacters[i].character) {
       return &nmealibInvalidCharacters[i];
     }
 
