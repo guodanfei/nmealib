@@ -133,17 +133,17 @@ size_t nmeaGPGSVsatellitesToSentencesCount(const size_t satellites);
 bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GPGSV packet structure
+ * Update an unsanitised NmeaInfo structure from a GPGSV packet structure
  *
  * @param pack The GPGSV packet structure
- * @param info The unsanitised nmeaINFO structure
+ * @param info The unsanitised NmeaInfo structure
  */
 void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a NmeaGPGSV structure
+ * Convert a sanitised NmeaInfo structure into a NmeaGPGSV structure
  *
- * @param info The sanitised nmeaINFO structure
+ * @param info The sanitised NmeaInfo structure
  * @param pack The NmeaGPGSV structure
  * @param sentence The sentence index of the NmeaGPGSV structure (zero based)
  */

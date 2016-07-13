@@ -109,17 +109,17 @@ typedef struct _NmeaGPGGA {
 bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GPGGA packet structure
+ * Update an unsanitised NmeaInfo structure from a GPGGA packet structure
  *
  * @param pack The GPGGA packet structure
- * @param info The unsanitised nmeaINFO structure
+ * @param info The unsanitised NmeaInfo structure
  */
 void nmeaGPGGAToInfo(const NmeaGPGGA *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a NmeaGPGGA structure
+ * Convert a sanitised NmeaInfo structure into a NmeaGPGGA structure
  *
- * @param info The sanitised nmeaINFO structure
+ * @param info The sanitised NmeaInfo structure
  * @param pack The NmeaGPGGA structure
  */
 void nmeaGPGGAFromInfo(const NmeaInfo *info, NmeaGPGGA *pack);

@@ -99,17 +99,17 @@ typedef struct _NmeaGPRMC {
 bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GPRMC packet structure
+ * Update an unsanitised NmeaInfo structure from a GPRMC packet structure
  *
  * @param pack The GPRMC packet structure
- * @param info The unsanitised nmeaINFO structure
+ * @param info The unsanitised NmeaInfo structure
  */
 void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a NmeaGPRMC structure
+ * Convert a sanitised NmeaInfo structure into a NmeaGPRMC structure
  *
- * @param info The sanitised nmeaINFO structure
+ * @param info The sanitised NmeaInfo structure
  * @param pack The NmeaGPRMC structure
  */
 void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack);

@@ -57,7 +57,7 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
 const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz);
 
 /**
- * Validate the time fields in an nmeaTIME structure.
+ * Validate the time fields in an NmeaTime structure.
  *
  * Expects:
  * <pre>
@@ -75,7 +75,7 @@ const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char
 bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s);
 
 /**
- * Validate the date fields in an nmeaTIME structure.
+ * Validate the date fields in an NmeaTime structure.
  *
  * Expects:
  * <pre>

@@ -89,17 +89,17 @@ typedef struct _NmeaGPVTG {
 bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack);
 
 /**
- * Update an unsanitised nmeaINFO structure from a GPVTG packet structure
+ * Update an unsanitised NmeaInfo structure from a GPVTG packet structure
  *
  * @param pack The GPVTG packet structure
- * @param info The unsanitised nmeaINFO structure
+ * @param info The unsanitised NmeaInfo structure
  */
 void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info);
 
 /**
- * Convert a sanitised nmeaINFO structure into a NmeaGPVTG structure
+ * Convert a sanitised NmeaInfo structure into a NmeaGPVTG structure
  *
- * @param info The sanitised nmeaINFO structure
+ * @param info The sanitised NmeaInfo structure
  * @param pack The NmeaGPVTG structure
  */
 void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack);

@@ -19,10 +19,10 @@
  * @file
  * NMEA Sentences
  *
- * The table below describes which nmeaINFO fields are present in the
+ * The table below describes which NmeaInfo fields are present in the
  * sentences that are supported by the library.
  *
- * | nmeaINFO field       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
+ * | NmeaInfo field       | GPGGA | GPGSA | GPGSV | GPRMC | GPVTG |
  * | :------------------- | :---: | :---: | :---: | :---: | :---: |
  * | present              | x     | x     | x     | x     | x     |
  * | smask                | x     | x     | x     | x     | x     |
@@ -48,10 +48,10 @@
  * | satinfo inview count | x     |       | x     |       |       |
  * | satinfo inview       |       |       | x     |       |       |
  *
- * (1) Only sets the nmeaINFO sig when it is not set yet.
+ * (1) Only sets the NmeaInfo sig when it is not set yet.
  * (2) Not present in the sentence but the library sets it up.
- * (3) If the sentence is a v2.3+ sentence then the nmeaINFO sig is set
- *     normally, otherwise the nmeaINFO sig is only set when it is not
+ * (3) If the sentence is a v2.3+ sentence then the NmeaInfo sig is set
+ *     normally, otherwise the NmeaInfo sig is only set when it is not
  *     set yet.
  */
 
@@ -109,23 +109,23 @@ const char * nmeaSentenceToPrefix(NmeaSentence sentence);
 NmeaSentence nmeaSentenceFromPrefix(const char *s, const size_t sz);
 
 /**
- * Parse a NMEA sentence into an (unsanitised) nmeaINFO structure
+ * Parse a NMEA sentence into an unsanitised NmeaInfo structure
  *
  * @param s The NMEA sentence
  * @param sz The length of the NMEA sentence
- * @param info The nmeaINFO structure in which to stored the information
+ * @param info The unsanitised NmeaInfo structure in which to stored the information
  * @return True when successful
  */
 bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
 
 /**
- * Generate NMEA sentences from a (sanitised) nmeaINFO structure.
+ * Generate NMEA sentences from a sanitised NmeaInfo structure.
  *
  * Allocates buffer memory as needed.
  *
  * @param buf The location where to store the pointer to the allocated buffer.
  * Will be null when there is no output.
- * @param info The (sanitised) nmeaINFO structure
+ * @param info The sanitised NmeaInfo structure
  * @param mask The bit-mask of sentences to generate
  * @return The total length of the generated sentences
  */
