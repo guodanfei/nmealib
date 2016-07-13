@@ -556,7 +556,7 @@ static void test_nmeaTimeSet(void) {
   utcExpected.hour = (unsigned int) tt.tm_hour;
   utcExpected.min = (unsigned int) tt.tm_min;
   utcExpected.sec = (unsigned int) tt.tm_sec;
-  utcExpected.hsec = (unsigned int) (timeval.tv_usec / 10000);
+  utcExpected.hsec = utc.hsec;
   CU_ASSERT_EQUAL(memcmp(&utc, &utcExpected, sizeof(utc)), 0);
   CU_ASSERT_EQUAL(present, 0);
 
@@ -572,7 +572,7 @@ static void test_nmeaTimeSet(void) {
   utcExpected.hour = (unsigned int) tt.tm_hour;
   utcExpected.min = (unsigned int) tt.tm_min;
   utcExpected.sec = (unsigned int) tt.tm_sec;
-  utcExpected.hsec = (unsigned int) (timeval.tv_usec / 10000);
+  utcExpected.hsec = utc.hsec;
   CU_ASSERT_EQUAL(memcmp(&utc, &utcExpected, sizeof(utc)), 0);
   CU_ASSERT_EQUAL(present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
 }
@@ -628,7 +628,6 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_EQUAL(info.utc.hour, utc.hour);
   CU_ASSERT_EQUAL(info.utc.min, utc.min);
   CU_ASSERT_EQUAL(info.utc.sec, utc.sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, utc.hsec);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_BAD);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
@@ -664,7 +663,6 @@ static void test_nmeaInfoSanitise(void) {
   CU_ASSERT_EQUAL(info.utc.hour, utc.hour);
   CU_ASSERT_EQUAL(info.utc.min, utc.min);
   CU_ASSERT_EQUAL(info.utc.sec, utc.sec);
-  CU_ASSERT_EQUAL(info.utc.hsec, utc.hsec);
   CU_ASSERT_EQUAL(info.sig, NMEALIB_SIG_INVALID);
   CU_ASSERT_EQUAL(info.fix, NMEALIB_FIX_BAD);
   CU_ASSERT_DOUBLE_EQUAL(info.pdop, 0.0, DBL_EPSILON);
