@@ -68,7 +68,8 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   /* see that there are enough tokens */
   if ((fieldCount != 11) //
       && (fieldCount != 12)) {
-    nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: need 11 or 12 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPRMC_PREFIX " parse error: need 11 or 12 tokens, got %lu in '%s'",
+        (long unsigned) fieldCount, s);
     goto err;
   }
 

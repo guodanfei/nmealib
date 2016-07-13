@@ -310,7 +310,6 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
     usec = tp.tv_usec;
   }
 
-
   utc->year = (unsigned int) tt.tm_year + 1900;
   utc->mon = (unsigned int) tt.tm_mon + 1;
   utc->day = (unsigned int) tt.tm_mday;
@@ -499,9 +498,9 @@ void nmeaInfoSanitise(NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE)) {
-    info->utc.hour = info->utc.hour %  24;
-    info->utc.min  = info->utc.min  %  60;
-    info->utc.sec  = info->utc.sec  %  61;
+    info->utc.hour = info->utc.hour % 24;
+    info->utc.min = info->utc.min % 60;
+    info->utc.sec = info->utc.sec % 61;
     info->utc.hsec = info->utc.hsec % 100;
   }
 
@@ -745,7 +744,8 @@ void nmeaInfoSanitise(NmeaInfo *info) {
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW) //
       && !info->progress.gpgsvInProgress) {
-    qsort(info->satellites.inView, NMEALIB_MAX_SATELLITES, sizeof(info->satellites.inView[0]), nmeaQsortSatelliteCompact);
+    qsort(info->satellites.inView, NMEALIB_MAX_SATELLITES, sizeof(info->satellites.inView[0]),
+        nmeaQsortSatelliteCompact);
 
     for (i = 0; i < NMEALIB_MAX_SATELLITES; i++) {
       NmeaSatellite *sat = &info->satellites.inView[i];
@@ -870,7 +870,7 @@ int nmeaQsortPRNCompare(const void *p1, const void *p2) {
     prn2 += 1000;
   }
 
-  return (int)((long long) prn1 - (long long) prn2);
+  return (int) ((long long) prn1 - (long long) prn2);
 }
 
 int nmeaQsortPRNCompact(const void *p1, const void *p2) {

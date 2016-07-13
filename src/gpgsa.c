@@ -47,8 +47,8 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   /* parse */
   fieldCount = nmeaScanf(s, sz, //
       "$" NMEALIB_GPGSA_PREFIX ",%C,%d," //
-          "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u," //
-          "%F,%F,%F*", //
+      "%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,%u,"//
+      "%F,%F,%F*",//
       &pack->sig, //
       &pack->fix, //
       &pack->prn[0], //
@@ -69,7 +69,8 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 17) {
-    nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPGSA_PREFIX " parse error: need 17 tokens, got %lu in '%s'", (long unsigned) fieldCount,
+        s);
     goto err;
   }
 
@@ -163,7 +164,8 @@ void nmeaGPGSAToInfo(const NmeaGPGSA *pack, NmeaInfo *info) {
     info->satellites.inUseCount = 0;
     memset(&info->satellites.inUse, 0, sizeof(info->satellites.inUse[0]));
 
-    for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++) {
+    for (packIndex = 0; (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES);
+        packIndex++) {
       unsigned int prn = pack->prn[packIndex];
       if (prn) {
         info->satellites.inUse[infoIndex++] = prn;
@@ -218,7 +220,8 @@ void nmeaGPGSAFromInfo(const NmeaInfo *info, NmeaGPGSA *pack) {
     size_t infoIndex = 0;
     size_t packIndex = 0;
 
-    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE); infoIndex++) {
+    for (infoIndex = 0; (infoIndex < NMEALIB_MAX_SATELLITES) && (packIndex < NMEALIB_GPGSA_SATS_IN_SENTENCE);
+        infoIndex++) {
       unsigned int prn = info->satellites.inUse[infoIndex];
       if (prn) {
         pack->prn[packIndex++] = prn;

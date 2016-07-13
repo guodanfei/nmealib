@@ -104,8 +104,8 @@ bool nmeaValidateTime(const NmeaTime *t, const char *prefix, const char *s) {
       || (t->min > 59) //
       || (t->sec > 60) //
       || (t->hsec > 99)) {
-    nmeaContextError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour, t->min,
-        t->sec, t->hsec * 10, s);
+    nmeaContextError("%s parse error: invalid time '%02u:%02u:%02u.%03u' (hh:mm:ss.mmm) in '%s'", prefix, t->hour,
+        t->min, t->sec, t->hsec * 10, s);
     return false;
   }
 
@@ -132,7 +132,10 @@ bool nmeaValidateDate(const NmeaTime *t, const char *prefix, const char *s) {
 }
 
 bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) {
-  char cu[] = { 0, 0, 0 };
+  char cu[] = {
+      0,
+      0,
+      0 };
 
   if (c) {
     cu[0] = c;
@@ -161,8 +164,8 @@ bool nmeaValidateNSEW(char c, const bool ns, const char *prefix, const char *s) 
 bool nmeaValidateFix(NmeaFix fix, const char *prefix, const char *s) {
   if ((fix < NMEALIB_FIX_FIRST) //
       || (fix > NMEALIB_FIX_LAST)) {
-    nmeaContextError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST, NMEALIB_FIX_LAST,
-        s);
+    nmeaContextError("%s parse error: invalid fix %d, expected [%d, %d] in '%s'", prefix, fix, NMEALIB_FIX_FIRST,
+        NMEALIB_FIX_LAST, s);
     return false;
   }
 
@@ -173,7 +176,7 @@ bool nmeaValidateSignal(NmeaSignal sig, const char *prefix, const char *s) {
   if ((sig < NMEALIB_SIG_FIRST) //
       || (sig > NMEALIB_SIG_LAST)) {
     nmeaContextError("%s parse error: invalid signal %d, expected [%d, %d] in '%s'", prefix, sig, NMEALIB_SIG_FIRST,
-    NMEALIB_SIG_LAST, s);
+        NMEALIB_SIG_LAST, s);
     return false;
   }
 

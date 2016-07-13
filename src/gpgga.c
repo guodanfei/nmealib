@@ -71,7 +71,8 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
 
   /* see that there are enough tokens */
   if (fieldCount != 14) {
-    nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount, s);
+    nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: need 14 tokens, got %lu in '%s'", (long unsigned) fieldCount,
+        s);
     goto err;
   }
 

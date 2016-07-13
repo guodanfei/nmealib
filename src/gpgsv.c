@@ -100,18 +100,21 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   }
 
   if (!pack->sentenceCount) {
-    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentences count %u is invalid in '%s'", pack->sentenceCount, s);
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentences count %u is invalid in '%s'", pack->sentenceCount,
+        s);
     goto err;
   }
 
   if (pack->sentenceCount > NMEALIB_GPGSV_MAX_SENTENCES) {
-    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: can't handle %u sentences (maximum is %u)", pack->sentenceCount,
+    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: can't handle %u sentences (maximum is %u)",
+        pack->sentenceCount,
         NMEALIB_GPGSV_MAX_SENTENCES);
     goto err;
   }
 
   if (pack->sentenceCount != nmeaGPGSVsatellitesToSentencesCount(pack->inViewCount)) {
-    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentences count %u does not correspond to satellite count %u in '%s'",
+    nmeaContextError(
+        NMEALIB_GPGSV_PREFIX " parse error: sentences count %u does not correspond to satellite count %u in '%s'",
         pack->sentenceCount, pack->inViewCount, s);
     goto err;
   }
@@ -122,7 +125,8 @@ bool nmeaGPGSVParse(const char *s, const size_t sz, NmeaGPGSV *pack) {
   }
 
   if (pack->sentence > pack->sentenceCount) {
-    nmeaContextError(NMEALIB_GPGSV_PREFIX " parse error: sentence index %u is beyond the number of sentences (%u) in '%s'",
+    nmeaContextError(
+        NMEALIB_GPGSV_PREFIX " parse error: sentence index %u is beyond the number of sentences (%u) in '%s'",
         pack->sentence, pack->sentenceCount, s);
     goto err;
   }
@@ -206,8 +210,8 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
     }
 
     if (pack->sentenceCount != nmeaGPGSVsatellitesToSentencesCount(pack->inViewCount)) {
-      nmeaContextError("%s parse error: sentences count %u does not correspond to satellite count %u",
-          __FUNCTION__, pack->sentenceCount, pack->inViewCount);
+      nmeaContextError("%s parse error: sentences count %u does not correspond to satellite count %u", __FUNCTION__,
+          pack->sentenceCount, pack->inViewCount);
       return;
     }
 
@@ -231,7 +235,8 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
 
     infoIndex = (pack->sentence - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
-    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
+    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES);
+        packIndex++, infoIndex++) {
       const NmeaSatellite *src = &pack->inView[packIndex];
       if (!src->prn) {
         memset(&info->satellites.inView[infoIndex], 0, sizeof(info->satellites.inView[infoIndex]));
@@ -247,7 +252,6 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
     info->satellites.inViewCount = pack->inViewCount;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
   }
-
 
   nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SMASK);
 
@@ -278,7 +282,7 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
   }
 
   pack->inViewCount = (unsigned int) inViewCount;
-  pack->sentenceCount =  (unsigned int) sentences;
+  pack->sentenceCount = (unsigned int) sentences;
   nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINVIEWCOUNT);
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SATINVIEW)) {
@@ -290,7 +294,8 @@ void nmeaGPGSVFromInfo(const NmeaInfo *info, NmeaGPGSV *pack, size_t sentence) {
     /* now skip the first ((pack->pack_index - 1) * NMEALIB_SATINPACK) in view sats */
     infoIndex = sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
 
-    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES); packIndex++, infoIndex++) {
+    for (packIndex = 0; (packIndex < NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE) && (infoIndex < NMEALIB_MAX_SATELLITES);
+        packIndex++, infoIndex++) {
       if (info->satellites.inView[infoIndex].prn) {
         pack->inView[packIndex] = info->satellites.inView[infoIndex];
       }
