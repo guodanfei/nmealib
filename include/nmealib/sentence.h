@@ -89,12 +89,62 @@ typedef enum _NmeaSentence {
 #define NMEALIB_PREFIX_LENGTH 5
 
 /**
+ * The type definition for an entry mapping a NMEA sentence prefix to a sentence type
+ */
+typedef struct _NmeaSentencePrefixToType {
+  const char * prefix;
+  const NmeaSentence sentence;
+} NmeaSentencePrefixToType;
+
+/**
+ * The map from NMEA sentence prefix to sentence type
+ */
+static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
+    {
+        .prefix = NMEALIB_GPGGA_PREFIX, //
+        .sentence = NMEALIB_SENTENCE_GPGGA //
+    },
+    {
+        .prefix = NMEALIB_GPGSA_PREFIX, //
+        .sentence = NMEALIB_SENTENCE_GPGSA //
+    },
+    {
+        .prefix = NMEALIB_GPGSV_PREFIX, //
+        .sentence = NMEALIB_SENTENCE_GPGSV //
+    },
+    {
+        .prefix = NMEALIB_GPRMC_PREFIX, //
+        .sentence = NMEALIB_SENTENCE_GPRMC //
+    },
+    {
+        .prefix = NMEALIB_GPVTG_PREFIX, //
+        .sentence = NMEALIB_SENTENCE_GPVTG //
+    },
+    {
+        .prefix = NULL, //
+        .sentence = NMEALIB_SENTENCE_GPNON //
+    }//
+};
+
+/**
  * Determine the NMEA prefix from the sentence type.
  *
  * @param sentence The sentence type
  * @return The NMEA prefix, or NULL when the sentence type is unknown
  */
-const char * nmeaSentenceToPrefix(NmeaSentence sentence);
+static INLINE const char * nmeaSentenceToPrefix(NmeaSentence sentence) {
+  size_t i = 0;
+
+  while (nmealibSentencePrefixToType[i].prefix) {
+    if (nmealibSentencePrefixToType[i].sentence == sentence) {
+      return nmealibSentencePrefixToType[i].prefix;
+    }
+
+    i++;
+  }
+
+  return NULL;
+}
 
 /**
  * Determine the sentence type from the start of the specified NMEA
