@@ -24,40 +24,6 @@
 #include <string.h>
 #include <time.h>
 
-const char * nmeaInfoSignalToString(NmeaSignal sig) {
-  switch (sig) {
-    case NMEALIB_SIG_INVALID:
-      return "INVALID";
-
-    case NMEALIB_SIG_FIX:
-      return "FIX";
-
-    case NMEALIB_SIG_DIFFERENTIAL:
-      return "DIFFERENTIAL";
-
-    case NMEALIB_SIG_SENSITIVE:
-      return "SENSITIVE";
-
-    case NMEALIB_SIG_RTKIN:
-      return "REAL TIME KINEMATIC";
-
-    case NMEALIB_SIG_FLOAT_RTK:
-      return "FLOAT REAL TIME KINEMATIC";
-
-    case NMEALIB_SIG_ESTIMATED:
-      return "ESTIMATED (DEAD RECKONING)";
-
-    case NMEALIB_SIG_MANUAL:
-      return "MANUAL";
-
-    case NMEALIB_SIG_SIMULATION:
-      return "SIMULATION";
-
-    default:
-      return NULL;
-  }
-}
-
 NmeaSignal nmeaInfoModeToSignal(char mode) {
   switch (mode) {
     case 'N':
@@ -123,95 +89,6 @@ char nmeaInfoSignalToMode(NmeaSignal sig) {
 
     default:
       return 'N';
-  }
-}
-
-const char * nmeaInfoFixToString(NmeaFix fix) {
-  switch (fix) {
-    case NMEALIB_FIX_BAD:
-      return "BAD";
-
-    case NMEALIB_FIX_2D:
-      return "2D";
-
-    case NMEALIB_FIX_3D:
-      return "3D";
-
-    default:
-      return NULL;
-  }
-}
-
-const char * nmeaInfoFieldToString(NmeaPresence field) {
-  switch (field) {
-    case NMEALIB_PRESENT_SMASK:
-      return "SMASK";
-
-    case NMEALIB_PRESENT_UTCDATE:
-      return "UTCDATE";
-
-    case NMEALIB_PRESENT_UTCTIME:
-      return "UTCTIME";
-
-    case NMEALIB_PRESENT_SIG:
-      return "SIG";
-
-    case NMEALIB_PRESENT_FIX:
-      return "FIX";
-
-    case NMEALIB_PRESENT_PDOP:
-      return "PDOP";
-
-    case NMEALIB_PRESENT_HDOP:
-      return "HDOP";
-
-    case NMEALIB_PRESENT_VDOP:
-      return "VDOP";
-
-    case NMEALIB_PRESENT_LAT:
-      return "LAT";
-
-    case NMEALIB_PRESENT_LON:
-      return "LON";
-
-    case NMEALIB_PRESENT_ELV:
-      return "ELV";
-
-    case NMEALIB_PRESENT_HEIGHT:
-      return "HEIGHT";
-
-    case NMEALIB_PRESENT_SPEED:
-      return "SPEED";
-
-    case NMEALIB_PRESENT_TRACK:
-      return "TRACK";
-
-    case NMEALIB_PRESENT_MTRACK:
-      return "MTRACK";
-
-    case NMEALIB_PRESENT_MAGVAR:
-      return "MAGVAR";
-
-    case NMEALIB_PRESENT_SATINUSECOUNT:
-      return "SATINUSECOUNT";
-
-    case NMEALIB_PRESENT_SATINUSE:
-      return "SATINUSE";
-
-    case NMEALIB_PRESENT_SATINVIEWCOUNT:
-      return "SATINVIEWCOUNT";
-
-    case NMEALIB_PRESENT_SATINVIEW:
-      return "SATINVIEW";
-
-    case NMEALIB_PRESENT_DGPSAGE:
-      return "DGPSAGE";
-
-    case NMEALIB_PRESENT_DGPSSID:
-      return "DGPSSID";
-
-    default:
-      return NULL;
   }
 }
 
