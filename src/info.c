@@ -246,9 +246,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
     info->smask = 0;
   }
 
-  if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME)) {
-    nmeaTimeSet(&utc, NULL, NULL);
-  }
+  nmeaTimeSet(&utc, NULL, NULL);
 
   if (!nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_UTCDATE)) {
     info->utc.year = utc.year;
