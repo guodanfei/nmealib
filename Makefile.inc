@@ -61,7 +61,7 @@ CC ?= gcc
 
 GCCVERSIONGTEQ6 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 6)
 
-COMMONCFLAGS += -Werror -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-prototypes \
+COMMONCFLAGS += -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-prototypes \
                 -Wstrict-prototypes -Wmissing-declarations -Wsign-compare -Waggregate-return -Wmissing-noreturn \
                 -Wmissing-format-attribute -Wno-multichar -Wno-deprecated-declarations -Wendif-labels -Wwrite-strings \
                 -Wbad-function-cast -Wpointer-arith -Wcast-qual -Wshadow -Wformat -Wsequence-point -Wcast-align \
@@ -71,7 +71,7 @@ COMMONCFLAGS += -Werror -Wall -Wextra -Wold-style-definition -Wdeclaration-after
                 -Wunused-parameter
 
 GCCCFLAGS    += $(COMMONCFLAGS) -fearly-inlining -finline-functions-called-once -finline-limit=350 -Wtrampolines \
-                -Wsync-nand -Wlogical-op -Wjump-misses-init
+                -Wsync-nand -Wlogical-op -Wjump-misses-init -Werror
 
 ifeq "$(GCCVERSIONGTEQ6)" "1"
 GCCCFLAGS   += -Wnull-dereference -Wshift-negative-value -Wshift-overflow -Wtautological-compare
