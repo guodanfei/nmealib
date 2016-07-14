@@ -41,7 +41,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
-  pack->fix = UINT_MAX;
+  pack->fix = INT_MAX;
   pack->pdop = NAN;
   pack->hdop = NAN;
   pack->vdop = NAN;
@@ -90,7 +90,7 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     pack->sig = '\0';
   }
 
-  if (pack->fix != UINT_MAX) {
+  if (pack->fix != INT_MAX) {
     if (!nmeaValidateFix(pack->fix, NMEALIB_GPGSA_PREFIX, s)) {
       goto err;
     }
