@@ -57,7 +57,9 @@ ifeq ($(strip $(VERSION)),)
 VERSION=0.0.0
 endif
 
-GCCVERSIONGTEQ6 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 6)
+CC ?= gcc
+
+GCCVERSIONGTEQ6 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 6)
 
 COMMONCFLAGS += -Werror -Wall -Wextra -Wold-style-definition -Wdeclaration-after-statement -Wmissing-prototypes \
                 -Wstrict-prototypes -Wmissing-declarations -Wsign-compare -Waggregate-return -Wmissing-noreturn \
@@ -77,8 +79,6 @@ GCCCFLAGS   += -Wmisleading-indentation -Wduplicated-cond
 endif
 
 CLANGCFLAGS := $(COMMONCFLAGS)
-
-CC ?= gcc
 
 ifdef COV
 CFLAGS += -fprofile-arcs -ftest-coverage
