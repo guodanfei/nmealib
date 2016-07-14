@@ -20,6 +20,7 @@
 #include <nmealib/context.h>
 #include <nmealib/nmath.h>
 #include <nmealib/sentence.h>
+#include <nmealib/util.h>
 #include <nmealib/validate.h>
 #include <math.h>
 #include <stdio.h>
@@ -43,11 +44,11 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
   memset(timeBuf, 0, sizeof(timeBuf));
   memset(dateBuf, 0, sizeof(dateBuf));
   memset(pack, 0, sizeof(*pack));
-  pack->latitude = NAN;
-  pack->longitude = NAN;
-  pack->speed = NAN;
-  pack->track = NAN;
-  pack->magvar = NAN;
+  pack->latitude = NaN;
+  pack->longitude = NaN;
+  pack->speed = NaN;
+  pack->track = NaN;
+  pack->magvar = NaN;
 
   /* parse */
   tokenCount = nmeaScanf(s, sz, //
@@ -122,7 +123,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     }
   }
 
-  if (!isnan(pack->latitude)) {
+  if (!isNaN(pack->latitude)) {
     if (!nmeaValidateNSEW(pack->latitudeNS, true, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
@@ -133,7 +134,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     pack->latitudeNS = '\0';
   }
 
-  if (!isnan(pack->longitude)) {
+  if (!isNaN(pack->longitude)) {
     if (!nmeaValidateNSEW(pack->longitudeEW, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }
@@ -144,13 +145,13 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     pack->longitudeEW = '\0';
   }
 
-  if (!isnan(pack->speed)) {
+  if (!isNaN(pack->speed)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   } else {
     pack->speed = 0.0;
   }
 
-  if (!isnan(pack->track)) {
+  if (!isNaN(pack->track)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_TRACK);
   } else {
     pack->track = 0.0;
@@ -169,7 +170,7 @@ bool nmeaGPRMCParse(const char *s, const size_t sz, NmeaGPRMC *pack) {
     pack->utc.day = 0;
   }
 
-  if (!isnan(pack->magvar)) {
+  if (!isNaN(pack->magvar)) {
     if (!nmeaValidateNSEW(pack->magvarEW, false, NMEALIB_GPRMC_PREFIX, s)) {
       goto err;
     }

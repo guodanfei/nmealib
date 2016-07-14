@@ -227,7 +227,7 @@ double nmeaStringToDouble(const char *s, const size_t sz) {
           || (*buf == '\0'))) {
     /* invalid conversion */
     nmeaContextError("Could not convert '%s' to a double", buf);
-    return NAN;
+    return NaN;
   }
 
   return value;
@@ -407,7 +407,7 @@ size_t nmeaScanf(const char *s, size_t sz, const char *format, ...) {
             arg = (void *) va_arg(args, double *);
             if (width && arg) {
               double v = nmeaStringToDouble(sTokenStart, width);
-              if (isnan(v)) {
+              if (isNaN(v)) {
                 tokens = 0;
                 goto out;
               }

@@ -19,6 +19,7 @@
 
 #include <nmealib/context.h>
 #include <nmealib/sentence.h>
+#include <nmealib/util.h>
 #include <nmealib/validate.h>
 #include <limits.h>
 #include <math.h>
@@ -41,14 +42,14 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
   /* Clear before parsing, to be able to detect absent fields */
   *timeBuf = '\0';
   memset(pack, 0, sizeof(*pack));
-  pack->latitude = NAN;
-  pack->longitude = NAN;
+  pack->latitude = NaN;
+  pack->longitude = NaN;
   pack->sig = INT_MAX;
   pack->inViewCount = UINT_MAX;
-  pack->hdop = NAN;
-  pack->elevation = NAN;
-  pack->height = NAN;
-  pack->dgpsAge = NAN;
+  pack->hdop = NaN;
+  pack->elevation = NaN;
+  pack->height = NaN;
+  pack->dgpsAge = NaN;
   pack->dgpsSid = UINT_MAX;
 
   /* parse */
@@ -89,7 +90,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     memset(&pack->utc, 0, sizeof(pack->utc));
   }
 
-  if (!isnan(pack->latitude)) {
+  if (!isNaN(pack->latitude)) {
     if (!nmeaValidateNSEW(pack->latitudeNS, true, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
@@ -100,7 +101,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->latitudeNS = '\0';
   }
 
-  if (!isnan(pack->longitude)) {
+  if (!isNaN(pack->longitude)) {
     if (!nmeaValidateNSEW(pack->longitudeEW, false, NMEALIB_GPGGA_PREFIX, s)) {
       goto err;
     }
@@ -127,13 +128,13 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->inViewCount = 0;
   }
 
-  if (!isnan(pack->hdop)) {
+  if (!isNaN(pack->hdop)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HDOP);
   } else {
     pack->hdop = 0.0;
   }
 
-  if (!isnan(pack->elevation)) {
+  if (!isNaN(pack->elevation)) {
     if (pack->elevationM != 'M') {
       nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid elevation unit '%c' in '%s'", pack->elevationM, s);
       goto err;
@@ -145,7 +146,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->elevationM = '\0';
   }
 
-  if (!isnan(pack->height)) {
+  if (!isNaN(pack->height)) {
     if (pack->heightM != 'M') {
       nmeaContextError(NMEALIB_GPGGA_PREFIX " parse error: invalid height unit '%c' in '%s'", pack->heightM, s);
       goto err;
@@ -157,7 +158,7 @@ bool nmeaGPGGAParse(const char *s, const size_t sz, NmeaGPGGA *pack) {
     pack->heightM = '\0';
   }
 
-  if (!isnan(pack->dgpsAge)) {
+  if (!isNaN(pack->dgpsAge)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_DGPSAGE);
   } else {
     pack->dgpsAge = 0.0;

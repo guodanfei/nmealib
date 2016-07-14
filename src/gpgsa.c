@@ -19,6 +19,7 @@
 
 #include <nmealib/context.h>
 #include <nmealib/sentence.h>
+#include <nmealib/util.h>
 #include <nmealib/validate.h>
 #include <limits.h>
 #include <math.h>
@@ -42,9 +43,9 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
   pack->fix = INT_MAX;
-  pack->pdop = NAN;
-  pack->hdop = NAN;
-  pack->vdop = NAN;
+  pack->pdop = NaN;
+  pack->hdop = NaN;
+  pack->vdop = NaN;
 
   /* parse */
   tokenCount = nmeaScanf(s, sz, //
@@ -111,19 +112,19 @@ bool nmeaGPGSAParse(const char *s, const size_t sz, NmeaGPGSA *pack) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SATINUSE);
   }
 
-  if (!isnan(pack->pdop)) {
+  if (!isNaN(pack->pdop)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_PDOP);
   } else {
     pack->pdop = 0.0;
   }
 
-  if (!isnan(pack->hdop)) {
+  if (!isNaN(pack->hdop)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_HDOP);
   } else {
     pack->hdop = 0.0;
   }
 
-  if (!isnan(pack->vdop)) {
+  if (!isNaN(pack->vdop)) {
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_VDOP);
   } else {
     pack->vdop = 0.0;

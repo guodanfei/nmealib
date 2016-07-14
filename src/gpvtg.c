@@ -20,6 +20,7 @@
 #include <nmealib/context.h>
 #include <nmealib/nmath.h>
 #include <nmealib/sentence.h>
+#include <nmealib/util.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -39,10 +40,10 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   /* Clear before parsing, to be able to detect absent fields */
   memset(pack, 0, sizeof(*pack));
-  pack->track = NAN;
-  pack->mtrack = NAN;
-  pack->spn = NAN;
-  pack->spk = NAN;
+  pack->track = NaN;
+  pack->mtrack = NaN;
+  pack->spn = NaN;
+  pack->spk = NaN;
 
   /* parse */
   tokenCount = nmeaScanf(s, sz, //
@@ -65,7 +66,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
 
   /* determine which fields are present and validate them */
 
-  if (!isnan(pack->track)) {
+  if (!isNaN(pack->track)) {
     if (pack->trackT != 'T') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid track unit, got '%c', expected 'T'", pack->trackT);
       goto err;
@@ -77,7 +78,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     pack->trackT = '\0';
   }
 
-  if (!isnan(pack->mtrack)) {
+  if (!isNaN(pack->mtrack)) {
     if (pack->mtrackM != 'M') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid mtrack unit, got '%c', expected 'M'",
           pack->mtrackM);
@@ -90,7 +91,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     pack->mtrackM = '\0';
   }
 
-  if (!isnan(pack->spn)) {
+  if (!isNaN(pack->spn)) {
     if (pack->spnN != 'N') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid knots speed unit, got '%c', expected 'N'",
           pack->spnN);
@@ -104,7 +105,7 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
     pack->spnN = '\0';
   }
 
-  if (!isnan(pack->spk)) {
+  if (!isNaN(pack->spk)) {
     if (pack->spkK != 'K') {
       nmeaContextError(NMEALIB_GPVTG_PREFIX " parse error: invalid kph speed unit, got '%c', expected 'K'",
           pack->spkK);

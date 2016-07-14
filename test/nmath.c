@@ -18,6 +18,7 @@
 #include "testHelpers.h"
 
 #include <nmealib/nmath.h>
+#include <nmealib/util.h>
 #include <CUnit/Basic.h>
 #include <float.h>
 #include <string.h>
@@ -254,12 +255,12 @@ static void test_nmeaMathDistance(void) {
   memset(&from, 0, sizeof(from));
   memset(&to, 0, sizeof(to));
   r = nmeaMathDistance(NULL, &to);
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
 
   memset(&from, 0, sizeof(from));
   memset(&to, 0, sizeof(to));
   r = nmeaMathDistance(&from, NULL);
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
 
   /* same pos */
 
@@ -307,12 +308,12 @@ static void test_nmeaMathDistanceEllipsoid(void) {
   memset(&from, 0, sizeof(from));
   memset(&to, 0, sizeof(to));
   r = nmeaMathDistanceEllipsoid(NULL, &to, NULL, NULL);
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
 
   memset(&from, 0, sizeof(from));
   memset(&to, 0, sizeof(to));
   r = nmeaMathDistanceEllipsoid(&from, NULL, NULL, NULL);
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
 
   /* same pos */
 
@@ -389,25 +390,25 @@ static void test_nmeaMathMoveFlat(void) {
 
   memset(&from, 0, sizeof(from));
   from.lat = 0.0;
-  from.lon = NAN;
+  from.lon = NaN;
   memset(&to, 0, sizeof(to));
   azimuth = 20.0;
   distance = 1000.0;
   r = nmeaMathMoveFlat(&from, &to, azimuth, distance);
   CU_ASSERT_EQUAL(r, false);
-  CU_ASSERT_EQUAL(isnan(to.lat), true);
-  CU_ASSERT_EQUAL(isnan(to.lon), true);
+  CU_ASSERT_EQUAL(isNaN(to.lat), true);
+  CU_ASSERT_EQUAL(isNaN(to.lon), true);
 
   memset(&from, 0, sizeof(from));
-  from.lat = NAN;
+  from.lat = NaN;
   from.lon = 0.0;
   memset(&to, 0, sizeof(to));
   azimuth = 20.0;
   distance = 1000.0;
   r = nmeaMathMoveFlat(&from, &to, azimuth, distance);
   CU_ASSERT_EQUAL(r, false);
-  CU_ASSERT_EQUAL(isnan(to.lat), true);
-  CU_ASSERT_EQUAL(isnan(to.lon), true);
+  CU_ASSERT_EQUAL(isNaN(to.lat), true);
+  CU_ASSERT_EQUAL(isNaN(to.lon), true);
 
   /* normal */
 
@@ -449,26 +450,26 @@ static void test_nmeaMathMoveFlatEllipsoid(void) {
 
   memset(&from, 0, sizeof(from));
   from.lat = 0.0;
-  from.lon = NAN;
+  from.lon = NaN;
   memset(&to, 0, sizeof(to));
   azimuth = 20.0;
   distance = 1000.0;
   r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, NULL);
   CU_ASSERT_EQUAL(r, false);
-  CU_ASSERT_EQUAL(isnan(to.lat), true);
-  CU_ASSERT_EQUAL(isnan(to.lon), true);
+  CU_ASSERT_EQUAL(isNaN(to.lat), true);
+  CU_ASSERT_EQUAL(isNaN(to.lon), true);
 
   memset(&from, 0, sizeof(from));
-  from.lat = NAN;
+  from.lat = NaN;
   from.lon = 0.0;
   memset(&to, 0, sizeof(to));
   azimuth = 20.0;
   distance = 1000.0;
   r = nmeaMathMoveFlatEllipsoid(&from, &to, azimuth, distance, &toAzimuth);
   CU_ASSERT_EQUAL(r, false);
-  CU_ASSERT_EQUAL(isnan(to.lat), true);
-  CU_ASSERT_EQUAL(isnan(to.lon), true);
-  CU_ASSERT_EQUAL(isnan(toAzimuth), true);
+  CU_ASSERT_EQUAL(isNaN(to.lat), true);
+  CU_ASSERT_EQUAL(isNaN(to.lon), true);
+  CU_ASSERT_EQUAL(isNaN(toAzimuth), true);
 
   /* normal 'no move' */
 

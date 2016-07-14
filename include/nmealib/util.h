@@ -20,6 +20,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -39,6 +40,12 @@ extern "C" {
 
 /** The power-of-2 chunk size of a buffer allocation */
 #define NMEALIB_BUFFER_CHUNK_SIZE (4096UL)
+
+/** NaN that is a double (and not a float) */
+#define NaN strtod("NAN()", NULL)
+
+/** isnan for doubles and floats alike */
+#define isNaN(x) (x != x)
 
 /**
  * Initialise the random number generation

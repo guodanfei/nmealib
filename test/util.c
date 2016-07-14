@@ -381,12 +381,12 @@ static void test_nmeaStringToDouble(void) {
 
   s = "  ";
   r = nmeaStringToDouble(s, strlen(s));
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
   validateContext(0, 1);
 
   s = "  not a number ";
   r = nmeaStringToDouble(s, strlen(s));
-  CU_ASSERT_EQUAL(isnan(r), true);
+  CU_ASSERT_EQUAL(isNaN(r), true);
   validateContext(0, 1);
 
   /* number */

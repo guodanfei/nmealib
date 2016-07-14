@@ -17,6 +17,7 @@
 
 #include <nmealib/nmath.h>
 
+#include <nmealib/util.h>
 #include <math.h>
 
 double nmeaMathDegreeToRadian(const double v) {
@@ -102,7 +103,7 @@ void nmeaMathPositionToInfo(const NmeaPosition *pos, NmeaInfo *info) {
 double nmeaMathDistance(const NmeaPosition *from, const NmeaPosition *to) {
   if (!from //
       || !to) {
-    return NAN;
+    return NaN;
   }
 
   if ((from->lat == to->lat) //
@@ -126,7 +127,7 @@ double nmeaMathDistanceEllipsoid(const NmeaPosition *from, const NmeaPosition *t
 
   if (!from //
       || !to) {
-    return NAN;
+    return NaN;
   }
 
   if ((from->lat == to->lat) //
@@ -234,10 +235,10 @@ bool nmeaMathMoveFlat(const NmeaPosition *from, NmeaPosition *to, double azimuth
     return false;
   }
 
-  if (isnan(from->lat) //
-      || isnan(from->lon)) {
-    to->lat = NAN;
-    to->lon = NAN;
+  if (isNaN(from->lat) //
+      || isNaN(from->lon)) {
+    to->lat = NaN;
+    to->lon = NaN;
     return false;
   }
 
@@ -266,12 +267,12 @@ bool nmeaMathMoveFlatEllipsoid(const NmeaPosition *from, NmeaPosition *to, doubl
     return false;
   }
 
-  if (isnan(from->lat) //
-      || isnan(from->lon)) {
-    to->lat = NAN;
-    to->lon = NAN;
+  if (isNaN(from->lat) //
+      || isNaN(from->lon)) {
+    to->lat = NaN;
+    to->lon = NaN;
     if (toAzimuth) {
-      *toAzimuth = NAN;
+      *toAzimuth = NaN;
     }
 
     return false;
