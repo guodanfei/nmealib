@@ -291,7 +291,7 @@ typedef enum _NmeaPresence {
 } NmeaPresence;
 
 /** The bit-mask of all supported field name bits */
-#define NMEALIB_INFO_PRESENT_MASK ((NMEALIB_PRESENT_LAST << 1) - 1)
+#define NMEALIB_INFO_PRESENT_MASK (NMEALIB_PRESENT_LAST | (NMEALIB_PRESENT_LAST  - 1))
 
 /**
  * Convert a NmeaPresence into a string
