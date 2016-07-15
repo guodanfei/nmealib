@@ -218,9 +218,13 @@ void nmeaGPGSVToInfo(const NmeaGPGSV *pack, NmeaInfo *info) {
       return;
     }
 
-    if (pack->sentence == 1) {
-      /* first sentence; clear info satellites */
-      memset(info->satellites.inView, 0, sizeof(info->satellites.inView));
+    if (pack->sentence <= pack->sentenceCount) {
+      /* clear non-present satellites */
+      size_t start = pack->sentence << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;
+      size_t clearCount = NMEALIB_MAX_SATELLITES - start;
+      if (clearCount) {
+        memset(&info->satellites.inView[start], 0, clearCount * sizeof(info->satellites.inView[0]));
+      }
     }
 
     i = (pack->sentence - 1) << NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE_SHIFT;

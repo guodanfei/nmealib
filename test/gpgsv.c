@@ -277,13 +277,15 @@ static void test_nmeaGPGSVToInfo(void) {
 
   /* empty */
 
+  memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
+
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
-  checkSatellitesEmpty(info.satellites.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0);
+  checkSatellitesEmpty(info.satellites.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0xaaaaaaaa);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -291,6 +293,7 @@ static void test_nmeaGPGSVToInfo(void) {
 
   pack.inViewCount = 12;
   nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEWCOUNT);
+  memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
 
   nmeaGPGSVToInfo(&pack, &info);
   validatePackToInfo(&info, 0, 0, false);
@@ -298,7 +301,7 @@ static void test_nmeaGPGSVToInfo(void) {
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(info.satellites.inViewCount, 12);
   CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
-  checkSatellitesEmpty(info.satellites.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0);
+  checkSatellitesEmpty(info.satellites.inView, 0, NMEALIB_MAX_SATELLITES - 1, 0xaaaaaaaa);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -414,8 +417,7 @@ static void test_nmeaGPGSVToInfo(void) {
   CU_ASSERT_EQUAL(info.satellites.inView[6].elevation, 15);
   CU_ASSERT_EQUAL(info.satellites.inView[6].azimuth, 30);
   CU_ASSERT_EQUAL(info.satellites.inView[6].snr, 45);
-  checkSatellitesEmpty(info.satellites.inView, 7, 7, 0);
-  checkSatellitesEmpty(info.satellites.inView, 8, NMEALIB_MAX_SATELLITES - 1, 0xaaaaaaaa);
+  checkSatellitesEmpty(info.satellites.inView, 7, NMEALIB_MAX_SATELLITES - 1, 0);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -443,8 +445,39 @@ static void test_nmeaGPGSVToInfo(void) {
   CU_ASSERT_EQUAL(info.satellites.inView[10].elevation, 15);
   CU_ASSERT_EQUAL(info.satellites.inView[10].azimuth, 30);
   CU_ASSERT_EQUAL(info.satellites.inView[10].snr, 45);
-  checkSatellitesEmpty(info.satellites.inView, 11, 11, 0);
-  checkSatellitesEmpty(info.satellites.inView, 12, NMEALIB_MAX_SATELLITES - 1, 0xaaaaaaaa);
+  checkSatellitesEmpty(info.satellites.inView, 11, NMEALIB_MAX_SATELLITES - 1, 0);
+  memset(&pack, 0, sizeof(pack));
+  memset(&info, 0, sizeof(info));
+
+  /* only satellites, last sentence and sparse input at last possible sentence */
+
+  pack.sentence = NMEALIB_GPGSV_MAX_SENTENCES;
+  pack.sentenceCount = NMEALIB_GPGSV_MAX_SENTENCES;
+  pack.inViewCount = NMEALIB_MAX_SATELLITES;
+  pack.inView[2].prn = 11;
+  pack.inView[2].elevation = 15;
+  pack.inView[2].azimuth = 30;
+  pack.inView[2].snr = 45;
+  nmeaInfoSetPresent(&pack.present, NMEALIB_PRESENT_SATINVIEW);
+  memset(info.satellites.inView, 0xaa, sizeof(info.satellites.inView));
+
+  nmeaGPGSVToInfo(&pack, &info);
+  validatePackToInfo(&info, 0, 0, false);
+  CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SATINVIEW);
+  CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPGSV);
+  CU_ASSERT_EQUAL(info.progress.gpgsvInProgress, false);
+  CU_ASSERT_EQUAL(info.satellites.inViewCount, 0);
+  checkSatellitesEmpty(info.satellites.inView, 0, NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE - 1,
+      0xaaaaaaaa);
+  checkSatellitesEmpty(info.satellites.inView, NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE,
+      NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 1, 0);
+  CU_ASSERT_EQUAL(info.satellites.inView[NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 2].prn, 11);
+  CU_ASSERT_EQUAL(info.satellites.inView[NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 2].elevation,
+      15);
+  CU_ASSERT_EQUAL(info.satellites.inView[NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 2].azimuth, 30);
+  CU_ASSERT_EQUAL(info.satellites.inView[NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 2].snr, 45);
+  checkSatellitesEmpty(info.satellites.inView, NMEALIB_MAX_SATELLITES - NMEALIB_GPGSV_MAX_SATS_PER_SENTENCE + 3,
+      NMEALIB_MAX_SATELLITES - 1, 0);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 }
