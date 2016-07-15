@@ -83,7 +83,7 @@ typedef enum _NmeaSentence {
 } NmeaSentence;
 
 /** The bit-mask with all NmeaSentence entries */
-#define NMEALIB_SENTENCE_MASK (NMEALIB_SENTENCE_LAST - 1)
+#define NMEALIB_SENTENCE_MASK (NMEALIB_SENTENCE_LAST | (NMEALIB_SENTENCE_LAST - 1))
 
 /** The fixed length of a NMEA prefix */
 #define NMEALIB_PREFIX_LENGTH 5
