@@ -34,7 +34,7 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
   info.fix = NMEALIB_FIX_3D;
   info.latitude = 5000.0;
   info.longitude = 3600.0;
-  info.speed = 2.14 * NMEALIB_TUS_MS;
+  info.speed = 2.14 * NMEALIB_MPS_TO_KPH;
   info.elevation = 10.86;
   info.track = 45;
   info.mtrack = 55;

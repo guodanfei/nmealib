@@ -465,7 +465,7 @@ static void test_nmeaGPRMCToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPRMC);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_KNOT_TO_KPH), FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -675,7 +675,7 @@ static void test_nmeaGPRMCFromInfo(void) {
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.v23, true);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.speed, (42.55 / NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.speed, (42.55 * NMEALIB_KPH_TO_KNOT), FLT_EPSILON);
   memset(&info, 0, sizeof(info));
 
   /* track */

@@ -21,11 +21,11 @@
 #include <math.h>
 
 double nmeaMathDegreeToRadian(const double v) {
-  return (v * NMEALIB_PI180);
+  return (v * NMEALIB_DEGREE_TO_RADIAN);
 }
 
 double nmeaMathRadianToDegree(const double v) {
-  return (v / NMEALIB_PI180);
+  return (v * NMEALIB_RADIAN_TO_DEGREE);
 }
 
 double nmeaMathNdegToDegree(const double v) {
@@ -55,11 +55,11 @@ double nmeaMathPdopCalculate(const double hdop, const double vdop) {
 }
 
 double nmeaMathDopToMeters(const double dop) {
-  return (dop * NMEALIB_DOP_FACTOR);
+  return (dop * NMEALIB_DOP_TO_METER);
 }
 
 double nmeaMathMetersToDop(const double meters) {
-  return (meters / NMEALIB_DOP_FACTOR);
+  return (meters * NMEALIB_METER_TO_DOP);
 }
 
 void nmeaMathInfoToPosition(const NmeaInfo *info, NmeaPosition *pos) {

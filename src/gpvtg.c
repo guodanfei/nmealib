@@ -120,10 +120,10 @@ bool nmeaGPVTGParse(const char *s, const size_t sz, NmeaGPVTG *pack) {
   }
 
   if (!speedK && speedN) {
-    pack->spk = pack->spn * NMEALIB_TUD_KNOTS;
+    pack->spk = pack->spn * NMEALIB_KNOT_TO_KPH;
     pack->spkK = 'K';
   } else if (speedK && !speedN) {
-    pack->spn = pack->spk / NMEALIB_TUD_KNOTS;
+    pack->spn = pack->spk * NMEALIB_KPH_TO_KNOT;
     pack->spnN = 'N';
   }
 
@@ -158,7 +158,7 @@ void nmeaGPVTGToInfo(const NmeaGPVTG *pack, NmeaInfo *info) {
     if (pack->spkK) {
       info->speed = pack->spk;
     } else {
-      info->speed = pack->spn * NMEALIB_TUD_KNOTS;
+      info->speed = pack->spn * NMEALIB_KNOT_TO_KPH;
     }
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
   }
@@ -185,7 +185,7 @@ void nmeaGPVTGFromInfo(const NmeaInfo *info, NmeaGPVTG *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
-    pack->spn = info->speed / NMEALIB_TUD_KNOTS;
+    pack->spn = info->speed * NMEALIB_KPH_TO_KNOT;
     pack->spnN = 'N';
     pack->spk = info->speed;
     pack->spkK = 'K';

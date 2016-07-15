@@ -111,7 +111,7 @@ static void test_nmeaGPVTGParse(void) {
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spn, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spk, (4.25 * NMEALIB_KNOT_TO_KPH), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');
 
   /* speed kph */
@@ -130,7 +130,7 @@ static void test_nmeaGPVTGParse(void) {
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 4.25, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 / NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (4.25 * NMEALIB_KPH_TO_KNOT), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
 }
 
@@ -202,7 +202,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_KNOT_TO_KPH), FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -216,7 +216,7 @@ static void test_nmeaGPVTGToInfo(void) {
   validatePackToInfo(&info, 0, 0, false);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_SMASK | NMEALIB_PRESENT_SPEED);
   CU_ASSERT_EQUAL(info.smask, NMEALIB_SENTENCE_GPVTG);
-  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(info.speed, (42.75 * NMEALIB_KNOT_TO_KPH), FLT_EPSILON);
   memset(&pack, 0, sizeof(pack));
   memset(&info, 0, sizeof(info));
 
@@ -306,7 +306,7 @@ static void test_nmeaGPVTGFromInfo(void) {
   nmeaGPVTGFromInfo(&info, &pack);
   validateInfoToPack(&pack, 0, 0, false);
   CU_ASSERT_EQUAL(pack.present, NMEALIB_PRESENT_SPEED);
-  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 / NMEALIB_TUD_KNOTS), FLT_EPSILON);
+  CU_ASSERT_DOUBLE_EQUAL(pack.spn, (10.0 * NMEALIB_KPH_TO_KNOT), FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spnN, 'N');
   CU_ASSERT_DOUBLE_EQUAL(pack.spk, 10.0, FLT_EPSILON);
   CU_ASSERT_EQUAL(pack.spkK, 'K');

@@ -243,7 +243,7 @@ void nmeaGPRMCToInfo(const NmeaGPRMC *pack, NmeaInfo *info) {
   }
 
   if (nmeaInfoIsPresentAll(pack->present, NMEALIB_PRESENT_SPEED)) {
-    info->speed = pack->speed * NMEALIB_TUD_KNOTS;
+    info->speed = pack->speed * NMEALIB_KNOT_TO_KPH;
     nmeaInfoSetPresent(&info->present, NMEALIB_PRESENT_SPEED);
   }
 
@@ -310,7 +310,7 @@ void nmeaGPRMCFromInfo(const NmeaInfo *info, NmeaGPRMC *pack) {
   }
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SPEED)) {
-    pack->speed = info->speed / NMEALIB_TUD_KNOTS;
+    pack->speed = info->speed * NMEALIB_KPH_TO_KNOT;
     nmeaInfoSetPresent(&pack->present, NMEALIB_PRESENT_SPEED);
   }
 

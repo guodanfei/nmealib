@@ -25,18 +25,18 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define NMEALIB_TUD_YARDS              (1.0936133)                          /**< Yards: meters * NMEALIB_TUD_YARDS = yards      */
-#define NMEALIB_TUD_KNOTS              (1.852)                              /**< Knots: kilometers / NMEALIB_TUD_KNOTS = knots  */
-#define NMEALIB_TUD_MILES              (1.609344)                           /**< Miles: kilometers / NMEALIB_TUD_MILES = miles  */
-#define NMEALIB_TUS_MS                 (3.6)                                /**< Meters per seconds: kph / NMEALIB_TUS_MS = mps */
-#define NMEALIB_PI                     (3.141592653589793)                  /**< PI                                             */
-#define NMEALIB_PI180                  (NMEALIB_PI / 180.0)                 /**< PI divided by 180                              */
-#define NMEALIB_EARTHRADIUS_KM         (6378.0)                             /**< Earth's mean radius in km                      */
-#define NMEALIB_EARTHRADIUS_M          (NMEALIB_EARTHRADIUS_KM * 1000.0)    /**< Earth's mean radius in m                       */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_M  (6378137.0)                          /**< Earth's semi-major axis in m according WGS84   */
-#define NMEALIB_EARTH_SEMIMAJORAXIS_KM (NMEALIB_EARTHMAJORAXIS_KM / 1000.0) /**< Earth's semi-major axis in km according WGS 84 */
-#define NMEALIB_EARTH_FLATTENING       (1.0 / 298.257223563)                /**< Earth's flattening according WGS 84            */
-#define NMEALIB_DOP_FACTOR             (5.0)                                /**< Factor for translating DOP to meters           */
+#define NMEALIB_KNOT_TO_KPH           (1.852)
+#define NMEALIB_KPH_TO_KNOT           (0.5399568034557234996739794041786808520)
+#define NMEALIB_DEGREE_TO_RADIAN      (0.0174532925199432957692369076848861271)
+#define NMEALIB_RADIAN_TO_DEGREE      (57.2957795130823208767981548141051703)
+#define NMEALIB_DOP_TO_METER          (5.0)
+#define NMEALIB_METER_TO_DOP          (0.2)
+#define NMEALIB_MPS_TO_KPH            (3.6)
+#define NMEALIB_PI                    (3.1415926535897932384626433832795029)
+#define NMEALIB_EARTHRADIUS_KM        (6378.137)
+#define NMEALIB_EARTHRADIUS_M         (6378137)
+#define NMEALIB_EARTH_SEMIMAJORAXIS_M (6356752.3142)
+#define NMEALIB_EARTH_FLATTENING      (1.0 / 298.257223563)
 
 /*
  * Degrees and Radians
