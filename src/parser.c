@@ -95,6 +95,7 @@ bool nmeaParserDestroy(NmeaParser *parser) {
 
   free(parser->buffer);
   parser->buffer = NULL;
+  parser->bufferSize = 0;
 
   return true;
 }
