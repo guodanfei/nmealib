@@ -42,7 +42,7 @@ typedef struct _NmeaInvalidCharacter {
  * @return The invalid character character/description pair when the string
  * has invalid characters, NULL otherwise
  */
-const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
+const NmeaInvalidCharacter *nmeaValidateIsInvalidCharacter(const char c);
 
 /**
  * Determine whether the specified string contains characters that are not
@@ -54,7 +54,7 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c);
  * @return The invalid character character/description pair when the string
  * has invalid characters, NULL otherwise
  */
-const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz);
+const NmeaInvalidCharacter *nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz);
 
 /**
  * Validate the time fields in an NmeaTime structure.

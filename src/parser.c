@@ -26,9 +26,9 @@
 #define NMEALIB_PARSER_EOL_CHAR_1 ('\r')
 #define NMEALIB_PARSER_EOL_CHAR_2 ('\n')
 
-void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state);
+void nmeaParserReset(NmeaParser *parser, NmeaParserSentenceState new_state);
 bool nmeaParserIsHexCharacter(char c);
-bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c);
+bool nmeaParserProcessCharacter(NmeaParser *parser, const char *c);
 
 bool nmeaParserIsHexCharacter(char c) {
   switch (tolower(c)) {
@@ -55,7 +55,7 @@ bool nmeaParserIsHexCharacter(char c) {
   }
 }
 
-void nmeaParserReset(NmeaParser * parser, NmeaParserSentenceState new_state) {
+void nmeaParserReset(NmeaParser *parser, NmeaParserSentenceState new_state) {
   if (!parser) {
     return;
   }
@@ -100,7 +100,7 @@ bool nmeaParserDestroy(NmeaParser *parser) {
   return true;
 }
 
-bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
+bool nmeaParserProcessCharacter(NmeaParser *parser, const char *c) {
   if (!parser //
       || !c //
       || !parser->buffer) {
@@ -207,7 +207,7 @@ bool nmeaParserProcessCharacter(NmeaParser *parser, const char * c) {
   return false;
 }
 
-size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t sz, NmeaInfo * info) {
+size_t nmeaParserParse(NmeaParser *parser, const char *s, size_t sz, NmeaInfo *info) {
   size_t sentences_count = 0;
   size_t charIndex = 0;
 

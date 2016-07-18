@@ -56,7 +56,7 @@ typedef enum _NmeaSignal {
  * @param sig The NMEALIB_SIG_* signal
  * @return The corresponding string, or NULL when the signal is unknown
  */
-static INLINE const char * nmeaInfoSignalToString(NmeaSignal sig) {
+static INLINE const char *nmeaInfoSignalToString(NmeaSignal sig) {
   switch (sig) {
     case NMEALIB_SIG_INVALID:
       return "INVALID";
@@ -127,7 +127,7 @@ typedef enum _NmeaFix {
  * @return The corresponding string, or NULL when the NMEALIB_FIX_* fix is
  * unknown
  */
-static INLINE const char * nmeaInfoFixToString(NmeaFix fix) {
+static INLINE const char *nmeaInfoFixToString(NmeaFix fix) {
   switch (fix) {
     case NMEALIB_FIX_BAD:
       return "BAD";
@@ -299,7 +299,7 @@ typedef enum _NmeaPresence {
  * @param field The NmeaPresence
  * @return The corresponding string, or NULL when the NmeaPresence is unknown
  */
-static INLINE const char * nmeaInfoFieldToString(NmeaPresence field) {
+static INLINE const char *nmeaInfoFieldToString(NmeaPresence field) {
   switch (field) {
     case NMEALIB_PRESENT_SMASK:
       return "SMASK";
@@ -403,7 +403,7 @@ static INLINE bool nmeaInfoIsPresentAny(uint32_t present, NmeaPresence fieldName
  * @param present The 'present' field
  * @param fieldName The NmeaPresence to indicate presence of
  */
-static INLINE void nmeaInfoSetPresent(uint32_t * present, NmeaPresence fieldName) {
+static INLINE void nmeaInfoSetPresent(uint32_t *present, NmeaPresence fieldName) {
   if (present) {
     *present |= fieldName;
   }
@@ -415,7 +415,7 @@ static INLINE void nmeaInfoSetPresent(uint32_t * present, NmeaPresence fieldName
  * @param present The 'present' field
  * @param fieldName The NmeaPresence to absence presence of
  */
-static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldName) {
+static INLINE void nmeaInfoUnsetPresent(uint32_t *present, NmeaPresence fieldName) {
   if (present) {
     *present &= ~fieldName;
   }
@@ -430,7 +430,7 @@ static INLINE void nmeaInfoUnsetPresent(uint32_t * present, NmeaPresence fieldNa
  * @param timeval If non-NULL then use this provided time, otherwise the
  * 'gettimeofday' c-library function is used to obtain it
  */
-void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval);
+void nmeaTimeSet(NmeaTime *utc, uint32_t *present, struct timeval *timeval);
 
 /**
  * Clear an info structure.
@@ -490,7 +490,7 @@ void nmeaInfoSanitise(NmeaInfo *info);
  * @param toMetric Convert to metric units (from original units) when true,
  * convert to original units (from metric units) when false
  */
-void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric);
+void nmeaInfoUnitConversion(NmeaInfo *info, bool toMetric);
 
 /**
  * Compare 2 satellite PRNs and put zeroes last

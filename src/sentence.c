@@ -21,7 +21,7 @@
 #include <string.h>
 
 NmeaSentence nmeaSentenceFromPrefix(const char *s, const size_t sz) {
-  const char * str = s;
+  const char *str = s;
   size_t size = sz;
   size_t i = 0;
 

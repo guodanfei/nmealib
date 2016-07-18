@@ -92,7 +92,7 @@ typedef enum _NmeaSentence {
  * The type definition for an entry mapping a NMEA sentence prefix to a sentence type
  */
 typedef struct _NmeaSentencePrefixToType {
-  const char * prefix;
+  const char *prefix;
   const NmeaSentence sentence;
 } NmeaSentencePrefixToType;
 
@@ -157,7 +157,7 @@ typedef struct _NmeaMallocedBuffer {
  * @param sentence The sentence type
  * @return The NMEA prefix, or NULL when the sentence type is unknown
  */
-static INLINE const char * nmeaSentenceToPrefix(NmeaSentence sentence) {
+static INLINE const char *nmeaSentenceToPrefix(NmeaSentence sentence) {
   size_t i = 0;
 
   while (nmealibSentencePrefixToType[i].prefix) {

@@ -138,7 +138,7 @@ bool nmeaTimeParseTime(const char *s, NmeaTime *time) {
 
 bool nmeaTimeParseDate(const char *s, NmeaTime *date) {
   size_t sz;
-  const char * d;
+  const char *d;
 
   if (!s //
       || !date) {
@@ -169,7 +169,7 @@ bool nmeaTimeParseDate(const char *s, NmeaTime *date) {
   return true;
 }
 
-void nmeaTimeSet(NmeaTime *utc, uint32_t * present, struct timeval *timeval) {
+void nmeaTimeSet(NmeaTime *utc, uint32_t *present, struct timeval *timeval) {
   struct timeval tv;
   struct tm tm;
   long usec;
@@ -667,7 +667,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
   }
 }
 
-void nmeaInfoUnitConversion(NmeaInfo * info, bool toMetric) {
+void nmeaInfoUnitConversion(NmeaInfo *info, bool toMetric) {
   if (!info) {
     return;
   }

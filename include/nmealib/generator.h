@@ -90,7 +90,7 @@ typedef struct _NmeaGenerator {
  * @param info The info structure to use during generation
  * @return The generator, or NULL on failure
  */
-NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info);
+NmeaGenerator *nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info);
 
 /**
  * Destroy the generator

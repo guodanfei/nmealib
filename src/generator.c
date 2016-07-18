@@ -464,7 +464,7 @@ bool nmeaGeneratorInit(NmeaGenerator *gen, NmeaInfo *info) {
   return r;
 }
 
-NmeaGenerator * nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
+NmeaGenerator *nmeaGeneratorCreate(NmeaGeneratorType type, NmeaInfo *info) {
   NmeaGenerator *gen = 0;
 
   if (!info) {
@@ -564,7 +564,7 @@ bool nmeaGeneratorInvoke(NmeaGenerator *gen, NmeaInfo *info) {
 }
 
 void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen) {
-  NmeaGenerator * next;
+  NmeaGenerator *next;
 
   if (!to //
       || !gen //

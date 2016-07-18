@@ -149,7 +149,7 @@ unsigned int nmeaStringToUnsignedInteger(const char *s, size_t sz, int radix) {
 
 long nmeaStringToLong(const char *s, size_t sz, int radix) {
   char buf[NMEALIB_CONVSTR_BUF];
-  char * endPtr = NULL;
+  char *endPtr = NULL;
   long value;
 
   if (!s //
@@ -178,7 +178,7 @@ long nmeaStringToLong(const char *s, size_t sz, int radix) {
 
 unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
   char buf[NMEALIB_CONVSTR_BUF];
-  char * endPtr = NULL;
+  char *endPtr = NULL;
   unsigned long value;
 
   if (!s //
@@ -207,7 +207,7 @@ unsigned long nmeaStringToUnsignedLong(const char *s, size_t sz, int radix) {
 
 double nmeaStringToDouble(const char *s, const size_t sz) {
   char buf[NMEALIB_CONVSTR_BUF];
-  char * endPtr = NULL;
+  char *endPtr = NULL;
   double value;
 
   if (!s //

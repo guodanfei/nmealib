@@ -98,7 +98,7 @@ bool nmeaParserDestroy(NmeaParser *parser);
  * @param info The info structure in which to store the information
  * @return The number of sentences that were parsed
  */
-size_t nmeaParserParse(NmeaParser * parser, const char * s, size_t sz, NmeaInfo * info);
+size_t nmeaParserParse(NmeaParser *parser, const char *s, size_t sz, NmeaInfo *info);
 
 #ifdef  __cplusplus
 }

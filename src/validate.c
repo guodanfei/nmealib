@@ -57,7 +57,7 @@ static const NmeaInvalidCharacter nmealibInvalidCharacters[] = {
     }//
 };
 
-const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c) {
+const NmeaInvalidCharacter *nmeaValidateIsInvalidCharacter(const char c) {
   size_t i = 0;
 
   if ((c < 32) //
@@ -76,7 +76,7 @@ const NmeaInvalidCharacter * nmeaValidateIsInvalidCharacter(const char c) {
   return NULL;
 }
 
-const NmeaInvalidCharacter * nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz) {
+const NmeaInvalidCharacter *nmeaValidateSentenceHasInvalidCharacters(const char *s, const size_t sz) {
   size_t i = 0;
 
   if (!s //
