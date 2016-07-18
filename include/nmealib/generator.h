@@ -141,13 +141,13 @@ void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen);
  *
  * Allocates memory for the generated sentences.
  *
- * @param buf The string buffer variable, will be NULL on failure
+ * @param buf The allocated buffer (do read the comments of NmeaMallocedBuffer)
  * @param info The info structure to use during generation
  * @param gen The generator
  * @param mask The mask (smask) of sentences to generate
  * @return The total length of the generated sentences
  */
-size_t nmeaGeneratorGenerateFrom(char **buf, NmeaInfo *info, NmeaGenerator *gen, NmeaSentence mask);
+size_t nmeaGeneratorGenerateFrom(NmeaMallocedBuffer *buf, NmeaInfo *info, NmeaGenerator *gen, NmeaSentence mask);
 
 #ifdef  __cplusplus
 }

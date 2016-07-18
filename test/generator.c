@@ -1075,7 +1075,7 @@ static void test_nmeaGeneratorAppend(void) {
 }
 
 static void test_nmeaGeneratorGenerateFrom(void) {
-  char *s = NULL;
+  NmeaMallocedBuffer buf;
   NmeaInfo info;
   size_t r;
 
@@ -1083,36 +1083,58 @@ static void test_nmeaGeneratorGenerateFrom(void) {
 
   CU_ASSERT_PTR_NOT_NULL_FATAL(gen);
 
+  memset(&buf, 0, sizeof(buf));
   memset(&info, 0, sizeof(info));
 
   /* invalid inputs */
 
-  r = nmeaGeneratorGenerateFrom(NULL, NULL, NULL, 0);
+  r = nmeaGeneratorGenerateFrom(NULL, &info, gen, 0);
   CU_ASSERT_EQUAL(r, 0);
 
-  r = nmeaGeneratorGenerateFrom(&s, NULL, NULL, 0);
+  buf.buffer = (char *) &info;
+  buf.bufferSize = 0;
+  r = nmeaGeneratorGenerateFrom(&buf, &info, gen, 0);
   CU_ASSERT_EQUAL(r, 0);
 
-  r = nmeaGeneratorGenerateFrom(&s, &info, gen, 0);
+  buf.buffer = NULL;
+  buf.bufferSize = 1;
+  r = nmeaGeneratorGenerateFrom(&buf, &info, gen, 0);
+  CU_ASSERT_EQUAL(r, 0);
+
+  buf.buffer = NULL;
+  buf.bufferSize = 0;
+
+  r = nmeaGeneratorGenerateFrom(&buf, NULL, gen, 0);
+  CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaGeneratorGenerateFrom(&buf, &info, NULL, 0);
+  CU_ASSERT_EQUAL(r, 0);
+
+  r = nmeaGeneratorGenerateFrom(&buf, &info, gen, 0);
   CU_ASSERT_EQUAL(r, 0);
 
   /* normal */
 
-  r = nmeaGeneratorGenerateFrom(&s, &info, gen, NMEALIB_SENTENCE_GPGSA);
-  CU_ASSERT_PTR_NOT_NULL(s);
+  r = nmeaGeneratorGenerateFrom(&buf, &info, gen, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_EQUAL(r, 28);
-  CU_ASSERT_STRING_EQUAL(s, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
-  free(s);
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPGSA,,,,,,,,,,,,,,,,,*6E\r\n");
+
+  /* free the buffer */
+  free(buf.buffer);
+  buf.buffer = NULL;
+  buf.bufferSize = 0;
 
   /* invoke fail */
 
   gen->invoke = failInvoke;
-  r = nmeaGeneratorGenerateFrom(&s, &info, gen, NMEALIB_SENTENCE_GPGSA);
-  CU_ASSERT_PTR_NULL(s);
+  r = nmeaGeneratorGenerateFrom(&buf, &info, gen, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_PTR_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, 0);
 
   nmeaGeneratorDestroy(gen);
-  free(s);
 }
 
 /*

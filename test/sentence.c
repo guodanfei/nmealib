@@ -252,7 +252,7 @@ static void test_nmeaSentenceFromInfo(void) {
   size_t r;
   NmeaInfo infoEmpty;
   NmeaInfo info;
-  char *buf;
+  NmeaMallocedBuffer buf;
 
   memset(&infoEmpty, 0, sizeof(infoEmpty));
   memset(&info, 0, sizeof(info));
@@ -264,18 +264,41 @@ static void test_nmeaSentenceFromInfo(void) {
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
 
-  buf = (void *) &info;
+  buf.buffer = (char *) &info;
+  buf.bufferSize = 0;
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGGA);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  CU_ASSERT_PTR_EQUAL(buf.buffer, (char *) &info);
+  CU_ASSERT_EQUAL(buf.bufferSize, 0);
+  memset(&info, 0, sizeof(info));
+
+  buf.buffer = NULL;
+  buf.bufferSize = 1;
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGGA);
+  CU_ASSERT_EQUAL(r, 0);
+  validateContext(0, 0);
+  CU_ASSERT_PTR_EQUAL(buf.buffer, NULL);
+  CU_ASSERT_EQUAL(buf.bufferSize, 1);
+  memset(&info, 0, sizeof(info));
+
+  /* allocate the buffer */
+  buf.bufferSize = NMEALIB_BUFFER_CHUNK_SIZE;
+  buf.buffer = malloc(buf.bufferSize);
+  CU_ASSERT_PTR_NOT_NULL_FATAL(buf.buffer);
+
   r = nmeaSentenceFromInfo(&buf, NULL, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
-  CU_ASSERT_PTR_NULL(buf);
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
   memset(&info, 0, sizeof(info));
 
-  buf = (void *) &info;
   r = nmeaSentenceFromInfo(&buf, &info, 0);
   CU_ASSERT_EQUAL(r, 0);
   validateContext(0, 0);
-  CU_ASSERT_PTR_NULL(buf);
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
   memset(&info, 0, sizeof(info));
 
   /* GPGGA */
@@ -287,10 +310,11 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGGA);
   CU_ASSERT_EQUAL(r, 34);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPGGA,122232.42,,,,,,,,,,,,,*7C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
-  free(buf);
 
   /* GPGSA */
 
@@ -298,10 +322,11 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_FIX);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGSA);
   CU_ASSERT_EQUAL(r, 29);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPGSA,,3,,,,,,,,,,,,,,,*5D\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
-  free(buf);
 
   /* GPGSV */
 
@@ -309,10 +334,11 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPGSV);
   CU_ASSERT_EQUAL(r, 54);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPGSV,2,1,5,,,,,,,,,,,,,,,,*4F\r\n$GPGSV,2,2,5,,,,*4C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
-  free(buf);
 
   /* GPRMC */
 
@@ -323,10 +349,11 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_UTCTIME);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPRMC);
   CU_ASSERT_EQUAL(r, 32);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPRMC,122232.42,,,,,,,,,,,*61\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
-  free(buf);
 
   /* GPVTG */
 
@@ -334,10 +361,11 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPVTG);
   CU_ASSERT_EQUAL(r, 29);
-  CU_ASSERT_STRING_EQUAL(buf, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
   validateContext(0, 0);
   memset(&info, 0, sizeof(info));
-  free(buf);
 
   /* invalid mask */
 
@@ -345,10 +373,32 @@ static void test_nmeaSentenceFromInfo(void) {
   nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
   r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_LAST << 1);
   CU_ASSERT_EQUAL(r, 0);
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
   validateContext(0, 0);
-  CU_ASSERT_PTR_NULL(buf);
   memset(&info, 0, sizeof(info));
-  free(buf);
+
+  /* free the buffer */
+  free(buf.buffer);
+  buf.buffer = NULL;
+  buf.bufferSize = 0;
+
+  /* GPVTG */
+
+  info.speed = 42.43;
+  nmeaInfoSetPresent(&info.present, NMEALIB_PRESENT_SPEED);
+  r = nmeaSentenceFromInfo(&buf, &info, NMEALIB_SENTENCE_GPVTG);
+  CU_ASSERT_EQUAL(r, 29);
+  CU_ASSERT_PTR_NOT_NULL(buf.buffer);
+  CU_ASSERT_EQUAL(buf.bufferSize, NMEALIB_BUFFER_CHUNK_SIZE);
+  CU_ASSERT_STRING_EQUAL(buf.buffer, "$GPVTG,,,,,22.9,N,42.4,K*5C\r\n");
+  validateContext(0, 0);
+  memset(&info, 0, sizeof(info));
+
+  /* free the buffer */
+  free(buf.buffer);
+  buf.buffer = NULL;
+  buf.bufferSize = 0;
 }
 
 /*

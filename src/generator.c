@@ -584,21 +584,22 @@ void nmeaGeneratorAppend(NmeaGenerator *to, NmeaGenerator *gen) {
   next->next = gen;
 }
 
-size_t nmeaGeneratorGenerateFrom(char **s, NmeaInfo *info, NmeaGenerator *gen, NmeaSentence mask) {
+size_t nmeaGeneratorGenerateFrom(NmeaMallocedBuffer *buf, NmeaInfo *info, NmeaGenerator *gen, NmeaSentence mask) {
   size_t r;
 
-  if (!s //
+  if (!buf //
+      || (!buf->buffer && buf->bufferSize) //
+      || (buf->buffer && !buf->bufferSize) //
       || !info //
       || !gen //
       || !mask) {
     return 0;
   }
 
-  *s = NULL;
   r = nmeaGeneratorInvoke(gen, info);
   if (!r) {
     return 0;
   }
 
-  return nmeaSentenceFromInfo(s, info, mask);
+  return nmeaSentenceFromInfo(buf, info, mask);
 }

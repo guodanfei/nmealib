@@ -127,6 +127,31 @@ static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
 };
 
 /**
+ * A malloced buffer and its size.
+ *
+ * This type is used in functions that need allocated memory of variable
+ * size: the function can allocate memory and reallocate it if needed.
+ *
+ * Using this type allows for the users of the functions to decide for
+ * themselves whether or not to re-use (previously) allocated memory or
+ * to treat the allocated memory as once-off.
+ *
+ * When handing this type to a function, one of the following 2 cases
+ * MUST be used (the function will check for these):
+ * 1- buffer is NULL and bufferSize is zero: this indicates that
+ *    the function should allocate memory and can reallocate memory
+ *    to increase the allocated size if needed.
+ * 2- buffer is not NULL and bufferSize is not zero: this indicates that
+ *    the user has already allocated memory so the function should not
+ *    (initially) allocate memory. However, the function can reallocate
+ *    memory to increase the allocated size if needed.
+ */
+typedef struct _NmeaMallocedBuffer {
+  char *buffer;
+  size_t bufferSize;
+} NmeaMallocedBuffer;
+
+/**
  * Determine the NMEA prefix from the sentence type.
  *
  * @param sentence The sentence type
@@ -174,13 +199,12 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info);
  *
  * Allocates memory as needed.
  *
- * @param buf The location where to store the pointer to the allocated buffer.
- * Will be null when there is no output.
+ * @param buf The allocated buffer (do read the comments of NmeaMallocedBuffer)
  * @param info The sanitised NmeaInfo structure
  * @param mask The bit-mask of sentences to generate
  * @return The total length of the generated sentences
  */
-size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const NmeaSentence mask);
+size_t nmeaSentenceFromInfo(NmeaMallocedBuffer *buf, const NmeaInfo *info, const NmeaSentence mask);
 
 #ifdef  __cplusplus
 }

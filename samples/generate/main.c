@@ -20,13 +20,15 @@
 #include <nmealib/sentence.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused))) {
+  NmeaMallocedBuffer buf;
   NmeaInfo info;
-  char *buf;
   size_t i;
 
+  memset(&buf, 0, sizeof(buf));
   nmeaInfoClear(&info);
   nmeaTimeSet(&info.utc, &info.present, NULL);
 
@@ -79,14 +81,16 @@ int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
         | NMEALIB_SENTENCE_GPGSV //
         | NMEALIB_SENTENCE_GPRMC //
         | NMEALIB_SENTENCE_GPVTG);
-    if (gen_sz && buf) {
-      printf("%s\n", buf);
-      free(buf);
-      buf = NULL;
+    if (gen_sz) {
+      printf("%s\n", buf.buffer);
       usleep(500000);
       info.speed += .1;
     }
   }
+
+  free(buf.buffer);
+  buf.buffer = NULL;
+  buf.bufferSize = 0;
 
   return 0;
 }

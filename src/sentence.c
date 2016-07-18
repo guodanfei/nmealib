@@ -108,7 +108,7 @@ bool nmeaSentenceToInfo(const char *s, const size_t sz, NmeaInfo *info) {
   }
 }
 
-size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const NmeaSentence mask) {
+size_t nmeaSentenceFromInfo(NmeaMallocedBuffer *buf, const NmeaInfo *info, const NmeaSentence mask) {
 
 #define dst       (&s[chars])
 #define available ((sz <= (size_t) chars) ? 0 : (sz - (size_t) chars))
@@ -131,23 +131,27 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const NmeaSentence
   size_t chars;
   NmeaSentence msk;
 
-  if (!buf) {
-    return 0;
-  }
-
-  *buf = NULL;
-
-  if (!info //
+  if (!buf //
+      || (!buf->buffer && buf->bufferSize) //
+      || (buf->buffer && !buf->bufferSize) //
+      || !info //
       || !mask) {
     return 0;
   }
 
-  sz = NMEALIB_BUFFER_CHUNK_SIZE;
-  s = malloc(sz);
+  sz = buf->bufferSize;
+  s = buf->buffer;
+
   if (!s) {
-    /* can't be covered in a test */
-    return 0;
+    sz = NMEALIB_BUFFER_CHUNK_SIZE;
+    s = malloc(sz);
+    if (!s) {
+      /* can't be covered in a test */
+      return 0;
+    }
   }
+
+  *s = '\0';
 
   chars = 0;
   msk = mask;
@@ -192,14 +196,10 @@ size_t nmeaSentenceFromInfo(char **buf, const NmeaInfo *info, const NmeaSentence
     }
   }
 
-  if (!chars) {
-    free(s);
-    s = NULL;
-  } else {
-    s[chars] = '\0';
-  }
+  s[chars] = '\0';
 
-  *buf = s;
+  buf->buffer = s;
+  buf->bufferSize = sz;
 
   return chars;
 
