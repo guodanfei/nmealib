@@ -132,10 +132,12 @@ static void test_nmeaParserReset(void) {
 
   /* normal, with allocated buffer */
 
-  parser.buffer = malloc(NMEALIB_PARSER_SENTENCE_SIZE);
+  parser.bufferSize = NMEALIB_PARSER_SENTENCE_SIZE;
+  parser.buffer = malloc(parser.bufferSize);
   CU_ASSERT_PTR_NOT_NULL_FATAL(parser.buffer);
 
   memset(&parserEmpty, 0, sizeof(parserEmpty));
+  parserEmpty.bufferSize = parser.bufferSize;
   parserEmpty.buffer = parser.buffer;
   parserEmpty.sentence.state = NMEALIB_SENTENCE_STATE_READ_EOL;
 
