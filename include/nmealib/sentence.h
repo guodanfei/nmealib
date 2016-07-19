@@ -48,8 +48,8 @@
  * | satinfo inview count | x     |       | x     |       |       |
  * | satinfo inview       |       |       | x     |       |       |
  *
- * (1) Only sets the NmeaInfo sig when it is not set yet.
- * (2) Not present in the sentence but the library sets it up.
+ * (1) Only sets the NmeaInfo sig when it is not set yet.<br/>
+ * (2) Not present in the sentence but the library sets it up.<br/>
  * (3) If the sentence is a v2.3+ sentence then the NmeaInfo sig is set
  *     normally, otherwise the NmeaInfo sig is only set when it is not
  *     set yet.
