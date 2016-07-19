@@ -384,8 +384,7 @@ void nmeaInfoSanitise(NmeaInfo *info) {
    */
 
   if (nmeaInfoIsPresentAll(info->present, NMEALIB_PRESENT_SIG)) {
-    if ((info->sig < NMEALIB_SIG_FIRST) //
-        || (info->sig > NMEALIB_SIG_LAST)) {
+    if (info->sig > NMEALIB_SIG_LAST) {
       info->sig = NMEALIB_SIG_INVALID;
     }
   }
