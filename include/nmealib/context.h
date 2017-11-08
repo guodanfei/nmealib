@@ -20,6 +20,10 @@
 
 #include <stddef.h>
 
+#ifdef WIN32
+#define __attribute__(A) /* do nothing */
+#endif
+
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
