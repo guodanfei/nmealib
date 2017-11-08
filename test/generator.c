@@ -147,7 +147,11 @@ static void test_nmeaGeneratorInvokeStatic(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInvokeStatic(NULL, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present, NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME);
   CU_ASSERT_EQUAL(info.smask, 0);
@@ -299,7 +303,11 @@ static void test_nmeaGeneratorInvokeRotate(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInvokeRotate(NULL, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
       NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
@@ -339,7 +347,11 @@ static void test_nmeaGeneratorInvokeRotate(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInvokeRotate(NULL, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
       NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
@@ -385,7 +397,11 @@ static void test_nmeaGeneratorInvokeRotate(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInvokeRotate(NULL, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(info.present,
       NMEALIB_PRESENT_UTCDATE | NMEALIB_PRESENT_UTCTIME | NMEALIB_PRESENT_SATINVIEWCOUNT | NMEALIB_PRESENT_SATINVIEW);
@@ -733,7 +749,11 @@ static void test_nmeaGeneratorInit(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInit(&gen, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(nmeaInfoIsPresentAll(info.present, NMEALIB_PRESENT_SMASK), true);
   CU_ASSERT_EQUAL(nmeaInfoIsPresentAll(info.present, NMEALIB_PRESENT_LAT), true);
@@ -771,7 +791,11 @@ static void test_nmeaGeneratorInit(void) {
 
   gettimeofday(&tp, NULL);
   r = nmeaGeneratorInit(g, &info);
+#ifdef WIN32
+  gmtime_s(&tt, &tp.tv_sec);
+#else
   gmtime_r(&tp.tv_sec, &tt);
+#endif
   CU_ASSERT_EQUAL(r, true);
   CU_ASSERT_EQUAL(nmeaInfoIsPresentAll(info.present, NMEALIB_PRESENT_SMASK), true);
   CU_ASSERT_EQUAL(nmeaInfoIsPresentAll(info.present, NMEALIB_PRESENT_LAT), true);

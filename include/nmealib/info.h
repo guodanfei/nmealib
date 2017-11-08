@@ -21,7 +21,12 @@
 #include <nmealib/util.h>
 #include <stdbool.h>
 #include <stdint.h>
+#ifndef WIN32
 #include <sys/time.h>
+#else
+#include <Windows.h>
+#define __attribute__(A) /* do nothing */
+#endif
 
 #ifdef  __cplusplus
 extern "C" {
