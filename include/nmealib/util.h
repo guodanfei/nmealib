@@ -21,17 +21,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "windowssupport.h"
 
 #ifdef  __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 #ifndef INLINE
-# ifndef WIN32
-#  define INLINE inline __attribute__((always_inline))
-# else
-#  define INLINE inline
-# endif
+#define INLINE inline __attribute__((always_inline))
 #endif
 
 #ifndef MAX
@@ -161,12 +158,7 @@ int nmeaAppendChecksum(char *s, size_t sz, size_t len);
  * @param format The string format to use
  * @return The number of printed characters, -1 on error
  */
-#ifndef WIN32
 int nmeaPrintf(char *s, size_t sz, const char *format, ...) __attribute__ ((format(printf, 3, 4)));
-#else
-int nmeaPrintf(char *s, size_t sz, const char *format, ...);
-#endif // !WIN32
-
 
 /**
  * Analyse a string (specific for NMEA sentences)

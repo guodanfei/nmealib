@@ -549,11 +549,7 @@ static void test_nmeaTimeSet(void) {
   memcpy(&utcExpected, &utcClean, sizeof(utcClean));
   gettimeofday(&timeval, NULL);
   nmeaTimeSet(&utc, NULL, NULL);
-#ifdef WIN32
-  gmtime_s(&tt, &timeval.tv_sec);
-#else
   gmtime_r(&timeval.tv_sec, &tt);
-#endif
   utcExpected.year = (unsigned int) tt.tm_year + 1900;
   utcExpected.mon = (unsigned int) tt.tm_mon + 1;
   utcExpected.day = (unsigned int) tt.tm_mday;
@@ -569,11 +565,7 @@ static void test_nmeaTimeSet(void) {
   memcpy(&utcExpected, &utcClean, sizeof(utcClean));
   gettimeofday(&timeval, NULL);
   nmeaTimeSet(&utc, &present, NULL);
-#ifdef WIN32
-  gmtime_s(&tt, &timeval.tv_sec);
-#else
   gmtime_r(&timeval.tv_sec, &tt);
-#endif
   utcExpected.year = (unsigned int) tt.tm_year + 1900;
   utcExpected.mon = (unsigned int) tt.tm_mon + 1;
   utcExpected.day = (unsigned int) tt.tm_mday;

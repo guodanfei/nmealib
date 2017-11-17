@@ -180,7 +180,7 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t *present, struct timeval *timeval) {
 
   if (timeval) {
 #ifdef WIN32
-    gmtime(&timeval->tv_sec, &tm);
+    gmtime_s(&tm, &timeval->tv_sec);
 #else
     gmtime_r(&timeval->tv_sec, &tm);
 #endif

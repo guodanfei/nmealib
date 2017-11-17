@@ -19,10 +19,7 @@
 #define __NMEALIB_CONTEXT_H__
 
 #include <stddef.h>
-
-#ifdef WIN32
-#define __attribute__(A) /* do nothing */
-#endif
+#include "windowssupport.h"
 
 #ifdef  __cplusplus
 extern "C" {
