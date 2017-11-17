@@ -28,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 /** The maximum size of a string-to-number conversion buffer*/
 #define NMEALIB_CONVSTR_BUF    64

@@ -19,6 +19,7 @@
 #define __NMEALIB_CONTEXT_H__
 
 #include <stddef.h>
+#include "windowssupport.h"
 
 #ifdef  __cplusplus
 extern "C" {

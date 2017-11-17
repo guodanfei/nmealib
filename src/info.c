@@ -182,9 +182,21 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t *present, struct timeval *timeval) {
     gmtime_r(&timeval->tv_sec, &tm);
     usec = timeval->tv_usec;
   } else {
+#ifdef _WIN32
+	  SYSTEMTIME sys_time;
+	  GetLocalTime(&sys_time);
+	  tm.tm_year = sys_time.wYear - 1900;
+	  tm.tm_mon = sys_time.wMonth - 1;
+	  tm.tm_mday = sys_time.wDay;
+	  tm.tm_hour = sys_time.wHour;
+	  tm.tm_min = sys_time.wMinute;
+	  tm.tm_sec = sys_time.wSecond;
+	  usec = sys_time.wMilliseconds * 1000;
+#else
     gettimeofday(&tv, NULL);
     gmtime_r(&tv.tv_sec, &tm);
     usec = tv.tv_usec;
+#endif
   }
 
   utc->year = (unsigned int) tm.tm_year + 1900;

@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "windowssupport.h"
 
 #ifdef  __cplusplus
 extern "C" {
