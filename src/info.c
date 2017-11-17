@@ -179,14 +179,10 @@ void nmeaTimeSet(NmeaTime *utc, uint32_t *present, struct timeval *timeval) {
   }
 
   if (timeval) {
-#ifdef WIN32
-    gmtime_s(&tm, &timeval->tv_sec);
-#else
     gmtime_r(&timeval->tv_sec, &tm);
-#endif
     usec = timeval->tv_usec;
   } else {
-#ifdef WIN32
+#ifdef _WIN32
 	  SYSTEMTIME sys_time;
 	  GetLocalTime(&sys_time);
 	  tm.tm_year = sys_time.wYear - 1900;

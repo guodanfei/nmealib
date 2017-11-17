@@ -28,20 +28,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#ifndef WIN32
-# include <unistd.h>
-#endif
-
 
 /** The maximum size of a string-to-number conversion buffer*/
 #define NMEALIB_CONVSTR_BUF    64
 
 void nmeaRandomInit(void) {
-#ifdef WIN32
-  srand((unsigned int) time(NULL));
-#else
   srandom((unsigned int) time(NULL));
-#endif
 }
 
 double nmeaRandom(const double min, const double max) {
@@ -58,11 +50,7 @@ double nmeaRandom(const double min, const double max) {
   if ((randomFile == -1) //
       || (read(randomFile, &value, sizeof(value)) != sizeof(value))) {
     /* can't be covered in a test */
-#ifdef WIN32
-    value = rand();
-#else
     value = random();
-#endif
   }
 
   if (randomFile != -1) {

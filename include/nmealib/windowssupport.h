@@ -27,6 +27,7 @@
 # define random(x) rand(x)
 #else
 # include <sys/time.h>
+# include <unistd.h>
 # define INLINE inline __attribute__((always_inline))
 #endif
 
