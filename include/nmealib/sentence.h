@@ -100,6 +100,7 @@ typedef struct _NmeaSentencePrefixToType {
  * The map from NMEA sentence prefix to sentence type
  */
 static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
+#ifndef _WIN32
     {
         .prefix = NMEALIB_GPGGA_PREFIX, //
         .sentence = NMEALIB_SENTENCE_GPGGA //
@@ -124,6 +125,32 @@ static const NmeaSentencePrefixToType nmealibSentencePrefixToType[] = {
         .prefix = NULL, //
         .sentence = NMEALIB_SENTENCE_GPNON //
     }//
+#else
+    {
+        NMEALIB_GPGGA_PREFIX, //
+        NMEALIB_SENTENCE_GPGGA //
+    },
+    {
+        NMEALIB_GPGSA_PREFIX, //
+        NMEALIB_SENTENCE_GPGSA //
+    },
+    {
+        NMEALIB_GPGSV_PREFIX, //
+        NMEALIB_SENTENCE_GPGSV //
+    },
+    {
+        NMEALIB_GPRMC_PREFIX, //
+        NMEALIB_SENTENCE_GPRMC //
+    },
+    {
+        NMEALIB_GPVTG_PREFIX, //
+        NMEALIB_SENTENCE_GPVTG //
+    },
+    {
+        NULL, //
+        NMEALIB_SENTENCE_GPNON //
+    }//
+#endif
 };
 
 /**
