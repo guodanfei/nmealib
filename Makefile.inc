@@ -21,7 +21,7 @@ DEBUG ?= 1
 NOSTRIP ?= 0
 
 # shows full compiler/linker calls if activated
-VERBOSE ?= 0
+VERBOSE ?= 1
 
 ifeq ($(VERBOSE),0)
 MAKECMDPREFIX = @

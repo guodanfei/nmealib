@@ -42,7 +42,7 @@ lib/%: build/%/main.o $(STATICLIBS)
 ifeq ($(VERBOSE),0)
 	@echo "[LD] $@"
 endif
-	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(LDLAGS) $(LIBRARIES) -o $@ $< $(STATICLIBS)
+	$(MAKECMDPREFIX)$(CC) -o $@ $< $(STATICLIBS) $(CFLAGS) $(LDLAGS) $(LIBRARIES)
 
 build/%/main.o: %/main.c $(H_FILES) Makefile $(TOPDIR)/Makefile.inc
 ifeq ($(VERBOSE),0)

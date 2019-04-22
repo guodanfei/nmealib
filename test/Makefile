@@ -40,13 +40,13 @@ lib/main: $(OBJ) $(STATICLIBS)
 ifeq ($(VERBOSE),0)
 	@echo "[LD] $@"
 endif
-	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(LDLAGS) $(LIBRARIES) -o $@ $(OBJ) $(STATICLIBS)
+	$(MAKECMDPREFIX)$(CC) -o $@ $(OBJ) $(STATICLIBS) $(CFLAGS) $(LDLAGS) $(LIBRARIES)
 
 build/%.o: %.c $(H_FILES) Makefile $(TOPDIR)/Makefile.inc
 ifeq ($(VERBOSE),0)
 	@echo "[CC] $<"
 endif
-	$(MAKECMDPREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(MAKECMDPREFIX)$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDES)
 
 check: default_target
 ifdef COV
